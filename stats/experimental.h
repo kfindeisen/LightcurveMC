@@ -1,0 +1,26 @@
+/** Functions for trying out new features
+ * @file experimental.h
+ * by Krzysztof Findeisen
+ * Created August 3, 2011
+ * Last modified April 12, 2013
+ */
+
+#ifndef LCMCEXPERIMENTH
+#define LCMCEXPERIMENTH
+
+#include <vector>
+
+namespace lcmcstats {
+
+typedef std::vector<double> DoubleVec;
+
+/** Calculates the RMS binned over ever-larger subintervals of the data
+ */
+void rmsVsTRooted(const DoubleVec &times, const DoubleVec &fluxes, 
+	DoubleVec &timeSteps, DoubleVec & rmsValues);
+void rmsVsTAllPairs(const DoubleVec &times, const DoubleVec &fluxes, 
+	DoubleVec &timeSteps, DoubleVec & rmsValues);
+
+};		// end lcmcstats
+
+#endif		// end LCMCEXPERIMENTH

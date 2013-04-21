@@ -1,0 +1,4 @@
+Running 1 test case...
+tests/unit_dmdt.cpp(160): error in "quantileCuts": check gsl_isnan(mean50Amp3s) failed
+WARNING: Not enough data to compute mean
+tests/unit_dmdt.cpp(133): error in "quantileCuts": floating point comparison failed: [0.8963422243 != 0.709] (0.1873422243 >= 0.01)
