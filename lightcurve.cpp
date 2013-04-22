@@ -7,7 +7,7 @@
 
 #include "lightcurvetypes.h"
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** Initializes the light curve to represent a particular data set. Since 
  * ILightCurve is an interface class, its constructor does nothing.
@@ -18,4 +18,4 @@ ILightCurve::ILightCurve() {
 ILightCurve::~ILightCurve() {
 }
 
-}		// end lcmcmodels
+}}		// end lcmc::models

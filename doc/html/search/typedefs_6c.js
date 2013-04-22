@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lightcurveregistry',['LightCurveRegistry',['../namespacelcmcmodels.html#a1da1a82cc93c0373a9304aec8765c319',1,'lcmcmodels']]]
+  ['lightcurveregistry',['LightCurveRegistry',['../namespacelcmc_1_1models.html#a574852d805d12bf34d96a996594f6e23',1,'lcmc::models']]]
 ];

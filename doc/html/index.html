@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Lightcurve MC
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.1.0-devel</span>
    </div>
    <div id="projectbrief">Lightcurve MC carries out Monte Carlo simulations of statistical light curve analyses.</div>
   </td>
@@ -115,18 +115,23 @@ Introduction</h1>
 </ul>
 <h1><a class="anchor" id="changelog"></a>
 Version History</h1>
+<h2><a class="anchor" id="v2_1_0"></a>
+2.1.0-devel</h2>
+<ul>
+<li>Changed: Renamed lcmcinject, lcmcmodel, lcmcstats, and lcmcutils to <a class="el" href="namespacelcmc_1_1inject.html" title="This namespace identifies data types and functions that handle the loading of data so that it can be ...">lcmc::inject</a>, lcmc::model, <a class="el" href="namespacelcmc_1_1stats.html" title="This namespace identifies data types and functions that handle data analysis on simulated light curve...">lcmc::stats</a>, and lcmc::utils, respectively.</li>
+</ul>
 <h2><a class="anchor" id="v2_0_0"></a>
 2.0.0</h2>
 <ul>
 <li>Changed: replaced period-amplitude command-line interface with one that allows the user to specify an arbitrary set of parameters, but at the cost of evaluating only a single bin per run</li>
-<li>Changed: redid the entire way information is passed to <a class="el" href="classlcmcmodels_1_1_i_light_curve.html" title="ILightCurve is the interface class for all light curve models.">lcmcmodels::ILightCurve</a> subclasses, in particular rewriting the interface of the <a class="el" href="classlcmcmodels_1_1_param_list.html" title="A ParamList contains the arguments needed by the light curve.">lcmcmodels::ParamList</a> class from scratch and moving it outside the <a class="el" href="classlcmcmodels_1_1_i_light_curve.html" title="ILightCurve is the interface class for all light curve models.">lcmcmodels::ILightCurve</a> class.</li>
-<li>Changed: redid <a class="el" href="classlcmcmodels_1_1_i_light_curve.html" title="ILightCurve is the interface class for all light curve models.">lcmcmodels::ILightCurve</a> interface to add support for stochastic light curves.</li>
-<li>Added: implemented <a class="el" href="classlcmcmodels_1_1_white_noise.html" title="WhiteNoise represents variables that vary stochastically on infinitesimal time scales.">lcmcmodels::WhiteNoise</a>, <a class="el" href="classlcmcmodels_1_1_damped_random_walk.html" title="DampedRandomWalk represents variables that vary stochastically within bounds in magnitude space...">lcmcmodels::DampedRandomWalk</a>, and <a class="el" href="classlcmcmodels_1_1_simple_gp.html" title="SimpleGp represents variables that vary as a standard Gaussian process in magnitude space...">lcmcmodels::SimpleGp</a></li>
+<li>Changed: redid the entire way information is passed to lcmcmodels::ILightCurve subclasses, in particular rewriting the interface of the lcmcmodels::ParamList class from scratch and moving it outside the lcmcmodels::ILightCurve class.</li>
+<li>Changed: redid lcmcmodels::ILightCurve interface to add support for stochastic light curves.</li>
+<li>Added: implemented lcmcmodels::WhiteNoise, lcmcmodels::DampedRandomWalk, and lcmcmodels::SimpleGp</li>
 <li>Changed: cleaned up documentation.</li>
 <li>Fixed: C1 will now be calculated correctly in magnitude space for light curves where the measured (noisy) flux is negative.</li>
 <li>Added: support for &Delta;m&Delta;t timescales</li>
 <li>Deleted: ILightCurve::modelParams()</li>
-<li>Changed: From now on, version numbers will conform to the Semantic Versioning specification</li>
+<li>Changed: from now on, version numbers will conform to the Semantic Versioning specification</li>
 </ul>
 <h2><a class="anchor" id="v1_4_1"></a>
 1.4.1</h2>
@@ -148,7 +153,7 @@ Version History</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sun Apr 21 2013 12:38:56 for Lightcurve MC by
+    <li class="footer">Generated on Sun Apr 21 2013 19:21:29 for Lightcurve MC by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

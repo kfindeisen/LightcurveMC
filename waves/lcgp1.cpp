@@ -14,7 +14,7 @@
 #include "lightcurves_gp.h"
 #include "../raiigsl.tmp.h"
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** Initializes the light curve to represent a standard Gaussian process.
  *
@@ -71,9 +71,9 @@ void SimpleGp::solveFluxes(std::vector<double>& fluxes) const {
 					sigma*sigma*exp(-0.5*deltaTTau*deltaTTau));
 		}
 	}
-	lcmcutils::multiNormal(fluxes, *corrs, fluxes);
+	utils::multiNormal(fluxes, *corrs, fluxes);
 	
-	lcmcutils::magToFlux(fluxes, fluxes);
+	utils::magToFlux(fluxes, fluxes);
 }
 
-}		// end lcmcmodels
+}}		// end lcmc::models

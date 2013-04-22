@@ -13,10 +13,15 @@
 #include <cstdio>
 #include "paramlist.h"
 
-namespace lcmcstats {
+namespace lcmc { 
 
-using lcmcmodels::RangeList;
-using lcmcmodels::ParamList;
+/** This namespace identifies data types and functions that handle 
+ * data analysis on simulated light curves.
+ */
+namespace stats {
+
+using models::RangeList;
+using models::ParamList;
 
 /** Shorthand for a vector of doubles.
  */
@@ -55,12 +60,12 @@ public:
 
 	/** Creates a unique name for the simulation run, formatted to go in a table.
 	 */
-	static std::string makeBinName(std::string modelName, 
+	static std::string makeBinName(std::string lcName, 
 		const RangeList& binSpecs);
 
 	/** Creates a unique name for the simulation run, formatted for use in a file name.
 	 */
-	static std::string makeFileName(std::string modelName, 
+	static std::string makeFileName(std::string lcName, 
 		const RangeList& binSpecs);
 
 	/** Prints a header row representing the statistics printed by 
@@ -84,6 +89,6 @@ private:
 	std::vector<DoubleVec> dmdtMedians;
 };
 
-};		// end namespace
+}}		// end lcmc::stats
 
 #endif		// End ifndef BINSTATSH

@@ -12,10 +12,12 @@
 #include <string>
 #include "lightcurvetypes.h"
 
-/** This namespace identifies data types and functions that handle the 
- *	simulation of astronomical data.
+namespace lcmc { 
+
+/** This namespace identifies data types and functions that handle 
+ * model selection for lightcurveMC.
  */
-namespace lcmcparse {
+namespace parse {
 
 /** Returns a list of all lightCurve names recognized on the command line. 
  */
@@ -23,8 +25,8 @@ const std::list<std::string> lightCurveTypes();
 
 /** Converts a string to its associated LightCurveType.
  */
-const lcmcmodels::LightCurveType parseLightCurve(const std::string& lcName);
+const models::LightCurveType parseLightCurve(const std::string& lcName);
 
-}		// end lcmcparse
+}}		// end lcmc::parse
 
 #endif		// end ifndef LCMCPARSEH

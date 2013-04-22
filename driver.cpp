@@ -2,7 +2,7 @@
  * @file driver.cpp
  * @author Krzysztof Findeisen
  * @date Created January 22, 2010
- * @date Last modified April 19, 2013
+ * @date Last modified April 21, 2013
  */
 
 #include <memory>
@@ -23,34 +23,39 @@
 #include <lfp/lfp.h>
 #endif
 
+using namespace lcmc;
 using std::string;
 using std::vector;
-using lcmcmodels::RangeList;
-using lcmcmodels::ParamList;
-using lcmcinject::Observations;
-using lcmcinject::dataSampler;
-using lcmcstats::LcBinStats;
+using models::RangeList;
+using models::ParamList;
+using inject::Observations;
+using inject::dataSampler;
+using stats::LcBinStats;
 
 ////////////////////////////////////////
 // Forward declarations needed only by the main program
+
+/** This namespace identifies all code specific to lightcurveMC.
+ */
+namespace lcmc { 
 
 /** Randomly generates parameter values within the specified limits
  */
 ParamList drawParams(RangeList limits);
 
-namespace lcmcparse {
+namespace parse {
 /** Converts the input arguments to a set of variables.
  */
 void parseArguments(int argc, char* argv[], 
 	double& sigma, long& nTrials, long& toPrint, 
 	RangeList& paramRanges, 
 	string& jdList, vector<string>& lcNameList, 
-	vector<lcmcmodels::LightCurveType>& lcList, 
+	vector<models::LightCurveType>& lcList, 
 	string& dataSet, bool& injectMode);
 
-}	// end lcmcparse
+}	// end lcmc::parse
 
-namespace lcmcmodels{
+namespace models {
 // Full spec given with the declaration because lcregistry.cpp is deliberately 
 //	hidden in the documentation
 // 
@@ -77,7 +82,7 @@ namespace lcmcmodels{
  */
 std::auto_ptr<ILightCurve> lcFactory(LightCurveType whichLc, const vector<double> &times, const ParamList &lcParams);
 
-}	// end lcmcmodels
+}}	// end lcmc::models
 
 ////////////////////////////////////////
 // Main Program
@@ -91,7 +96,7 @@ std::auto_ptr<ILightCurve> lcFactory(LightCurveType whichLc, const vector<double
  */
 int main(int argc, char* argv[]) {
 	using std::auto_ptr;
-	using namespace lcmcmodels;
+	using namespace lcmc::models;
 	
 	#if USELFP
 	PInit();
@@ -119,7 +124,7 @@ int main(int argc, char* argv[]) {
 	////////////////////
 	// Parse the input
 	try {
-		lcmcparse::parseArguments(argc, argv, sigma, nTrials, numToPrint, 
+		parse::parseArguments(argc, argv, sigma, nTrials, numToPrint, 
 			limits, dateList, lcNameList, lcList, injectType, injectMode);
 	} catch(std::runtime_error &e) {
 		fprintf(stderr, "ERROR: %s\n", e.what());
@@ -263,6 +268,8 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
+namespace lcmc {
+
 /** Randomly generates parameter values within the specified limits
  *
  * @param[in] limits A RangeList giving the parameters to generate, the 
@@ -314,3 +321,5 @@ ParamList drawParams(RangeList limits) {
 	
 	return returnValue;
 }
+
+}	// end lcmc

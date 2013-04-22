@@ -11,7 +11,7 @@
 #include <vector>
 #include <gsl/gsl_matrix.h>
 
-namespace lcmcutils {
+namespace lcmc { namespace utils {
 
 /** Transforms an uncorrelated sequence of Gaussian random numbers into a 
  *	correlated sequence
@@ -19,6 +19,6 @@ namespace lcmcutils {
 void multiNormal(const std::vector<double>& indVec, const gsl_matrix& covar, 
 		std::vector<double>& corrVec);
 
-}		// end lcmcutils
+}}		// end lcmc::utils
 
 #endif		// LCMCGENERATORSH

@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Lightcurve MC
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.1.0-devel</span>
    </div>
    <div id="projectbrief">Lightcurve MC carries out Monte Carlo simulations of statistical light curve analyses.</div>
   </td>
@@ -117,8 +117,11 @@ $(document).ready(function(){initNavTree('cmd_8cpp.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr class="memitem:namespacelcmcparse"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmcparse.html">lcmcparse</a></td></tr>
-<tr class="memdesc:namespacelcmcparse"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies data types and functions that handle the simulation of astronomical data. <br/></td></tr>
+<tr class="memitem:namespacelcmc"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc.html">lcmc</a></td></tr>
+<tr class="memdesc:namespacelcmc"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies all code specific to lightcurveMC. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacelcmc_1_1parse"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc_1_1parse.html">lcmc::parse</a></td></tr>
+<tr class="memdesc:namespacelcmc_1_1parse"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies data types and functions that handle model selection for lightcurveMC. <br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
@@ -126,16 +129,16 @@ Functions</h2></td></tr>
 <tr class="memitem:acce95920d5bf50fc27b570eb277d1a5e"><td class="memItemLeft" align="right" valign="top">std::istream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cmd_8cpp.html#acce95920d5bf50fc27b570eb277d1a5e">operator&gt;&gt;</a> (std::istream &amp;str, std::pair&lt; double, double &gt; &amp;val)</td></tr>
 <tr class="memdesc:acce95920d5bf50fc27b570eb277d1a5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extracts formatted input into a pair of double precision floating point values.  <a href="#acce95920d5bf50fc27b570eb277d1a5e">More...</a><br/></td></tr>
 <tr class="separator:acce95920d5bf50fc27b570eb277d1a5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab46d3b0802ca5afeb330f65b84cbaf1c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmcparse.html#ab46d3b0802ca5afeb330f65b84cbaf1c">lcmcparse::parseArguments</a> (int argc, char *argv[], double &amp;sigma, long &amp;nTrials, long &amp;toPrint, <a class="el" href="classlcmcmodels_1_1_range_list.html">RangeList</a> &amp;paramRanges, string &amp;jdList, vector&lt; string &gt; &amp;lcNameList, vector&lt; <a class="el" href="classlcmcmodels_1_1_light_curve_type.html">LightCurveType</a> &gt; &amp;lcList, string &amp;dataSet, bool &amp;injectMode)</td></tr>
-<tr class="memdesc:ab46d3b0802ca5afeb330f65b84cbaf1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the input arguments to a set of variables.  <a href="#ab46d3b0802ca5afeb330f65b84cbaf1c">More...</a><br/></td></tr>
-<tr class="separator:ab46d3b0802ca5afeb330f65b84cbaf1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf1982265f69ad834e6151c0a51d340d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc_1_1parse.html#abf1982265f69ad834e6151c0a51d340d">lcmc::parse::parseArguments</a> (int argc, char *argv[], double &amp;sigma, long &amp;nTrials, long &amp;toPrint, RangeList &amp;paramRanges, string &amp;jdList, vector&lt; string &gt; &amp;lcNameList, vector&lt; LightCurveType &gt; &amp;lcList, string &amp;dataSet, bool &amp;injectMode)</td></tr>
+<tr class="memdesc:abf1982265f69ad834e6151c0a51d340d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the input arguments to a set of variables.  <a href="#abf1982265f69ad834e6151c0a51d340d">More...</a><br/></td></tr>
+<tr class="separator:abf1982265f69ad834e6151c0a51d340d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Code for parsing the command line interface. </p>
 <dl class="section author"><dt>Author</dt><dd>Krzysztof Findeisen </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>Created April 12, 2013 </dd>
 <dd>
-Last modified April 12, 2013 </dd></dl>
+Last modified April 21, 2013 </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
 <a class="anchor" id="acce95920d5bf50fc27b570eb277d1a5e"></a>
 <div class="memitem">
@@ -187,7 +190,7 @@ Last modified April 12, 2013 </dd></dl>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="cmd_8cpp.html">cmd.cpp</a></li>
-    <li class="footer">Generated on Sun Apr 21 2013 12:38:54 for Lightcurve MC by
+    <li class="footer">Generated on Sun Apr 21 2013 19:21:27 for Lightcurve MC by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

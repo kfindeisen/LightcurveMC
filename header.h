@@ -5,10 +5,8 @@
  * @date Last modified April 21, 2013
  *
  * @todo Add proper exception classes. Put exceptions in exception namespace 
- *	within lcmcmodels and lcmcinject.
+ *	within lcmc::models and lcmc::inject.
  * @todo Add exception guarantees to every function and method.
- * @todo Merge lcmcmodels and lcmcinject into lcmc (I don't use "using 
- *	namespace" nearly as much as I should)?
  */
 
 #ifndef LCMCHEADERH
@@ -45,6 +43,12 @@
  * - Support for calculation of C1, periods, and &Delta;m&Delta;t timescales
  * 
  * @section changelog Version History
+ *
+ * @subsection v2_1_0 2.1.0-devel
+ *
+ * - Changed: renamed lcmcinject, lcmcmodels, lcmcparse, lcmcstats, 
+ *	and lcmcutils to lcmc::inject, lcmc::models, lcmc::parse, 
+ *	lcmc::stats, and lcmc::utils, respectively.
  *
  * @subsection v2_0_0 2.0.0
  *

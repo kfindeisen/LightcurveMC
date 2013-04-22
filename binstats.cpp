@@ -25,8 +25,8 @@
 #endif
 
 using std::string;
-using lcmcmodels::RangeList;
-using lcmcmodels::ParamList;
+using lcmc::models::RangeList;
+using lcmc::models::ParamList;
 
 // Current implementation of analyzeLightCurve does not use 
 // trueParams, but it should still be part of the interface
@@ -34,7 +34,7 @@ using lcmcmodels::ParamList;
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #endif
 
-namespace lcmcstats {
+namespace lcmc { namespace stats {
 
 /** Calculates the mean and standard deviation of a collection of statistics
  *
@@ -58,8 +58,8 @@ void getSummaryStats(const DoubleVec& values, double& mean, double& stddev,
 		// Standard deviation requires at least two, i.e. it has 
 		//	strictly tighter requirements than the mean and must 
 		//	go later
-		mean   =      lcmcutils::    meanNoNan(values);
-		stddev = sqrt(lcmcutils::varianceNoNan(values));
+		mean   =      utils::    meanNoNan(values);
+		stddev = sqrt(utils::varianceNoNan(values));
 	} catch (std::invalid_argument &e) {
 		// These should just be warnings that a statistic is undefined
 		fprintf(stderr, "WARNING: %s summary: %s\n", statName.c_str(), e.what());
@@ -84,7 +84,7 @@ void getSummaryStats(const DoubleVec& values, double& mean, double& stddev,
 	size_t n = values.size();
 	
 	double badCount = static_cast<double>(
-		std::count_if(values.begin(), values.end(), &lcmcutils::isNanOrInf));
+		std::count_if(values.begin(), values.end(), &utils::isNanOrInf));
 	goodFrac = (n > 0 ? 1.0 - badCount/n : 0.0);
 	getSummaryStats(values, mean, stddev, statName);
 }
@@ -128,7 +128,7 @@ LcBinStats::LcBinStats(string modelName, const RangeList& binSpecs)
 void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& fluxes, 
 		const ParamList& trueParams) {
 	DoubleVec mags(fluxes.size());
-	lcmcutils::fluxToMag(fluxes, mags);
+	utils::fluxToMag(fluxes, mags);
 
 	////////////////////////////////////////
 	// Calculate c1
@@ -156,7 +156,7 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 		binEdges.push_back(pow(10.0,maxBin));
 		
 		DoubleVec cleanTimes, cleanMags, deltaT, deltaM;
-		lcmcutils::removeNans(mags, cleanMags, times, cleanTimes);
+		utils::removeNans(mags, cleanMags, times, cleanTimes);
 		#if USELFP
 		PClear(7);
 		PStart(7);
@@ -407,4 +407,4 @@ string LcBinStats::makeFileName(string lcName, const RangeList& binSpecs) {
 	return binId;
 }
 
-};	// end namespace
+}}	// end ::stats

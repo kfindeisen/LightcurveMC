@@ -1,6 +1,6 @@
 var observations_8h =
 [
-    [ "FileIo", "classlcmcinject_1_1_file_io.html", "classlcmcinject_1_1_file_io" ],
-    [ "Observations", "classlcmcinject_1_1_observations.html", "classlcmcinject_1_1_observations" ],
-    [ "dataSampler", "observations_8h.html#a9a69405ef4f4fedf0b18b559c0cc1a05", null ]
+    [ "FileIo", "classlcmc_1_1inject_1_1_file_io.html", "classlcmc_1_1inject_1_1_file_io" ],
+    [ "Observations", "classlcmc_1_1inject_1_1_observations.html", "classlcmc_1_1inject_1_1_observations" ],
+    [ "dataSampler", "observations_8h.html#a04f60191ab475c7e14775ed63f550107", null ]
 ];

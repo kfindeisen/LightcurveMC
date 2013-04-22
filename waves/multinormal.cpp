@@ -15,7 +15,7 @@
 #include "generators.h"
 #include "../raiigsl.tmp.h"
 
-namespace lcmcutils {
+namespace lcmc { namespace utils {
 
 using std::vector;
 
@@ -173,4 +173,4 @@ void multiNormal(const vector<double>& indVec, const gsl_matrix& covar,
 	}
 }
 
-}		// end lcmcutils
+}}		// end lcmc::utils

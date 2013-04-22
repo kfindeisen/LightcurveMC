@@ -10,7 +10,7 @@
 #include "../fluxmag.h"
 #include "lightcurves_gp.h"
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** Initializes the light curve to represent a damped random walk.
  *
@@ -81,7 +81,7 @@ void DampedRandomWalk::solveFluxes(std::vector<double>& fluxes) const {
 		}
 	}
 	
-	lcmcutils::magToFlux(fluxes, fluxes);
+	utils::magToFlux(fluxes, fluxes);
 }
 
-}		// end lcmcmodels
+}}		// end lcmc::models

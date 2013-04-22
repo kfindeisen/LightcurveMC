@@ -16,7 +16,7 @@
 #include <vector>
 #include "observations.h"
 
-namespace lcmcinject {
+namespace lcmc { namespace inject {
 
 /** Data generator for sources that are not IR excess sources in Spitzer and 
  * not variables in PTF.
@@ -146,6 +146,6 @@ private:
 	static const std::vector<std::string>& getLcLibrary();
 };
 
-}		// end lcmcmodels
+}}		// end lcmc::models
 
 #endif		// end ifndef LCMCSAMPLESH

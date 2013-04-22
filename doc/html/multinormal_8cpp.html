@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Lightcurve MC
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.1.0-devel</span>
    </div>
    <div id="projectbrief">Lightcurve MC carries out Monte Carlo simulations of statistical light curve analyses.</div>
   </td>
@@ -105,6 +105,7 @@ $(document).ready(function(){initNavTree('multinormal_8cpp.html','');});
 
 <div class="header">
   <div class="summary">
+<a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">multinormal.cpp File Reference</div>  </div>
@@ -114,20 +115,26 @@ $(document).ready(function(){initNavTree('multinormal_8cpp.html','');});
 <p>Generates a multivariate normal with a given covariance matrix.  
 <a href="#details">More...</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:namespacelcmc"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc.html">lcmc</a></td></tr>
+<tr class="memdesc:namespacelcmc"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies all code specific to lightcurveMC. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a953972b41038897cf9001f799504a307"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><b>lcmcutils::getHalfMatrix</b> (const gsl_matrix *const a, gsl_matrix *&amp;b)</td></tr>
-<tr class="memdesc:a953972b41038897cf9001f799504a307"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given a matrix A, returns a matrix B with the property A = B * transpose(B)  <a href="#a953972b41038897cf9001f799504a307">More...</a><br/></td></tr>
-<tr class="separator:a953972b41038897cf9001f799504a307"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0327cb9e306f4a1cb7cb8531f3f54077"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><b>lcmcutils::isMatrixClose</b> (const gsl_matrix *const a, const gsl_matrix *const b, double tolerance)</td></tr>
-<tr class="memdesc:a0327cb9e306f4a1cb7cb8531f3f54077"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tests whether two matrices have approximately equal elements.  <a href="#a0327cb9e306f4a1cb7cb8531f3f54077">More...</a><br/></td></tr>
-<tr class="separator:a0327cb9e306f4a1cb7cb8531f3f54077"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a897681a43bab258fc96276e6ffee31cd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><b>lcmcutils::multiNormal</b> (const std::vector&lt; double &gt; &amp;indVec, const gsl_matrix &amp;covar, std::vector&lt; double &gt; &amp;corrVec)</td></tr>
-<tr class="memdesc:a897681a43bab258fc96276e6ffee31cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transforms an uncorrelated sequence of Gaussian random numbers into a correlated sequence.  <a href="#a897681a43bab258fc96276e6ffee31cd">More...</a><br/></td></tr>
-<tr class="separator:a897681a43bab258fc96276e6ffee31cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aafac3252e317942794f39e8efd22180d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><b>lcmcutils::replaceMatrix</b> (gsl_matrix *&amp;target, const gsl_matrix *const newData)</td></tr>
-<tr class="memdesc:aafac3252e317942794f39e8efd22180d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replaces one matrix with another.  <a href="#aafac3252e317942794f39e8efd22180d">More...</a><br/></td></tr>
-<tr class="separator:aafac3252e317942794f39e8efd22180d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afdc8bf83f3aad761a64bf929e0701212"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><b>lcmc::utils::getHalfMatrix</b> (const gsl_matrix *const a, gsl_matrix *&amp;b)</td></tr>
+<tr class="memdesc:afdc8bf83f3aad761a64bf929e0701212"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given a matrix A, returns a matrix B with the property A = B * transpose(B)  <a href="#afdc8bf83f3aad761a64bf929e0701212">More...</a><br/></td></tr>
+<tr class="separator:afdc8bf83f3aad761a64bf929e0701212"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe8f3c1ecc79bfa27e2e6057cc9f5a82"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><b>lcmc::utils::isMatrixClose</b> (const gsl_matrix *const a, const gsl_matrix *const b, double tolerance)</td></tr>
+<tr class="memdesc:abe8f3c1ecc79bfa27e2e6057cc9f5a82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tests whether two matrices have approximately equal elements.  <a href="#abe8f3c1ecc79bfa27e2e6057cc9f5a82">More...</a><br/></td></tr>
+<tr class="separator:abe8f3c1ecc79bfa27e2e6057cc9f5a82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a011fed98f692ed2080dcdaca567635"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><b>lcmc::utils::multiNormal</b> (const std::vector&lt; double &gt; &amp;indVec, const gsl_matrix &amp;covar, std::vector&lt; double &gt; &amp;corrVec)</td></tr>
+<tr class="memdesc:a5a011fed98f692ed2080dcdaca567635"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transforms an uncorrelated sequence of Gaussian random numbers into a correlated sequence.  <a href="#a5a011fed98f692ed2080dcdaca567635">More...</a><br/></td></tr>
+<tr class="separator:a5a011fed98f692ed2080dcdaca567635"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8bc50e75dbecd86fd049aba58a1dad73"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><b>lcmc::utils::replaceMatrix</b> (gsl_matrix *&amp;target, const gsl_matrix *const newData)</td></tr>
+<tr class="memdesc:a8bc50e75dbecd86fd049aba58a1dad73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replaces one matrix with another.  <a href="#a8bc50e75dbecd86fd049aba58a1dad73">More...</a><br/></td></tr>
+<tr class="separator:a8bc50e75dbecd86fd049aba58a1dad73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Generates a multivariate normal with a given covariance matrix. </p>
@@ -141,7 +148,7 @@ Last modified April 20, 2013 </dd></dl>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_a1fbdc49b3922d6f6acba2bc29be4192.html">waves</a></li><li class="navelem"><a class="el" href="multinormal_8cpp.html">multinormal.cpp</a></li>
-    <li class="footer">Generated on Sun Apr 21 2013 12:38:54 for Lightcurve MC by
+    <li class="footer">Generated on Sun Apr 21 2013 19:21:27 for Lightcurve MC by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

@@ -10,7 +10,7 @@
 #include <cstdio>
 #include "lightcurves_fades.h"
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** Initializes the light curve to represent a periodically fading function flux(time).
  *
@@ -76,4 +76,4 @@ double FlareDip::fluxPhase(double phase) const {
 	}
 }
 
-}		// end lcmcmodels
+}}		// end lcmc::models

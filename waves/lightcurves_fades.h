@@ -11,7 +11,7 @@
 #include <stdexcept>
 #include "lightcurves_periodic.h"
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** SlowDip describes periodic variables that have a Gaussian fade once per 
  * cycle. The light curve can be described by its amplitude, period, phase 
@@ -82,6 +82,6 @@ private:
 	double width;
 };
 
-}		// end lcmcmodels
+}}		// end lcmc::models
 
 #endif		// end ifndef LCMCCURVEPERIH

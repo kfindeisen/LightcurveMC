@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['eclipsewave',['EclipseWave',['../classlcmcmodels_1_1_eclipse_wave.html#a58507f3e41c680f888f665dfa1195638',1,'lcmcmodels::EclipseWave']]],
-  ['ellipsewave',['EllipseWave',['../classlcmcmodels_1_1_ellipse_wave.html#a0899654102984e0ff2ff2cc09f6ff806',1,'lcmcmodels::EllipseWave']]],
-  ['end',['end',['../classlcmcmodels_1_1_range_list.html#ab7248ff73be4ab91c74b2a707d55c873',1,'lcmcmodels::RangeList']]]
+  ['eclipsewave',['EclipseWave',['../classlcmc_1_1models_1_1_eclipse_wave.html#a4683151c4e380b9e606082795fedba27',1,'lcmc::models::EclipseWave']]],
+  ['ellipsewave',['EllipseWave',['../classlcmc_1_1models_1_1_ellipse_wave.html#aa007851b7f983bd574d1dc9c177676e4',1,'lcmc::models::EllipseWave']]],
+  ['end',['end',['../classlcmc_1_1models_1_1_range_list.html#a0d67c5201a5f649ace9b6468238894be',1,'lcmc::models::RangeList']]]
 ];

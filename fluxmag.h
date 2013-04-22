@@ -10,7 +10,7 @@
 
 #include <vector>
 
-namespace lcmcutils {
+namespace lcmc { namespace utils {
 
 /** Function for converting fluxes to magnitudes
  */
@@ -28,6 +28,6 @@ void fluxToMag(const std::vector<double>& fluxes, std::vector<double>& mags);
  */
 void magToFlux(const std::vector<double>& mags, std::vector<double>& fluxes);
 
-};		// end lcmcutils
+}}		// end lcmc::utils
 
 #endif 		// end LCMCFLUXMAGH

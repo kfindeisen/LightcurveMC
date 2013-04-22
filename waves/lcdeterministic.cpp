@@ -8,7 +8,7 @@
 #include <vector>
 #include "lcsubtypes.h"
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** Initializes the light curve to represent a particular function flux(time).
  *
@@ -58,4 +58,4 @@ void Deterministic::getFluxes(std::vector<double>& fluxArray) const {
 	}
 }
 
-}		// end lcmcmodels
+}}		// end lcmc::models

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['loguniform',['LOGUNIFORM',['../classlcmcmodels_1_1_range_list.html#a0e5d018a069bfbce56865c2c5e0e5fb7a7434c9a40080de92594e2390b4d3c109',1,'lcmcmodels::RangeList']]]
+  ['loguniform',['LOGUNIFORM',['../classlcmc_1_1models_1_1_range_list.html#a73cef35eb6bd01c227074c9229fbdf7ba8fe410ec0cf21934356042a055e9c953',1,'lcmc::models::RangeList']]]
 ];

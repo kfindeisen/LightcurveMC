@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Lightcurve MC
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.1.0-devel</span>
    </div>
    <div id="projectbrief">Lightcurve MC carries out Monte Carlo simulations of statistical light curve analyses.</div>
   </td>
@@ -105,6 +105,7 @@ $(document).ready(function(){initNavTree('binstats_8cpp.html','');});
 
 <div class="header">
   <div class="summary">
+<a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">binstats.cpp File Reference</div>  </div>
@@ -114,14 +115,23 @@ $(document).ready(function(){initNavTree('binstats_8cpp.html','');});
 <p>Class that calculates test statistics on artificial light curves.  
 <a href="#details">More...</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:namespacelcmc"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc.html">lcmc</a></td></tr>
+<tr class="memdesc:namespacelcmc"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies all code specific to lightcurveMC. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacelcmc_1_1stats"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc_1_1stats.html">lcmc::stats</a></td></tr>
+<tr class="memdesc:namespacelcmc_1_1stats"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies data types and functions that handle data analysis on simulated light curves. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a5fd41ab987d37b6168963c0298bef46e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><b>lcmcstats::getSummaryStats</b> (const DoubleVec &amp;values, double &amp;mean, double &amp;stddev, const std::string &amp;statName)</td></tr>
-<tr class="memdesc:a5fd41ab987d37b6168963c0298bef46e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the mean and standard deviation of a collection of statistics.  <a href="#a5fd41ab987d37b6168963c0298bef46e">More...</a><br/></td></tr>
-<tr class="separator:a5fd41ab987d37b6168963c0298bef46e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65494262c450432a5f28048d6635b4c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><b>lcmcstats::getSummaryStats</b> (const DoubleVec &amp;values, double &amp;mean, double &amp;stddev, double &amp;goodFrac, const std::string &amp;statName)</td></tr>
-<tr class="memdesc:a65494262c450432a5f28048d6635b4c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the mean, standard deviation, and definition rate of a collection of statistics.  <a href="#a65494262c450432a5f28048d6635b4c9">More...</a><br/></td></tr>
-<tr class="separator:a65494262c450432a5f28048d6635b4c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a647ad1add157795126fa89fff7d11c87"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc_1_1stats.html#a647ad1add157795126fa89fff7d11c87">lcmc::stats::getSummaryStats</a> (const DoubleVec &amp;values, double &amp;mean, double &amp;stddev, const string &amp;statName)</td></tr>
+<tr class="memdesc:a647ad1add157795126fa89fff7d11c87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the mean and standard deviation of a collection of statistics.  <a href="#a647ad1add157795126fa89fff7d11c87">More...</a><br/></td></tr>
+<tr class="separator:a647ad1add157795126fa89fff7d11c87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66fc0924e2c355d4f5c30346f9479f61"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc_1_1stats.html#a66fc0924e2c355d4f5c30346f9479f61">lcmc::stats::getSummaryStats</a> (const DoubleVec &amp;values, double &amp;mean, double &amp;stddev, double &amp;goodFrac, const string &amp;statName)</td></tr>
+<tr class="memdesc:a66fc0924e2c355d4f5c30346f9479f61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the mean, standard deviation, and definition rate of a collection of statistics.  <a href="#a66fc0924e2c355d4f5c30346f9479f61">More...</a><br/></td></tr>
+<tr class="separator:a66fc0924e2c355d4f5c30346f9479f61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class that calculates test statistics on artificial light curves. </p>
@@ -135,7 +145,7 @@ Last modified April 21, 2013 </dd></dl>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="binstats_8cpp.html">binstats.cpp</a></li>
-    <li class="footer">Generated on Sun Apr 21 2013 12:38:54 for Lightcurve MC by
+    <li class="footer">Generated on Sun Apr 21 2013 19:21:27 for Lightcurve MC by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

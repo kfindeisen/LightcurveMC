@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Lightcurve MC
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.1.0-devel</span>
    </div>
    <div id="projectbrief">Lightcurve MC carries out Monte Carlo simulations of statistical light curve analyses.</div>
   </td>
@@ -105,6 +105,7 @@ $(document).ready(function(){initNavTree('fluxmag_8cpp.html','');});
 
 <div class="header">
   <div class="summary">
+<a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">fluxmag.cpp File Reference</div>  </div>
@@ -114,34 +115,40 @@ $(document).ready(function(){initNavTree('fluxmag_8cpp.html','');});
 <p>Functions for converting flux and magnitude representations of vectors.  
 <a href="#details">More...</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:namespacelcmc"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc.html">lcmc</a></td></tr>
+<tr class="memdesc:namespacelcmc"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies all code specific to lightcurveMC. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a7733c4d58e6dab0bb5f65199b4b48d73"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><b>lcmcutils::fluxToMag</b> (double flux)</td></tr>
-<tr class="memdesc:a7733c4d58e6dab0bb5f65199b4b48d73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function for converting fluxes to magnitudes.  <a href="#a7733c4d58e6dab0bb5f65199b4b48d73">More...</a><br/></td></tr>
-<tr class="separator:a7733c4d58e6dab0bb5f65199b4b48d73"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ac0c20d154326487735570aff75a873"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><b>lcmcutils::fluxToMag</b> (const vector&lt; double &gt; &amp;fluxes, vector&lt; double &gt; &amp;mags)</td></tr>
-<tr class="memdesc:a1ac0c20d154326487735570aff75a873"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts fluxes to magnitudes.  <a href="#a1ac0c20d154326487735570aff75a873">More...</a><br/></td></tr>
-<tr class="separator:a1ac0c20d154326487735570aff75a873"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af26630f03aeff94019c424eefde2b070"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><b>lcmcutils::magToFlux</b> (double mag)</td></tr>
-<tr class="memdesc:af26630f03aeff94019c424eefde2b070"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function for converting magnitudes to fluxes.  <a href="#af26630f03aeff94019c424eefde2b070">More...</a><br/></td></tr>
-<tr class="separator:af26630f03aeff94019c424eefde2b070"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a41d8ab62bc5948a05a89bafbfe91f4b0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><b>lcmcutils::magToFlux</b> (const vector&lt; double &gt; &amp;mags, vector&lt; double &gt; &amp;fluxes)</td></tr>
-<tr class="memdesc:a41d8ab62bc5948a05a89bafbfe91f4b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts magnitudes to fluxes.  <a href="#a41d8ab62bc5948a05a89bafbfe91f4b0">More...</a><br/></td></tr>
-<tr class="separator:a41d8ab62bc5948a05a89bafbfe91f4b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a550c8ecef52e617df1124ecdf12bd4cd"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><b>lcmc::utils::fluxToMag</b> (double flux)</td></tr>
+<tr class="memdesc:a550c8ecef52e617df1124ecdf12bd4cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function for converting fluxes to magnitudes.  <a href="#a550c8ecef52e617df1124ecdf12bd4cd">More...</a><br/></td></tr>
+<tr class="separator:a550c8ecef52e617df1124ecdf12bd4cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d8adedfc70f7d0ecade52ac80bdaf03"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><b>lcmc::utils::fluxToMag</b> (const vector&lt; double &gt; &amp;fluxes, vector&lt; double &gt; &amp;mags)</td></tr>
+<tr class="memdesc:a6d8adedfc70f7d0ecade52ac80bdaf03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts fluxes to magnitudes.  <a href="#a6d8adedfc70f7d0ecade52ac80bdaf03">More...</a><br/></td></tr>
+<tr class="separator:a6d8adedfc70f7d0ecade52ac80bdaf03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac406632e5ac15061216476af953dbd0"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><b>lcmc::utils::magToFlux</b> (double mag)</td></tr>
+<tr class="memdesc:aac406632e5ac15061216476af953dbd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function for converting magnitudes to fluxes.  <a href="#aac406632e5ac15061216476af953dbd0">More...</a><br/></td></tr>
+<tr class="separator:aac406632e5ac15061216476af953dbd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac229e622fd0b58f75d3fcd5163417022"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><b>lcmc::utils::magToFlux</b> (const vector&lt; double &gt; &amp;mags, vector&lt; double &gt; &amp;fluxes)</td></tr>
+<tr class="memdesc:ac229e622fd0b58f75d3fcd5163417022"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts magnitudes to fluxes.  <a href="#ac229e622fd0b58f75d3fcd5163417022">More...</a><br/></td></tr>
+<tr class="separator:ac229e622fd0b58f75d3fcd5163417022"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Functions for converting flux and magnitude representations of vectors. </p>
 <dl class="section author"><dt>Author</dt><dd>Krzysztof Findeisen </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>Created April 4, 2013 </dd>
 <dd>
-Last modified April 11, 2013 </dd></dl>
+Last modified April 21, 2013 </dd></dl>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="fluxmag_8cpp.html">fluxmag.cpp</a></li>
-    <li class="footer">Generated on Sun Apr 21 2013 12:38:54 for Lightcurve MC by
+    <li class="footer">Generated on Sun Apr 21 2013 19:21:27 for Lightcurve MC by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

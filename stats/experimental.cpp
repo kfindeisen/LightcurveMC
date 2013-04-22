@@ -17,14 +17,14 @@
 #include <lfp/lfp.h>
 #endif
 
-namespace lcmcstats {
+namespace lcmc { namespace stats {
 
 /** Calculates the RMS binned over ever-larger subintervals of the data. rmsVsTRooted() 
  *	considers only subintervals from the first data point to some later point
  * 
  * @param[in] times		Times at which data were taken
  * @param[in] fluxes		Flux measurements of a source
- * @param[out] intervals	A list of the lengths of all subintervals
+ * @param[out] timeSteps	A list of the lengths of all subintervals
  * @param[out] rmsValues	A list of the RMS over each subinterval
  *
  * @pre times contains at least two unique values
@@ -76,7 +76,7 @@ void rmsVsTRooted(const DoubleVec &times, const DoubleVec &fluxes,
  * 
  * @param[in] times		Times at which data were taken
  * @param[in] fluxes		Flux measurements of a source
- * @param[out] intervals	A list of the lengths of all subintervals
+ * @param[out] timeSteps	A list of the lengths of all subintervals
  * @param[out] rmsValues	A list of the RMS over each subinterval
  *
  * @pre times contains at least two unique values
@@ -140,4 +140,4 @@ void rmsVsTAllPairs(const DoubleVec &times, const DoubleVec &fluxes,
 	}
 }
 
-};	// end lcmcstats
+}}	// end lcmc::stats

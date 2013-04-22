@@ -10,7 +10,7 @@
 
 #include <vector>
 
-namespace lcmcstats {
+namespace lcmc { namespace stats {
 
 typedef std::vector<double> DoubleVec;
 
@@ -21,6 +21,6 @@ void rmsVsTRooted(const DoubleVec &times, const DoubleVec &fluxes,
 void rmsVsTAllPairs(const DoubleVec &times, const DoubleVec &fluxes, 
 	DoubleVec &timeSteps, DoubleVec & rmsValues);
 
-};		// end lcmcstats
+}}		// end lcmc::stats
 
 #endif		// end LCMCEXPERIMENTH

@@ -1,8 +1,8 @@
 var searchData=
 [
   ['todo_20list',['Todo List',['../todo.html',1,'']]],
-  ['trianglewave',['TriangleWave',['../classlcmcmodels_1_1_triangle_wave.html',1,'lcmcmodels']]],
-  ['trianglewave',['TriangleWave',['../classlcmcmodels_1_1_triangle_wave.html#a727f74aef6a9ab839c953cfce09e9995',1,'lcmcmodels::TriangleWave']]],
-  ['twoscalegp',['TwoScaleGp',['../classlcmcmodels_1_1_two_scale_gp.html#af91b5b0c949fad6578b357a5663d2dfa',1,'lcmcmodels::TwoScaleGp']]],
-  ['twoscalegp',['TwoScaleGp',['../classlcmcmodels_1_1_two_scale_gp.html',1,'lcmcmodels']]]
+  ['trianglewave',['TriangleWave',['../classlcmc_1_1models_1_1_triangle_wave.html',1,'lcmc::models']]],
+  ['trianglewave',['TriangleWave',['../classlcmc_1_1models_1_1_triangle_wave.html#ad65e144818c21becefe8b4d73188a996',1,'lcmc::models::TriangleWave']]],
+  ['twoscalegp',['TwoScaleGp',['../classlcmc_1_1models_1_1_two_scale_gp.html#acb78aa4c51c7d91dd91124669d2dace4',1,'lcmc::models::TwoScaleGp']]],
+  ['twoscalegp',['TwoScaleGp',['../classlcmc_1_1models_1_1_two_scale_gp.html',1,'lcmc::models']]]
 ];

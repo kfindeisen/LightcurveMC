@@ -1,7 +1,7 @@
 var lcsupport_8cpp =
 [
-    [ "LightCurveRegistry", "lcsupport_8cpp.html#a1da1a82cc93c0373a9304aec8765c319", null ],
-    [ "getLightCurveRegistry", "lcsupport_8cpp.html#ad7571473eabd39c6a79fc5690fb545d6", null ],
-    [ "lightCurveTypes", "lcsupport_8cpp.html#ac1115089bb4197affc5215eff3336bc8", null ],
-    [ "parseLightCurve", "lcsupport_8cpp.html#a6b12272fc6ff678b14c6cdc481815af9", null ]
+    [ "LightCurveRegistry", "lcsupport_8cpp.html#a574852d805d12bf34d96a996594f6e23", null ],
+    [ "getLightCurveRegistry", "lcsupport_8cpp.html#ac993567d1c776ffc8ce203cf42933a44", null ],
+    [ "lightCurveTypes", "lcsupport_8cpp.html#a576f48d0642a532ad68cb58bfe52b785", null ],
+    [ "parseLightCurve", "lcsupport_8cpp.html#a79c3d7047b543dd55d8d333d99715a9e", null ]
 ];

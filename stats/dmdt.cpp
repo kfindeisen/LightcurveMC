@@ -16,7 +16,7 @@
 #include <lfp/lfp.h>
 #endif
 
-namespace lcmcstats {
+namespace lcmc { namespace stats {
 
 /** Computes the quantile of the data in an arbitrary range.
  *
@@ -82,7 +82,7 @@ template <typename InputIterator> 				// Iterator to use
  * 
  * @post fracs.size() = binEdges.size() - 1
  * @post For all i &isin; [0, binEdges.size()-1], fracs[i] contains the 
- *	fraction of &deltaM; > threshold where &Delta;t &isin; 
+ *	fraction of deltaM > threshold where deltaT &isin; 
  *	[binEdges[i], binEdges[i+1]).
  */
 void hiAmpBinFrac(const DoubleVec &deltaT, const DoubleVec &deltaM, 
@@ -145,7 +145,7 @@ void hiAmpBinFrac(const DoubleVec &deltaT, const DoubleVec &deltaM,
  * 
  * @post quants.size() = binEdges.size() - 1
  * @post For all i &isin; [0, binEdges.size()-1], quants[i] contains the 
- *	qth quantile of &deltaM; where &Delta;t &isin; 
+ *	qth quantile of deltaM where deltaT &isin; 
  *	[binEdges[i], binEdges[i+1])
  */
 void deltaMBinQuantile(const DoubleVec &deltaT, const DoubleVec &deltaM, 
@@ -235,4 +235,4 @@ double cutFunction(const DoubleVec& pos, const DoubleVec& func, double cut) {
 	}
 }
 
-};	// end lcmcstats
+}}	// end lcmc::stats

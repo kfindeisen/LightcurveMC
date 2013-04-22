@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Lightcurve MC
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.1.0-devel</span>
    </div>
    <div id="projectbrief">Lightcurve MC carries out Monte Carlo simulations of statistical light curve analyses.</div>
   </td>
@@ -117,29 +117,32 @@ $(document).ready(function(){initNavTree('datafactory_8cpp.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr class="memitem:namespacelcmcinject"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmcinject.html">lcmcinject</a></td></tr>
-<tr class="memdesc:namespacelcmcinject"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies data types and functions that handle the loading of data so that it can be injected with simulated data. <br/></td></tr>
+<tr class="memitem:namespacelcmc"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc.html">lcmc</a></td></tr>
+<tr class="memdesc:namespacelcmc"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies all code specific to lightcurveMC. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacelcmc_1_1inject"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc_1_1inject.html">lcmc::inject</a></td></tr>
+<tr class="memdesc:namespacelcmc_1_1inject"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies data types and functions that handle the loading of data so that it can be injected with simulated data. <br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a9a69405ef4f4fedf0b18b559c0cc1a05"><td class="memItemLeft" align="right" valign="top">std::auto_ptr&lt; Observations &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmcinject.html#a9a69405ef4f4fedf0b18b559c0cc1a05">lcmcinject::dataSampler</a> (const std::string &amp;whichSample)</td></tr>
-<tr class="memdesc:a9a69405ef4f4fedf0b18b559c0cc1a05"><td class="mdescLeft">&#160;</td><td class="mdescRight">dataSampler is a factory method that allocates and initializes an <a class="el" href="classlcmcinject_1_1_observations.html" title="Interface class for generating data samples for signal injection testing.">Observations</a> object of a particular type.  <a href="#a9a69405ef4f4fedf0b18b559c0cc1a05">More...</a><br/></td></tr>
-<tr class="separator:a9a69405ef4f4fedf0b18b559c0cc1a05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04f60191ab475c7e14775ed63f550107"><td class="memItemLeft" align="right" valign="top">std::auto_ptr&lt; Observations &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc_1_1inject.html#a04f60191ab475c7e14775ed63f550107">lcmc::inject::dataSampler</a> (const string &amp;whichSample)</td></tr>
+<tr class="memdesc:a04f60191ab475c7e14775ed63f550107"><td class="mdescLeft">&#160;</td><td class="mdescRight">dataSampler is a factory method that allocates and initializes an <a class="el" href="classlcmc_1_1inject_1_1_observations.html" title="Interface class for generating data samples for signal injection testing.">Observations</a> object of a particular type.  <a href="#a04f60191ab475c7e14775ed63f550107">More...</a><br/></td></tr>
+<tr class="separator:a04f60191ab475c7e14775ed63f550107"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Defines the factory function for Observations. </p>
 <dl class="section author"><dt>Author</dt><dd>Krzysztof Findeisen </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>Created May 7, 2012 </dd>
 <dd>
-Last modified May 7, 2012 </dd></dl>
+Last modified April 21, 2013 </dd></dl>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_6f9635d4fbfa321d4c00f29df5cd540c.html">samples</a></li><li class="navelem"><a class="el" href="datafactory_8cpp.html">datafactory.cpp</a></li>
-    <li class="footer">Generated on Sun Apr 21 2013 12:38:54 for Lightcurve MC by
+    <li class="footer">Generated on Sun Apr 21 2013 19:21:27 for Lightcurve MC by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

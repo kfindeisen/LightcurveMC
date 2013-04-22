@@ -1,9 +1,9 @@
 var nanstats_8cpp =
 [
-    [ "isNan", "nanstats_8cpp.html#abca36f02ae2508060477c668909624f9", null ],
-    [ "isNanOrInf", "nanstats_8cpp.html#a4d06ebcc8d393bdb1f837f72e138dba6", null ],
-    [ "lessFinite", "nanstats_8cpp.html#ad69c9931569ac6212a98c3ff496c2abc", null ],
-    [ "meanNoNan", "nanstats_8cpp.html#a7eecc19d1e37781dfe421b058f5429bf", null ],
-    [ "removeNans", "nanstats_8cpp.html#a83edf9585848089ef063c404957f656b", null ],
-    [ "varianceNoNan", "nanstats_8cpp.html#ad5de36c4ec6239482cf327d4d012c149", null ]
+    [ "isNan", "nanstats_8cpp.html#a23e75394f3ac515b4bdabac4cd22b9e3", null ],
+    [ "isNanOrInf", "nanstats_8cpp.html#ad050e946f0169e5214819a7aefd88bef", null ],
+    [ "lessFinite", "nanstats_8cpp.html#a3bb00d98b5c6eba69975ffaa5716db23", null ],
+    [ "meanNoNan", "nanstats_8cpp.html#a6fedc886faad874eac36d59533f79741", null ],
+    [ "removeNans", "nanstats_8cpp.html#a0b7d70297477d3dcd24b7ee0679cca11", null ],
+    [ "varianceNoNan", "nanstats_8cpp.html#a1de785ad4a4cf869d836afd62dd8e193", null ]
 ];

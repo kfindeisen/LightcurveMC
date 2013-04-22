@@ -11,7 +11,7 @@
 #include <gsl/gsl_rng.h>
 #include "obssamples.h"
 
-namespace lcmcinject {
+namespace lcmc { namespace inject {
 
 /** Initializes the object to represent a randomly selected light 
  * curve meeting the sample criteria.
@@ -64,4 +64,4 @@ const std::vector<std::string>& NonSpitzerNonVar::getLcLibrary() {
 	return fileList;
 }
 
-}		// end lcmcmodels
+}}		// end lcmc::models

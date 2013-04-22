@@ -74,11 +74,11 @@ void testDrw(size_t nTest, const std::vector<double> times, double tau) {
 
 	try {
 		for (size_t i = 0; i < nTest; i++) {
-			lcmcmodels::DampedRandomWalk drwTest(times, 2.0/tau, tau);
+			lcmc::models::DampedRandomWalk drwTest(times, 2.0/tau, tau);
 			
 			std::vector<double> mags;
 			drwTest.getFluxes(mags);
-			lcmcutils::fluxToMag(mags, mags);
+			lcmc::utils::fluxToMag(mags, mags);
 			
 			for(std::vector<double>::const_iterator it = mags.begin(); 
 					it != mags.end(); it++) {
@@ -113,11 +113,11 @@ void testStandardGp(size_t nTest, const std::vector<double> times, double tau) {
 
 	try {
 		for (size_t i = 0; i < nTest; i++) {
-			lcmcmodels::SimpleGp gpTest(times, 1.0, tau);
+			lcmc::models::SimpleGp gpTest(times, 1.0, tau);
 			
 			std::vector<double> mags;
 			gpTest.getFluxes(mags);
-			lcmcutils::fluxToMag(mags, mags);
+			lcmc::utils::fluxToMag(mags, mags);
 			
 			for(std::vector<double>::const_iterator it = mags.begin(); 
 					it != mags.end(); it++) {

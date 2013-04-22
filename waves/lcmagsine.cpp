@@ -16,7 +16,7 @@
 #define M_PI 3.1415927
 #endif
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** Initializes the light curve to represent a periodic function flux(time).
  *
@@ -52,7 +52,7 @@ MagSineWave::MagSineWave(const std::vector<double> &times, double amp, double pe
  * @return The flux emitted by the object at the specified phase.
  */
 double MagSineWave::fluxPhase(double phase) const {
-	return lcmcutils::magToFlux(0.5*sin(2*M_PI*phase));
+	return utils::magToFlux(0.5*sin(2*M_PI*phase));
 }
 
-}		// end lcmcmodels
+}}		// end lcmc::models

@@ -1,7 +1,7 @@
 // mcio.cpp
 // by Krzysztof Findeisen
 // Created February 4, 2011
-// Last modified February 4, 2011
+// Last modified April 21, 2013
 // Input and output routines for lightcurveMC
 
 #include <algorithm>

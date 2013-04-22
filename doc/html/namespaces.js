@@ -1,6 +1,4 @@
 var namespaces =
 [
-    [ "lcmcinject", "namespacelcmcinject.html", null ],
-    [ "lcmcmodels", "namespacelcmcmodels.html", null ],
-    [ "lcmcparse", "namespacelcmcparse.html", null ]
+    [ "lcmc", "namespacelcmc.html", "namespacelcmc" ]
 ];

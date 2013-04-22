@@ -16,7 +16,7 @@
 #define M_PI 3.1415927
 #endif
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** Initializes the light curve to represent a periodic function flux(time).
  *
@@ -64,4 +64,4 @@ double TriangleWave::fluxPhase(double phase) const {
 	return 0.559017*sin(2*M_PI*phase)/(1.5 + cos(2*M_PI*phase));
 }
 
-}		// end lcmcmodels
+}}		// end lcmc::models

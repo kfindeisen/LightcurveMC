@@ -2,7 +2,7 @@
  * @file datafactory.cpp
  * @author Krzysztof Findeisen
  * @date Created May 7, 2012
- * @date Last modified May 7, 2012
+ * @date Last modified April 21, 2013
  */
 
 #include <memory>
@@ -17,7 +17,7 @@
 using std::auto_ptr;
 using std::string;
 
-namespace lcmcinject {
+namespace lcmc { namespace inject {
 
 /** dataSampler is a factory method that allocates and initializes an 
  *	Observations object of a particular type.
@@ -38,4 +38,4 @@ std::auto_ptr<Observations> dataSampler(const string& whichSample) {
 	}
 }
 
-}		// end lcmcinject
+}}		// end lcmc::inject

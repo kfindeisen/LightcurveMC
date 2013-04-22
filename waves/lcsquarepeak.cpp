@@ -9,7 +9,7 @@
 #include <cstdio>
 #include "lightcurves_outbursts.h"
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** Initializes the light curve to represent a periodically outbursting function flux(time).
  *
@@ -61,4 +61,4 @@ double SquarePeak::fluxPhase(double phase) const {
 	}
 }
 
-}		// end lcmcmodels
+}}		// end lcmc::models

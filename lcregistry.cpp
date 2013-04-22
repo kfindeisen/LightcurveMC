@@ -2,7 +2,7 @@
  * @file lcregistry.cpp
  * @author Krzysztof Findeisen
  * @date Created April 25, 2012
- * @date Last modified March 23, 2013
+ * @date Last modified April 21, 2013
  * 
  * The functions defined here handle the details of the ILightCurve subclasses.
  */
@@ -26,7 +26,7 @@ using std::string;
 #include "waves/lightcurves_gp.h"
 #include "waves/null.h"
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /* LightCurveTypes specify which LightCurve should be created for a 
  * 	particular simulation.
@@ -156,4 +156,4 @@ std::auto_ptr<ILightCurve> lcFactory(LightCurveType whichLc, const std::vector<d
 	}
 }
 
-}		// end lcmcmodels
+}}		// end lcmc::models

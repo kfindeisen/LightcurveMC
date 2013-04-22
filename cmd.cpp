@@ -2,7 +2,7 @@
  * @file cmd.cpp
  * @author Krzysztof Findeisen
  * @date Created April 12, 2013
- * @date Last modified April 12, 2013
+ * @date Last modified April 21, 2013
  */
 
 #include <stdexcept>
@@ -65,12 +65,12 @@ std::istream& operator>> (std::istream& str, std::pair<double, double>& val) {
 	return str;
 }
 
-namespace lcmcparse {
+namespace lcmc { namespace parse {
 
 using std::string;
 using std::vector;
-using lcmcmodels::LightCurveType;
-using lcmcmodels::RangeList;
+using models::LightCurveType;
+using models::RangeList;
 
 /** Converts the input arguments to a set of variables.
  *
@@ -220,4 +220,4 @@ void parseArguments(int argc, char* argv[],
 	}
 }
 
-}	// end lcmcparse
+}}	// end lcmc::parse

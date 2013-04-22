@@ -2,7 +2,7 @@
  * @file fluxmag.cpp
  * @author Krzysztof Findeisen
  * @date Created April 4, 2013
- * @date Last modified April 11, 2013
+ * @date Last modified April 21, 2013
  */
 
 #include <algorithm>
@@ -10,7 +10,7 @@
 #include <cmath>
 #include "fluxmag.h"
 
-namespace lcmcutils {
+namespace lcmc { namespace utils {
 
 using std::vector;
 
@@ -69,4 +69,4 @@ void magToFlux(const vector<double>& mags, vector<double>& fluxes) {
 	fluxes = temp;
 }
 
-};	// end lcmcutils
+}}	// end lcmc::utils

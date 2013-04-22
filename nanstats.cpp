@@ -2,7 +2,7 @@
  * @file nanstats.cpp
  * @author Krzysztof Findeisen
  * @date Created April 11, 2013
- * @date Last modified April 11, 2013
+ * @date Last modified April 21, 2013
  */
 
 #include <limits>
@@ -10,7 +10,7 @@
 #include "../featurizer/utils.tmp.h"
 #include "nan.h"
 
-namespace lcmcutils {
+namespace lcmc { namespace utils {
 
 using std::vector;
 using std::numeric_limits;
@@ -89,7 +89,7 @@ void removeNans(const DoubleVec& badVals, DoubleVec& goodVals,
 	matchVals.clear();
 	for(DoubleVec::const_iterator badIt = badVals.begin(), sideIt = sideVals.begin();
 			badIt != badVals.end(); badIt++, sideIt++) {
-		if (!lcmcutils::isNan(*badIt)) {
+		if (!isNan(*badIt)) {
 			goodVals. push_back( *badIt);
 			matchVals.push_back(*sideIt);
 		}
@@ -134,4 +134,4 @@ double varianceNoNan(const vector<double>& vals) {
 	}
 }
 
-};	// end lcmcutils
+}}	// end lcmc::utils

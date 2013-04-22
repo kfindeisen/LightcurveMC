@@ -2,7 +2,7 @@
  * @file unit_stats.cpp
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
- * @date Last modified April 18, 2013
+ * @date Last modified April 21, 2013
  */
 
 #include "../warnflags.h"
@@ -33,11 +33,11 @@
 #include <gsl/gsl_matrix.h>
 #include "../raiigsl.tmp.h"
 
-namespace lcmcutils {
+namespace lcmc { namespace utils {
 
 void getHalfMatrix(const gsl_matrix* const a, gsl_matrix* & b);
 
-}
+}}	// end lcmc::utils
 
 // Data common to the test cases
 /*class ObsData {
@@ -84,7 +84,7 @@ void testProduct(double sigma)
 	// RaiiGsl does not allow its internal pointer to be changed
 	// So assign to a dummy pointer, then add RaiiGsl once the value is fixed
 	gsl_matrix * temp = NULL;
-	lcmcutils::getHalfMatrix(initial.get(), temp);
+	lcmc::utils::getHalfMatrix(initial.get(), temp);
 	RaiiGsl<gsl_matrix> result(temp, &gsl_matrix_free);
 	
 	RaiiGsl<gsl_matrix> product(gsl_matrix_calloc(TEST_LEN, TEST_LEN), &gsl_matrix_free);

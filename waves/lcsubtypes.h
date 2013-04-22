@@ -12,7 +12,7 @@
 #include "../lightcurvetypes.h"
 
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** Deterministic is the base class for all light curve models that can, in 
  * principle, be expressed as a well-defined function of time. A Deterministic 
@@ -112,6 +112,6 @@ private:
 	static gsl_rng * const rng;
 };
 
-}
+}}	// end lcmc::models
 
 #endif

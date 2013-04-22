@@ -14,8 +14,8 @@ var files =
     [ "lightcurve.cpp", "lightcurve_8cpp.html", null ],
     [ "lightcurveparser.h", "lightcurveparser_8h.html", "lightcurveparser_8h" ],
     [ "lightcurvetypes.h", "lightcurvetypes_8h.html", [
-      [ "ILightCurve", "classlcmcmodels_1_1_i_light_curve.html", "classlcmcmodels_1_1_i_light_curve" ],
-      [ "LightCurveType", "classlcmcmodels_1_1_light_curve_type.html", "classlcmcmodels_1_1_light_curve_type" ]
+      [ "ILightCurve", "classlcmc_1_1models_1_1_i_light_curve.html", "classlcmc_1_1models_1_1_i_light_curve" ],
+      [ "LightCurveType", "classlcmc_1_1models_1_1_light_curve_type.html", "classlcmc_1_1models_1_1_light_curve_type" ]
     ] ],
     [ "nan.h", "nan_8h.html", "nan_8h" ],
     [ "nanstats.cpp", "nanstats_8cpp.html", "nanstats_8cpp" ],

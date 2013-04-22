@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Lightcurve MC
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.1.0-devel</span>
    </div>
    <div id="projectbrief">Lightcurve MC carries out Monte Carlo simulations of statistical light curve analyses.</div>
   </td>
@@ -117,65 +117,39 @@ $(document).ready(function(){initNavTree('driver_8cpp.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr class="memitem:namespacelcmcmodels"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmcmodels.html">lcmcmodels</a></td></tr>
-<tr class="memdesc:namespacelcmcmodels"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies data types and functions that handle the simulation of astronomical data. <br/></td></tr>
+<tr class="memitem:namespacelcmc"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc.html">lcmc</a></td></tr>
+<tr class="memdesc:namespacelcmc"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies all code specific to lightcurveMC. <br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:namespacelcmcparse"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmcparse.html">lcmcparse</a></td></tr>
-<tr class="memdesc:namespacelcmcparse"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies data types and functions that handle the simulation of astronomical data. <br/></td></tr>
+<tr class="memitem:namespacelcmc_1_1models"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc_1_1models.html">lcmc::models</a></td></tr>
+<tr class="memdesc:namespacelcmc_1_1models"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies data types and functions that handle the simulation of astronomical data. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacelcmc_1_1parse"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc_1_1parse.html">lcmc::parse</a></td></tr>
+<tr class="memdesc:namespacelcmc_1_1parse"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies data types and functions that handle model selection for lightcurveMC. <br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a55191ff7839bc08bafdd647eefec5934"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classlcmcmodels_1_1_param_list.html">ParamList</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="driver_8cpp.html#a55191ff7839bc08bafdd647eefec5934">drawParams</a> (<a class="el" href="classlcmcmodels_1_1_range_list.html">RangeList</a> limits)</td></tr>
-<tr class="memdesc:a55191ff7839bc08bafdd647eefec5934"><td class="mdescLeft">&#160;</td><td class="mdescRight">Randomly generates parameter values within the specified limits.  <a href="#a55191ff7839bc08bafdd647eefec5934">More...</a><br/></td></tr>
-<tr class="separator:a55191ff7839bc08bafdd647eefec5934"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f0bd6e542946cd1a339b37a1b2fef7e"><td class="memItemLeft" align="right" valign="top">std::auto_ptr&lt; <a class="el" href="classlcmcmodels_1_1_i_light_curve.html">ILightCurve</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmcmodels.html#a1f0bd6e542946cd1a339b37a1b2fef7e">lcmcmodels::lcFactory</a> (<a class="el" href="classlcmcmodels_1_1_light_curve_type.html">LightCurveType</a> whichLc, const std::vector&lt; double &gt; &amp;times, const <a class="el" href="classlcmcmodels_1_1_param_list.html">ParamList</a> &amp;lcParams)</td></tr>
-<tr class="memdesc:a1f0bd6e542946cd1a339b37a1b2fef7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">lcFactory is a factory method that allocates and initializes a <a class="el" href="classlcmcmodels_1_1_i_light_curve.html" title="ILightCurve is the interface class for all light curve models.">ILightCurve</a> object given its specification.  <a href="#a1f0bd6e542946cd1a339b37a1b2fef7e">More...</a><br/></td></tr>
-<tr class="separator:a1f0bd6e542946cd1a339b37a1b2fef7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adaebd4c3d937d8fa8a5a331cc8c1d4c6"><td class="memItemLeft" align="right" valign="top">ParamList&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc.html#adaebd4c3d937d8fa8a5a331cc8c1d4c6">lcmc::drawParams</a> (RangeList limits)</td></tr>
+<tr class="memdesc:adaebd4c3d937d8fa8a5a331cc8c1d4c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Randomly generates parameter values within the specified limits.  <a href="#adaebd4c3d937d8fa8a5a331cc8c1d4c6">More...</a><br/></td></tr>
+<tr class="separator:adaebd4c3d937d8fa8a5a331cc8c1d4c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a848dc085d22ee7f263eebf1da84bb953"><td class="memItemLeft" align="right" valign="top">std::auto_ptr&lt; ILightCurve &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc_1_1models.html#a848dc085d22ee7f263eebf1da84bb953">lcmc::models::lcFactory</a> (LightCurveType whichLc, const vector&lt; double &gt; &amp;times, const ParamList &amp;lcParams)</td></tr>
+<tr class="memdesc:a848dc085d22ee7f263eebf1da84bb953"><td class="mdescLeft">&#160;</td><td class="mdescRight">lcFactory is a factory method that allocates and initializes a <a class="el" href="classlcmc_1_1models_1_1_i_light_curve.html" title="ILightCurve is the interface class for all light curve models.">ILightCurve</a> object given its specification.  <a href="#a848dc085d22ee7f263eebf1da84bb953">More...</a><br/></td></tr>
+<tr class="separator:a848dc085d22ee7f263eebf1da84bb953"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ddf1224851353fc92bfbff6f499fa97"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="driver_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97">main</a> (int argc, char *argv[])</td></tr>
 <tr class="memdesc:a0ddf1224851353fc92bfbff6f499fa97"><td class="mdescLeft">&#160;</td><td class="mdescRight">The driver for Lightcurve MC.  <a href="#a0ddf1224851353fc92bfbff6f499fa97">More...</a><br/></td></tr>
 <tr class="separator:a0ddf1224851353fc92bfbff6f499fa97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab46d3b0802ca5afeb330f65b84cbaf1c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmcparse.html#ab46d3b0802ca5afeb330f65b84cbaf1c">lcmcparse::parseArguments</a> (int argc, char *argv[], double &amp;sigma, long &amp;nTrials, long &amp;toPrint, <a class="el" href="classlcmcmodels_1_1_range_list.html">RangeList</a> &amp;paramRanges, string &amp;jdList, vector&lt; string &gt; &amp;lcNameList, vector&lt; <a class="el" href="classlcmcmodels_1_1_light_curve_type.html">LightCurveType</a> &gt; &amp;lcList, string &amp;dataSet, bool &amp;injectMode)</td></tr>
-<tr class="memdesc:ab46d3b0802ca5afeb330f65b84cbaf1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the input arguments to a set of variables.  <a href="#ab46d3b0802ca5afeb330f65b84cbaf1c">More...</a><br/></td></tr>
-<tr class="separator:ab46d3b0802ca5afeb330f65b84cbaf1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f64a927fd973d84ec58225882e58977"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5f64a927fd973d84ec58225882e58977"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc_1_1parse.html#a5f64a927fd973d84ec58225882e58977">lcmc::parse::parseArguments</a> (int argc, char *argv[], double &amp;sigma, long &amp;nTrials, long &amp;toPrint, RangeList &amp;paramRanges, string &amp;jdList, vector&lt; string &gt; &amp;lcNameList, vector&lt; <a class="el" href="classlcmc_1_1models_1_1_light_curve_type.html">models::LightCurveType</a> &gt; &amp;lcList, string &amp;dataSet, bool &amp;injectMode)</td></tr>
+<tr class="memdesc:a5f64a927fd973d84ec58225882e58977"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the input arguments to a set of variables. <br/></td></tr>
+<tr class="separator:a5f64a927fd973d84ec58225882e58977"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Main program for monte carlo lightcurve simulator. </p>
 <dl class="section author"><dt>Author</dt><dd>Krzysztof Findeisen </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>Created January 22, 2010 </dd>
 <dd>
-Last modified April 19, 2013 </dd></dl>
+Last modified April 21, 2013 </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="a55191ff7839bc08bafdd647eefec5934"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classlcmcmodels_1_1_param_list.html">ParamList</a> drawParams </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classlcmcmodels_1_1_range_list.html">RangeList</a>&#160;</td>
-          <td class="paramname"><em>limits</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Randomly generates parameter values within the specified limits. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">limits</td><td>A RangeList giving the parameters to generate, the minimum and maximum values for each, and the distribution from which to sample</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>A ParamList giving a value for each parameter</dd></dl>
-<dl class="section post"><dt>Postcondition</dt><dd>X is a parameter in the return value if and only if X is a parameter in limits </dd>
-<dd>
-for any X in the return value, limits.getMin(X) &lt;= return.get(X) &lt;= limits.getMax(X)</dd>
-<dd>
-No element of the return value is NaN. </dd></dl>
-
-</div>
-</div>
 <a class="anchor" id="a0ddf1224851353fc92bfbff6f499fa97"></a>
 <div class="memitem">
 <div class="memproto">
@@ -219,7 +193,7 @@ No element of the return value is NaN. </dd></dl>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="driver_8cpp.html">driver.cpp</a></li>
-    <li class="footer">Generated on Sun Apr 21 2013 12:38:54 for Lightcurve MC by
+    <li class="footer">Generated on Sun Apr 21 2013 19:21:27 for Lightcurve MC by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

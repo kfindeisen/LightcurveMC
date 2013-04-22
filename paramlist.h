@@ -14,7 +14,7 @@
 #include <string>
 #include <utility>
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** Type representing which parameters a LightCurve needs, or the 
  * values of those parameters
@@ -203,6 +203,6 @@ private:
 	MapType::const_iterator it;
 };
 
-}		// end lcmcmodels
+}}		// end lcmc::models
 
 #endif		// end ifndef LCMCPARAMLISTH

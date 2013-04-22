@@ -7,9 +7,9 @@ var dir_6f9635d4fbfa321d4c00f29df5cd540c =
     [ "observations.cpp", "observations_8cpp.html", null ],
     [ "observations.h", "observations_8h.html", "observations_8h" ],
     [ "obssamples.h", "obssamples_8h.html", [
-      [ "NonSpitzerNonVar", "classlcmcinject_1_1_non_spitzer_non_var.html", "classlcmcinject_1_1_non_spitzer_non_var" ],
-      [ "NonSpitzerVar", "classlcmcinject_1_1_non_spitzer_var.html", "classlcmcinject_1_1_non_spitzer_var" ],
-      [ "SpitzerNonVar", "classlcmcinject_1_1_spitzer_non_var.html", "classlcmcinject_1_1_spitzer_non_var" ],
-      [ "SpitzerVar", "classlcmcinject_1_1_spitzer_var.html", "classlcmcinject_1_1_spitzer_var" ]
+      [ "NonSpitzerNonVar", "classlcmc_1_1inject_1_1_non_spitzer_non_var.html", "classlcmc_1_1inject_1_1_non_spitzer_non_var" ],
+      [ "NonSpitzerVar", "classlcmc_1_1inject_1_1_non_spitzer_var.html", "classlcmc_1_1inject_1_1_non_spitzer_var" ],
+      [ "SpitzerNonVar", "classlcmc_1_1inject_1_1_spitzer_non_var.html", "classlcmc_1_1inject_1_1_spitzer_non_var" ],
+      [ "SpitzerVar", "classlcmc_1_1inject_1_1_spitzer_var.html", "classlcmc_1_1inject_1_1_spitzer_var" ]
     ] ]
 ];

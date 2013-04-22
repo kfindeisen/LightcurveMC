@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['uniform',['UNIFORM',['../classlcmcmodels_1_1_range_list.html#a0e5d018a069bfbce56865c2c5e0e5fb7ab4faf61a4f15796f278e936b93196f69',1,'lcmcmodels::RangeList']]]
+  ['uniform',['UNIFORM',['../classlcmc_1_1models_1_1_range_list.html#a73cef35eb6bd01c227074c9229fbdf7bad54646d258b1abf2b81bf776edbd4f84',1,'lcmc::models::RangeList']]]
 ];

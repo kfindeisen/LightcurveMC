@@ -14,7 +14,7 @@
 #define M_PI 3.1415927
 #endif
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** Initializes the light curve to represent a periodic function 
  * flux(time).
@@ -57,4 +57,4 @@ double SharpPeakWave::fluxPhase(double phase) const {
 	return -0.05 + 0.105/(1.1 + sin(2*M_PI*phase));
 }
 
-}		// end lcmcmodels
+}}		// end lcmc::models

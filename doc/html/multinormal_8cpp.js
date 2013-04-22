@@ -1,7 +1,7 @@
 var multinormal_8cpp =
 [
-    [ "getHalfMatrix", "multinormal_8cpp.html#a953972b41038897cf9001f799504a307", null ],
-    [ "isMatrixClose", "multinormal_8cpp.html#a0327cb9e306f4a1cb7cb8531f3f54077", null ],
-    [ "multiNormal", "multinormal_8cpp.html#a897681a43bab258fc96276e6ffee31cd", null ],
-    [ "replaceMatrix", "multinormal_8cpp.html#aafac3252e317942794f39e8efd22180d", null ]
+    [ "getHalfMatrix", "multinormal_8cpp.html#afdc8bf83f3aad761a64bf929e0701212", null ],
+    [ "isMatrixClose", "multinormal_8cpp.html#abe8f3c1ecc79bfa27e2e6057cc9f5a82", null ],
+    [ "multiNormal", "multinormal_8cpp.html#a5a011fed98f692ed2080dcdaca567635", null ],
+    [ "replaceMatrix", "multinormal_8cpp.html#a8bc50e75dbecd86fd049aba58a1dad73", null ]
 ];

@@ -2,7 +2,7 @@
  * @file nan.h
  * @author Krzysztof Findeisen
  * @date Created April 11, 2013
- * @date Last modified April 12, 2013
+ * @date Last modified April 21, 2013
  */
 
 #ifndef LCMCNANH
@@ -10,7 +10,12 @@
 
 #include <vector>
 
-namespace lcmcutils {
+namespace lcmc { 
+
+/** This namespace contains miscellaneous functions for handling generic 
+ *	problems.
+ */
+namespace utils {
 
 using std::vector;
 
@@ -40,6 +45,6 @@ double meanNoNan(const vector<double>& vals);
  */
 double varianceNoNan(const vector<double>& vals);
 
-};	// end lcmcutils
+}}	// end lcmc::utils
 
 #endif	// ifndef LCMCNANH

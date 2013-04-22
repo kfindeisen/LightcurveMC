@@ -13,7 +13,7 @@
 #include "../../lightCurveSpecs/lcsio.h"
 #include "../../featurizer/utils.tmp.h"
 
-namespace lcmcinject {
+namespace lcmc { namespace inject {
 
 /** Default constructor prevents Observations from being created 
  * directly.
@@ -53,7 +53,7 @@ void Observations::init(const std::string& fileName) {
 	}
 	
 	// Convert from magnitudes to fluxes
-	lcmcutils::magToFlux(fluxes, fluxes);
+	utils::magToFlux(fluxes, fluxes);
 
 	// Normalize to a median flux of 1
 	// assert: all fluxes strictly positive because transformed from magnitudes
@@ -89,4 +89,4 @@ void Observations::getFluxes(std::vector<double> &fluxArray) const {
 FileIo::FileIo(const std::string& what_arg) : std::runtime_error(what_arg) {
 }
 
-}		// end lcmcinject
+}}		// end lcmc::inject

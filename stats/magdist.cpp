@@ -15,7 +15,7 @@
 #include <lfp/lfp.h>
 #endif
 
-namespace lcmcstats {
+namespace lcmc { namespace stats {
 
 typedef std::vector<double> DoubleVec;
 
@@ -44,7 +44,7 @@ double getC1(const DoubleVec& mags) {
 	// Get rid of all NaN values
 	DoubleVec sMags(mags.size());
 	DoubleVec::iterator newEnd = std::remove_copy_if(mags.begin(), mags.end(), 
-			sMags.begin(), &lcmcutils::isNan);
+			sMags.begin(), &utils::isNan);
 	sMags.erase(newEnd, sMags.end());
 	
 	// Sort the survivors
@@ -96,7 +96,7 @@ double getAmplitude(const DoubleVec& mags) {
 	// Get rid of all NaN values
 	DoubleVec sMags(mags.size());
 	DoubleVec::iterator newEnd = std::remove_copy_if(mags.begin(), mags.end(), 
-			sMags.begin(), &lcmcutils::isNan);
+			sMags.begin(), &utils::isNan);
 	sMags.erase(newEnd, sMags.end());
 	
 	// Sort the survivors
@@ -120,4 +120,4 @@ double getAmplitude(const DoubleVec& mags) {
 	return amplitude;
 }
 
-};	// end lcmcstats
+}}	// end lcmc::stats

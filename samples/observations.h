@@ -18,10 +18,12 @@
 #include <string>
 #include <vector>
 
+namespace lcmc { 
+
 /** This namespace identifies data types and functions that handle the loading 
  * of data so that it can be injected with simulated data.
  */
-namespace lcmcinject {
+namespace inject {
 
 class FileIo;
 
@@ -110,6 +112,6 @@ public:
 	FileIo(const std::string& what_arg);
 };
 
-}		// end lcmcinject
+}}		// end lcmc::inject
 
 #endif		// end ifndef LCMCDATAH

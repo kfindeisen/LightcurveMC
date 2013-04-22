@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Lightcurve MC
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.1.0-devel</span>
    </div>
    <div id="projectbrief">Lightcurve MC carries out Monte Carlo simulations of statistical light curve analyses.</div>
   </td>
@@ -105,6 +105,7 @@ $(document).ready(function(){initNavTree('magdist_8cpp.html','');});
 
 <div class="header">
   <div class="summary">
+<a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">magdist.cpp File Reference</div>  </div>
@@ -114,14 +115,23 @@ $(document).ready(function(){initNavTree('magdist_8cpp.html','');});
 <p>Test statistics based on examining the magnitude distribution.  
 <a href="#details">More...</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:namespacelcmc"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc.html">lcmc</a></td></tr>
+<tr class="memdesc:namespacelcmc"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies all code specific to lightcurveMC. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacelcmc_1_1stats"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc_1_1stats.html">lcmc::stats</a></td></tr>
+<tr class="memdesc:namespacelcmc_1_1stats"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies data types and functions that handle data analysis on simulated light curves. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a8c576419e24cf48d2bfc74c9467b3875"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><b>lcmcstats::getAmplitude</b> (const DoubleVec &amp;mags)</td></tr>
-<tr class="memdesc:a8c576419e24cf48d2bfc74c9467b3875"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the light curve amplitude.  <a href="#a8c576419e24cf48d2bfc74c9467b3875">More...</a><br/></td></tr>
-<tr class="separator:a8c576419e24cf48d2bfc74c9467b3875"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3058ac40fbed091c88797cd96321d67f"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><b>lcmcstats::getC1</b> (const DoubleVec &amp;mags)</td></tr>
-<tr class="memdesc:a3058ac40fbed091c88797cd96321d67f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the modified C1 statistic.  <a href="#a3058ac40fbed091c88797cd96321d67f">More...</a><br/></td></tr>
-<tr class="separator:a3058ac40fbed091c88797cd96321d67f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3195f96fefe71f3c578b0073091f0c26"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc_1_1stats.html#a3195f96fefe71f3c578b0073091f0c26">lcmc::stats::getAmplitude</a> (const DoubleVec &amp;mags)</td></tr>
+<tr class="memdesc:a3195f96fefe71f3c578b0073091f0c26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the light curve amplitude.  <a href="#a3195f96fefe71f3c578b0073091f0c26">More...</a><br/></td></tr>
+<tr class="separator:a3195f96fefe71f3c578b0073091f0c26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae875834549b5401b827d6783cd4173bf"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc_1_1stats.html#ae875834549b5401b827d6783cd4173bf">lcmc::stats::getC1</a> (const DoubleVec &amp;mags)</td></tr>
+<tr class="memdesc:ae875834549b5401b827d6783cd4173bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the modified C1 statistic.  <a href="#ae875834549b5401b827d6783cd4173bf">More...</a><br/></td></tr>
+<tr class="separator:ae875834549b5401b827d6783cd4173bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Test statistics based on examining the magnitude distribution. </p>
@@ -135,7 +145,7 @@ Last modified April 12, 2013 </dd></dl>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_a2a5b97680f4688c5edec2038dd4832f.html">stats</a></li><li class="navelem"><a class="el" href="magdist_8cpp.html">magdist.cpp</a></li>
-    <li class="footer">Generated on Sun Apr 21 2013 12:38:54 for Lightcurve MC by
+    <li class="footer">Generated on Sun Apr 21 2013 19:21:27 for Lightcurve MC by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

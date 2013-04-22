@@ -10,7 +10,7 @@
 #include <utility>
 #include "paramlist.h"
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** Initializes an empty parameter list
  */
@@ -405,4 +405,4 @@ RangeList::ConstIterator RangeList::ConstIterator::operator--(int) {
 	return temp;
 }
 
-}	// end namespace
+}}	// end lcmc::models

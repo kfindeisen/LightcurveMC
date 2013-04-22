@@ -113,8 +113,8 @@ void getSummaryStats(const vector<double>& values, double& mean, double& error) 
 	error  = std::numeric_limits<double>::quiet_NaN();
 	
 	try {
-		mean   =      lcmcutils::    meanNoNan(values);
-		error  = sqrt(lcmcutils::varianceNoNan(values) / static_cast<double>(values.size()));
+		mean   =      lcmc::utils::    meanNoNan(values);
+		error  = sqrt(lcmc::utils::varianceNoNan(values) / static_cast<double>(values.size()));
 	} catch (std::invalid_argument &e) {
 		// These should just be warnings that a statistic is undefined
 		BOOST_TEST_MESSAGE( "WARNING: " << e.what());
@@ -138,8 +138,8 @@ void myTestClose(double val1, double val2, double frac) {
 
 BOOST_AUTO_TEST_CASE(quantileCuts)
 {
-	using lcmcstats::cutFunction;
-	using lcmcstats::deltaMBinQuantile;
+	using lcmc::stats::cutFunction;
+	using lcmc::stats::deltaMBinQuantile;
 	
 	vector<double> cut50Amp3s, cut50Amp2s, cut90Amp3s, cut90Amp2s;
 

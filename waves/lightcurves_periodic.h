@@ -11,7 +11,7 @@
 #include <string>
 #include "lcsubtypes.h"
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** PeriodicLc is the base class for all periodic light curve models. 
  * Each PeriodicLc subclass represents a particular waveform.
@@ -195,6 +195,6 @@ private:
 	double fluxPhase(double phase) const;
 };
 
-}		// end lcmcmodels
+}}		// end lcmc::models
 
 #endif		// end ifndef LCMCCURVEPERIH

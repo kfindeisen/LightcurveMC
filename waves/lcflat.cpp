@@ -22,7 +22,7 @@
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #endif
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** Initializes the light curve to represent a flat waveform.
  *
@@ -58,4 +58,4 @@ double FlatWave::flux(double time) const {
 #pragma GCC diagnostic pop
 #endif
 
-}		// end lcmcmodels
+}}		// end lcmc::models

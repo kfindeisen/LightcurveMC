@@ -10,7 +10,7 @@
 
 #include "lcsubtypes.h"
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** FlatWave represents light curves that show no variability aside from 
  * measurement error. It is provided as a convenient control case for 
@@ -30,6 +30,6 @@ private:
 	double flux(double time) const;
 };
 
-}		// end lcmcmodels
+}}		// end lcmc::models
 
 #endif		// end ifndef LCMCCURVEPERIH

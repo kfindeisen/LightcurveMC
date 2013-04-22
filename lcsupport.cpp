@@ -2,7 +2,7 @@
  * @file lcsupport.cpp
  * @author Krzysztof Findeisen
  * @date Created April 20, 2012
- * @date Last modified April 12, 2013
+ * @date Last modified April 21, 2013
  * 
  * The functions defined here act as an interface between the LightCurve class 
  * heirarchy and the main program.
@@ -19,7 +19,9 @@
 using std::string;
 using std::vector;
 
-namespace lcmcmodels {
+namespace lcmc {
+
+namespace models {
 
 /** Helper type for streamlining the implementation of functions that 
  * construct LightCurves
@@ -30,12 +32,12 @@ typedef  std::map<string, const LightCurveType> LightCurveRegistry;
  */
 const LightCurveRegistry& getLightCurveRegistry();
 
-}		// end lcmcmodels
+}		// end lcmc::models
 
-namespace lcmcparse {
+namespace parse {
 
-using lcmcmodels::LightCurveRegistry;
-using lcmcmodels::getLightCurveRegistry;
+using models::LightCurveRegistry;
+using models::getLightCurveRegistry;
 
 /** Returns a list of all lightCurve names recognized on the command line. 
  * 
@@ -66,7 +68,7 @@ const std::list<string> lightCurveTypes() {
  * @exception domain_error Thrown if the light curve name is does not have a 
  *	corresponding type.
  */
-const lcmcmodels::LightCurveType parseLightCurve(const string& lcName) {
+const models::LightCurveType parseLightCurve(const string& lcName) {
 	const LightCurveRegistry& registry = getLightCurveRegistry();
 	
 	LightCurveRegistry::const_iterator it = registry.find(lcName);
@@ -83,4 +85,6 @@ const lcmcmodels::LightCurveType parseLightCurve(const string& lcName) {
 	}
 }
 
-}		// end lcmcparse
+}
+
+}		// end lcmc::parse

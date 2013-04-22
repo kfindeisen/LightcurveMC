@@ -3,6 +3,7 @@ var NAVTREE =
   [ "Lightcurve MC", "index.html", [
     [ "Introduction", "index.html#intro", null ],
     [ "Version History", "index.html#changelog", [
+      [ "2.1.0-devel", "index.html#v2_1_0", null ],
       [ "2.0.0", "index.html#v2_0_0", null ],
       [ "1.4.1", "index.html#v1_4_1", null ],
       [ "1.4", "index.html#v1_4", null ],
@@ -43,8 +44,8 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-".html",
-"magdist_8cpp.html#a8c576419e24cf48d2bfc74c9467b3875"
+"annotated.html",
+"magdist_8cpp.html#ae875834549b5401b827d6783cd4173bf"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

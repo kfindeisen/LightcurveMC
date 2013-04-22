@@ -1,5 +1,5 @@
 var magdist_8h =
 [
-    [ "getAmplitude", "magdist_8h.html#abde1a1d2d8a5f0cd1921c4484da0870c", null ],
-    [ "getC1", "magdist_8h.html#aebd8f8916d1174a5f0feb39fa4086339", null ]
+    [ "getAmplitude", "magdist_8h.html#a551e51afc15104c57a658f350c00cd5b", null ],
+    [ "getC1", "magdist_8h.html#a5556e906242fe1f8422bf2a8b5d6658f", null ]
 ];

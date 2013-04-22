@@ -1,7 +1,7 @@
 var fluxmag_8cpp =
 [
-    [ "fluxToMag", "fluxmag_8cpp.html#a7733c4d58e6dab0bb5f65199b4b48d73", null ],
-    [ "fluxToMag", "fluxmag_8cpp.html#a1ac0c20d154326487735570aff75a873", null ],
-    [ "magToFlux", "fluxmag_8cpp.html#af26630f03aeff94019c424eefde2b070", null ],
-    [ "magToFlux", "fluxmag_8cpp.html#a41d8ab62bc5948a05a89bafbfe91f4b0", null ]
+    [ "fluxToMag", "fluxmag_8cpp.html#a550c8ecef52e617df1124ecdf12bd4cd", null ],
+    [ "fluxToMag", "fluxmag_8cpp.html#a6d8adedfc70f7d0ecade52ac80bdaf03", null ],
+    [ "magToFlux", "fluxmag_8cpp.html#aac406632e5ac15061216476af953dbd0", null ],
+    [ "magToFlux", "fluxmag_8cpp.html#ac229e622fd0b58f75d3fcd5163417022", null ]
 ];

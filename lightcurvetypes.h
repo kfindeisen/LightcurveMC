@@ -15,10 +15,12 @@
 #include <string>
 #include <vector>
 
+namespace lcmc { 
+
 /** This namespace identifies data types and functions that handle the 
  *	simulation of astronomical data.
  */
-namespace lcmcmodels {
+namespace models {
 
 /** LightCurveType specifies which LightCurve should be created for a 
  * 	particular simulation. Each allowed value corresponds to exactly one 
@@ -117,6 +119,6 @@ protected:
 	explicit ILightCurve();
 };
 
-}		// end lcmcmodels
+}}		// end lcmc::models
 
 #endif		// end ifndef LCMCCURVESH

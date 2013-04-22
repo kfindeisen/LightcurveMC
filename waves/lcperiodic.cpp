@@ -10,7 +10,7 @@
 #include <cstdio>
 #include "lightcurves_periodic.h"
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** Initializes the light curve to represent a periodic function flux(time).
  *
@@ -70,4 +70,4 @@ double PeriodicLc::flux(double time) const {
 	return amp * fluxPhase(phase);
 }
 
-}		// end lcmcmodels
+}}		// end lcmc::models

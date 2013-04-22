@@ -10,7 +10,7 @@
 #include <gsl/gsl_randist.h>
 #include "lcsubtypes.h"
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** Initializes the light curve to represent a particular function flux(time).
  *
@@ -85,4 +85,4 @@ double Stochastic::rNorm() const {
 	return gsl_ran_ugaussian(rng);
 }
 
-}		// end lcmcmodels
+}}		// end lcmc::models

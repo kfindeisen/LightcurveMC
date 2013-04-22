@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Lightcurve MC
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.1.0-devel</span>
    </div>
    <div id="projectbrief">Lightcurve MC carries out Monte Carlo simulations of statistical light curve analyses.</div>
   </td>
@@ -105,6 +105,7 @@ $(document).ready(function(){initNavTree('nanstats_8cpp.html','');});
 
 <div class="header">
   <div class="summary">
+<a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">nanstats.cpp File Reference</div>  </div>
@@ -114,40 +115,46 @@ $(document).ready(function(){initNavTree('nanstats_8cpp.html','');});
 <p>Functions for handling data containing NaN values.  
 <a href="#details">More...</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:namespacelcmc"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc.html">lcmc</a></td></tr>
+<tr class="memdesc:namespacelcmc"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies all code specific to lightcurveMC. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:abca36f02ae2508060477c668909624f9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><b>lcmcutils::isNan</b> (double x)</td></tr>
-<tr class="memdesc:abca36f02ae2508060477c668909624f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">isNan tests whether a floating-point number is undefined  <a href="#abca36f02ae2508060477c668909624f9">More...</a><br/></td></tr>
-<tr class="separator:abca36f02ae2508060477c668909624f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d06ebcc8d393bdb1f837f72e138dba6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><b>lcmcutils::isNanOrInf</b> (double x)</td></tr>
-<tr class="memdesc:a4d06ebcc8d393bdb1f837f72e138dba6"><td class="mdescLeft">&#160;</td><td class="mdescRight">isNanOrInf tests whether a floating-point number is non-finite  <a href="#a4d06ebcc8d393bdb1f837f72e138dba6">More...</a><br/></td></tr>
-<tr class="separator:a4d06ebcc8d393bdb1f837f72e138dba6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad69c9931569ac6212a98c3ff496c2abc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><b>lcmcutils::lessFinite</b> (double x, double y)</td></tr>
-<tr class="memdesc:ad69c9931569ac6212a98c3ff496c2abc"><td class="mdescLeft">&#160;</td><td class="mdescRight">lessFinite allows floating-point numbers to be compared safely in the presence of NaNs.  <a href="#ad69c9931569ac6212a98c3ff496c2abc">More...</a><br/></td></tr>
-<tr class="separator:ad69c9931569ac6212a98c3ff496c2abc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7eecc19d1e37781dfe421b058f5429bf"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><b>lcmcutils::meanNoNan</b> (const std::vector&lt; double &gt; &amp;vals)</td></tr>
-<tr class="memdesc:a7eecc19d1e37781dfe421b058f5429bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the mean, ignoring NaNs.  <a href="#a7eecc19d1e37781dfe421b058f5429bf">More...</a><br/></td></tr>
-<tr class="separator:a7eecc19d1e37781dfe421b058f5429bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a83edf9585848089ef063c404957f656b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><b>lcmcutils::removeNans</b> (const DoubleVec &amp;badVals, DoubleVec &amp;goodVals, const DoubleVec &amp;sideVals, DoubleVec &amp;matchVals)</td></tr>
-<tr class="memdesc:a83edf9585848089ef063c404957f656b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes nans from a pair of vectors.  <a href="#a83edf9585848089ef063c404957f656b">More...</a><br/></td></tr>
-<tr class="separator:a83edf9585848089ef063c404957f656b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5de36c4ec6239482cf327d4d012c149"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><b>lcmcutils::varianceNoNan</b> (const std::vector&lt; double &gt; &amp;vals)</td></tr>
-<tr class="memdesc:ad5de36c4ec6239482cf327d4d012c149"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the variance, ignoring NaNs.  <a href="#ad5de36c4ec6239482cf327d4d012c149">More...</a><br/></td></tr>
-<tr class="separator:ad5de36c4ec6239482cf327d4d012c149"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23e75394f3ac515b4bdabac4cd22b9e3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><b>lcmc::utils::isNan</b> (double x)</td></tr>
+<tr class="memdesc:a23e75394f3ac515b4bdabac4cd22b9e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">isNan tests whether a floating-point number is undefined  <a href="#a23e75394f3ac515b4bdabac4cd22b9e3">More...</a><br/></td></tr>
+<tr class="separator:a23e75394f3ac515b4bdabac4cd22b9e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad050e946f0169e5214819a7aefd88bef"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><b>lcmc::utils::isNanOrInf</b> (double x)</td></tr>
+<tr class="memdesc:ad050e946f0169e5214819a7aefd88bef"><td class="mdescLeft">&#160;</td><td class="mdescRight">isNanOrInf tests whether a floating-point number is non-finite  <a href="#ad050e946f0169e5214819a7aefd88bef">More...</a><br/></td></tr>
+<tr class="separator:ad050e946f0169e5214819a7aefd88bef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3bb00d98b5c6eba69975ffaa5716db23"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><b>lcmc::utils::lessFinite</b> (double x, double y)</td></tr>
+<tr class="memdesc:a3bb00d98b5c6eba69975ffaa5716db23"><td class="mdescLeft">&#160;</td><td class="mdescRight">lessFinite allows floating-point numbers to be compared safely in the presence of NaNs.  <a href="#a3bb00d98b5c6eba69975ffaa5716db23">More...</a><br/></td></tr>
+<tr class="separator:a3bb00d98b5c6eba69975ffaa5716db23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fedc886faad874eac36d59533f79741"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><b>lcmc::utils::meanNoNan</b> (const vector&lt; double &gt; &amp;vals)</td></tr>
+<tr class="memdesc:a6fedc886faad874eac36d59533f79741"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the mean, ignoring NaNs.  <a href="#a6fedc886faad874eac36d59533f79741">More...</a><br/></td></tr>
+<tr class="separator:a6fedc886faad874eac36d59533f79741"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b7d70297477d3dcd24b7ee0679cca11"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><b>lcmc::utils::removeNans</b> (const DoubleVec &amp;badVals, DoubleVec &amp;goodVals, const DoubleVec &amp;sideVals, DoubleVec &amp;matchVals)</td></tr>
+<tr class="memdesc:a0b7d70297477d3dcd24b7ee0679cca11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes nans from a pair of vectors.  <a href="#a0b7d70297477d3dcd24b7ee0679cca11">More...</a><br/></td></tr>
+<tr class="separator:a0b7d70297477d3dcd24b7ee0679cca11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1de785ad4a4cf869d836afd62dd8e193"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><b>lcmc::utils::varianceNoNan</b> (const vector&lt; double &gt; &amp;vals)</td></tr>
+<tr class="memdesc:a1de785ad4a4cf869d836afd62dd8e193"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the variance, ignoring NaNs.  <a href="#a1de785ad4a4cf869d836afd62dd8e193">More...</a><br/></td></tr>
+<tr class="separator:a1de785ad4a4cf869d836afd62dd8e193"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Functions for handling data containing NaN values. </p>
 <dl class="section author"><dt>Author</dt><dd>Krzysztof Findeisen </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>Created April 11, 2013 </dd>
 <dd>
-Last modified April 11, 2013 </dd></dl>
+Last modified April 21, 2013 </dd></dl>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="nanstats_8cpp.html">nanstats.cpp</a></li>
-    <li class="footer">Generated on Sun Apr 21 2013 12:38:54 for Lightcurve MC by
+    <li class="footer">Generated on Sun Apr 21 2013 19:21:27 for Lightcurve MC by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

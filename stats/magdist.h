@@ -5,13 +5,12 @@
  * @date Last modified April 12, 2013
  */
 
+#ifndef LCMCMAGDISTH
+#define LCMCMAGDISTH
+
 #include <vector>
 
-#if USELFP
-#include <lfp/lfp.h>
-#endif
-
-namespace lcmcstats {
+namespace lcmc { namespace stats {
 
 /** Calculates the modified C1 statistic. 
  */
@@ -21,4 +20,6 @@ double getC1(const std::vector<double>& mags);
  */
 double getAmplitude(const std::vector<double>& mags);
 
-};	// end lcmcstats
+}}	// end lcmc::stats
+
+#endif 	//LCMCMAGDISTH

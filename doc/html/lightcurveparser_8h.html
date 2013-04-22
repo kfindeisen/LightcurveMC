@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">Lightcurve MC
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.1.0-devel</span>
    </div>
    <div id="projectbrief">Lightcurve MC carries out Monte Carlo simulations of statistical light curve analyses.</div>
   </td>
@@ -117,18 +117,21 @@ $(document).ready(function(){initNavTree('lightcurveparser_8h.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
-<tr class="memitem:namespacelcmcparse"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmcparse.html">lcmcparse</a></td></tr>
-<tr class="memdesc:namespacelcmcparse"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies data types and functions that handle the simulation of astronomical data. <br/></td></tr>
+<tr class="memitem:namespacelcmc"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc.html">lcmc</a></td></tr>
+<tr class="memdesc:namespacelcmc"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies all code specific to lightcurveMC. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacelcmc_1_1parse"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc_1_1parse.html">lcmc::parse</a></td></tr>
+<tr class="memdesc:namespacelcmc_1_1parse"><td class="mdescLeft">&#160;</td><td class="mdescRight">This namespace identifies data types and functions that handle model selection for lightcurveMC. <br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ac1115089bb4197affc5215eff3336bc8"><td class="memItemLeft" align="right" valign="top">const list&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmcparse.html#ac1115089bb4197affc5215eff3336bc8">lcmcparse::lightCurveTypes</a> ()</td></tr>
-<tr class="memdesc:ac1115089bb4197affc5215eff3336bc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a list of all lightCurve names recognized on the command line.  <a href="#ac1115089bb4197affc5215eff3336bc8">More...</a><br/></td></tr>
-<tr class="separator:ac1115089bb4197affc5215eff3336bc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6b12272fc6ff678b14c6cdc481815af9"><td class="memItemLeft" align="right" valign="top">const LightCurveType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmcparse.html#a6b12272fc6ff678b14c6cdc481815af9">lcmcparse::parseLightCurve</a> (const string &amp;lcName)</td></tr>
-<tr class="memdesc:a6b12272fc6ff678b14c6cdc481815af9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts a string to its associated LightCurveType.  <a href="#a6b12272fc6ff678b14c6cdc481815af9">More...</a><br/></td></tr>
-<tr class="separator:a6b12272fc6ff678b14c6cdc481815af9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a576f48d0642a532ad68cb58bfe52b785"><td class="memItemLeft" align="right" valign="top">const std::list&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc_1_1parse.html#a576f48d0642a532ad68cb58bfe52b785">lcmc::parse::lightCurveTypes</a> ()</td></tr>
+<tr class="memdesc:a576f48d0642a532ad68cb58bfe52b785"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a list of all lightCurve names recognized on the command line.  <a href="#a576f48d0642a532ad68cb58bfe52b785">More...</a><br/></td></tr>
+<tr class="separator:a576f48d0642a532ad68cb58bfe52b785"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79c3d7047b543dd55d8d333d99715a9e"><td class="memItemLeft" align="right" valign="top">const models::LightCurveType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelcmc_1_1parse.html#a79c3d7047b543dd55d8d333d99715a9e">lcmc::parse::parseLightCurve</a> (const string &amp;lcName)</td></tr>
+<tr class="memdesc:a79c3d7047b543dd55d8d333d99715a9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts a string to its associated LightCurveType.  <a href="#a79c3d7047b543dd55d8d333d99715a9e">More...</a><br/></td></tr>
+<tr class="separator:a79c3d7047b543dd55d8d333d99715a9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Definitions for functions that handle light curve types. </p>
@@ -142,7 +145,7 @@ Last modified April 12, 2013 </dd></dl>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="lightcurveparser_8h.html">lightcurveparser.h</a></li>
-    <li class="footer">Generated on Sun Apr 21 2013 12:38:54 for Lightcurve MC by
+    <li class="footer">Generated on Sun Apr 21 2013 19:21:27 for Lightcurve MC by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

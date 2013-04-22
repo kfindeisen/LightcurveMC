@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['rangetype',['RangeType',['../classlcmcmodels_1_1_range_list.html#a0e5d018a069bfbce56865c2c5e0e5fb7',1,'lcmcmodels::RangeList']]]
+  ['rangetype',['RangeType',['../classlcmc_1_1models_1_1_range_list.html#a73cef35eb6bd01c227074c9229fbdf7b',1,'lcmc::models::RangeList']]]
 ];

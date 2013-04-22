@@ -1,5 +1,5 @@
 var binstats_8cpp =
 [
-    [ "getSummaryStats", "binstats_8cpp.html#a5fd41ab987d37b6168963c0298bef46e", null ],
-    [ "getSummaryStats", "binstats_8cpp.html#a65494262c450432a5f28048d6635b4c9", null ]
+    [ "getSummaryStats", "binstats_8cpp.html#a647ad1add157795126fa89fff7d11c87", null ],
+    [ "getSummaryStats", "binstats_8cpp.html#a66fc0924e2c355d4f5c30346f9479f61", null ]
 ];

@@ -10,7 +10,7 @@
 
 #include "lcsubtypes.h"
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** WhiteNoise represents variables that vary stochastically on infinitesimal 
  *	time scales.
@@ -98,6 +98,6 @@ private:
 	double sigma1, sigma2, tau1, tau2;
 };
 
-}		// end lcmcmodels
+}}		// end lcmc::models
 
 #endif		// end ifndef LCMCCURVEGPH

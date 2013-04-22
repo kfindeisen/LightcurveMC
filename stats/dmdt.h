@@ -10,7 +10,7 @@
 
 #include <vector>
 
-namespace lcmcstats {
+namespace lcmc { namespace stats {
 
 typedef std::vector<double> DoubleVec;
 
@@ -34,6 +34,6 @@ DoubleVec::const_iterator crossThreshold(const DoubleVec& grid, double threshold
  */
 double cutFunction(const DoubleVec& pos, const DoubleVec& func, double cut);
 
-};		// end lcmcstats
+}}		// end lcmc::stats
 
 #endif		// end LCMCDMDTH

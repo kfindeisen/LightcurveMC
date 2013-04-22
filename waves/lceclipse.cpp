@@ -10,7 +10,7 @@
 #include <stdexcept>
 #include "lightcurves_periodic.h"
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** Initializes the light curve to represent a periodic function flux(time).
  *
@@ -66,4 +66,4 @@ double EclipseWave::fluxPhase(double phase) const {
 		return 0.0;
 }
 
-}		// end lcmcmodels
+}}		// end lcmc::models

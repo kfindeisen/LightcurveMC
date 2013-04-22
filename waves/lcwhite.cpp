@@ -10,7 +10,7 @@
 #include "../fluxmag.h"
 #include "lightcurves_gp.h"
 
-namespace lcmcmodels {
+namespace lcmc { namespace models {
 
 /** Initializes the light curve to represent a white noise process.
  *
@@ -65,8 +65,7 @@ void WhiteNoise::solveFluxes(std::vector<double>& fluxes) const {
 		}
 	}
 	
-	lcmcutils::magToFlux(fluxes, fluxes);
-//	std::transform(fluxes.begin(), fluxes.end(), fluxes.begin(), &magToFlux);
+	utils::magToFlux(fluxes, fluxes);
 }
 
-}		// end lcmcmodels
+}}		// end lcmc::models
