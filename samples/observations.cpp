@@ -11,7 +11,7 @@
 #include "../fluxmag.h"
 #include "observations.h"
 #include "../../lightCurveSpecs/lcsio.h"
-#include "../../featurizer original/utils.tmp.h"
+#include "../../featurizer/utils.tmp.h"
 
 namespace lcmcinject {
 

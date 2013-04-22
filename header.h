@@ -22,7 +22,7 @@
 /** Current version of the program, to make version quoted by program 
  *	consistent with documentation.
  */
-#define VERSION_STRING "2.0.0"
+#define VERSION_STRING "2.1.0-devel"
 
 /** @mainpage
  *

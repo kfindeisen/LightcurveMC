@@ -7,7 +7,7 @@
 
 #include <limits>
 #include <vector>
-#include "../featurizer original/utils.tmp.h"
+#include "../featurizer/utils.tmp.h"
 #include "nan.h"
 
 namespace lcmcutils {
