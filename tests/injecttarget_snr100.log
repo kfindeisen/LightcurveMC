@@ -1,0 +1,46 @@
+LCType		a      	p      	ph     	width  	width2 	Grankin C1	_err	C1 Distribution
+flat          	1	0.25	0	0.3	0.03	 0.513±0.032	run_c1_flat_a+1.0_p+0.2_p+0.0_w+0.3_w+0.0.dat
+sine          	1	0.25	0	0.3	0.03	 0.378±0.088	run_c1_sine_a+1.0_p+0.2_p+0.0_w+0.3_w+0.0.dat
+slow_peak     	1	0.25	0	0.3	0.03	 0.466±0.084	run_c1_slow_peak_a+1.0_p+0.2_p+0.0_w+0.3_w+0.0.dat
+flare_peak    	1	0.25	0	0.3	0.03	 0.747±0.058	run_c1_flare_peak_a+1.0_p+0.2_p+0.0_w+0.3_w+0.0.dat
+flat_peak     	1	0.25	0	0.3	0.03	 0.967±0.067	run_c1_flat_peak_a+1.0_p+0.2_p+0.0_w+0.3_w+0.0.dat
+LCType		a      	p      	ph     	width  	width2 	Grankin C1	_err	C1 Distribution
+slow_peak     	1	0.25	0	0.23	0.023	 0.479±0.086	run_c1_slow_peak_a+1.0_p+0.2_p+0.0_w+0.2_w+0.0.dat
+flare_peak    	1	0.25	0	0.23	0.023	 0.817±0.052	run_c1_flare_peak_a+1.0_p+0.2_p+0.0_w+0.2_w+0.0.dat
+flat_peak     	1	0.25	0	0.23	0.023	 0.974±0.0024	run_c1_flat_peak_a+1.0_p+0.2_p+0.0_w+0.2_w+0.0.dat
+LCType		a      	p      	ph     	width  	width2 	Grankin C1	_err	C1 Distribution
+slow_peak     	1	0.25	0	0.18	0.018	 0.563±0.089	run_c1_slow_peak_a+1.0_p+0.2_p+0.0_w+0.2_w+0.0.dat
+flare_peak    	1	0.25	0	0.18	0.018	 0.877±0.043	run_c1_flare_peak_a+1.0_p+0.2_p+0.0_w+0.2_w+0.0.dat
+flat_peak     	1	0.25	0	0.18	0.018	 0.974± 0.02	run_c1_flat_peak_a+1.0_p+0.2_p+0.0_w+0.2_w+0.0.dat
+LCType		a      	p      	ph     	width  	width2 	Grankin C1	_err	C1 Distribution
+slow_peak     	1	0.25	0	0.13	0.013	 0.771±0.083	run_c1_slow_peak_a+1.0_p+0.2_p+0.0_w+0.1_w+0.0.dat
+flare_peak    	1	0.25	0	0.13	0.013	  0.93±0.026	run_c1_flare_peak_a+1.0_p+0.2_p+0.0_w+0.1_w+0.0.dat
+flat_peak     	1	0.25	0	0.13	0.013	 0.972±0.035	run_c1_flat_peak_a+1.0_p+0.2_p+0.0_w+0.1_w+0.0.dat
+LCType		a      	p      	ph     	width  	width2 	Grankin C1	_err	C1 Distribution
+slow_peak     	1	0.25	0	0.1	0.01	 0.908±0.058	run_c1_slow_peak_a+1.0_p+0.2_p+0.0_w+0.1_w+0.0.dat
+flare_peak    	1	0.25	0	0.1	0.01	 0.946±0.016	run_c1_flare_peak_a+1.0_p+0.2_p+0.0_w+0.1_w+0.0.dat
+flat_peak     	1	0.25	0	0.1	0.01	 0.967±0.058	run_c1_flat_peak_a+1.0_p+0.2_p+0.0_w+0.1_w+0.0.dat
+LCType		a      	p      	ph     	width  	width2 	Grankin C1	_err	C1 Distribution
+slow_peak     	1	0.25	0	0.08	0.008	 0.953±0.031	run_c1_slow_peak_a+1.0_p+0.2_p+0.0_w+0.1_w+0.0.dat
+flare_peak    	1	0.25	0	0.08	0.008	 0.949±0.013	run_c1_flare_peak_a+1.0_p+0.2_p+0.0_w+0.1_w+0.0.dat
+flat_peak     	1	0.25	0	0.08	0.008	 0.951±0.097	run_c1_flat_peak_a+1.0_p+0.2_p+0.0_w+0.1_w+0.0.dat
+LCType		a      	p      	ph     	width  	width2 	Grankin C1	_err	C1 Distribution
+slow_peak     	1	0.25	0	0.06	0.006	 0.966±0.011	run_c1_slow_peak_a+1.0_p+0.2_p+0.0_w+0.1_w+0.0.dat
+flare_peak    	1	0.25	0	0.06	0.006	 0.945±0.019	run_c1_flare_peak_a+1.0_p+0.2_p+0.0_w+0.1_w+0.0.dat
+flat_peak     	1	0.25	0	0.06	0.006	 0.886± 0.17	run_c1_flat_peak_a+1.0_p+0.2_p+0.0_w+0.1_w+0.0.dat
+LCType		a      	p      	ph     	width  	width2 	Grankin C1	_err	C1 Distribution
+slow_peak     	1	0.25	0	0.04	0.004	 0.967±0.014	run_c1_slow_peak_a+1.0_p+0.2_p+0.0_w+0.0_w+0.0.dat
+flare_peak    	1	0.25	0	0.04	0.004	 0.925± 0.04	run_c1_flare_peak_a+1.0_p+0.2_p+0.0_w+0.0_w+0.0.dat
+flat_peak     	1	0.25	0	0.04	0.004	 0.649± 0.16	run_c1_flat_peak_a+1.0_p+0.2_p+0.0_w+0.0_w+0.0.dat
+LCType		a      	p      	ph     	width  	width2 	Grankin C1	_err	C1 Distribution
+slow_peak     	1	0.25	0	0.03	0.003	 0.963±0.023	run_c1_slow_peak_a+1.0_p+0.2_p+0.0_w+0.0_w+0.0.dat
+flare_peak    	1	0.25	0	0.03	0.003	 0.893±0.066	run_c1_flare_peak_a+1.0_p+0.2_p+0.0_w+0.0_w+0.0.dat
+flat_peak     	1	0.25	0	0.03	0.003	 0.579± 0.11	run_c1_flat_peak_a+1.0_p+0.2_p+0.0_w+0.0_w+0.0.dat
+LCType		a      	p      	ph     	width  	width2 	Grankin C1	_err	C1 Distribution
+slow_peak     	1	0.25	0	0.02	0.002	 0.939± 0.06	run_c1_slow_peak_a+1.0_p+0.2_p+0.0_w+0.0_w+0.0.dat
+flare_peak    	1	0.25	0	0.02	0.002	 0.803±  0.1	run_c1_flare_peak_a+1.0_p+0.2_p+0.0_w+0.0_w+0.0.dat
+flat_peak     	1	0.25	0	0.02	0.002	 0.542±0.065	run_c1_flat_peak_a+1.0_p+0.2_p+0.0_w+0.0_w+0.0.dat
+LCType		a      	p      	ph     	width  	width2 	Grankin C1	_err	C1 Distribution
+slow_peak     	1	0.25	0	0.01	0.001	 0.728± 0.14	run_c1_slow_peak_a+1.0_p+0.2_p+0.0_w+0.0_w+0.0.dat
+flare_peak    	1	0.25	0	0.01	0.001	 0.594±0.074	run_c1_flare_peak_a+1.0_p+0.2_p+0.0_w+0.0_w+0.0.dat
+flat_peak     	1	0.25	0	0.01	0.001	 0.522±0.035	run_c1_flat_peak_a+1.0_p+0.2_p+0.0_w+0.0_w+0.0.dat
