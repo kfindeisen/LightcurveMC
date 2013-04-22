@@ -14,26 +14,27 @@
 // Declare constructors for every observations subtype supported by dataSampler()
 #include "obssamples.h"
 
-using namespace std;
+using std::auto_ptr;
+using std::string;
 
 namespace lcmcinject {
 
 /** dataSampler is a factory method that allocates and initializes an 
  *	Observations object of a particular type.
  */
-std::auto_ptr<Observations> dataSampler(const std::string& whichSample) {
+std::auto_ptr<Observations> dataSampler(const string& whichSample) {
 	if (       whichSample == "NonSpitzerNonVar") {
-		return std::auto_ptr<Observations>(new NonSpitzerNonVar());
+		return auto_ptr<Observations>(new NonSpitzerNonVar());
 	} else if (whichSample == "NonSpitzerVar") {
-		return std::auto_ptr<Observations>(new NonSpitzerVar());
+		return auto_ptr<Observations>(new NonSpitzerVar());
 	} else if (whichSample ==    "SpitzerNonVar") {
-		return std::auto_ptr<Observations>(new    SpitzerNonVar());
+		return auto_ptr<Observations>(new    SpitzerNonVar());
 	} else if (whichSample ==    "SpitzerVar") {
-		return std::auto_ptr<Observations>(new    SpitzerVar());
+		return auto_ptr<Observations>(new    SpitzerVar());
 	} else {
 		char buf[80];
 		sprintf(buf, "Unsupported sample name: %s.", whichSample.c_str());
-		throw invalid_argument(buf);
+		throw std::invalid_argument(buf);
 	}
 }
 

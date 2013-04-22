@@ -24,6 +24,7 @@
 #include <lfp/lfp.h>
 #endif
 
+using std::string;
 using lcmcmodels::RangeList;
 using lcmcmodels::ParamList;
 
@@ -47,7 +48,7 @@ namespace lcmcstats {
  * @post If there are less than two non-NaN elements in values, stddev equals NaN
  */
 void getSummaryStats(const DoubleVec& values, double& mean, double& stddev, 
-		const std::string& statName) {
+		const string& statName) {
 	mean   = std::numeric_limits<double>::quiet_NaN();
 	stddev = std::numeric_limits<double>::quiet_NaN();
 	
@@ -79,7 +80,7 @@ void getSummaryStats(const DoubleVec& values, double& mean, double& stddev,
  */
 void getSummaryStats(const DoubleVec& values, double& mean, double& stddev, 
 		double& goodFrac, 
-		const std::string& statName) {
+		const string& statName) {
 	size_t n = values.size();
 	
 	double badCount = static_cast<double>(
@@ -95,7 +96,7 @@ void getSummaryStats(const DoubleVec& values, double& mean, double& stddev,
  * @param[in] binSpecs The properties of the model being tested. Used to name 
  * the bin's entry in the log file, as well as auxiliary files.
  */
-LcBinStats::LcBinStats(std::string modelName, const RangeList& binSpecs) 
+LcBinStats::LcBinStats(string modelName, const RangeList& binSpecs) 
 		: binName(makeBinName(modelName, binSpecs)), 
 		fileName(makeFileName(modelName, binSpecs)), 
 		C1vals()/*, periods()*/, cut50Amp3s(), cut50Amp2s(), 
@@ -238,39 +239,35 @@ void LcBinStats::clear() {
  * @bug Standard deviation returns NaN for single-valued results (fixed?)
  */
 void LcBinStats::printBinStats(FILE* const file) const {
-	using lcmcutils::    meanNoNan;
-	using lcmcutils::varianceNoNan;
-	using lcmcutils::isNanOrInf;
-
 	// For now, define summary variables for each statistic
 	// Eventually statistics will be objects, with mean, filename, etc. 
 	//	accessible as members
 	double meanC1, stddevC1;
 	getSummaryStats(C1vals, meanC1, stddevC1, "C1");
-	std::string    c1File =      "run_c1_" + fileName + ".dat";
+	string    c1File =      "run_c1_" + fileName + ".dat";
 
 	double mean50Rise3, stddev50Rise3, frac50Rise3;
 	getSummaryStats(cut50Amp3s, mean50Rise3, stddev50Rise3, frac50Rise3, 
 			"50th percentile crossing 1/3 amp");
-	std::string cut50File3 =   "run_cut50_3_" + fileName + ".dat";
+	string cut50File3 =   "run_cut50_3_" + fileName + ".dat";
 	
 	double mean50Rise2, stddev50Rise2, frac50Rise2;
 	getSummaryStats(cut50Amp2s, mean50Rise2, stddev50Rise2, frac50Rise2, 
 			"50th percentile crossing 1/2 amp");
-	std::string cut50File2 =   "run_cut50_2_" + fileName + ".dat";
+	string cut50File2 =   "run_cut50_2_" + fileName + ".dat";
 
 	double mean90Rise3, stddev90Rise3, frac90Rise3;
 	getSummaryStats(cut90Amp3s, mean90Rise3, stddev90Rise3, frac90Rise3, 
 			"90th percentile crossing 1/3 amp");
-	std::string cut90File3 =   "run_cut90_3_" + fileName + ".dat";
+	string cut90File3 =   "run_cut90_3_" + fileName + ".dat";
 	
 	double mean90Rise2, stddev90Rise2, frac90Rise2;
 	getSummaryStats(cut90Amp2s, mean90Rise2, stddev90Rise2, frac90Rise2, 
 			"90th percentile crossing 1/2 amp");
-	std::string cut90File2 =   "run_cut90_2_" + fileName + ".dat";
+	string cut90File2 =   "run_cut90_2_" + fileName + ".dat";
 
 	// Separate file for storing dmdt distributions
-	std::string  dmdtFile = "run_dmdtmed_" + fileName + ".dat";
+	string  dmdtFile = "run_dmdtmed_" + fileName + ".dat";
 
 	fprintf(file, "%s\t%6.3g±%5.2g\t%s\t%6.3g±%5.2g\t%6.3g\t%s\t%6.3g±%5.2g\t%6.3g\t%s\t%6.3g±%5.2g\t%6.3g\t%s\t%6.3g±%5.2g\t%6.3g\t%s\t%s\n",
 			binName.c_str(), 
@@ -376,7 +373,7 @@ void LcBinStats::printBinHeader(FILE* const file, const RangeList& binSpecs) {
  *
  * @return The string with which to label this test in a log file.
  */
-std::string LcBinStats::makeBinName(std::string lcName, const RangeList& binSpecs) {
+string LcBinStats::makeBinName(string lcName, const RangeList& binSpecs) {
 	char binId[200];
 	
 	sprintf(binId, "%-14s", lcName.c_str());
@@ -395,7 +392,7 @@ std::string LcBinStats::makeBinName(std::string lcName, const RangeList& binSpec
  * @return The string to use as the base for naming files associated with this 
  * simulation run.
  */
-std::string LcBinStats::makeFileName(std::string lcName, const RangeList& binSpecs) {
+string LcBinStats::makeFileName(string lcName, const RangeList& binSpecs) {
 	char binId[200];
 
 	sprintf(binId, "%s", lcName.c_str());

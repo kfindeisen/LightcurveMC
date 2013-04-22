@@ -15,7 +15,9 @@
 #include "lightcurvetypes.h"
 #include "paramlist.h"
 
-using namespace std;
+using std::map;
+using std::pair;
+using std::string;
 
 // Declare constructors for every ILightCurve subtype supported by lcFactory()
 #include "waves/lightcurves_outbursts.h"
@@ -101,54 +103,56 @@ const LightCurveRegistry & getLightCurveRegistry() {
  *	object given its specification.
  */
 std::auto_ptr<ILightCurve> lcFactory(LightCurveType whichLc, const std::vector<double> &times, const ParamList &lcParams) {
+	using std::auto_ptr;
+
 	/** @todo Look into using argument forwarding to make calls like 
 	 *	lcFactory(Sine, amp, per, phase)
 	 */
 
 	// Basic periodic light curves	
 	if (whichLc == FLATWAVE()) {
-		return std::auto_ptr<ILightCurve>(new FlatWave     (times));
+		return auto_ptr<ILightCurve>(new FlatWave     (times));
 	} else if (whichLc == SINEWAVE()) {
-		return std::auto_ptr<ILightCurve>(new SineWave     (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph")));
+		return auto_ptr<ILightCurve>(new SineWave     (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph")));
 	} else if (whichLc == TRIANGLEWAVE()) {
-		return std::auto_ptr<ILightCurve>(new TriangleWave (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph")));
+		return auto_ptr<ILightCurve>(new TriangleWave (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph")));
 	} else if (whichLc == ELLIPSEWAVE()) {
-		return std::auto_ptr<ILightCurve>(new EllipseWave  (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph")));
+		return auto_ptr<ILightCurve>(new EllipseWave  (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph")));
 	} else if (whichLc == BROADPEAKWAVE()) {
-		return std::auto_ptr<ILightCurve>(new BroadPeakWave(times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph")));
+		return auto_ptr<ILightCurve>(new BroadPeakWave(times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph")));
 	} else if (whichLc == SHARPPEAKWAVE()) {
-		return std::auto_ptr<ILightCurve>(new SharpPeakWave(times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph")));
+		return auto_ptr<ILightCurve>(new SharpPeakWave(times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph")));
 	} else if (whichLc == ECLIPSEWAVE()) {
-		return std::auto_ptr<ILightCurve>(new EclipseWave  (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph")));
+		return auto_ptr<ILightCurve>(new EclipseWave  (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph")));
 	} else if (whichLc == MAGSINEWAVE()) {
-		return std::auto_ptr<ILightCurve>(new MagSineWave  (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph")));
+		return auto_ptr<ILightCurve>(new MagSineWave  (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph")));
 
 	// Bursty light curves	
 	} else if (whichLc ==   SLOWPEAK()) {
-		return std::auto_ptr<ILightCurve>(new SlowPeak     (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph"), lcParams.get("width")));
+		return auto_ptr<ILightCurve>(new SlowPeak     (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph"), lcParams.get("width")));
 	} else if (whichLc ==  FLAREPEAK()) {
-		return std::auto_ptr<ILightCurve>(new FlarePeak    (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph"), lcParams.get("width2"), lcParams.get("width")));
+		return auto_ptr<ILightCurve>(new FlarePeak    (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph"), lcParams.get("width2"), lcParams.get("width")));
 	} else if (whichLc == SQUAREPEAK()) {
-		return std::auto_ptr<ILightCurve>(new SquarePeak   (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph"), lcParams.get("width")));
+		return auto_ptr<ILightCurve>(new SquarePeak   (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph"), lcParams.get("width")));
 
 	// Fadey light curves	
 	} else if (whichLc ==   SLOWDIP()) {
-		return std::auto_ptr<ILightCurve>(new SlowDip     (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph"), lcParams.get("width")));
+		return auto_ptr<ILightCurve>(new SlowDip     (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph"), lcParams.get("width")));
 	} else if (whichLc ==  FLAREDIP()) {
-		return std::auto_ptr<ILightCurve>(new FlareDip    (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph"), lcParams.get("width2"), lcParams.get("width")));
+		return auto_ptr<ILightCurve>(new FlareDip    (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph"), lcParams.get("width2"), lcParams.get("width")));
 	} else if (whichLc == SQUAREDIP()) {
-		return std::auto_ptr<ILightCurve>(new SquareDip   (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph"), lcParams.get("width")));
+		return auto_ptr<ILightCurve>(new SquareDip   (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph"), lcParams.get("width")));
 
 	// Gaussian process light curves	
 	} else if (whichLc ==   WHITENOISE()) {
-		return std::auto_ptr<ILightCurve>(new WhiteNoise  (times, lcParams.get("a")));
+		return auto_ptr<ILightCurve>(new WhiteNoise  (times, lcParams.get("a")));
 	} else if (whichLc == DAMPRANDWALK()) {
-		return std::auto_ptr<ILightCurve>(new DampedRandomWalk(times, lcParams.get("d"), lcParams.get("p")));
+		return auto_ptr<ILightCurve>(new DampedRandomWalk(times, lcParams.get("d"), lcParams.get("p")));
 	} else if (whichLc == ONEGP()) {
-		return std::auto_ptr<ILightCurve>(new SimpleGp(times, lcParams.get("a"), lcParams.get("p")));
+		return auto_ptr<ILightCurve>(new SimpleGp(times, lcParams.get("a"), lcParams.get("p")));
 
 	} else {
-		throw invalid_argument("Unsupported light curve.");
+		throw std::invalid_argument("Unsupported light curve.");
 	}
 }
 

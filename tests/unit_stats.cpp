@@ -21,7 +21,6 @@
 #endif
 
 #include <boost/test/unit_test.hpp>
-using namespace boost::unit_test;
 
 // Re-enable all compiler warnings
 #ifdef GNUC_FINEWARN

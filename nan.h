@@ -12,7 +12,7 @@
 
 namespace lcmcutils {
 
-using namespace std;
+using std::vector;
 
 /** isNan tests whether a floating-point number is undefined
  */
@@ -34,11 +34,11 @@ void removeNans(const vector<double>& badVals, vector<double>& goodVals,
 
 /** Calculates the mean, ignoring NaNs
  */
-double meanNoNan(const std::vector<double>& vals);
+double meanNoNan(const vector<double>& vals);
 
 /** Calculates the variance, ignoring NaNs
  */
-double varianceNoNan(const std::vector<double>& vals);
+double varianceNoNan(const vector<double>& vals);
 
 };	// end lcmcutils
 

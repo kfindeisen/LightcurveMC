@@ -11,7 +11,7 @@
 #include <kpffileio.h>
 #include "mcio.h"
 
-using namespace std;
+using std::sort;
 
 /** Reads a file containing timestamps into a vector of dates
  *
@@ -43,7 +43,7 @@ void readTimeStamps(FILE* hInput, DoubleVec &dates, double &minDelT, double &max
 		nRead = fscanf(  hInput, "%lf\n", &buffer);
 		#endif
 		if(nRead < 1 || ferror(hInput) || nRead == EOF) {
-			throw runtime_error("Misformatted time stamp file");
+			throw std::runtime_error("Misformatted time stamp file");
 		}
 		dates.push_back(buffer);
 	}
@@ -88,7 +88,7 @@ void readTimeStamps(FILE* hInput, DoubleVec &dates, double &minDelT, double &max
  * @pre timeGrid does not contain any NaNs
  * @pre fluxGrid does not contain any NaNs
  */	
-void printLightCurve(size_t modelNum, string lcName, double logP, double logA, 
+void printLightCurve(size_t modelNum, std::string lcName, double logP, double logA, 
 	double period, DoubleVec timeGrid, DoubleVec fluxGrid)
 {
 	char filename[50];

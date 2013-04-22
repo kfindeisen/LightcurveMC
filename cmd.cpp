@@ -33,10 +33,6 @@
 #pragma GCC diagnostic pop
 #endif
 
-using namespace std;
-using lcmcmodels::LightCurveType;
-using lcmcmodels::RangeList;
-
 namespace TCLAP {
 /** Defines the behavior of a pair of doubles so that TCLAP can parse range 
  * input
@@ -71,6 +67,11 @@ std::istream& operator>> (std::istream& str, std::pair<double, double>& val) {
 
 namespace lcmcparse {
 
+using std::string;
+using std::vector;
+using lcmcmodels::LightCurveType;
+using lcmcmodels::RangeList;
+
 /** Converts the input arguments to a set of variables.
  *
  * @param[in] argc,argv an array of C-strings denoting the arguments, using the C 
@@ -103,50 +104,52 @@ void parseArguments(int argc, char* argv[],
 	vector<LightCurveType> &lcList, 
 	string& dataSet, bool& injectMode)
 {
+	using namespace TCLAP;
 	typedef std::pair<double, double> Range;
 	
   	// Start by defining the command line
-	TCLAP::CmdLine cmd(PROG_SUMMARY, ' ', VERSION_STRING);
-	TCLAP::ValueArg<Range> argPer ("p", "period",   "the smallest and largest periods, in days, to be tested. The period will be drawn from a log-uniform distribution.", 
+	CmdLine cmd(PROG_SUMMARY, ' ', VERSION_STRING);
+	ValueArg<Range> argPer ("p", "period",   "the smallest and largest periods, in days, to be tested. The period will be drawn from a log-uniform distribution.", 
 		false, Range(), "real range", cmd);
-	TCLAP::ValueArg<Range> argAmp ("a", "amp",   "the smallest and largest amplitudes to be tested. The amplitude will be drawn from a log-uniform distribution.", 
+	ValueArg<Range> argAmp ("a", "amp",   "the smallest and largest amplitudes to be tested. The amplitude will be drawn from a log-uniform distribution.", 
 		false, Range(), "real range", cmd);
-	TCLAP::ValueArg<Range> argPhi ("", "ph",   "the smallest and largest initial phases to be tested. The phase will be drawn from a uniform distribution. Set to \"0.0 1.0\" if unspecified.", 
+	ValueArg<Range> argPhi ("", "ph",   "the smallest and largest initial phases to be tested. The phase will be drawn from a uniform distribution. Set to \"0.0 1.0\" if unspecified.", 
 		false, Range(0.0, 1.0), "real range", cmd);
-	TCLAP::ValueArg<Range> argDiffus ("d", "diffus",   "the smallest and largest diffusion constants to be tested. The constant will be drawn from a log-uniform distribution.", 
+	ValueArg<Range> argDiffus ("d", "diffus",   "the smallest and largest diffusion constants to be tested. The constant will be drawn from a log-uniform distribution.", 
 		false, Range(), "real range", cmd);
-	TCLAP::ValueArg<Range> argWidth ("w", "width",   "the smallest and largest event widths to be tested. The width will be drawn from a log-uniform distribution.", 
+	ValueArg<Range> argWidth ("w", "width",   "the smallest and largest event widths to be tested. The width will be drawn from a log-uniform distribution.", 
 		false, Range(), "real range", cmd);
-	TCLAP::ValueArg<Range> argWidth2 ("", "width2",   "the smallest and largest secondary widths to be tested. The width will be drawn from a log-uniform distribution.", 
+	ValueArg<Range> argWidth2 ("", "width2",   "the smallest and largest secondary widths to be tested. The width will be drawn from a log-uniform distribution.", 
 		false, Range(), "real range", cmd);
 
-	TCLAP::ValueArg<long> argRepeat("", "ntrials", "Number of light curves generated per bin. 1000 if omitted.", 
+	ValueArg<long> argRepeat("", "ntrials", "Number of light curves generated per bin. 1000 if omitted.", 
 		false, 1000, "positive integer", cmd);
-	TCLAP::ValueArg<long> argPrint("", "print", "Number of light curves to print. 0 if omitted.", 
+	ValueArg<long> argPrint("", "print", "Number of light curves to print. 0 if omitted.", 
 		false, 0, "nonnegative integer", cmd);
-	TCLAP::ValueArg<double> argNoise("", "noise", "Gaussian error added to each photometric measurement, in units of the typical source flux. 0.0 if omitted.", 
+	ValueArg<double> argNoise("", "noise", "Gaussian error added to each photometric measurement, in units of the typical source flux. 0.0 if omitted.", 
 		false, 0.0, "positive real number", cmd);
-	TCLAP::ValueArg<string> argInject("", "add", 
+	ValueArg<string> argInject("", "add", 
 		"Name of the dataset to which to add the simulated signal. Valid entries are as follows:\n\tNonSpitzerNonVar, NonSpitzerVar, SpitzerNonVar, SpitzerVar\nAny other names lead to an error.", false, "", "keyword", cmd);
 	/** @todo Make argNoise and argInject xor-related
 	 */
 	//cmd.xorAdd(argNoise, argInject);
 	/** @todo Give improved semantics
 	 */
-	TCLAP::UnlabeledValueArg<string> argDateFile("jdlist", 
+	UnlabeledValueArg<string> argDateFile("jdlist", 
 		"Text file containing a list of Julian dates, one per line. Ignored if --add argument is given, but must still be provided for backwards compatibility.", 
 		true, "", "date file", cmd);
 
 	string lcDesc("List of light curves to model, in order. Valid entries are as follows:\n\t");
-	const list<string> lcNames = lightCurveTypes();
-	for (list<string>::const_iterator it = lcNames.begin(); it != lcNames.end(); it++) {
+	const std::list<string> lcNames = lightCurveTypes();
+	for (std::list<string>::const_iterator it = lcNames.begin(); 
+			it != lcNames.end(); it++) {
 		if (it != lcNames.begin()) {
 			lcDesc += ", ";
 		}
 		lcDesc += *it;
 	}
 	lcDesc += "\nAny other names are ignored.";
-	TCLAP::UnlabeledMultiArg<string> argLCList("lclist", 
+	UnlabeledMultiArg<string> argLCList("lclist", 
 		lcDesc, true, "light curve list", cmd);
 	
 	//--------------------------------------------------
@@ -201,7 +204,7 @@ void parseArguments(int argc, char* argv[],
 				lcNameList.push_back(*it);
 				lcList.push_back(curLC);
 			}
-		} catch(domain_error e) {
+		} catch(std::domain_error e) {
 			// If there's an invalid light curve, print a warning but keep going
 			fprintf(stderr, "WARNING: %s\n", e.what());
 		}
@@ -213,7 +216,7 @@ void parseArguments(int argc, char* argv[],
 		#else
 		sprintf(errbuf, "No valid light curves given, type %s -h for a list of choices.", argv[0]);
 		#endif
-		throw runtime_error(errbuf);
+		throw std::runtime_error(errbuf);
 	}
 }
 

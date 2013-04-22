@@ -12,7 +12,8 @@
 
 namespace lcmcutils {
 
-using namespace std;
+using std::vector;
+using std::numeric_limits;
 
 /** isNan tests whether a floating-point number is undefined
  *

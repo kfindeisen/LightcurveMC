@@ -16,14 +16,15 @@
 #include "lightcurveparser.h"
 #include "lightcurvetypes.h"
 
-using namespace std;
+using std::string;
+using std::vector;
 
 namespace lcmcmodels {
 
 /** Helper type for streamlining the implementation of functions that 
  * construct LightCurves
  */
-typedef  map<string, const lcmcmodels::LightCurveType> LightCurveRegistry;
+typedef  std::map<string, const LightCurveType> LightCurveRegistry;
 
 /** Implements a global registry of light curves.
  */
@@ -33,7 +34,8 @@ const LightCurveRegistry& getLightCurveRegistry();
 
 namespace lcmcparse {
 
-using namespace lcmcmodels;
+using lcmcmodels::LightCurveRegistry;
+using lcmcmodels::getLightCurveRegistry;
 
 /** Returns a list of all lightCurve names recognized on the command line. 
  * 
@@ -41,9 +43,9 @@ using namespace lcmcmodels;
  *	value. The order of the strings may be whatever is most convenient for 
  *	enumerating the types of light curves.
  */
-const list<string> lightCurveTypes() {
+const std::list<string> lightCurveTypes() {
 	const LightCurveRegistry& registry = getLightCurveRegistry();
-	list<string> lcList;
+	std::list<string> lcList;
 	
 	for(LightCurveRegistry::const_iterator it = registry.begin(); 
 			it != registry.end(); it++) {
@@ -64,7 +66,7 @@ const list<string> lightCurveTypes() {
  * @exception domain_error Thrown if the light curve name is does not have a 
  *	corresponding type.
  */
-const LightCurveType parseLightCurve(const string& lcName) {
+const lcmcmodels::LightCurveType parseLightCurve(const string& lcName) {
 	const LightCurveRegistry& registry = getLightCurveRegistry();
 	
 	LightCurveRegistry::const_iterator it = registry.find(lcName);
@@ -77,7 +79,7 @@ const LightCurveType parseLightCurve(const string& lcName) {
 		#else
 		sprintf(errbuf, "No such light curve: %s", lcName.c_str());
 		#endif
-		throw domain_error(errbuf);
+		throw std::domain_error(errbuf);
 	}
 }
 

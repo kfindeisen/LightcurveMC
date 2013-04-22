@@ -12,7 +12,7 @@
 
 namespace lcmcutils {
 
-using namespace std;
+using std::vector;
 
 /** Function for converting fluxes to magnitudes
  * 
@@ -49,7 +49,7 @@ void fluxToMag(const vector<double>& fluxes, vector<double>& mags) {
 	static double (* fp)(double) = fluxToMag;
 
 	vector<double> temp(fluxes.size());
-	transform(fluxes.begin(), fluxes.end(), temp.begin(), fp);
+	std::transform(fluxes.begin(), fluxes.end(), temp.begin(), fp);
 	mags = temp;
 }
 
@@ -65,7 +65,7 @@ void magToFlux(const vector<double>& mags, vector<double>& fluxes) {
 	static double (* fp)(double) = magToFlux;
 
 	vector<double> temp(mags.size());
-	transform(mags.begin(), mags.end(), temp.begin(), fp);
+	std::transform(mags.begin(), mags.end(), temp.begin(), fp);
 	fluxes = temp;
 }
 

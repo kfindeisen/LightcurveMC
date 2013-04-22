@@ -23,9 +23,13 @@
 #include <lfp/lfp.h>
 #endif
 
-using namespace std;
-using namespace lcmcmodels;
-using namespace lcmcinject;
+using std::string;
+using std::vector;
+using lcmcmodels::RangeList;
+using lcmcmodels::ParamList;
+using lcmcinject::Observations;
+using lcmcinject::dataSampler;
+using lcmcstats::LcBinStats;
 
 ////////////////////////////////////////
 // Forward declarations needed only by the main program
@@ -41,7 +45,7 @@ void parseArguments(int argc, char* argv[],
 	double& sigma, long& nTrials, long& toPrint, 
 	RangeList& paramRanges, 
 	string& jdList, vector<string>& lcNameList, 
-	vector<LightCurveType>& lcList, 
+	vector<lcmcmodels::LightCurveType>& lcList, 
 	string& dataSet, bool& injectMode);
 
 }	// end lcmcparse
@@ -71,7 +75,7 @@ namespace lcmcmodels{
  * @exception invalid_argument Thrown if whichLc is invalid or if 
  *	lcParams does not have all the parameters needed by whichLc.
  */
-std::auto_ptr<ILightCurve> lcFactory(LightCurveType whichLc, const std::vector<double> &times, const ParamList &lcParams);
+std::auto_ptr<ILightCurve> lcFactory(LightCurveType whichLc, const vector<double> &times, const ParamList &lcParams);
 
 }	// end lcmcmodels
 
@@ -86,6 +90,9 @@ std::auto_ptr<ILightCurve> lcFactory(LightCurveType whichLc, const std::vector<d
  * @return 0 if successful, 1 if an error occurred
  */
 int main(int argc, char* argv[]) {
+	using std::auto_ptr;
+	using namespace lcmcmodels;
+	
 	#if USELFP
 	PInit();
 	#endif
@@ -114,7 +121,7 @@ int main(int argc, char* argv[]) {
 	try {
 		lcmcparse::parseArguments(argc, argv, sigma, nTrials, numToPrint, 
 			limits, dateList, lcNameList, lcList, injectType, injectMode);
-	} catch(runtime_error &e) {
+	} catch(std::runtime_error &e) {
 		fprintf(stderr, "ERROR: %s\n", e.what());
 		return 1;
 	}
@@ -131,7 +138,7 @@ int main(int argc, char* argv[]) {
 			nObs = tSeries.size();
 			fclose(hJulDates);
 			hJulDates = NULL;
-		} catch(runtime_error &e) {
+		} catch(std::runtime_error &e) {
 			fprintf(stderr, "ERROR: %s\n", e.what());
 			return 1;
 		}
@@ -140,13 +147,13 @@ int main(int argc, char* argv[]) {
 	////////////////////
 	// And start simulating
 //	printf("%li trials per bin\n", nTrials);
-	lcmcstats::LcBinStats::printBinHeader(stdout, limits);
+	LcBinStats::printBinHeader(stdout, limits);
 
 	try {
 	for(vector<LightCurveType>::const_iterator curve = lcList.begin(); 
 			curve != lcList.end(); curve++) {
 		const string curName = *(lcNameList.begin() + (curve - lcList.begin()));
-		lcmcstats::LcBinStats curBin(curName, limits);
+		LcBinStats curBin(curName, limits);
 		
 		#if USELFP
 		PClear(1);
@@ -158,7 +165,7 @@ int main(int argc, char* argv[]) {
 			PStart(1);
 			#endif
 		
-			std::auto_ptr<Observations> curData;
+			auto_ptr<Observations> curData;
 			if (injectMode) {
 				// Load the data into which the signal will be injected
 				curData = dataSampler(injectType);
@@ -166,7 +173,7 @@ int main(int argc, char* argv[]) {
 				curData->getFluxes(lc);
 				nObs = tSeries.size();
 				if (nObs <= 0) {
-					throw runtime_error("Empty light curve read.");
+					throw std::runtime_error("Empty light curve read.");
 				}
 			} else {
 				// Generate a new dataset
@@ -178,7 +185,7 @@ int main(int argc, char* argv[]) {
 			ParamList params = drawParams(limits);
 
 			// Generate the light curve...
-			std::auto_ptr<ILightCurve> lcInstance = lcFactory(*curve, tSeries, params);
+			auto_ptr<ILightCurve> lcInstance = lcFactory(*curve, tSeries, params);
 			if (injectMode) {
 				for(size_t j = 0; j < nObs; j++) {
 					// lc[j] already contains the "noise", 
@@ -238,12 +245,12 @@ int main(int argc, char* argv[]) {
 		#endif
 
 	}	// end loop over light curve types
-	} catch(runtime_error &e) {
+	} catch(std::runtime_error &e) {
 		fprintf(stderr, "ERROR: %s\n", e.what());
 		return 1;
 	// End of program; use Pokemon exception handling to 
 	//	handle error messages gracefully
-	} catch (exception &e) {
+	} catch (std::exception &e) {
 		fprintf(stderr, "ERROR: %s\n", e.what());
 		return 1;
 	} catch (...) {
@@ -299,7 +306,7 @@ ParamList drawParams(RangeList limits) {
 				value = pow(10.0, value);
 				break;
 			default:
-				throw logic_error("Unknown distribution!");
+				throw std::logic_error("Unknown distribution!");
 		};
 		
 		returnValue.add(*it, value);
