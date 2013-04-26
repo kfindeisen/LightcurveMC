@@ -147,6 +147,10 @@ void hiAmpBinFrac(const DoubleVec &deltaT, const DoubleVec &deltaM,
  * @post For all i &isin; [0, binEdges.size()-1], quants[i] contains the 
  *	qth quantile of deltaM where deltaT &isin; 
  *	[binEdges[i], binEdges[i+1])
+ *
+ * @bug For either a SimpleGp or DampedRandomWalk, the median crosses the 
+ *	half-amplitude threshold before it crosses the third-amplitude 
+ *	threshold
  */
 void deltaMBinQuantile(const DoubleVec &deltaT, const DoubleVec &deltaM, 
 		const DoubleVec &binEdges, DoubleVec &quants, double q) {

@@ -85,6 +85,14 @@ void replaceMatrix(gsl_matrix* & target, const gsl_matrix* const newData) {
  * @post any data previously pointed to by b is deleted
  *
  * @todo Benchmark which of several possible implementations is faster
+ *
+ * @warning Returns different results on KPF-Hewlett4 and on cowling, 
+ *	particularly for matrices a with lots of zero elements. The root cause 
+ *	is that a call to gsl_eigen_symmv() returns eigenvalues in a different 
+ *	order. Since the order of the eigenvalues is left undefined by the 
+ *	specification of gsl_eigen_symmv(), and since the output of 
+ *	getHalfMatrix() passes all relevant statistical tests on both 
+ *	computers, its variant behavior is no longer considered a bug.
  */
 void getHalfMatrix(const gsl_matrix* const a, gsl_matrix* & b) {
 	// Eigendecomposition: covar = eigenVecs * diag(eigenVals) * transpose(eigenVecs)

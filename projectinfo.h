@@ -1,16 +1,16 @@
 /** Header for defining overall program properties
- * @file header.h
+ * @file projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified April 21, 2013
+ * @date Last modified April 26, 2013
  *
  * @todo Add proper exception classes. Put exceptions in exception namespace 
  *	within lcmc::models and lcmc::inject.
  * @todo Add exception guarantees to every function and method.
  */
 
-#ifndef LCMCHEADERH
-#define LCMCHEADERH
+#ifndef LCMCPROJINFOH
+#define LCMCPROJINFOH
 
 /** Brief description of the program, to make blurb quoted by program 
  *	consistent with documentation.
@@ -49,6 +49,16 @@
  * - Changed: renamed lcmcinject, lcmcmodels, lcmcparse, lcmcstats, 
  *	and lcmcutils to lcmc::inject, lcmc::models, lcmc::parse, 
  *	lcmc::stats, and lcmc::utils, respectively.
+ * - Fixed: tests in test_gp.cpp now report success on completion
+ * - Fixed: LcBinStats::analyzeLightCurve now propagates exception types correctly
+ * - Fixed: the Boost.Test library is now statically linked on non-Cygwin 
+ *	systems, even if a shared library is found by the linker
+ * - Changed: integration test scripts run more consistently across systems
+ * - Changed: refactored test_gp.
+ * - Added: test cases in test_stats.
+ * - Changed: bug that lcmc::models::SimpleGp produces inconsistent output 
+ *	downgraded to a warning, and moved to getHalfMatrix(). See 
+ *	getHalfMatrix() documentation for more details.
  *
  * @subsection v2_0_0 2.0.0
  *
@@ -84,4 +94,4 @@
  * - Started formal version documentation
  */
 
-#endif		// LCMCHEADERH
+#endif		// LCMCPROJINFOH

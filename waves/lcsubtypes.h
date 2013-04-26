@@ -8,7 +8,7 @@
 #ifndef LCMCCURVEMAJORH
 #define LCMCCURVEMAJORH
 
-#include <gsl/gsl_randist.h>
+#include <gsl/gsl_rng.h>
 #include "../lightcurvetypes.h"
 
 

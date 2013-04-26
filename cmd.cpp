@@ -2,16 +2,16 @@
  * @file cmd.cpp
  * @author Krzysztof Findeisen
  * @date Created April 12, 2013
- * @date Last modified April 21, 2013
+ * @date Last modified April 26, 2013
  */
 
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include "header.h"
 #include "lightcurveparser.h"
 #include "lightcurvetypes.h"
 #include "paramlist.h"
+#include "projectinfo.h"
 
 #include "warnflags.h"
 

@@ -47,7 +47,7 @@ SimpleGp::SimpleGp(const std::vector<double>& times, double sigma, double tau)
  * @post getFluxes() will now return the correct light curve.
  *
  * @bug Case where times() is empty not supported
- */	
+ */
 void SimpleGp::solveFluxes(std::vector<double>& fluxes) const {
 	// invariant: this->times() is sorted in ascending order
 	std::vector<double> times;

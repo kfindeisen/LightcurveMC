@@ -1,2 +1,2 @@
-cmd.o cmd.d : cmd.cpp header.h lightcurveparser.h lightcurvetypes.h paramlist.h \
- warnflags.h
+cmd.o cmd.d : cmd.cpp lightcurveparser.h lightcurvetypes.h paramlist.h \
+ projectinfo.h warnflags.h

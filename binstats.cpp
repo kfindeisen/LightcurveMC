@@ -167,7 +167,7 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 		PEnd(7);
 		} catch (std::runtime_error &e) {
 			PEnd(7);
-			throw e;
+			throw;
 		}
 		#endif
 		
@@ -181,7 +181,7 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 		PEnd(3);
 		} catch (std::runtime_error &e) {
 			PEnd(3);
-			throw e;
+			throw;
 		}
 		#endif
 		dmdtMedianTimes.push_back(binEdges);
@@ -197,7 +197,7 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 		PEnd(4);
 		} catch (std::runtime_error &e) {
 			PEnd(4);
-			throw e;
+			throw;
 		}
 		#endif
 	
@@ -391,6 +391,8 @@ string LcBinStats::makeBinName(string lcName, const RangeList& binSpecs) {
  *
  * @return The string to use as the base for naming files associated with this 
  * simulation run.
+ *
+ * @bug Bin name does not include noise level of the simulation
  */
 string LcBinStats::makeFileName(string lcName, const RangeList& binSpecs) {
 	char binId[200];

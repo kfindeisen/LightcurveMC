@@ -1,7 +1,7 @@
 # Compilation make for lightcurveMC
 # by Krzysztof Findeisen
 # Created March 24, 2010
-# Last modified April 21, 2013
+# Last modified April 26, 2013
 
 #---------------------------------------
 # Platform-specific stuff
@@ -43,7 +43,7 @@ CFLAGS     = $(LANGTYPE) $(WARNINGS)  $(OPTFLAGS) -Werror
 #---------------------------------------
 # Primary build option
 $(PROJ): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^ $(addprefix -l,$(LIBS)) $(addprefix -L ,$(LIBDIRS))
+	$(CC) $(CFLAGS) $(LIBFLAGS) -o $@ $^ $(addprefix -l,$(LIBS)) $(addprefix -L ,$(LIBDIRS))
 
 #---------------------------------------
 # Debug mode
@@ -51,7 +51,7 @@ debug: clean
 	CFLAGS = $(CFLAGS) -D _DEBUG
 	make debug2
 debug2: $(OBJS)
-	$(CC) $(CFLAGS) -o $(PROJ) $^ $(addprefix -l,$(LIBS)) $(addprefix -L ,$(LIBDIRS))
+	$(CC) $(CFLAGS) $(LIBFLAGS) -o $(PROJ) $^ $(addprefix -l,$(LIBS)) $(addprefix -L ,$(LIBDIRS))
 
 #---------------------------------------
 # Actual compilation options
@@ -88,7 +88,7 @@ rebuild: clean $(PROJ)
 .PHONY: unittest
 unittest: tests/test
 tests/test: $(TESTOBJS)
-	$(CC) $(CFLAGS) -o $@ $^ $(addprefix -l,$(LIBS)) -lboost_unit_test_framework $(addprefix -L ,$(LIBDIRS))
+	$(CC) $(CFLAGS) $(LIBFLAGS) -o $@ $^ $(addprefix -l,$(LIBS)) -lboost_unit_test_framework $(addprefix -L ,$(LIBDIRS))
 
 .PHONY: inttest
 inttest:

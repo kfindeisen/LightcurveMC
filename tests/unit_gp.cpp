@@ -2,7 +2,7 @@
  * @file unit_gp.cpp
  * @author Krzysztof Findeisen
  * @date Created April 17, 2013
- * @date Last modified April 17, 2013
+ * @date Last modified April 25, 2013
  */
 
 #include "../warnflags.h"
@@ -63,21 +63,64 @@ public:
 
 BOOST_FIXTURE_TEST_SUITE(test_gp, ObsData)
 
-void testDrw(size_t nTest, const std::vector<double> times, double tau) {
-	char fileName[80];
-	sprintf(fileName, "run_drw_%i_%.1f.dat", nTest, tau);
+class TestFactory {
+public: 
+	TestFactory() {
+	}
+	virtual ~TestFactory() {
+	}
 	
-	FILE* hDump = fopen(fileName, "w");
+	virtual std::auto_ptr<lcmc::models::ILightCurve> make() const = 0;
+};
+
+class TestDrwFactory : public TestFactory {
+public: 
+	explicit TestDrwFactory(const std::vector<double> times, double diffus, double tau) 
+			: TestFactory(), times(times), diffus(diffus), tau(tau) {
+	}
+	
+	std::auto_ptr<lcmc::models::ILightCurve> make() const {
+		return std::auto_ptr<lcmc::models::ILightCurve>(
+			new lcmc::models::DampedRandomWalk(times, diffus, tau));
+	}
+
+private: 
+	std::vector<double> times;
+	double diffus;
+	double tau;
+};
+
+class TestGpFactory : public TestFactory {
+public: 
+	explicit TestGpFactory(const std::vector<double> times, double sigma, double tau) 
+			: TestFactory(), times(times), sigma(sigma), tau(tau) {
+	}
+	
+	std::auto_ptr<lcmc::models::ILightCurve> make() const {
+		return std::auto_ptr<lcmc::models::ILightCurve>(
+			new lcmc::models::SimpleGp(times, sigma, tau));
+	}
+
+private: 
+	std::vector<double> times;
+	double sigma;
+	double tau;
+};
+
+void testGp(size_t nTest, const std::string& fileName, const TestFactory& factory) {
+	FILE* hDump = fopen(fileName.c_str(), "w");
 	if (hDump == NULL) {
 		throw std::runtime_error("Could not open output file.");
 	}
 
 	try {
 		for (size_t i = 0; i < nTest; i++) {
-			lcmc::models::DampedRandomWalk drwTest(times, 2.0/tau, tau);
-			
 			std::vector<double> mags;
-			drwTest.getFluxes(mags);
+			std::auto_ptr<lcmc::models::ILightCurve> model = factory.make();
+			model->getFluxes(mags);
+			// getFluxes() returns fluxes, but we've only 
+			//	specified the statistical properties of 
+			//	magnitudes
 			lcmc::utils::fluxToMag(mags, mags);
 			
 			for(std::vector<double>::const_iterator it = mags.begin(); 
@@ -94,51 +137,27 @@ void testDrw(size_t nTest, const std::vector<double> times, double tau) {
 		fclose(hDump);
 		BOOST_ERROR("Could not finish writing to " << fileName);
 		BOOST_ERROR(e.what());
-		throw e;
+		throw;
 	}
 	
 	fclose(hDump);
 	BOOST_TEST_MESSAGE("Test output successfully written to " << fileName);
 	BOOST_TEST_MESSAGE("Please verify this output using external tools");
+	BOOST_CHECK(true);
+}
+
+void testDrw(size_t nTest, const std::vector<double>& times, double tau) {
+	char fileName[80];
+	sprintf(fileName, "run_drw_%i_%.1f.dat", nTest, tau);
+	
+	testGp(nTest, fileName, TestDrwFactory(times, 2.0/tau, tau));
 }
 
 void testStandardGp(size_t nTest, const std::vector<double> times, double tau) {
 	char fileName[80];
 	sprintf(fileName, "run_gp1_%i_%.1f.dat", nTest, tau);
 	
-	FILE* hDump = fopen(fileName, "w");
-	if (hDump == NULL) {
-		throw std::runtime_error("Could not open output file.");
-	}
-
-	try {
-		for (size_t i = 0; i < nTest; i++) {
-			lcmc::models::SimpleGp gpTest(times, 1.0, tau);
-			
-			std::vector<double> mags;
-			gpTest.getFluxes(mags);
-			lcmc::utils::fluxToMag(mags, mags);
-			
-			for(std::vector<double>::const_iterator it = mags.begin(); 
-					it != mags.end(); it++) {
-				if (it == mags.begin()) {
-					fprintf(hDump, "%0.5f", *it);
-				} else {
-					fprintf(hDump, ", %0.5f", *it);
-				}
-			}
-			fprintf(hDump, "\n");
-		}
-	} catch (std::exception& e) {
-		fclose(hDump);
-		BOOST_ERROR("Could not finish writing to " << fileName);
-		BOOST_ERROR(e.what());
-		throw e;
-	}
-	
-	fclose(hDump);
-	BOOST_TEST_MESSAGE("Test output successfully written to " << fileName);
-	BOOST_TEST_MESSAGE("Please verify this output using external tools");
+	testGp(nTest, fileName, TestGpFactory(times, 1.0, tau));
 }
 
 BOOST_AUTO_TEST_CASE(drw)

@@ -2,7 +2,7 @@
  * @file testdriver.cpp
  * @author Krzysztof Findeisen
  * @date Created April 17, 2013
- * @date Last modified April 17, 2013
+ * @date Last modified April 26, 2013
  */
 
 #include "../warnflags.h"
@@ -20,8 +20,8 @@
 #pragma GCC diagnostic ignored "-Weffc++"
 #endif
 
-// I have absolutely no idea why I need this when I want static linking
-// Nor do I know if it's a Cygwin-only weirdness, but I'll assume it until proven otherwise
+// On KPF4-Hewlett, I can use dynamic linking
+// I can't do so on hazard because I can't register shared libraries
 #ifdef __CYGWIN__
 #define BOOST_TEST_DYN_LINK
 #endif

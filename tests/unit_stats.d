@@ -1,2 +1,3 @@
-unit_stats.o: tests/unit_stats.cpp tests/../warnflags.h \
- tests/../raiigsl.tmp.h tests/../uncopyable.h tests/../warnflags.h
+unit_stats.o: tests/unit_stats.cpp tests/../warnflags.h tests/../mcio.h \
+ tests/../raiigsl.tmp.h tests/../uncopyable.h tests/../warnflags.h \
+ tests/../waves/generators.h
