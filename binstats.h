@@ -43,7 +43,8 @@ class LcBinStats {
 public: 
 	/** Creates a new stat counter
 	 */
-	explicit LcBinStats(std::string modelName, const RangeList& binSpecs);
+	explicit LcBinStats(std::string modelName, const RangeList& binSpecs, 
+			std::string noise);
 
 	/** Calculates statistics from the light curve and records them in lcBinStats.
 	 */
@@ -61,12 +62,12 @@ public:
 	/** Creates a unique name for the simulation run, formatted to go in a table.
 	 */
 	static std::string makeBinName(std::string lcName, 
-		const RangeList& binSpecs);
+		const RangeList& binSpecs, std::string noise);
 
 	/** Creates a unique name for the simulation run, formatted for use in a file name.
 	 */
 	static std::string makeFileName(std::string lcName, 
-		const RangeList& binSpecs);
+		const RangeList& binSpecs, std::string noise);
 
 	/** Prints a header row representing the statistics printed by 
 	 *	printBinStats to the specified file

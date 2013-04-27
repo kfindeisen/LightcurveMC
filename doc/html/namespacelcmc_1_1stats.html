@@ -330,7 +330,8 @@ deltaM does not contain any NaNs </dd>
 binEdges does not contain any NaNs</dd></dl>
 <dl class="section post"><dt>Postcondition</dt><dd>quants.size() = binEdges.size() - 1 </dd>
 <dd>
-For all i &isin; [0, binEdges.size()-1], quants[i] contains the qth quantile of deltaM where deltaT &isin; [binEdges[i], binEdges[i+1]) </dd></dl>
+For all i &isin; [0, binEdges.size()-1], quants[i] contains the qth quantile of deltaM where deltaT &isin; [binEdges[i], binEdges[i+1])</dd></dl>
+<dl class="bug"><dt><b><a class="el" href="bug.html#_bug000003">Bug:</a></b></dt><dd>For either a SimpleGp or DampedRandomWalk, the median crosses the half-amplitude threshold before it crosses the third-amplitude threshold </dd></dl>
 
 </div>
 </div>
@@ -360,7 +361,7 @@ For all i &isin; [0, binEdges.size()-1], quants[i] contains the qth quantile of 
 <dl class="section pre"><dt>Precondition</dt><dd>mags contains at least two finite values</dd>
 <dd>
 mags may contain NaNs</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000035">Todo:</a></b></dt><dd>Decide on correct treatment of infinite magnitudes.</dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000033">Todo:</a></b></dt><dd>Decide on correct treatment of infinite magnitudes.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">std::runtime_error</td><td>Thrown if mags does not have enough distinct values to calculate an amplitude </td></tr>
@@ -398,7 +399,7 @@ mags may contain NaNs</dd></dl>
 mags contains at least two distinct finite values</dd>
 <dd>
 mags may contain NaNs</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000034">Todo:</a></b></dt><dd>Decide on correct treatment of infinite magnitudes.</dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000032">Todo:</a></b></dt><dd>Decide on correct treatment of infinite magnitudes.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">std::runtime_error</td><td>Thrown if mags does not have enough distinct values to calculate C1 </td></tr>
@@ -637,7 +638,7 @@ template&lt;typename InputIterator &gt; </div>
 <dd>
 No value in [first, last) is NaN</dd></dl>
 <dl class="section post"><dt>Postcondition</dt><dd>The return value is not NaN</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000032">Todo:</a></b></dt><dd>Merge with other quantile implementations </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000030">Todo:</a></b></dt><dd>Merge with other quantile implementations </dd></dl>
 
 </div>
 </div>
@@ -711,7 +712,7 @@ if N == length(times), length(intervals) == length(rmsValues) == (N C 2) </dd></
   </dd>
 </dl>
 <dl class="section user"><dt>Performance:</dt><dd>O(times.size()^3) time </dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000033">Todo:</a></b></dt><dd>Reduce to O(times.size()^2) time through dynamic programming</dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000031">Todo:</a></b></dt><dd>Reduce to O(times.size()^2) time through dynamic programming</dd></dl>
 
 </div>
 </div>
@@ -794,7 +795,7 @@ if N == length(times), length(intervals) == length(rmsValues) == N-1 </dd></dl>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelcmc.html">lcmc</a></li><li class="navelem"><a class="el" href="namespacelcmc_1_1stats.html">stats</a></li>
-    <li class="footer">Generated on Sun Apr 21 2013 21:17:30 for Lightcurve MC by
+    <li class="footer">Generated on Fri Apr 26 2013 22:19:24 for Lightcurve MC by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

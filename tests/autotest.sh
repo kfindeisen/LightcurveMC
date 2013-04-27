@@ -4,6 +4,7 @@ rm -vf lightcurve*.dat
 #source sinetest.sh
 #source injecttest.sh
 source periodictest.sh
+source cmdtest.sh
 source gptest.sh
 source hiamptest.sh
-rm -vf run_*.dat
+rm -f run_*.dat

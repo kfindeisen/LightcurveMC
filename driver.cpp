@@ -158,7 +158,9 @@ int main(int argc, char* argv[]) {
 	for(vector<LightCurveType>::const_iterator curve = lcList.begin(); 
 			curve != lcList.end(); curve++) {
 		const string curName = *(lcNameList.begin() + (curve - lcList.begin()));
-		LcBinStats curBin(curName, limits);
+		char noiseStr[20];
+		sprintf(noiseStr, "%0.2g", sigma);
+		LcBinStats curBin(curName, limits, (injectMode ? injectType : noiseStr));
 		
 		#if USELFP
 		PClear(1);

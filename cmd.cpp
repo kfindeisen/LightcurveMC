@@ -7,6 +7,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <typeinfo>
 #include <vector>
 #include "lightcurveparser.h"
 #include "lightcurvetypes.h"
@@ -65,6 +66,179 @@ std::istream& operator>> (std::istream& str, std::pair<double, double>& val) {
 	return str;
 }
 
+class KeywordConstraint : public TCLAP::ValuesConstraint<std::string> {
+public:
+	KeywordConstraint(std::vector<std::string>& allowed) 
+			: TCLAP::ValuesConstraint<std::string>(allowed) {
+	}
+	
+	virtual std::string shortID() const {
+		return "keyword";
+	}
+
+        virtual ~KeywordConstraint() {}
+};
+
+template<class T>
+class PositiveNumber : public TCLAP::Constraint<T> {
+public:
+	virtual std::string description() const {
+		return std::string("positive ") + typeid(T).name();
+	}
+
+	virtual std::string shortID() const {
+		return std::string("positive ") + typeid(T).name();
+	}
+
+	virtual bool check(const T& value) const {
+		return (value > 0);
+	}
+
+        virtual ~PositiveNumber() {}
+};
+
+template<>
+class PositiveNumber <long> : public TCLAP::Constraint<long> {
+public:
+	virtual std::string description() const {
+		return "positive integer";
+	}
+
+	virtual std::string shortID() const {
+		return "positive integer";
+	}
+
+	virtual bool check(const long& value) const {
+		return (value > 0);
+	}
+
+        virtual ~PositiveNumber() {}
+};
+
+template<>
+class PositiveNumber <double> : public TCLAP::Constraint<double>{
+public:
+	virtual std::string description() const {
+		return "positive real number";
+	}
+
+	virtual std::string shortID() const {
+		return "positive real number";
+	}
+
+	virtual bool check(const double& value) const {
+		return (value > 0.0);
+	}
+
+        virtual ~PositiveNumber() {}
+};
+
+template<class T>
+class NonNegativeNumber : public TCLAP::Constraint<T> {
+public:
+	virtual std::string description() const {
+		return std::string("non-negative ") + typeid(T).name();
+	}
+
+	virtual std::string shortID() const {
+		return std::string("non-negative ") + typeid(T).name();
+	}
+
+	virtual bool check(const T& value) const {
+		return (value >= 0);
+	}
+
+        virtual ~NonNegativeNumber() {}
+};
+
+template<>
+class NonNegativeNumber <long> : public TCLAP::Constraint<long> {
+public:
+	virtual std::string description() const {
+		return "non-negative integer";
+	}
+
+	virtual std::string shortID() const {
+		return "non-negative integer";
+	}
+
+	virtual bool check(const long& value) const {
+		return (value >= 0);
+	}
+
+        virtual ~NonNegativeNumber() {}
+};
+
+template<>
+class NonNegativeNumber <double> : public TCLAP::Constraint<double> {
+public:
+	virtual std::string description() const {
+		return "non-negative real number";
+	}
+
+	virtual std::string shortID() const {
+		return "non-negative real number";
+	}
+
+	virtual bool check(const double& value) const {
+		return (value >= 0.0);
+	}
+
+        virtual ~NonNegativeNumber() {}
+};
+
+class PositiveRange : public TCLAP::Constraint<std::pair<double, double> > {
+public:
+	virtual std::string description() const {
+		return "both numbers in the range must be positive, and the second must be no smaller than the first";
+	}
+
+	virtual std::string shortID() const {
+		return "positive interval";
+	}
+
+	virtual bool check(const std::pair<double, double>& value) const {
+		return (value.first > 0.0 && value.second >= value.first);
+	}
+
+        virtual ~PositiveRange() {}
+};
+
+class NonNegativeRange : public TCLAP::Constraint<std::pair<double, double> > {
+public:
+	virtual std::string description() const {
+		return "both numbers in the range must be non-negative, and the second must be no smaller than the first";
+	}
+
+	virtual std::string shortID() const {
+		return "non-negative interval";
+	}
+
+	virtual bool check(const std::pair<double, double>& value) const {
+		return (value.first >= 0.0 && value.second >= value.first);
+	}
+
+        virtual ~NonNegativeRange() {}
+};
+
+class UnitSubrange : public TCLAP::Constraint<std::pair<double, double> > {
+public:
+	virtual std::string description() const {
+		return "both numbers in the range must be in [0, 1], and the second must be no smaller than the first";
+	}
+
+	virtual std::string shortID() const {
+		return "unit subinterval";
+	}
+
+	virtual bool check(const std::pair<double, double>& value) const {
+		return (value.first >= 0.0 && value.second <= 1.0&& value.second >= value.first);
+	}
+
+        virtual ~UnitSubrange() {}
+};
+
+
 namespace lcmc { namespace parse {
 
 using std::string;
@@ -98,96 +272,138 @@ using models::RangeList;
  * @todo Make dataSet something better than stringly typed.
  */
 void parseArguments(int argc, char* argv[], 
-	double &sigma, long &nTrials, long &toPrint, 
-	RangeList& paramRanges, 
-	string &jdList, vector<string> &lcNameList, 
-	vector<LightCurveType> &lcList, 
-	string& dataSet, bool& injectMode)
-{
+		double &sigma, long &nTrials, long &toPrint, 
+		RangeList& paramRanges, 
+		string &jdList, vector<string> &lcNameList, 
+		vector<LightCurveType> &lcList, 
+		string& dataSet, bool& injectMode) {
 	using namespace TCLAP;
 	typedef std::pair<double, double> Range;
 	
   	// Start by defining the command line
 	CmdLine cmd(PROG_SUMMARY, ' ', VERSION_STRING);
-	ValueArg<Range> argPer ("p", "period",   "the smallest and largest periods, in days, to be tested. The period will be drawn from a log-uniform distribution.", 
-		false, Range(), "real range", cmd);
-	ValueArg<Range> argAmp ("a", "amp",   "the smallest and largest amplitudes to be tested. The amplitude will be drawn from a log-uniform distribution.", 
-		false, Range(), "real range", cmd);
-	ValueArg<Range> argPhi ("", "ph",   "the smallest and largest initial phases to be tested. The phase will be drawn from a uniform distribution. Set to \"0.0 1.0\" if unspecified.", 
-		false, Range(0.0, 1.0), "real range", cmd);
-	ValueArg<Range> argDiffus ("d", "diffus",   "the smallest and largest diffusion constants to be tested. The constant will be drawn from a log-uniform distribution.", 
-		false, Range(), "real range", cmd);
-	ValueArg<Range> argWidth ("w", "width",   "the smallest and largest event widths to be tested. The width will be drawn from a log-uniform distribution.", 
-		false, Range(), "real range", cmd);
-	ValueArg<Range> argWidth2 ("", "width2",   "the smallest and largest secondary widths to be tested. The width will be drawn from a log-uniform distribution.", 
-		false, Range(), "real range", cmd);
 
-	ValueArg<long> argRepeat("", "ntrials", "Number of light curves generated per bin. 1000 if omitted.", 
-		false, 1000, "positive integer", cmd);
-	ValueArg<long> argPrint("", "print", "Number of light curves to print. 0 if omitted.", 
-		false, 0, "nonnegative integer", cmd);
-	ValueArg<double> argNoise("", "noise", "Gaussian error added to each photometric measurement, in units of the typical source flux. 0.0 if omitted.", 
-		false, 0.0, "positive real number", cmd);
+	//--------------------------------------------------
+	// Common constraints
+	   PositiveNumber<double>    posReal;
+	   PositiveNumber<long>      posInt;
+	NonNegativeNumber<double> nonNegReal;
+	NonNegativeNumber<long>   nonNegInt;
+	PositiveRange                posRange;
+	UnitSubrange                unitRange;
+
+	//--------------------------------------------------
+	// Mandatory simulation settings
+	ValueArg<double> argNoise("", "noise", "Gaussian error added to each photometric measurement, in units of the typical source flux. REQUIRES that <date file> is provided.", 
+		false, 
+		0.0, &nonNegReal);
+
+	vector<string> injectSamples;
+	injectSamples.push_back("NonSpitzerNonVar");
+	injectSamples.push_back("NonSpitzerVar");
+	injectSamples.push_back("SpitzerNonVar");
+	injectSamples.push_back("SpitzerVar");
+	KeywordConstraint injAllowed(injectSamples);
 	ValueArg<string> argInject("", "add", 
-		"Name of the dataset to which to add the simulated signal. Valid entries are as follows:\n\tNonSpitzerNonVar, NonSpitzerVar, SpitzerNonVar, SpitzerVar\nAny other names lead to an error.", false, "", "keyword", cmd);
-	/** @todo Make argNoise and argInject xor-related
-	 */
-	//cmd.xorAdd(argNoise, argInject);
-	/** @todo Give improved semantics
-	 */
-	UnlabeledValueArg<string> argDateFile("jdlist", 
-		"Text file containing a list of Julian dates, one per line. Ignored if --add argument is given, but must still be provided for backwards compatibility.", 
-		true, "", "date file", cmd);
+		"Name of the dataset to which to add the simulated signal. Allowed values are: " + injAllowed.description(), 
+		false, 
+		"", &injAllowed);
 
-	string lcDesc("List of light curves to model, in order. Valid entries are as follows:\n\t");
+	UnlabeledValueArg<string> argDateFile("jdlist", 
+		"Text file containing a list of Julian dates, one per line.", 
+		true, 
+		"", "date file");
+	cmd.xorAdd(argInject, argDateFile);
+	// argNoise is only allowed if argDateFile is used, but since 
+	//	argDateFile is already in a xor relationship we'll have to 
+	//	enforce this constraint manually after parsing
+	cmd.add(argNoise);
+
+	//--------------------------------------------------
+	// Optional simulation settings
+	ValueArg<long> argRepeat("", "ntrials", "Number of light curves generated per bin. 1000 if omitted.", 
+		false, 
+		1000, &posInt, cmd);
+
+	ValueArg<long> argPrint("", "print", "Number of light curves to print. 0 if omitted.", 
+		false, 
+		0, &nonNegInt, cmd);
+
+	//--------------------------------------------------
+	// Light curve list
 	const std::list<string> lcNames = lightCurveTypes();
-	for (std::list<string>::const_iterator it = lcNames.begin(); 
-			it != lcNames.end(); it++) {
-		if (it != lcNames.begin()) {
-			lcDesc += ", ";
-		}
-		lcDesc += *it;
-	}
-	lcDesc += "\nAny other names are ignored.";
+	vector<string> lcNames2(lcNames.begin(), lcNames.end());
+	KeywordConstraint lcAllowed(lcNames2);
 	UnlabeledMultiArg<string> argLCList("lclist", 
-		lcDesc, true, "light curve list", cmd);
+		"List of light curves to model, in order. Allowed values are: " + lcAllowed.description(), 
+		true, 
+		&lcAllowed, cmd);
 	
 	//--------------------------------------------------
+	// Model parameters
+	ValueArg<Range> argPer ("p", "period", 
+		"the smallest and largest periods, in days, to be tested. The period will be drawn from a log-uniform distribution.", 
+		false, 
+		Range(), &posRange, cmd);
+
+	ValueArg<Range> argAmp ("a", "amp", 
+		"the smallest and largest amplitudes to be tested. The amplitude will be drawn from a log-uniform distribution.", 
+		false, 
+		Range(), &posRange, cmd);
+
+	ValueArg<Range> argPhi ("", "ph", 
+		"the smallest and largest initial phases to be tested. The phase will be drawn from a uniform distribution. MUST be a subinterval of [0.0, 1.0]. Set to \"0.0 1.0\" if unspecified.", 
+		false, 
+		Range(0.0, 1.0), &unitRange, cmd);
+
+	ValueArg<Range> argDiffus ("d", "diffus", 
+		"the smallest and largest diffusion constants to be tested. The constant will be drawn from a log-uniform distribution.", 
+		false, 
+		Range(), &posRange, cmd);
+
+	ValueArg<Range> argWidth ("w", "width", 
+		"the smallest and largest event widths to be tested. The width will be drawn from a log-uniform distribution.", 
+		false, 
+		Range(), &posRange, cmd);
+
+	ValueArg<Range> argWidth2 ("", "width2",   "the smallest and largest secondary widths to be tested. The width will be drawn from a log-uniform distribution.", 
+		false, 
+		Range(), &posRange, cmd);
+
+	//--------------------------------------------------
+	// Read from the line
 
 	cmd.parse( argc, argv );
 	
 	//--------------------------------------------------
+	// Export values
 
-	// Most values can be stored right away
-	jdList   = argDateFile.getValue();
-	nTrials  = argRepeat  .getValue();
-	sigma    = argNoise   .getValue();
-	toPrint  = argPrint   .getValue();
+	//--------------------
+	// Mandatory simulation settings
+	// constraint: --noise only valid if jdList defined
+	if (argNoise.isSet() && !argDateFile.isSet()) {
+		try {
+			CmdLineParseException error("Mutually exclusive argument already set!", 
+				"(--noise)");
+			cmd.getOutput()->failure(cmd, error);
+		} catch (ExitException &e) {
+			exit(e.getExitStatus());
+		}
+	} else {
+		sigma = argNoise.getValue();
+	}
 	dataSet  = argInject  .getValue();
+	jdList   = argDateFile.getValue();
 	// Test if --add argument was used
 	injectMode = (dataSet.size() > 0);
-	
-	paramRanges.clear();
-	// Require user to set amplitude and period, where applicable
-	if (argAmp.isSet()) {
-		paramRanges.add("a", argAmp.getValue(), RangeList::LOGUNIFORM);
-	}
-	if (argPer.isSet()) {
-		paramRanges.add("p", argPer.getValue(), RangeList::LOGUNIFORM);
-	}
-	// Include default phase if no user input
-	paramRanges.add("ph", argPhi.getValue(), RangeList::UNIFORM);
-	// Require user to set event widths, where applicable
-	if (argWidth.isSet()) {
-		paramRanges.add("width",   argWidth.getValue(), RangeList::LOGUNIFORM);
-	}
-	if (argWidth2.isSet()) {
-		paramRanges.add("width2", argWidth2.getValue(), RangeList::LOGUNIFORM);
-	}
-	// Require user to set diffusion constant for random walks
-	if (argDiffus.isSet()) {
-		paramRanges.add("d",      argDiffus.getValue(), RangeList::LOGUNIFORM);
-	}
+
+	//--------------------
+	// Optional simulation settings
+	nTrials  = argRepeat  .getValue();
+	toPrint  = argPrint   .getValue();
+
+	//--------------------
+	// Light curve list
 	
 	// Light curve list is a bit more complicated
 	// Iterate over the argument list, preserving the user-requested execution order
@@ -211,12 +427,34 @@ void parseArguments(int argc, char* argv[],
 	}
 	if (lcList.size() <= 0) {
 		char errbuf[80];
-		#ifdef _WIN32
-		sprintf_s(errbuf, 80, "No valid light curves given, type %s -h for a list of choices.", argv[0]);
-		#else
-		sprintf(errbuf, "No valid light curves given, type %s -h for a list of choices.", argv[0]);
-		#endif
+		sprintf(errbuf, "No valid light curves given, type %s -h for a list \
+				of choices.", argv[0]);
 		throw std::runtime_error(errbuf);
+	}
+
+	//--------------------
+	// Model parameters
+
+	paramRanges.clear();
+	// Require user to set amplitude and period, where applicable
+	if (argAmp.isSet()) {
+		paramRanges.add("a", argAmp.getValue(), RangeList::LOGUNIFORM);
+	}
+	if (argPer.isSet()) {
+		paramRanges.add("p", argPer.getValue(), RangeList::LOGUNIFORM);
+	}
+	// Include default phase if no user input
+	paramRanges.add("ph", argPhi.getValue(), RangeList::UNIFORM);
+	// Require user to set event widths, where applicable
+	if (argWidth.isSet()) {
+		paramRanges.add("width",   argWidth.getValue(), RangeList::LOGUNIFORM);
+	}
+	if (argWidth2.isSet()) {
+		paramRanges.add("width2", argWidth2.getValue(), RangeList::LOGUNIFORM);
+	}
+	// Require user to set diffusion constant for random walks
+	if (argDiffus.isSet()) {
+		paramRanges.add("d",      argDiffus.getValue(), RangeList::LOGUNIFORM);
 	}
 }
 

@@ -186,7 +186,7 @@ void testVectors(unsigned long int seed, const std::vector<double>& times)
 	
 	// Input
 	char fileName[80];
-	sprintf(fileName, "run_test_vectors_%lu.txt", seed);
+	sprintf(fileName, "target_vectors_%lu.txt", seed);
 	FILE* hOriginal = fopen(fileName, "r");
 	if (hOriginal == NULL) {
 		throw std::runtime_error("Could not open reference file.");
@@ -207,7 +207,6 @@ void testVectors(unsigned long int seed, const std::vector<double>& times)
 	} catch (std::exception& e) {
 		fclose(hOriginal);
 		BOOST_ERROR("Could not finish reading from " << fileName);
-		BOOST_ERROR(e.what());
 		throw;
 	}
 	

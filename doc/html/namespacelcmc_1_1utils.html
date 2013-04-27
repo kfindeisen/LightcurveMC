@@ -187,7 +187,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The corresponding magnitude, assuming a flux of 1 unit corresponds to a magnitude of 0. Returns NaN if the flux is negative.</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000008">Todo:</a></b></dt><dd>Desired behavior for negative fluxes? </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000006">Todo:</a></b></dt><dd>Desired behavior for negative fluxes? </dd></dl>
 
 </div>
 </div>
@@ -263,7 +263,8 @@ Functions</h2></td></tr>
 <dl class="section post"><dt>Postcondition</dt><dd>b points to a newly allocated matrix with the property that multiplying it by its own transpose restores A </dd>
 <dd>
 any data previously pointed to by b is deleted</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000046">Todo:</a></b></dt><dd>Benchmark which of several possible implementations is faster </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000044">Todo:</a></b></dt><dd>Benchmark which of several possible implementations is faster</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Returns different results on KPF-Hewlett4 and on cowling, particularly for matrices a with lots of zero elements. The root cause is that a call to gsl_eigen_symmv() returns eigenvalues in a different order. Since the order of the eigenvalues is left undefined by the specification of gsl_eigen_symmv(), and since the output of <a class="el" href="namespacelcmc_1_1utils.html#afdc8bf83f3aad761a64bf929e0701212" title="Given a matrix A, returns a matrix B with the property A = B * transpose(B)">getHalfMatrix()</a> passes all relevant statistical tests on both computers, its variant behavior is no longer considered a bug. </dd></dl>
 
 </div>
 </div>
@@ -526,7 +527,7 @@ any data previously pointed to by b is deleted</dd></dl>
 <dd>
 corrVec may refer to the same vector as indVec</dd></dl>
 <dl class="section post"><dt>Postcondition</dt><dd>corrVec.size() == indVec.size()</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000047">Todo:</a></b></dt><dd>Add input validation </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000045">Todo:</a></b></dt><dd>Add input validation </dd></dl>
 
 </div>
 </div>
@@ -721,7 +722,7 @@ any data previously occupying target is cleaned up </dd></dl>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacelcmc.html">lcmc</a></li><li class="navelem"><a class="el" href="namespacelcmc_1_1utils.html">utils</a></li>
-    <li class="footer">Generated on Sun Apr 21 2013 21:17:30 for Lightcurve MC by
+    <li class="footer">Generated on Fri Apr 26 2013 22:19:24 for Lightcurve MC by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

@@ -50,15 +50,21 @@
  *	and lcmcutils to lcmc::inject, lcmc::models, lcmc::parse, 
  *	lcmc::stats, and lcmc::utils, respectively.
  * - Fixed: tests in test_gp.cpp now report success on completion
- * - Fixed: LcBinStats::analyzeLightCurve now propagates exception types correctly
+ * - Fixed: LcBinStats::analyzeLightCurve() now propagates exception types correctly
  * - Fixed: the Boost.Test library is now statically linked on non-Cygwin 
  *	systems, even if a shared library is found by the linker
- * - Changed: integration test scripts run more consistently across systems
+ * - Fixed: integration test scripts run more consistently across systems
  * - Changed: refactored test_gp.
- * - Added: test cases in test_stats.
+ * - Added: test cases to test_stats.
  * - Changed: bug that lcmc::models::SimpleGp produces inconsistent output 
  *	downgraded to a warning, and moved to getHalfMatrix(). See 
  *	getHalfMatrix() documentation for more details.
+ * - Fixed: test output files now distinguish runs with identical light curve 
+ *	parameters but different noise levels
+ * - Fixed: the -\-add command line argument can no longer be combined with 
+ *	either the list of julian dates or with the -\-noise argument
+ * - Added: domain checking for all command line arguments
+ * - Added: cmdtest.sh, an integration test suite for command line errors
  *
  * @subsection v2_0_0 2.0.0
  *

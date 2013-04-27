@@ -103,102 +103,97 @@ $(document).ready(function(){initNavTree('todo.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><dl class="reflist">
-<dt><a class="anchor" id="_todo000009"></a>File <a class="el" href="header_8h.html">header.h</a>  </dt>
-<dd><p class="startdd">Add proper exception classes. Put exceptions in exception namespace within <a class="el" href="namespacelcmc_1_1models.html" title="This namespace identifies data types and functions that handle the simulation of astronomical data...">lcmc::models</a> and <a class="el" href="namespacelcmc_1_1inject.html" title="This namespace identifies data types and functions that handle the loading of data so that it can be ...">lcmc::inject</a>. </p>
-<p class="enddd">Add exception guarantees to every function and method.  </p>
-</dd>
-<dt><a class="anchor" id="_todo000028"></a>Member <a class="el" href="classlcmc_1_1inject_1_1_non_spitzer_non_var.html#a4e6b1da9a0e8a815d9e8a140edbcde0a">lcmc::inject::NonSpitzerNonVar::NonSpitzerNonVar</a>  ()</dt>
+<dt><a class="anchor" id="_todo000026"></a>Member <a class="el" href="classlcmc_1_1inject_1_1_non_spitzer_non_var.html#a4e6b1da9a0e8a815d9e8a140edbcde0a">lcmc::inject::NonSpitzerNonVar::NonSpitzerNonVar</a>  ()</dt>
 <dd>Fix exception spec to distinguish between catalog not found (which is unrecoverable) and source file not found (which is, at least in principle).  </dd>
-<dt><a class="anchor" id="_todo000030"></a>Member <a class="el" href="classlcmc_1_1inject_1_1_non_spitzer_var.html#a79af037647343a5c1612c4f5dec4d35d">lcmc::inject::NonSpitzerVar::NonSpitzerVar</a>  ()</dt>
+<dt><a class="anchor" id="_todo000028"></a>Member <a class="el" href="classlcmc_1_1inject_1_1_non_spitzer_var.html#a79af037647343a5c1612c4f5dec4d35d">lcmc::inject::NonSpitzerVar::NonSpitzerVar</a>  ()</dt>
 <dd>Fix exception spec to distinguish between catalog not found (which is unrecoverable) and source file not found (which is, at least in principle).  </dd>
-<dt><a class="anchor" id="_todo000025"></a>Class <a class="el" href="classlcmc_1_1inject_1_1_observations.html">lcmc::inject::Observations</a>  </dt>
+<dt><a class="anchor" id="_todo000023"></a>Class <a class="el" href="classlcmc_1_1inject_1_1_observations.html">lcmc::inject::Observations</a>  </dt>
 <dd><p class="startdd">Consider using Featurizer::LightCurve to streamline implementation</p>
 <p class="enddd">Switch to a strategy that relies less on hard-coding  </p>
 </dd>
-<dt><a class="anchor" id="_todo000027"></a>Member <a class="el" href="classlcmc_1_1inject_1_1_observations.html#a7eea4c3e7d747ddfbaabedba4e416bde">lcmc::inject::Observations::init</a>  (const std::string &amp;fileName)</dt>
+<dt><a class="anchor" id="_todo000025"></a>Member <a class="el" href="classlcmc_1_1inject_1_1_observations.html#a7eea4c3e7d747ddfbaabedba4e416bde">lcmc::inject::Observations::init</a>  (const std::string &amp;fileName)</dt>
 <dd>Find a better way to deal with classes distinguishable only by how they're constructed. A friend factory function, maybe?  </dd>
-<dt><a class="anchor" id="_todo000029"></a>Member <a class="el" href="classlcmc_1_1inject_1_1_spitzer_non_var.html#a6c2e23a036b9cc88ae89dc67172488cc">lcmc::inject::SpitzerNonVar::SpitzerNonVar</a>  ()</dt>
+<dt><a class="anchor" id="_todo000027"></a>Member <a class="el" href="classlcmc_1_1inject_1_1_spitzer_non_var.html#a6c2e23a036b9cc88ae89dc67172488cc">lcmc::inject::SpitzerNonVar::SpitzerNonVar</a>  ()</dt>
 <dd>Fix exception spec to distinguish between catalog not found (which is unrecoverable) and source file not found (which is, at least in principle).  </dd>
-<dt><a class="anchor" id="_todo000031"></a>Member <a class="el" href="classlcmc_1_1inject_1_1_spitzer_var.html#af52a256e5c9bf519b49a9514aac38708">lcmc::inject::SpitzerVar::SpitzerVar</a>  ()</dt>
+<dt><a class="anchor" id="_todo000029"></a>Member <a class="el" href="classlcmc_1_1inject_1_1_spitzer_var.html#af52a256e5c9bf519b49a9514aac38708">lcmc::inject::SpitzerVar::SpitzerVar</a>  ()</dt>
 <dd>Fix exception spec to distinguish between catalog not found (which is unrecoverable) and source file not found (which is, at least in principle).  </dd>
-<dt><a class="anchor" id="_todo000036"></a>Member <a class="el" href="classlcmc_1_1models_1_1_broad_peak_wave.html#a46044db81f26f2c508b88045349a6faf">lcmc::models::BroadPeakWave::BroadPeakWave</a>  (const std::vector&lt; double &gt; &amp;times, double amp, double period, double phase)</dt>
+<dt><a class="anchor" id="_todo000034"></a>Member <a class="el" href="classlcmc_1_1models_1_1_broad_peak_wave.html#a46044db81f26f2c508b88045349a6faf">lcmc::models::BroadPeakWave::BroadPeakWave</a>  (const std::vector&lt; double &gt; &amp;times, double amp, double period, double phase)</dt>
 <dd>Reimplement as a more generic function?  </dd>
-<dt><a class="anchor" id="_todo000037"></a>Member <a class="el" href="classlcmc_1_1models_1_1_damped_random_walk.html#a05da4bf6c06f36964f6a57c34e36c6ff">lcmc::models::DampedRandomWalk::DampedRandomWalk</a>  (const std::vector&lt; double &gt; &amp;times, double diffus, double tau)</dt>
+<dt><a class="anchor" id="_todo000035"></a>Member <a class="el" href="classlcmc_1_1models_1_1_damped_random_walk.html#a05da4bf6c06f36964f6a57c34e36c6ff">lcmc::models::DampedRandomWalk::DampedRandomWalk</a>  (const std::vector&lt; double &gt; &amp;times, double diffus, double tau)</dt>
 <dd>Implement input validation  </dd>
-<dt><a class="anchor" id="_todo000045"></a>Class <a class="el" href="classlcmc_1_1models_1_1_eclipse_wave.html">lcmc::models::EclipseWave</a>  </dt>
+<dt><a class="anchor" id="_todo000043"></a>Class <a class="el" href="classlcmc_1_1models_1_1_eclipse_wave.html">lcmc::models::EclipseWave</a>  </dt>
 <dd>Find a spec that doesn't violate least surprise?  </dd>
-<dt><a class="anchor" id="_todo000038"></a>Member <a class="el" href="classlcmc_1_1models_1_1_eclipse_wave.html#a4683151c4e380b9e606082795fedba27">lcmc::models::EclipseWave::EclipseWave</a>  (const std::vector&lt; double &gt; &amp;times, double amp, double period, double phase)</dt>
+<dt><a class="anchor" id="_todo000036"></a>Member <a class="el" href="classlcmc_1_1models_1_1_eclipse_wave.html#a4683151c4e380b9e606082795fedba27">lcmc::models::EclipseWave::EclipseWave</a>  (const std::vector&lt; double &gt; &amp;times, double amp, double period, double phase)</dt>
 <dd>Reimplement as a more generic function?  </dd>
-<dt><a class="anchor" id="_todo000039"></a>Member <a class="el" href="classlcmc_1_1models_1_1_ellipse_wave.html#aa007851b7f983bd574d1dc9c177676e4">lcmc::models::EllipseWave::EllipseWave</a>  (const std::vector&lt; double &gt; &amp;times, double amp, double period, double phase)</dt>
+<dt><a class="anchor" id="_todo000037"></a>Member <a class="el" href="classlcmc_1_1models_1_1_ellipse_wave.html#aa007851b7f983bd574d1dc9c177676e4">lcmc::models::EllipseWave::EllipseWave</a>  (const std::vector&lt; double &gt; &amp;times, double amp, double period, double phase)</dt>
 <dd>Reimplement as a more generic function?  </dd>
-<dt><a class="anchor" id="_todo000010"></a>Class <a class="el" href="classlcmc_1_1models_1_1_i_light_curve.html">lcmc::models::ILightCurve</a>  </dt>
+<dt><a class="anchor" id="_todo000007"></a>Class <a class="el" href="classlcmc_1_1models_1_1_i_light_curve.html">lcmc::models::ILightCurve</a>  </dt>
 <dd>Remove the invariant that flux &gt; -1... WTF was I thinking, anyway?  </dd>
-<dt><a class="anchor" id="_todo000007"></a>Member <a class="el" href="namespacelcmc_1_1models.html#a848dc085d22ee7f263eebf1da84bb953">lcmc::models::lcFactory</a>  (LightCurveType whichLc, const vector&lt; double &gt; &amp;times, const ParamList &amp;lcParams)</dt>
+<dt><a class="anchor" id="_todo000005"></a>Member <a class="el" href="namespacelcmc_1_1models.html#a848dc085d22ee7f263eebf1da84bb953">lcmc::models::lcFactory</a>  (LightCurveType whichLc, const vector&lt; double &gt; &amp;times, const ParamList &amp;lcParams)</dt>
 <dd>Write up the parameter list </dd>
-<dt><a class="anchor" id="_todo000011"></a>Member <a class="el" href="classlcmc_1_1models_1_1_param_list.html#adf0013beb25dcc9bace6f78aa3bdb77a">lcmc::models::ParamList::add</a>  (ParamType name, double value)</dt>
+<dt><a class="anchor" id="_todo000008"></a>Member <a class="el" href="classlcmc_1_1models_1_1_param_list.html#adf0013beb25dcc9bace6f78aa3bdb77a">lcmc::models::ParamList::add</a>  (ParamType name, double value)</dt>
 <dd>Re-implement exception string using a string stream  </dd>
-<dt><a class="anchor" id="_todo000012"></a>Member <a class="el" href="classlcmc_1_1models_1_1_param_list.html#a3f41bbd32c16707b3318200253958bb5">lcmc::models::ParamList::get</a>  (ParamType param) const </dt>
+<dt><a class="anchor" id="_todo000009"></a>Member <a class="el" href="classlcmc_1_1models_1_1_param_list.html#a3f41bbd32c16707b3318200253958bb5">lcmc::models::ParamList::get</a>  (ParamType param) const </dt>
 <dd>Re-implement exception string using a string stream  </dd>
-<dt><a class="anchor" id="_todo000013"></a>Member <a class="el" href="classlcmc_1_1models_1_1_range_list.html#a87cecf377428d6eecb19228330a32f1f">lcmc::models::RangeList::add</a>  (ParamType name, double min, double max, RangeType distrib=UNIFORM)</dt>
+<dt><a class="anchor" id="_todo000010"></a>Member <a class="el" href="classlcmc_1_1models_1_1_range_list.html#a87cecf377428d6eecb19228330a32f1f">lcmc::models::RangeList::add</a>  (ParamType name, double min, double max, RangeType distrib=UNIFORM)</dt>
 <dd>Re-implement exception string using a string stream  </dd>
-<dt><a class="anchor" id="_todo000017"></a>Member <a class="el" href="classlcmc_1_1models_1_1_range_list_1_1_const_iterator.html#a7f050ed5c5c2f5e433540aa438a9a7cc">lcmc::models::RangeList::ConstIterator::operator++</a>  ()</dt>
+<dt><a class="anchor" id="_todo000014"></a>Member <a class="el" href="classlcmc_1_1models_1_1_range_list_1_1_const_iterator.html#a7f050ed5c5c2f5e433540aa438a9a7cc">lcmc::models::RangeList::ConstIterator::operator++</a>  ()</dt>
 <dd>What is the behavior if this == RangeList::end()? </dd>
-<dt><a class="anchor" id="_todo000018"></a>Member <a class="el" href="classlcmc_1_1models_1_1_range_list_1_1_const_iterator.html#ad7b581f90eeb4b8ec40c3e188257f75b">lcmc::models::RangeList::ConstIterator::operator++</a>  (int)</dt>
+<dt><a class="anchor" id="_todo000015"></a>Member <a class="el" href="classlcmc_1_1models_1_1_range_list_1_1_const_iterator.html#ad7b581f90eeb4b8ec40c3e188257f75b">lcmc::models::RangeList::ConstIterator::operator++</a>  (int)</dt>
 <dd>What is the behavior if this == RangeList::end()? </dd>
-<dt><a class="anchor" id="_todo000019"></a>Member <a class="el" href="classlcmc_1_1models_1_1_range_list_1_1_const_iterator.html#a3879dcbd49197dc1c7b9a1453a5756f3">lcmc::models::RangeList::ConstIterator::operator--</a>  ()</dt>
+<dt><a class="anchor" id="_todo000016"></a>Member <a class="el" href="classlcmc_1_1models_1_1_range_list_1_1_const_iterator.html#a3879dcbd49197dc1c7b9a1453a5756f3">lcmc::models::RangeList::ConstIterator::operator--</a>  ()</dt>
 <dd>What is the behavior if this == RangeList::begin()? </dd>
-<dt><a class="anchor" id="_todo000020"></a>Member <a class="el" href="classlcmc_1_1models_1_1_range_list_1_1_const_iterator.html#ae1bd09b3a3b77f2205e38ce8407f44a4">lcmc::models::RangeList::ConstIterator::operator--</a>  (int)</dt>
+<dt><a class="anchor" id="_todo000017"></a>Member <a class="el" href="classlcmc_1_1models_1_1_range_list_1_1_const_iterator.html#ae1bd09b3a3b77f2205e38ce8407f44a4">lcmc::models::RangeList::ConstIterator::operator--</a>  (int)</dt>
 <dd>What is the behavior if this == RangeList::begin()? </dd>
-<dt><a class="anchor" id="_todo000015"></a>Member <a class="el" href="classlcmc_1_1models_1_1_range_list.html#a45798abb64168cb34f5894ad4a78ad7c">lcmc::models::RangeList::getMax</a>  (ParamType param) const </dt>
+<dt><a class="anchor" id="_todo000012"></a>Member <a class="el" href="classlcmc_1_1models_1_1_range_list.html#a45798abb64168cb34f5894ad4a78ad7c">lcmc::models::RangeList::getMax</a>  (ParamType param) const </dt>
 <dd>Re-implement exception string using a string stream  </dd>
-<dt><a class="anchor" id="_todo000014"></a>Member <a class="el" href="classlcmc_1_1models_1_1_range_list.html#a71526d8095bfced365136b569ecf7bba">lcmc::models::RangeList::getMin</a>  (ParamType param) const </dt>
+<dt><a class="anchor" id="_todo000011"></a>Member <a class="el" href="classlcmc_1_1models_1_1_range_list.html#a71526d8095bfced365136b569ecf7bba">lcmc::models::RangeList::getMin</a>  (ParamType param) const </dt>
 <dd>Re-implement exception string using a string stream  </dd>
-<dt><a class="anchor" id="_todo000016"></a>Member <a class="el" href="classlcmc_1_1models_1_1_range_list.html#a2d5117e9a69a3a439df44922086986f7">lcmc::models::RangeList::getType</a>  (ParamType param) const </dt>
+<dt><a class="anchor" id="_todo000013"></a>Member <a class="el" href="classlcmc_1_1models_1_1_range_list.html#a2d5117e9a69a3a439df44922086986f7">lcmc::models::RangeList::getType</a>  (ParamType param) const </dt>
 <dd>Re-implement exception string using a string stream  </dd>
-<dt><a class="anchor" id="_todo000041"></a>Member <a class="el" href="classlcmc_1_1models_1_1_sharp_peak_wave.html#a1fd06dbf87e4d92c1ab40329431df105">lcmc::models::SharpPeakWave::SharpPeakWave</a>  (const std::vector&lt; double &gt; &amp;times, double amp, double period, double phase)</dt>
+<dt><a class="anchor" id="_todo000039"></a>Member <a class="el" href="classlcmc_1_1models_1_1_sharp_peak_wave.html#a1fd06dbf87e4d92c1ab40329431df105">lcmc::models::SharpPeakWave::SharpPeakWave</a>  (const std::vector&lt; double &gt; &amp;times, double amp, double period, double phase)</dt>
 <dd>Reimplement as a more generic function?  </dd>
-<dt><a class="anchor" id="_todo000040"></a>Member <a class="el" href="classlcmc_1_1models_1_1_simple_gp.html#a3844cd32aa47f744356c97c705cc1ec2">lcmc::models::SimpleGp::SimpleGp</a>  (const std::vector&lt; double &gt; &amp;times, double sigma, double tau)</dt>
+<dt><a class="anchor" id="_todo000038"></a>Member <a class="el" href="classlcmc_1_1models_1_1_simple_gp.html#a3844cd32aa47f744356c97c705cc1ec2">lcmc::models::SimpleGp::SimpleGp</a>  (const std::vector&lt; double &gt; &amp;times, double sigma, double tau)</dt>
 <dd>Implement input validation  </dd>
-<dt><a class="anchor" id="_todo000042"></a>Member <a class="el" href="classlcmc_1_1models_1_1_stochastic.html#ad94a9ea148217fa6ca44de61174b473c">lcmc::models::Stochastic::rNorm</a>  () const </dt>
+<dt><a class="anchor" id="_todo000040"></a>Member <a class="el" href="classlcmc_1_1models_1_1_stochastic.html#ad94a9ea148217fa6ca44de61174b473c">lcmc::models::Stochastic::rNorm</a>  () const </dt>
 <dd>Benchmark which of several Gaussian generators works best on cowling  </dd>
-<dt><a class="anchor" id="_todo000043"></a>Member <a class="el" href="classlcmc_1_1models_1_1_triangle_wave.html#ad65e144818c21becefe8b4d73188a996">lcmc::models::TriangleWave::TriangleWave</a>  (const std::vector&lt; double &gt; &amp;times, double amp, double period, double phase)</dt>
+<dt><a class="anchor" id="_todo000041"></a>Member <a class="el" href="classlcmc_1_1models_1_1_triangle_wave.html#ad65e144818c21becefe8b4d73188a996">lcmc::models::TriangleWave::TriangleWave</a>  (const std::vector&lt; double &gt; &amp;times, double amp, double period, double phase)</dt>
 <dd>Reimplement as a more generic function?  </dd>
-<dt><a class="anchor" id="_todo000044"></a>Member <a class="el" href="classlcmc_1_1models_1_1_white_noise.html#a83bcb106218708207c9e11cab2296e3e">lcmc::models::WhiteNoise::WhiteNoise</a>  (const std::vector&lt; double &gt; &amp;times, double sigma)</dt>
+<dt><a class="anchor" id="_todo000042"></a>Member <a class="el" href="classlcmc_1_1models_1_1_white_noise.html#a83bcb106218708207c9e11cab2296e3e">lcmc::models::WhiteNoise::WhiteNoise</a>  (const std::vector&lt; double &gt; &amp;times, double sigma)</dt>
 <dd>Implement input validation  </dd>
 <dt><a class="anchor" id="_todo000004"></a>Member <a class="el" href="namespacelcmc_1_1parse.html#abf1982265f69ad834e6151c0a51d340d">lcmc::parse::parseArguments</a>  (int argc, char *argv[], double &amp;sigma, long &amp;nTrials, long &amp;toPrint, RangeList &amp;paramRanges, string &amp;jdList, vector&lt; string &gt; &amp;lcNameList, vector&lt; LightCurveType &gt; &amp;lcList, string &amp;dataSet, bool &amp;injectMode)</dt>
-<dd><p class="startdd">Make dataSet something better than stringly typed. </p>
-<p>Make argNoise and argInject xor-related </p>
-<p>Give improved semantics </p>
-<p>Make argNoise and argInject xor-related </p>
-<p class="enddd">Give improved semantics  </p>
-</dd>
-<dt><a class="anchor" id="_todo000035"></a>Member <a class="el" href="namespacelcmc_1_1stats.html#a3195f96fefe71f3c578b0073091f0c26">lcmc::stats::getAmplitude</a>  (const DoubleVec &amp;mags)</dt>
+<dd>Make dataSet something better than stringly typed.  </dd>
+<dt><a class="anchor" id="_todo000033"></a>Member <a class="el" href="namespacelcmc_1_1stats.html#a3195f96fefe71f3c578b0073091f0c26">lcmc::stats::getAmplitude</a>  (const DoubleVec &amp;mags)</dt>
 <dd>Decide on correct treatment of infinite magnitudes. </dd>
-<dt><a class="anchor" id="_todo000034"></a>Member <a class="el" href="namespacelcmc_1_1stats.html#ae875834549b5401b827d6783cd4173bf">lcmc::stats::getC1</a>  (const DoubleVec &amp;mags)</dt>
+<dt><a class="anchor" id="_todo000032"></a>Member <a class="el" href="namespacelcmc_1_1stats.html#ae875834549b5401b827d6783cd4173bf">lcmc::stats::getC1</a>  (const DoubleVec &amp;mags)</dt>
 <dd>Decide on correct treatment of infinite magnitudes. </dd>
 <dt><a class="anchor" id="_todo000002"></a>Class <a class="el" href="classlcmc_1_1stats_1_1_lc_bin_stats.html">lcmc::stats::LcBinStats</a>  </dt>
 <dd>May be good idea to redesign in terms of strategy pattern, to allow for more flexibility in which tests get run.  </dd>
 <dt><a class="anchor" id="_todo000001"></a>Member <a class="el" href="classlcmc_1_1stats_1_1_lc_bin_stats.html#ade2986a16b9a7c4ed62a2c7882a7cae6">lcmc::stats::LcBinStats::analyzeLightCurve</a>  (const DoubleVec &amp;times, const DoubleVec &amp;fluxes, const ParamList &amp;trueParams)</dt>
 <dd>Add test case for flux-sine light curve, to see if NaNs get ignored </dd>
-<dt><a class="anchor" id="_todo000032"></a>Member <a class="el" href="namespacelcmc_1_1stats.html#a92514f01bdad75a6f8de0a2f9c2742d3">lcmc::stats::quantile</a>  (InputIterator first, InputIterator last, double quantile)</dt>
+<dt><a class="anchor" id="_todo000030"></a>Member <a class="el" href="namespacelcmc_1_1stats.html#a92514f01bdad75a6f8de0a2f9c2742d3">lcmc::stats::quantile</a>  (InputIterator first, InputIterator last, double quantile)</dt>
 <dd>Merge with other quantile implementations  </dd>
-<dt><a class="anchor" id="_todo000033"></a>Member <a class="el" href="namespacelcmc_1_1stats.html#a352e5fc1c24fefa5c94a4ff7b7058344">lcmc::stats::rmsVsTAllPairs</a>  (const DoubleVec &amp;times, const DoubleVec &amp;fluxes, DoubleVec &amp;timeSteps, DoubleVec &amp;rmsValues)</dt>
+<dt><a class="anchor" id="_todo000031"></a>Member <a class="el" href="namespacelcmc_1_1stats.html#a352e5fc1c24fefa5c94a4ff7b7058344">lcmc::stats::rmsVsTAllPairs</a>  (const DoubleVec &amp;times, const DoubleVec &amp;fluxes, DoubleVec &amp;timeSteps, DoubleVec &amp;rmsValues)</dt>
 <dd>Reduce to O(times.size()^2) time through dynamic programming </dd>
-<dt><a class="anchor" id="_todo000008"></a>Member <a class="el" href="namespacelcmc_1_1utils.html#a550c8ecef52e617df1124ecdf12bd4cd">lcmc::utils::fluxToMag</a>  (double flux)</dt>
+<dt><a class="anchor" id="_todo000006"></a>Member <a class="el" href="namespacelcmc_1_1utils.html#a550c8ecef52e617df1124ecdf12bd4cd">lcmc::utils::fluxToMag</a>  (double flux)</dt>
 <dd>Desired behavior for negative fluxes?  </dd>
-<dt><a class="anchor" id="_todo000046"></a>Member <a class="el" href="namespacelcmc_1_1utils.html#afdc8bf83f3aad761a64bf929e0701212">lcmc::utils::getHalfMatrix</a>  (const gsl_matrix *const a, gsl_matrix *&amp;b)</dt>
-<dd>Benchmark which of several possible implementations is faster  </dd>
-<dt><a class="anchor" id="_todo000047"></a>Member <a class="el" href="namespacelcmc_1_1utils.html#a5a011fed98f692ed2080dcdaca567635">lcmc::utils::multiNormal</a>  (const std::vector&lt; double &gt; &amp;indVec, const gsl_matrix &amp;covar, std::vector&lt; double &gt; &amp;corrVec)</dt>
+<dt><a class="anchor" id="_todo000044"></a>Member <a class="el" href="namespacelcmc_1_1utils.html#afdc8bf83f3aad761a64bf929e0701212">lcmc::utils::getHalfMatrix</a>  (const gsl_matrix *const a, gsl_matrix *&amp;b)</dt>
+<dd>Benchmark which of several possible implementations is faster </dd>
+<dt><a class="anchor" id="_todo000045"></a>Member <a class="el" href="namespacelcmc_1_1utils.html#a5a011fed98f692ed2080dcdaca567635">lcmc::utils::multiNormal</a>  (const std::vector&lt; double &gt; &amp;indVec, const gsl_matrix &amp;covar, std::vector&lt; double &gt; &amp;corrVec)</dt>
 <dd>Add input validation  </dd>
 <dt><a class="anchor" id="_todo000003"></a>Member <a class="el" href="cmd_8cpp.html#acce95920d5bf50fc27b570eb277d1a5e">operator&gt;&gt;</a>  (std::istream &amp;str, std::pair&lt; double, double &gt; &amp;val)</dt>
-<dd>Add support for reading a single number </dd>
+<dd>Add support for reading a single number  </dd>
+<dt><a class="anchor" id="_todo000018"></a>File <a class="el" href="projectinfo_8h.html">projectinfo.h</a>  </dt>
+<dd><p class="startdd">Add proper exception classes. Put exceptions in exception namespace within <a class="el" href="namespacelcmc_1_1models.html" title="This namespace identifies data types and functions that handle the simulation of astronomical data...">lcmc::models</a> and <a class="el" href="namespacelcmc_1_1inject.html" title="This namespace identifies data types and functions that handle the loading of data so that it can be ...">lcmc::inject</a>. </p>
+<p class="enddd">Add exception guarantees to every function and method. </p>
+</dd>
 </dl>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sun Apr 21 2013 21:17:29 for Lightcurve MC by
+    <li class="footer">Generated on Fri Apr 26 2013 22:19:23 for Lightcurve MC by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

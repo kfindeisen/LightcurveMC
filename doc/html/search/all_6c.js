@@ -2,7 +2,7 @@ var searchData=
 [
   ['inject',['inject',['../namespacelcmc_1_1inject.html',1,'lcmc']]],
   ['lcbinstats',['LcBinStats',['../classlcmc_1_1stats_1_1_lc_bin_stats.html',1,'lcmc::stats']]],
-  ['lcbinstats',['LcBinStats',['../classlcmc_1_1stats_1_1_lc_bin_stats.html#abc957abe36f81602152f8b8ea980b78b',1,'lcmc::stats::LcBinStats']]],
+  ['lcbinstats',['LcBinStats',['../classlcmc_1_1stats_1_1_lc_bin_stats.html#ae1eb0cf8beff3a5fc045cac92a69f07c',1,'lcmc::stats::LcBinStats']]],
   ['lcbroad_2ecpp',['lcbroad.cpp',['../lcbroad_8cpp.html',1,'']]],
   ['lcdeterministic_2ecpp',['lcdeterministic.cpp',['../lcdeterministic_8cpp.html',1,'']]],
   ['lcdrw_2ecpp',['lcdrw.cpp',['../lcdrw_8cpp.html',1,'']]],

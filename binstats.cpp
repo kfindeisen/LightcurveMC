@@ -28,6 +28,10 @@ using std::string;
 using lcmc::models::RangeList;
 using lcmc::models::ParamList;
 
+/** Size of character buffers to use when generating strings
+ */
+#define MAX_STRING 512
+
 // Current implementation of analyzeLightCurve does not use 
 // trueParams, but it should still be part of the interface
 #ifdef GNUC_COARSEWARN
@@ -95,10 +99,15 @@ void getSummaryStats(const DoubleVec& values, double& mean, double& stddev,
  * bin's entry in the log file, as well as auxiliary files.
  * @param[in] binSpecs The properties of the model being tested. Used to name 
  * the bin's entry in the log file, as well as auxiliary files.
+ * @param[in] noise The noise level of the model being tested. If white noise 
+ *	is being used, this string is a decimal representation of the root-
+ *	mean-square noise level. If instead signal injection is being used, 
+ *	this string is the name of the light curve library to which signals 
+ *	are added.
  */
-LcBinStats::LcBinStats(string modelName, const RangeList& binSpecs) 
-		: binName(makeBinName(modelName, binSpecs)), 
-		fileName(makeFileName(modelName, binSpecs)), 
+LcBinStats::LcBinStats(string modelName, const RangeList& binSpecs, string noise) 
+		: binName(makeBinName(modelName, binSpecs, noise)), 
+		fileName(makeFileName(modelName, binSpecs, noise)), 
 		C1vals()/*, periods()*/, cut50Amp3s(), cut50Amp2s(), 
 		cut90Amp3s(), cut90Amp2s(), 
 		dmdtMedianTimes(), dmdtMedians() {
@@ -353,12 +362,14 @@ void LcBinStats::printBinStats(FILE* const file) const {
  *	ignored.
  */
 void LcBinStats::printBinHeader(FILE* const file, const RangeList& binSpecs) {
-	char binLabel[200];
+	char binLabel[MAX_STRING];
 
 	sprintf(binLabel, "LCType\t");
 	for(RangeList::ConstIterator it = binSpecs.begin(); it != binSpecs.end(); it++) {
 		sprintf(binLabel, "%s\t%-7s", binLabel, (*it).c_str());
 	}
+	
+	sprintf(binLabel, "%s\tNoise", binLabel);
 
 	fprintf(file, "%s\tGrankin C1±err\tC1 Distribution\t50%% cut at 1/3±err\tFinite\t50%%@1/3 Distribution\t50%% cut at 1/2±err\tFinite\t50%%@1/2 Distribution\t90%% cut at 1/3±err\tFinite\t90%%@1/3 Distribution\t90%% cut at 1/2±err\tFinite\t90%%@1/2 Distribution\tDMDT Medians\n", binLabel);
 }
@@ -370,17 +381,24 @@ void LcBinStats::printBinHeader(FILE* const file, const RangeList& binSpecs) {
  * 
  * @param[in] lcName The name of the light curve.
  * @param[in] binSpecs The properties of the model being tested.
+ * @param[in] noise The noise level of the model being tested. If white noise 
+ *	is being used, this string is a decimal representation of the root-
+ *	mean-square noise level. If instead signal injection is being used, 
+ *	this string is the name of the light curve library to which signals 
+ *	are added.
  *
  * @return The string with which to label this test in a log file.
  */
-string LcBinStats::makeBinName(string lcName, const RangeList& binSpecs) {
-	char binId[200];
+string LcBinStats::makeBinName(string lcName, const RangeList& binSpecs, string noise) {
+	char binId[MAX_STRING];
 	
 	sprintf(binId, "%-14s", lcName.c_str());
 	for(RangeList::ConstIterator it = binSpecs.begin(); it != binSpecs.end(); it++) {
 		double paramMin = binSpecs.getMin(*it);
 		sprintf(binId, "%s\t%0.3g", binId, paramMin);
 	}
+	sprintf(binId, "%s\t%s", binId, noise.c_str());
+	
 	return binId;
 }
 
@@ -388,14 +406,17 @@ string LcBinStats::makeBinName(string lcName, const RangeList& binSpecs) {
  * 
  * @param[in] lcName The name of the light curve.
  * @param[in] binSpecs The properties of the model being tested.
- *
+ * @param[in] noise The noise level of the model being tested. If white noise 
+ *	is being used, this string is a decimal representation of the root-
+ *	mean-square noise level. If instead signal injection is being used, 
+ *	this string is the name of the light curve library to which signals 
+ *	are added.
+ * 
  * @return The string to use as the base for naming files associated with this 
  * simulation run.
- *
- * @bug Bin name does not include noise level of the simulation
  */
-string LcBinStats::makeFileName(string lcName, const RangeList& binSpecs) {
-	char binId[200];
+string LcBinStats::makeFileName(string lcName, const RangeList& binSpecs, string noise) {
+	char binId[MAX_STRING];
 
 	sprintf(binId, "%s", lcName.c_str());
 	for(RangeList::ConstIterator it = binSpecs.begin(); it != binSpecs.end(); it++) {
@@ -404,8 +425,8 @@ string LcBinStats::makeFileName(string lcName, const RangeList& binSpecs) {
 		
 		sprintf(binId, "%s_%c%+0.1f", binId, shortName, paramMin);
 	}
-
-	//sprintf(binId, "run_%s_p%0.1f_a%+0.1f.dat", lcName.c_str(), period, amplitude);
+	sprintf(binId, "%s_n%s", binId, noise.c_str());
+	
 	return binId;
 }
 

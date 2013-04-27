@@ -11,5 +11,6 @@ var searchData=
   ['periodiclc',['PeriodicLc',['../classlcmc_1_1models_1_1_periodic_lc.html#a80c3ce662285e0da356816f7d58b43f3',1,'lcmc::models::PeriodicLc']]],
   ['printbinheader',['printBinHeader',['../classlcmc_1_1stats_1_1_lc_bin_stats.html#a1d0a136e07a83a9789bdb086561f7020',1,'lcmc::stats::LcBinStats']]],
   ['printbinstats',['printBinStats',['../classlcmc_1_1stats_1_1_lc_bin_stats.html#a0cc779094d1fc481cadf14be78f5e2e3',1,'lcmc::stats::LcBinStats']]],
-  ['prog_5fsummary',['PROG_SUMMARY',['../header_8h.html#a8e9d09247458cfbe6cc4d286e21d2da0',1,'header.h']]]
+  ['prog_5fsummary',['PROG_SUMMARY',['../projectinfo_8h.html#a8e9d09247458cfbe6cc4d286e21d2da0',1,'projectinfo.h']]],
+  ['projectinfo_2eh',['projectinfo.h',['../projectinfo_8h.html',1,'']]]
 ];

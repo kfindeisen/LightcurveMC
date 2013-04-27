@@ -9,7 +9,6 @@ var files =
     [ "driver.cpp", "driver_8cpp.html", "driver_8cpp" ],
     [ "fluxmag.cpp", "fluxmag_8cpp.html", "fluxmag_8cpp" ],
     [ "fluxmag.h", "fluxmag_8h.html", "fluxmag_8h" ],
-    [ "header.h", "header_8h.html", "header_8h" ],
     [ "lcsupport.cpp", "lcsupport_8cpp.html", "lcsupport_8cpp" ],
     [ "lightcurve.cpp", "lightcurve_8cpp.html", null ],
     [ "lightcurveparser.h", "lightcurveparser_8h.html", "lightcurveparser_8h" ],
@@ -21,6 +20,7 @@ var files =
     [ "nanstats.cpp", "nanstats_8cpp.html", "nanstats_8cpp" ],
     [ "paramlist.cpp", "paramlist_8cpp.html", null ],
     [ "paramlist.h", "paramlist_8h.html", "paramlist_8h" ],
+    [ "projectinfo.h", "projectinfo_8h.html", "projectinfo_8h" ],
     [ "raiigsl.tmp.h", "raiigsl_8tmp_8h.html", [
       [ "RaiiGsl", "class_raii_gsl.html", "class_raii_gsl" ]
     ] ],

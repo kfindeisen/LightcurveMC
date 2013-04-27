@@ -119,6 +119,17 @@ Version History</h1>
 2.1.0-devel</h2>
 <ul>
 <li>Changed: renamed lcmcinject, lcmcmodels, lcmcparse, lcmcstats, and lcmcutils to <a class="el" href="namespacelcmc_1_1inject.html" title="This namespace identifies data types and functions that handle the loading of data so that it can be ...">lcmc::inject</a>, <a class="el" href="namespacelcmc_1_1models.html" title="This namespace identifies data types and functions that handle the simulation of astronomical data...">lcmc::models</a>, <a class="el" href="namespacelcmc_1_1parse.html" title="This namespace identifies data types and functions that handle model selection for lightcurveMC...">lcmc::parse</a>, <a class="el" href="namespacelcmc_1_1stats.html" title="This namespace identifies data types and functions that handle data analysis on simulated light curve...">lcmc::stats</a>, and <a class="el" href="namespacelcmc_1_1utils.html" title="This namespace contains miscellaneous functions for handling generic problems.">lcmc::utils</a>, respectively.</li>
+<li>Fixed: tests in test_gp.cpp now report success on completion</li>
+<li>Fixed: LcBinStats::analyzeLightCurve() now propagates exception types correctly</li>
+<li>Fixed: the Boost.Test library is now statically linked on non-Cygwin systems, even if a shared library is found by the linker</li>
+<li>Fixed: integration test scripts run more consistently across systems</li>
+<li>Changed: refactored test_gp.</li>
+<li>Added: test cases to test_stats.</li>
+<li>Changed: bug that <a class="el" href="classlcmc_1_1models_1_1_simple_gp.html" title="SimpleGp represents variables that vary as a standard Gaussian process in magnitude space...">lcmc::models::SimpleGp</a> produces inconsistent output downgraded to a warning, and moved to <a class="el" href="namespacelcmc_1_1utils.html#afdc8bf83f3aad761a64bf929e0701212" title="Given a matrix A, returns a matrix B with the property A = B * transpose(B)">getHalfMatrix()</a>. See <a class="el" href="namespacelcmc_1_1utils.html#afdc8bf83f3aad761a64bf929e0701212" title="Given a matrix A, returns a matrix B with the property A = B * transpose(B)">getHalfMatrix()</a> documentation for more details.</li>
+<li>Fixed: test output files now distinguish runs with identical light curve parameters but different noise levels</li>
+<li>Fixed: the --add command line argument can no longer be combined with either the list of julian dates or with the --noise argument</li>
+<li>Added: domain checking for all command line arguments</li>
+<li>Added: cmdtest.sh, an integration test suite for command line errors</li>
 </ul>
 <h2><a class="anchor" id="v2_0_0"></a>
 2.0.0</h2>
@@ -153,7 +164,7 @@ Version History</h1>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sun Apr 21 2013 21:17:30 for Lightcurve MC by
+    <li class="footer">Generated on Fri Apr 26 2013 22:19:24 for Lightcurve MC by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>
