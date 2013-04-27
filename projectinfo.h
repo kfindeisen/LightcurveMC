@@ -65,6 +65,9 @@
  *	either the list of julian dates or with the -\-noise argument
  * - Added: domain checking for all command line arguments
  * - Added: cmdtest.sh, an integration test suite for command line errors
+ * - Fixed: LcBinStats::printBinStats() will now report zero standard 
+ *	deviation, not NaN, for statistics that were always calculated with 
+ *	the same value
  *
  * @subsection v2_0_0 2.0.0
  *

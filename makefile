@@ -1,7 +1,7 @@
 # Compilation make for lightcurveMC
 # by Krzysztof Findeisen
 # Created March 24, 2010
-# Last modified April 26, 2013
+# Last modified April 27, 2013
 
 #---------------------------------------
 # Platform-specific stuff
@@ -10,7 +10,7 @@ include make.platform
 #---------------------------------------
 # Select all files
 PROJ     = lightcurveMC
-COMMONSOURCES  = cmd.cpp binstats.cpp nanstats.cpp \
+COMMONSOURCES  = cmd.cpp cmd_classes.cpp binstats.cpp nanstats.cpp \
 	lcsupport.cpp lightcurve.cpp paramlist.cpp lcregistry.cpp fluxmag.cpp waves/multinormal.cpp \
 	waves/lcdeterministic.cpp waves/lcstochastic.cpp \
 	waves/lcflat.cpp waves/lcperiodic.cpp waves/lcsine.cpp waves/lcellipse.cpp \

@@ -2,7 +2,7 @@
  * @file binstats.cpp
  * @author Krzysztof Findeisen
  * @date Created June 6, 2011
- * @date Last modified April 21, 2013
+ * @date Last modified April 27, 2013
  */
 
 #include <algorithm>
@@ -244,8 +244,6 @@ void LcBinStats::clear() {
  * a csv reader, you should give both characters as delimiters.
  * 
  * @param[in] file An open file handle representing the text file to write to.
- *
- * @bug Standard deviation returns NaN for single-valued results (fixed?)
  */
 void LcBinStats::printBinStats(FILE* const file) const {
 	// For now, define summary variables for each statistic

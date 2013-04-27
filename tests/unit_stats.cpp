@@ -2,7 +2,7 @@
  * @file unit_stats.cpp
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
- * @date Last modified April 26, 2013
+ * @date Last modified April 27, 2013
  */
 
 #include "../warnflags.h"
@@ -36,15 +36,25 @@
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
 #include "../mcio.h"
+#include "../nan.h"
 #include "../raiigsl.tmp.h"
 
 #include "../waves/generators.h"
+
+using std::vector;
 
 namespace lcmc { namespace utils {
 
 void getHalfMatrix(const gsl_matrix* const a, gsl_matrix* & b);
 
 }}	// end lcmc::utils
+
+namespace lcmc { namespace stats {
+
+void getSummaryStats(const DoubleVec& values, double& mean, double& stddev, 
+		const std::string& statName);
+
+}}	// end lcmc::stats
 
 // Data common to the test cases
 class ObsData {
@@ -62,7 +72,7 @@ public:
 	}
 
 	// Times at which all light curves are sampled
-	std::vector<double> ptfTimes, unifTimes;
+	vector<double> ptfTimes, unifTimes;
 
 private:
 	void initTimes() {
@@ -77,7 +87,7 @@ private:
 	}
 };
 
-void initGauss(gsl_matrix* const covars, const std::vector<double>& times, double tau) {
+void initGauss(gsl_matrix* const covars, const vector<double>& times, double tau) {
 	size_t nTimes = times.size();
 	
 	for(size_t i = 0; i < nTimes; i++) {
@@ -108,7 +118,7 @@ private:
 	double epsilon;
 };
 
-void testProduct(double tau, const std::vector<double>& times)
+void testProduct(double tau, const vector<double>& times)
 {
 	const size_t nTimes = times.size();
 	
@@ -161,7 +171,7 @@ void testProduct(double tau, const std::vector<double>& times)
 	}
 }
 
-void testVectors(unsigned long int seed, const std::vector<double>& times)
+void testVectors(unsigned long int seed, const vector<double>& times)
 {
 	const static double tau = 2.0;
 	const size_t nTimes = times.size();
@@ -174,7 +184,7 @@ void testVectors(unsigned long int seed, const std::vector<double>& times)
 	RaiiGsl<gsl_rng> rng(gsl_rng_alloc(gsl_rng_mt19937), &gsl_rng_free);
 	gsl_rng_set(rng.get(), seed);
 	
-	std::vector<double> fluxes;
+	vector<double> fluxes;
 	fluxes.reserve(nTimes);
 	
 	for(size_t i = 0; i < nTimes; i++) {
@@ -192,7 +202,7 @@ void testVectors(unsigned long int seed, const std::vector<double>& times)
 		throw std::runtime_error("Could not open reference file.");
 	}
 	
-	std::vector<double> oldFluxes;
+	vector<double> oldFluxes;
 	oldFluxes.reserve(nTimes);
 	try {
 		while (!feof(hOriginal)) {
@@ -243,6 +253,18 @@ BOOST_AUTO_TEST_CASE(vec_transformation) {
 	testVectors(1196, unifTimes);
 	testVectors(1764, unifTimes);
 	testVectors(3125, unifTimes);
+}
+
+BOOST_AUTO_TEST_CASE(zero_variance) {
+	// Vector of constant flux
+	// Bug doesn't come up if I use 1.0 as the value
+	vector<double> constantSignal(ptfTimes.size(), log(2.0));
+	
+	double mean, stddev;
+	lcmc::stats::getSummaryStats(constantSignal, mean, stddev, "Constant Signal Test");
+	
+	BOOST_CHECK(!lcmc::utils::isNan(stddev));
+	BOOST_CHECK(stddev < 1e-12);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

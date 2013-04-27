@@ -2,13 +2,14 @@
  * @file cmd.cpp
  * @author Krzysztof Findeisen
  * @date Created April 12, 2013
- * @date Last modified April 26, 2013
+ * @date Last modified April 27, 2013
  */
 
 #include <stdexcept>
 #include <string>
-#include <typeinfo>
 #include <vector>
+#include "cmd_constraints.tmp.h"
+#include "cmd_ranges.tmp.h"
 #include "lightcurveparser.h"
 #include "lightcurvetypes.h"
 #include "paramlist.h"
@@ -34,210 +35,11 @@
 #pragma GCC diagnostic pop
 #endif
 
-namespace TCLAP {
-/** Defines the behavior of a pair of doubles so that TCLAP can parse range 
- * input
- */
-template<class T, class U> struct ArgTraits<std::pair<T, U> > {
-	typedef ValueLike ValueCategory;
-};
-
-}	// end TCLAP
-
 /** Extracts formatted input into a pair of double precision floating point 
  * values.
- * 
- * The string is assumed to be formatted as two real literals, separated 
- * by whitespace.
- *
- * @param[in] str The stream to read from.
- * @param[out] val The pair in which to store the values.
- *
- * @return A reference to str.
- *
- * @exception std::ios_base::failure Thrown if the input cannot be read and 
- *	str.exceptions() is set to throw exceptions. If thrown, str remains in 
- *	a valid state.
- *
- * @todo Add support for reading a single number
  */
-std::istream& operator>> (std::istream& str, std::pair<double, double>& val) {
-	str >> val.first >> val.second;
-	return str;
-}
-
-class KeywordConstraint : public TCLAP::ValuesConstraint<std::string> {
-public:
-	KeywordConstraint(std::vector<std::string>& allowed) 
-			: TCLAP::ValuesConstraint<std::string>(allowed) {
-	}
-	
-	virtual std::string shortID() const {
-		return "keyword";
-	}
-
-        virtual ~KeywordConstraint() {}
-};
-
-template<class T>
-class PositiveNumber : public TCLAP::Constraint<T> {
-public:
-	virtual std::string description() const {
-		return std::string("positive ") + typeid(T).name();
-	}
-
-	virtual std::string shortID() const {
-		return std::string("positive ") + typeid(T).name();
-	}
-
-	virtual bool check(const T& value) const {
-		return (value > 0);
-	}
-
-        virtual ~PositiveNumber() {}
-};
-
-template<>
-class PositiveNumber <long> : public TCLAP::Constraint<long> {
-public:
-	virtual std::string description() const {
-		return "positive integer";
-	}
-
-	virtual std::string shortID() const {
-		return "positive integer";
-	}
-
-	virtual bool check(const long& value) const {
-		return (value > 0);
-	}
-
-        virtual ~PositiveNumber() {}
-};
-
-template<>
-class PositiveNumber <double> : public TCLAP::Constraint<double>{
-public:
-	virtual std::string description() const {
-		return "positive real number";
-	}
-
-	virtual std::string shortID() const {
-		return "positive real number";
-	}
-
-	virtual bool check(const double& value) const {
-		return (value > 0.0);
-	}
-
-        virtual ~PositiveNumber() {}
-};
-
-template<class T>
-class NonNegativeNumber : public TCLAP::Constraint<T> {
-public:
-	virtual std::string description() const {
-		return std::string("non-negative ") + typeid(T).name();
-	}
-
-	virtual std::string shortID() const {
-		return std::string("non-negative ") + typeid(T).name();
-	}
-
-	virtual bool check(const T& value) const {
-		return (value >= 0);
-	}
-
-        virtual ~NonNegativeNumber() {}
-};
-
-template<>
-class NonNegativeNumber <long> : public TCLAP::Constraint<long> {
-public:
-	virtual std::string description() const {
-		return "non-negative integer";
-	}
-
-	virtual std::string shortID() const {
-		return "non-negative integer";
-	}
-
-	virtual bool check(const long& value) const {
-		return (value >= 0);
-	}
-
-        virtual ~NonNegativeNumber() {}
-};
-
-template<>
-class NonNegativeNumber <double> : public TCLAP::Constraint<double> {
-public:
-	virtual std::string description() const {
-		return "non-negative real number";
-	}
-
-	virtual std::string shortID() const {
-		return "non-negative real number";
-	}
-
-	virtual bool check(const double& value) const {
-		return (value >= 0.0);
-	}
-
-        virtual ~NonNegativeNumber() {}
-};
-
-class PositiveRange : public TCLAP::Constraint<std::pair<double, double> > {
-public:
-	virtual std::string description() const {
-		return "both numbers in the range must be positive, and the second must be no smaller than the first";
-	}
-
-	virtual std::string shortID() const {
-		return "positive interval";
-	}
-
-	virtual bool check(const std::pair<double, double>& value) const {
-		return (value.first > 0.0 && value.second >= value.first);
-	}
-
-        virtual ~PositiveRange() {}
-};
-
-class NonNegativeRange : public TCLAP::Constraint<std::pair<double, double> > {
-public:
-	virtual std::string description() const {
-		return "both numbers in the range must be non-negative, and the second must be no smaller than the first";
-	}
-
-	virtual std::string shortID() const {
-		return "non-negative interval";
-	}
-
-	virtual bool check(const std::pair<double, double>& value) const {
-		return (value.first >= 0.0 && value.second >= value.first);
-	}
-
-        virtual ~NonNegativeRange() {}
-};
-
-class UnitSubrange : public TCLAP::Constraint<std::pair<double, double> > {
-public:
-	virtual std::string description() const {
-		return "both numbers in the range must be in [0, 1], and the second must be no smaller than the first";
-	}
-
-	virtual std::string shortID() const {
-		return "unit subinterval";
-	}
-
-	virtual bool check(const std::pair<double, double>& value) const {
-		return (value.first >= 0.0 && value.second <= 1.0&& value.second >= value.first);
-	}
-
-        virtual ~UnitSubrange() {}
-};
-
+// Must be declared in the global namespace to be identified by TCLAP
+std::istream& operator>> (std::istream& str, std::pair<double, double>& val);
 
 namespace lcmc { namespace parse {
 
@@ -270,6 +72,7 @@ using models::RangeList;
  *	analysis rather than merely generating theoretical light curves.
  *
  * @todo Make dataSet something better than stringly typed.
+ * @todo Break up this function.
  */
 void parseArguments(int argc, char* argv[], 
 		double &sigma, long &nTrials, long &toPrint, 
@@ -287,10 +90,10 @@ void parseArguments(int argc, char* argv[],
 	// Common constraints
 	   PositiveNumber<double>    posReal;
 	   PositiveNumber<long>      posInt;
+	   PositiveNumber<Range>     posRange;
 	NonNegativeNumber<double> nonNegReal;
 	NonNegativeNumber<long>   nonNegInt;
-	PositiveRange                posRange;
-	UnitSubrange                unitRange;
+	UnitSubrange unitRange;
 
 	//--------------------------------------------------
 	// Mandatory simulation settings

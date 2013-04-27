@@ -85,6 +85,6 @@ const models::LightCurveType parseLightCurve(const string& lcName) {
 	}
 }
 
-}
-
 }		// end lcmc::parse
+
+}		// end lcmc
