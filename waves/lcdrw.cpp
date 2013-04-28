@@ -2,7 +2,7 @@
  * @file lcdrw.cpp
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
- * @date Last modified April 4, 2013
+ * @date Last modified April 27, 2013
  */
 
 #include <vector>
@@ -42,8 +42,20 @@ DampedRandomWalk::DampedRandomWalk(const std::vector<double>& times, double diff
  * @param[out] fluxes The flux vector to update.
  * 
  * @post getFluxes() will now return the correct light curve.
+ * 
+ * @post fluxes.size() == getTimes().size()
+ * @post if getTimes()[i] == getTimes()[j] for i &ne; j, then 
+ *	fluxes[i] == fluxes[j]
+ * 
+ * @post No element of fluxes is NaN
+ * @post All elements in fluxes are non-negative
+ * @post The median of the flux is one, when averaged over many elements and 
+ *	many light curve instances.
  *
- * @bug Case where times() is empty not supported
+ * @post fluxToMag(fluxes) has a mean of zero and a standard deviation of 
+ *	sqrt(0.5*diffus/tau)
+ * @post cov(fluxToMag(fluxes[i]), fluxToMag(fluxes[j])) == 
+ *	0.5*diffus/tau &times; exp(|getTimes()[i]-getTimes()[j]|/tau) 
  */	
 void DampedRandomWalk::solveFluxes(std::vector<double>& fluxes) const {
 	// invariant: this->times() is sorted in ascending order
@@ -51,37 +63,39 @@ void DampedRandomWalk::solveFluxes(std::vector<double>& fluxes) const {
 	this->getTimes(times);
 	
 	fluxes.clear();
-	fluxes.reserve(times.size());
-	// f(t0) ~ N(0, sigma) to ensure self-similarity
-	fluxes.push_back(sigma * rNorm());
-	
-	// Evaluate f(t > t0)
-	// This simplified algorithm works only for an exponential covariance, 
-	//	a white noise process, or a constant process, since it 
-	//	requires rho(t1,t3) = rho(t1,t2)*rho(t2,t3). However, it's 
-	//	much faster than the general-purpose, matrix-based algorithm.
-	for(std::vector<double>::const_iterator it = times.begin()+1; it != times.end(); it++) {
-		double oldFlux = fluxes.back();
+	if (times.size() > 0) {
+		fluxes.reserve(times.size());
+		// f(t0) ~ N(0, sigma) to ensure self-similarity
+		fluxes.push_back(sigma * rNorm());
 		
-		// Observations taken at the same time should have the same flux
-		// Sorting invariant guarantees that all duplicate times will 
-		//	be next to each other
-		if (*it == *(it-1)) {
-			fluxes.push_back(oldFlux);
-		// Observations taken at different times are partially 
-		//	correlated
-		} else {
-			// Implement Equation 2.47 of Gillespie (1996)
-			// His algorithm is not worth the trouble, since it 
-			//	relies heavily on deltaT being constant
-			double deltaTTau  = (*it - *(it-1))/tau;
+		// Evaluate f(t > t0)
+		// This simplified algorithm works only for an exponential covariance, 
+		//	a white noise process, or a constant process, since it 
+		//	requires rho(t1,t3) = rho(t1,t2)*rho(t2,t3). However, it's 
+		//	much faster than the general-purpose, matrix-based algorithm.
+		for(std::vector<double>::const_iterator it = times.begin()+1; it != times.end(); it++) {
+			double oldFlux = fluxes.back();
 			
-			fluxes.push_back(oldFlux*exp(-deltaTTau) 
-				+ sigma*sqrt((1.0 - exp(-2.0*deltaTTau))) * rNorm());
+			// Observations taken at the same time should have the same flux
+			// Sorting invariant guarantees that all duplicate times will 
+			//	be next to each other
+			if (*it == *(it-1)) {
+				fluxes.push_back(oldFlux);
+			// Observations taken at different times are partially 
+			//	correlated
+			} else {
+				// Implement Equation 2.47 of Gillespie (1996)
+				// His algorithm is not worth the trouble, since it 
+				//	relies heavily on deltaT being constant
+				double deltaTTau  = (*it - *(it-1))/tau;
+				
+				fluxes.push_back(oldFlux*exp(-deltaTTau) 
+					+ sigma*sqrt((1.0 - exp(-2.0*deltaTTau))) * rNorm());
+			}
 		}
+		
+		utils::magToFlux(fluxes, fluxes);
 	}
-	
-	utils::magToFlux(fluxes, fluxes);
 }
 
 }}		// end lcmc::models

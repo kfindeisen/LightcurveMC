@@ -2,7 +2,7 @@
  * @file lceclipse.cpp
  * @author Krzysztof Findeisen
  * @date Created April 24, 2012
- * @date Last modified March 19, 2013
+ * @date Last modified April 27, 2013
  */
 
 #include <cmath>
@@ -51,19 +51,25 @@ EclipseWave::EclipseWave(const std::vector<double> &times,
  * 
  * @pre phase &isin; [0, 1)
  *
- * @post fluxPhase(phi) is a periodic function of phi with period 1.
+ * @post the return value is determined entirely by the phase and 
+ *	the parameters passed to the constructor
+ *
+ * @post the return value is not NaN
+ * @post The mode of the flux is zero, when averaged over many times.
+ * @post 0 &le; return value &le; 1
+ * @post the mode of the flux is one, when averaged over many times.
  * 
  * @return The flux emitted by the object at the specified phase.
  */
-double EclipseWave::fluxPhase(double phase) const {
+double EclipseWave::fluxPhase(double phase, double amp) const {
 	// Primary eclipse
 	if (phase >= 0.0 && phase <= 0.05)
-		return -1.0;
+		return 1.0 - amp;
 	// Secondary eclipse
 	else if (phase >= 0.5 && phase <= 0.55)
-		return -0.7;
+		return 1.0 - 0.7*amp;
 	else
-		return 0.0;
+		return 1.0;
 }
 
 }}		// end lcmc::models

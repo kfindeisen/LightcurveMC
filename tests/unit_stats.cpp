@@ -2,7 +2,7 @@
  * @file unit_stats.cpp
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
- * @date Last modified April 27, 2013
+ * @date Last modified April 28, 2013
  */
 
 #include "../warnflags.h"
@@ -21,6 +21,7 @@
 #endif
 
 #include <boost/test/unit_test.hpp>
+#include <boost/test/floating_point_comparison.hpp>
 
 // Re-enable all compiler warnings
 #ifdef GNUC_FINEWARN
@@ -36,7 +37,6 @@
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
 #include "../mcio.h"
-#include "../nan.h"
 #include "../raiigsl.tmp.h"
 
 #include "../waves/generators.h"
@@ -56,23 +56,40 @@ void getSummaryStats(const DoubleVec& values, double& mean, double& stddev,
 
 }}	// end lcmc::stats
 
-// Data common to the test cases
-class ObsData {
+/** Data common to the test cases.
+ *
+ * At present, contains only sampling times
+ */
+class StatData {
 public: 
-	const static size_t TEST_LEN = 100;
-
-	ObsData() : ptfTimes(), unifTimes() {
+	StatData() : ptfTimes(), unifTimes() {
 		initTimes();
 		for(size_t i = 0; i < TEST_LEN; i++) {
 			unifTimes.push_back(static_cast<double>(i));
 		}
 	}
 	
-	~ObsData() {
+	~StatData() {
 	}
 
-	// Times at which all light curves are sampled
-	vector<double> ptfTimes, unifTimes;
+	/** Number of times to use for a uniformly sampled data set
+	 */
+	const static size_t TEST_LEN = 100;
+
+	/** Represents sampling at the irregular PTF cadence.
+	 *
+	 * This cadence has several features, particularly a long gap 
+	 * between the 2009 and 2010 seasons, that tends to introduce 
+	 * artifacts in statistical analyses.
+	 */
+	vector<double> ptfTimes;
+
+	/** Represents sampling at a uniform daily cadence for 100 days.
+	 *
+	 * Statistical tests using this cadence should be 
+	 *	well-behaved.
+	 */
+	vector<double> unifTimes;
 
 private:
 	void initTimes() {
@@ -87,6 +104,14 @@ private:
 	}
 };
 
+/** Constructs a covariance matrix for a standard Gaussian process
+ *
+ * @param[in] covars A pointer to the matrix to initialize
+ * @param[in] times The observation times at which the Gaussian process is sampled
+ * @param[in] tau The coherence time of the Gaussian process
+ *
+ * @pre covars->size1 == covars->size2 == times.size()
+ */
 void initGauss(gsl_matrix* const covars, const vector<double>& times, double tau) {
 	size_t nTimes = times.size();
 	
@@ -99,12 +124,35 @@ void initGauss(gsl_matrix* const covars, const vector<double>& times, double tau
 	}
 }
 
+/** Function object for testing whether two values are approximately equal
+ */
 class ApproxEqual {
 public: 
+	/** Defines an object testing for approximate equality with 
+	 *	a particular tolerance
+	 *
+	 * @param[in] epsilon The maximum fractional difference between two 
+	 *	values that are considered equal
+	 * 
+	 * @post ApproxEqual will accept a pair of values as equal 
+	 *	iff |val1 - val2|/|val1| and |val1 - val2|/|val2| < epsilon
+	 */
 	explicit ApproxEqual(double epsilon) : epsilon(epsilon) {
 	}
+
+	/** Tests whether two values are approximately equal
+	 *
+	 * @param[in] x, y The values to compare
+	 * 
+	 * @return true iff |x - y|/|x| and |x - y|/|y| < epsilon
+	 */
 	bool operator() (double x, double y) {
-		if (gsl_fcmp(x, y, epsilon) == 0) {
+		using namespace ::boost::test_tools;
+		
+		predicate_result result = check_is_close(x, y, 
+			fraction_tolerance_t<double>(epsilon));
+
+		if (static_cast<bool>(result)) {
 			return true;
 		} else {
 			char buf[256];
@@ -118,6 +166,17 @@ private:
 	double epsilon;
 };
 
+/** Tests whether lcmc::utils::getHalfMatrix() correctly decomposes a matrix into two factors
+ *
+ * The specification is tested directly; i.e. the output of getHalfMatrix() 
+ * is multiplied by its transpose and the result compared to the original 
+ * matrix. To guarantee that the input matrix is positive-nondefinite, 
+ * currently the only matrix tested is the covariance matrix of a standard 
+ * Gaussian process.
+ *
+ * @param[in] times The observation times at which the Gaussian process is sampled
+ * @param[in] tau The coherence time of the Gaussian process
+ */
 void testProduct(double tau, const vector<double>& times)
 {
 	const size_t nTimes = times.size();
@@ -171,6 +230,16 @@ void testProduct(double tau, const vector<double>& times)
 	}
 }
 
+/** Tests whether calls to multiNormal() consistent random vectors on 
+ * different machines.
+ *
+ * The test case is a Gaussian process with &tau; = 2 days and with 
+ *	the given sampling.
+ *
+ * @param[in] seed The seed used for the random number generator
+ * @param[in] times The times at which the Gaussian process is sampled. The 
+ *	sampling may be highly irregular.
+ */
 void testVectors(unsigned long int seed, const vector<double>& times)
 {
 	const static double tau = 2.0;
@@ -227,8 +296,29 @@ void testVectors(unsigned long int seed, const vector<double>& times)
 		ApproxEqual(1e-10)) );
 }
 
-BOOST_FIXTURE_TEST_SUITE(test_stats, ObsData)
+/** Test cases for testing functions related to generating 
+ *	multinormal distributions
+ * @class Boost::Test::test_stats
+ */
+BOOST_FIXTURE_TEST_SUITE(test_stats, StatData)
 
+/* @fn lcmc::utils::getHalfMatrix()
+ *
+ * @test given a Gaussian process covariance matrix corresponding to 
+ *	uniform sampling and &tau; = 100, 50, 25, 10, 5, 2.5, or 1.0 days, 
+ *	the result of getHalfMatrix() multiplied by its own transpose 
+ *	equals the covariance matrix
+ * @test given a Gaussian process covariance matrix corresponding to 
+ *	PTF-like sampling and &tau; = 100, 50, 25, 10, 5, 2.5, or 1.0 days, 
+ *	the result of getHalfMatrix() multiplied by its own transpose 
+ *	equals the covariance matrix
+ *
+ * @todo Add broader test cases
+ */
+/** Tests whether getHalfMatrix() returns the correct decomposition of a matrix
+ *
+ * @see testProduct()
+ */
 BOOST_AUTO_TEST_CASE(decomposition) {
 	testProduct(100.0, unifTimes);
 	testProduct( 50.0, unifTimes);
@@ -247,6 +337,18 @@ BOOST_AUTO_TEST_CASE(decomposition) {
 	testProduct(  1.0,  ptfTimes);
 }
 
+/* @fn lcmc::utils::multiNormal()
+ *
+ * @test produces the same output on all platforms if the input 
+ * 	random numbers were sampled using a gsl_rng_mt19937 generator 
+ *	with seeds of 42, 43, 1196, 1764, 3125
+ *
+ * @todo Add more rigorous test cases
+ */
+/** Tests whether multiNormal() behaves consistently across platforms
+ *
+ * @see testVectors()
+ */
 BOOST_AUTO_TEST_CASE(vec_transformation) {
 	testVectors(42,   unifTimes);
 	testVectors(43,   unifTimes);
@@ -255,6 +357,13 @@ BOOST_AUTO_TEST_CASE(vec_transformation) {
 	testVectors(3125, unifTimes);
 }
 
+/* @fn lcmc::stats::getSummaryStats()
+ *
+ * @test given a constant vector equal to ln(2), returns a variance of 0
+ */
+/** Tests whether lcmc::stats::getSummaryStats() correctly handles 
+ *	vectors with no variance
+ */
 BOOST_AUTO_TEST_CASE(zero_variance) {
 	// Vector of constant flux
 	// Bug doesn't come up if I use 1.0 as the value
@@ -263,7 +372,7 @@ BOOST_AUTO_TEST_CASE(zero_variance) {
 	double mean, stddev;
 	lcmc::stats::getSummaryStats(constantSignal, mean, stddev, "Constant Signal Test");
 	
-	BOOST_CHECK(!lcmc::utils::isNan(stddev));
+	BOOST_CHECK(!gsl_isnan(stddev));
 	BOOST_CHECK(stddev < 1e-12);
 }
 

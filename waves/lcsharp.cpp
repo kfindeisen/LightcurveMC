@@ -2,7 +2,7 @@
  * @file lcsharp.cpp
  * @author Krzysztof Findeisen
  * @date Created April 24, 2012
- * @date Last modified March 19, 2013
+ * @date Last modified April 27, 2013
  */
 
 #include <cmath>
@@ -49,12 +49,17 @@ SharpPeakWave::SharpPeakWave(const std::vector<double> &times,
  * 
  * @pre phase &isin; [0, 1)
  *
- * @post fluxPhase(phi) is a periodic function of phi with period 1.
+ * @post the return value is determined entirely by the phase and 
+ *	the parameters passed to the constructor
+ *
+ * @post the return value is not NaN
+ * @post the mode of the flux is one, when averaged over many times.
+ * @post return value &ge; 1
  * 
  * @return The flux emitted by the object at the specified phase.
  */
-double SharpPeakWave::fluxPhase(double phase) const {
-	return -0.05 + 0.105/(1.1 + sin(2*M_PI*phase));
+double SharpPeakWave::fluxPhase(double phase, double amp) const {
+	return 1 + amp*(-0.05 + 0.105/(1.1 + sin(2*M_PI*phase)));
 }
 
 }}		// end lcmc::models

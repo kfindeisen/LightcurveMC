@@ -2,7 +2,7 @@
  * @file lcsubtypes.h
  * @author Krzysztof Findeisen
  * @date Created March 18, 2013
- * @date Last modified March 21, 2013
+ * @date Last modified April 27, 2013
  */
 
 #ifndef LCMCCURVEMAJORH
@@ -44,8 +44,16 @@ private:
 	 *	Observations are assumed to be instantaneous, with no averaging over 
 	 *	rapid variability.
 	 *
-	 * @post flux(t) is a deterministic function of t.
-	 * 
+ 	 * @post the return value is determined entirely by the time and 
+ 	 *	the parameters passed to the constructor
+ 	 *
+ 	 * @post the return value is not NaN
+ 	 * @post the return value is non-negative
+	 * @post Either the mean, median, or mode of the flux is one, when 
+	 *	averaged over many times. Subclasses of Deterministic may 
+	 *	chose the option (mean, median, or mode) most appropriate 
+	 *	for their light curve shape.
+	 *
 	 * @return The flux emitted by the object at the specified time.
 	 */	
 	virtual double flux(double time) const = 0;
@@ -97,6 +105,18 @@ private:
 	 *	instance of Stochastic
 	 * 
 	 * @post getFluxes() will now return the correct light curve.
+	 * 
+	 * @post fluxes.size() == getTimes().size()
+	 * @post if getTimes()[i] == getTimes()[j] for i &ne; j, then 
+	 *	fluxes[i] == fluxes[j]
+	 * 
+	 * @post No element of fluxes is NaN
+	 * @post All elements in fluxes are non-negative
+	 * @post Either the mean, median, or mode of the flux is one, when 
+	 *	averaged over many elements and many light curve instances. 
+	 *	Subclasses of Stochastic may chose the option 
+	 *	(mean, median, or mode) most appropriate for their light 
+	 *	curve shape.
 	 */	
 	virtual void solveFluxes(std::vector<double>& fluxes) const = 0;
 	
@@ -106,6 +126,8 @@ private:
 
 	std::vector<double> times;
 	// Mutable allows use of solveFluxes() as a cache
+	// assert: only solveFluxes(), and no other function, can change 
+	//	these values
 	mutable std::vector<double> fluxes;
 	mutable bool fluxesSolved;
 	

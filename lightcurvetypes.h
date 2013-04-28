@@ -2,7 +2,7 @@
  * @file lightcurvetypes.h
  * @author Krzysztof Findeisen
  * @date Created February 9, 2012
- * @date Last modified April 3, 2013
+ * @date Last modified April 27, 2013
  * 
  * These types represent the interface lightcurveMC uses to handle light 
  * curves in an abstract fashion. Do not add anything to this header unless 
@@ -81,13 +81,6 @@ private:
  * cadence of the mock data set.
  * 
  * @invariant ILightCurve is immutable.
- * @invariant A flux of zero represents a baseline flux. The exact 
- *	significance may depend on the type of light curve, but in general 
- *	should be near either the mean or the median of the light curve.
- * @invariant For no parameters and at no value of time does flux() return a 
- *	number less than -1.
- *
- * @todo Remove the invariant that flux > -1... WTF was I thinking, anyway?
  */
 class ILightCurve {
 public: 
@@ -108,8 +101,16 @@ public:
 	 * @param[out] fluxArray A vector containing the desired fluxes.
 	 *
 	 * @post fluxArray.size() == getTimes().size()
+	 * @post if getTimes()[i] == getTimes()[j] for i &ne; j, then 
+	 *	getFluxes()[i] == getFluxes()[j]
 	 * 
 	 * @post No element of fluxArray is NaN
+	 * @post All elements in fluxArray are non-negative
+	 * @post Either the mean, median, or mode of the flux is one, when 
+	 *	averaged over many elements and many light curve instances. 
+	 *	Subclasses of ILightCurve may chose the option 
+	 *	(mean, median, or mode) most appropriate for their light 
+	 *	curve shape.
 	 */
 	virtual void getFluxes(std::vector<double>& fluxArray) const = 0;
 

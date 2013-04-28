@@ -2,7 +2,7 @@
  * @file lctriangle.cpp
  * @author Krzysztof Findeisen
  * @date Created April 24, 2012
- * @date Last modified March 19, 2013
+ * @date Last modified April 27, 2013
  */
 
 #include <stdexcept>
@@ -21,12 +21,12 @@ namespace lcmc { namespace models {
 /** Initializes the light curve to represent a periodic function flux(time).
  *
  * @param[in] times The times at which the light curve will be sampled.
- * @param[in] amp The amplitude of the light curve
+ * @param[in] amp The half-amplitude of the light curve
  * @param[in] period The period of the light curve
  * @param[in] phase The phase of the light curve at time 0
  *
  * @pre amp > 0
- * @pre amp &le; 2
+ * @pre amp &le; 1
  * @pre period > 0
  * @pre phase &isin; [0, 1)
  *
@@ -56,12 +56,18 @@ TriangleWave::TriangleWave(const std::vector<double> &times,
  * 
  * @pre phase &isin; [0, 1)
  *
- * @post fluxPhase(phi) is a periodic function of phi with period 1.
+ * @post the return value is determined entirely by the phase and 
+ *	the parameters passed to the constructor
+ *
+ * @post the return value is not NaN
+ * @post the mean and median of the flux are one, when 
+ *	averaged over many times.
+ * @post 0 &le; return value &le; 2
  * 
  * @return The flux emitted by the object at the specified phase.
  */
-double TriangleWave::fluxPhase(double phase) const {
-	return 0.559017*sin(2*M_PI*phase)/(1.5 + cos(2*M_PI*phase));
+double TriangleWave::fluxPhase(double phase, double amp) const {
+	return 1 + amp*1.11803*sin(2*M_PI*phase)/(1.5 + cos(2*M_PI*phase));
 }
 
 }}		// end lcmc::models

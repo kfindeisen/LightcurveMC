@@ -150,7 +150,7 @@ void hiAmpBinFrac(const DoubleVec &deltaT, const DoubleVec &deltaM,
  *
  * @bug For either a SimpleGp or DampedRandomWalk, the median crosses the 
  *	half-amplitude threshold before it crosses the third-amplitude 
- *	threshold
+ *	threshold. (UNREPRODUCIBLE AT PRESENT)
  */
 void deltaMBinQuantile(const DoubleVec &deltaT, const DoubleVec &deltaM, 
 		const DoubleVec &binEdges, DoubleVec &quants, double q) {

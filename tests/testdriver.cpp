@@ -25,6 +25,8 @@
 #ifdef __CYGWIN__
 #define BOOST_TEST_DYN_LINK
 #endif
+/** Name of the unit test module
+ */
 #define BOOST_TEST_MODULE LcmcTesting
 #include <boost/test/unit_test.hpp>
 

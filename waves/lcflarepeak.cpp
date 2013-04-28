@@ -2,7 +2,7 @@
  * @file lcflarepeak.cpp
  * @author Krzysztof Findeisen
  * @date Created May 2, 2012
- * @date Last modified March 20, 2013
+ * @date Last modified April 28, 2013
  */
 
 #include <stdexcept>
@@ -28,7 +28,7 @@ namespace lcmc { namespace models {
  * @pre period > 0
  * @pre phase &isin; [0, 1)
  * @pre fade > 0
- * @pre width > 0
+ * @pre 0 < width < 1
  *
  * @post A light curve is a deterministic function of amp, period, phase, and 
  *	width: knowing these values is sufficient to determine flux(t) for any 
@@ -59,16 +59,22 @@ FlarePeak::FlarePeak(const std::vector<double> &times,
  * 
  * @pre phase &isin; [0, 1)
  *
- * @post fluxPhase(phi) is a periodic function of phi with period 1.
+ * @post the return value is determined entirely by the phase and 
+ *	the parameters passed to the constructor
+ *
+ * @post the return value is not NaN
+ * @post the return value is greater than or equal to 1
+ * @post the mode of the flux is one, when averaged over many times.
  * 
  * @return The flux emitted by the object at the specified phase.
  */
-double FlarePeak::fluxPhase(double phase) const {
-	double tail = exp(-phase/tExp);
+double FlarePeak::fluxPhase(double phase, double amp) const {
+	double tail = amp*exp(-phase/tExp);
 	if (phase < 1.0 - tLin) {
-		return tail;
+		return 1.0+tail;
 	} else {
-		return tail + (phase - 1.0 + tLin)/tLin;
+//		return 1.0+tail + amp*(phase - 1.0 + tLin)/tLin;
+		return 1.0 + amp - amp*(tail - 1) / tLin * (phase - 1.0);
 	}
 }
 

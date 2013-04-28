@@ -2,7 +2,7 @@
  * @file lcgp1.cpp
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
- * @date Last modified April 18, 2013
+ * @date Last modified April 27, 2013
  */
 
 #include <stdexcept>
@@ -45,8 +45,19 @@ SimpleGp::SimpleGp(const std::vector<double>& times, double sigma, double tau)
  * @param[out] fluxes The flux vector to update.
  * 
  * @post getFluxes() will now return the correct light curve.
+ * 
+ * @post fluxes.size() == getTimes().size()
+ * @post if getTimes()[i] == getTimes()[j] for i &ne; j, then 
+ *	fluxes[i] == fluxes[j]
+ * 
+ * @post No element of fluxes is NaN
+ * @post All elements in fluxes are non-negative
+ * @post The median of the flux is one, when averaged over many elements and 
+ *	many light curve instances.
  *
- * @bug Case where times() is empty not supported
+ * @post fluxToMag(fluxes) has a mean of zero and a standard deviation of sigma
+ * @post cov(fluxToMag(fluxes[i]), fluxToMag(fluxes[j])) == 
+ *	sigma^2 &times; exp(-0.5*((getTimes()[i]-getTimes()[j])/tau)^2) 
  */
 void SimpleGp::solveFluxes(std::vector<double>& fluxes) const {
 	// invariant: this->times() is sorted in ascending order
@@ -55,25 +66,27 @@ void SimpleGp::solveFluxes(std::vector<double>& fluxes) const {
 	size_t nTimes = times.size();
 	
 	fluxes.clear();
-	fluxes.reserve(nTimes);
-	
-	for(size_t i = 0; i < nTimes; i++) {
-		fluxes.push_back(rNorm());
-	}
-
-	RaiiGsl<gsl_matrix> corrs(gsl_matrix_alloc(nTimes, nTimes), &gsl_matrix_free);
-	// in gsl_matrix, consecutive second indices refer to adjacent memory spots
-	// therefore, having the inner loop be over the second index is more localized
-	for(size_t i = 0; i < nTimes; i++) {
-		for(size_t j = 0; j < nTimes; j++) {
-			double deltaTTau = (times[i] - times[j])/tau;
-			gsl_matrix_set(corrs.get(), i, j, 
-					sigma*sigma*exp(-0.5*deltaTTau*deltaTTau));
+	if (nTimes > 0) {
+		fluxes.reserve(nTimes);
+		
+		for(size_t i = 0; i < nTimes; i++) {
+			fluxes.push_back(rNorm());
 		}
-	}
-	utils::multiNormal(fluxes, *corrs, fluxes);
 	
-	utils::magToFlux(fluxes, fluxes);
+		RaiiGsl<gsl_matrix> corrs(gsl_matrix_alloc(nTimes, nTimes), &gsl_matrix_free);
+		// in gsl_matrix, consecutive second indices refer to adjacent memory spots
+		// therefore, having the inner loop be over the second index is more localized
+		for(size_t i = 0; i < nTimes; i++) {
+			for(size_t j = 0; j < nTimes; j++) {
+				double deltaTTau = (times[i] - times[j])/tau;
+				gsl_matrix_set(corrs.get(), i, j, 
+						sigma*sigma*exp(-0.5*deltaTTau*deltaTTau));
+			}
+		}
+		utils::multiNormal(fluxes, *corrs, fluxes);
+		
+		utils::magToFlux(fluxes, fluxes);
+	}
 }
 
 }}		// end lcmc::models

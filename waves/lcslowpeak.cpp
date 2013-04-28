@@ -2,7 +2,7 @@
  * @file lcslowpeak.cpp
  * @author Krzysztof Findeisen
  * @date Created May 2, 2012
- * @date Last modified March 19, 2013
+ * @date Last modified April 27, 2013
  */
 
 #include <stdexcept>
@@ -26,6 +26,9 @@ namespace lcmc { namespace models {
  * @pre period > 0
  * @pre phase &isin; [0, 1)
  * @pre width > 0
+ * @pre width < 0.234107
+ *
+ * @note maximum width is set by a phase transition in the function behavior
  *
  * @post A light curve is a deterministic function of amp, period, phase, and 
  *	width: knowing these values is sufficient to determine flux(t) for any 
@@ -52,13 +55,18 @@ SlowPeak::SlowPeak(const std::vector<double> &times,
  * 
  * @pre phase &isin; [0, 1)
  *
- * @post fluxPhase(phi) is a periodic function of phi with period 1.
+ * @post the return value is determined entirely by the phase and 
+ *	the parameters passed to the constructor
+ *
+ * @post the return value is not NaN
+ * @post the return value is greater than or equal to 1
+ * @post the mode of the flux is one, when averaged over many times.
  * 
  * @return The flux emitted by the object at the specified phase.
  */
-double SlowPeak::fluxPhase(double phase) const {
-	return    exp(-(   phase *   phase) /(2.0*width*width)) 
-		+ exp(-((1-phase)*(1-phase))/(2.0*width*width));
+double SlowPeak::fluxPhase(double phase, double amp) const {
+	return 1.0 + amp * exp(-(   phase *   phase) /(2.0*width*width)) 
+		   + amp * exp(-((1-phase)*(1-phase))/(2.0*width*width));
 }
 
 }}		// end lcmc::models

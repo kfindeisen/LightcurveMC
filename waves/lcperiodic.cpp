@@ -2,7 +2,7 @@
  * @file lcperiodic.cpp
  * @author Krzysztof Findeisen
  * @date Created April 23, 2012
- * @date Last modified April 3, 2013
+ * @date Last modified April 27, 2013
  */
 
 #include <stdexcept>
@@ -57,7 +57,15 @@ PeriodicLc::~PeriodicLc() {
  *	Observations are assumed to be instantaneous, with no averaging over 
  *	rapid variability.
  *
- * @post flux(t) is a deterministic function of t.
+ * @post the return value is determined entirely by the time and 
+ *	the parameters passed to the constructor
+ *
+ * @post the return value is not NaN
+ * @post the return value is non-negative
+ * @post Either the mean, median, or mode of the flux is one, when 
+ *	averaged over many times. Subclasses of PeriodicLc may 
+ *	chose the option (mean, median, or mode) most appropriate 
+ *	for their light curve shape.
  * 
  * @return The flux emitted by the object at the specified time.
  *
@@ -67,7 +75,7 @@ PeriodicLc::~PeriodicLc() {
 double PeriodicLc::flux(double time) const {
 	double phase = phase0 + time / period;
 	phase = phase - floor(phase);
-	return amp * fluxPhase(phase);
+	return fluxPhase(phase, amp);
 }
 
 }}		// end lcmc::models

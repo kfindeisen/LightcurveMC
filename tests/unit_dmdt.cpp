@@ -2,7 +2,7 @@
  * @file unit_dmdt.cpp
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified April 19, 2013
+ * @date Last modified April 27, 2013
  */
 
 #include "../warnflags.h"
@@ -28,6 +28,7 @@
 #pragma GCC diagnostic pop
 #endif
 
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <cmath>
@@ -41,13 +42,12 @@
 
 using std::vector;
 
-// Data common to the test cases
+/** Data common to the test cases.
+ *
+ * At present, the only data is a Gaussian process &Delta;m&Delta;t plot.
+ */
 class SimData {
 public: 
-	const static size_t TEST_LEN   = 1000000/*0*/;	// 100,000 per bin
-	const static size_t TEST_COUNT =   100;
-	const static double BINWIDTH   = 0.01;		// Factor of 1.004
-
 	SimData() : amplitude(3.290), deltaM(), deltaT(), binEdges(), 
 			randomizer(gsl_rng_alloc(gsl_rng_mt19937), &gsl_rng_free) {
 		gsl_rng_set(randomizer.get(), 42);
@@ -66,6 +66,10 @@ public:
 	~SimData() {
 	}
 	
+	/** Randomly places points according to the distribution for a 
+	 *	&Delta;m&Delta;t plot representing a Gaussian process 
+	 *	with standard deviation 1 and timescale 1
+	 */
 	void makeDmdt() {
 		deltaM.clear();
 		deltaT.clear();
@@ -87,18 +91,44 @@ public:
 		}
 	}
 	
-	// Time range to test
+	/** Number of points with which to sample a &Delta;m&Delta;t plot.
+	 *
+	 * The current value implies 10,000 points per bin
+	 *
+	 * @see BINWIDTH
+	 */
+	const static size_t TEST_LEN   = 1000000;
+	/** Number of times to generate and analyze a &Delta;m&Delta;t plot.
+	 */
+	const static size_t TEST_COUNT =   100;
+	/** Width of each &Delta;t bin in logarithmic space
+	 *
+	 * The current value isa factor of 1.004 difference in &Delta;t
+	 *
+	 * @see TEST_LEN
+	 */
+	const static double BINWIDTH   = 0.01;		// Factor of 1.004
+
+	/** log10(&Delta;t) at the short-timescale end of the plot
+	 */
 	const static double MINTIME = -0.5;
+	/** log10(&Delta;t) at the long-timescale end of the plot
+	 */
 	const static double MAXTIME =  0.5;
 	
-	// 5%-95% amplitude of the hypothetical light curve
+	/** 5%-95% amplitude of the hypothetical light curve
+	 */
 	double amplitude;
 
-	// Delta-m delta-t plot
+	/** Stores the &Delta;m&Delta;t plot.
+	 */
 	vector<double> deltaM;
+	/** Stores the &Delta;m&Delta;t plot.
+	 */
 	vector<double> deltaT;
 
-	// Bins in which to measure the quantiles
+	/** Tracks the edged of the &Delta;t bins.
+	 */
 	vector<double> binEdges;
 	
 private: 
@@ -106,24 +136,26 @@ private:
 	RaiiGsl<gsl_rng> randomizer;
 };
 
-BOOST_FIXTURE_TEST_SUITE(test_dmdt, SimData)
+namespace lcmc { namespace stats {
 
-void getSummaryStats(const vector<double>& values, double& mean, double& error) {
-	mean   = std::numeric_limits<double>::quiet_NaN();
-	error  = std::numeric_limits<double>::quiet_NaN();
-	
-	try {
-		mean   =      lcmc::utils::    meanNoNan(values);
-		error  = sqrt(lcmc::utils::varianceNoNan(values) / static_cast<double>(values.size()));
-	} catch (std::invalid_argument &e) {
-		// These should just be warnings that a statistic is undefined
-		BOOST_TEST_MESSAGE( "WARNING: " << e.what());
-	}
-}
+using std::string;
 
-#include <algorithm>
+void getSummaryStats(const vector<double>& values, double& mean, double& stddev, 
+		const string& statName);
 
-// Emulate BOOST_CHECK_CLOSE_FRACTION without crashing and burning
+}}		// end lcmc::stats
+
+/** This function emulates the BOOST_CHECK_CLOSE_FRACTION macro.
+ *
+ * The macro crashes whenever the test fails, making it too unstable to use. 
+ * This function behaves identically to the macro, except that it cannot 
+ * report the code that triggered the test.
+ *
+ * @param[in] val1, val2 The values to compare
+ * @param[in] frac The fractional difference allowed between them
+ * 
+ * @return true iff |val1 - val2|/|val1| and |val1 - val2|/|val2| < frac
+ */
 void myTestClose(double val1, double val2, double frac) {
 	using namespace ::boost::test_tools;
 	
@@ -136,6 +168,30 @@ void myTestClose(double val1, double val2, double frac) {
 //	BOOST_CHECK_CLOSE_FRACTION(val1, val2, frac);
 }
 
+/** Test cases for testing &Delta;m&Delta;t-based timescales
+ * @class Boost::Test::test_dmdt
+ */
+BOOST_FIXTURE_TEST_SUITE(test_dmdt, SimData)
+
+/* @fn lcmc::stats::deltaMBinQuantile()
+ *
+ * @test For an N-fold sampling of a standard Gaussian process, the 
+ *	probability that cutFunction(50th percentile, 1/3 amplitude) is NaN 
+ *	converges to 1 as N grows large
+ * @test For an N-fold sampling of a standard Gaussian process, the 
+ *	probability that cutFunction(50th percentile, 1/2 amplitude) is NaN 
+ *	converges to 1 as N grows large
+ * @test For an N-fold sampling of a standard Gaussian process, 
+ *	cutFunction(90th percentile, 1/3 amplitude) converges to 0.709&tau; 
+ *	as N grows large
+ * @test For an N-fold sampling of a standard Gaussian process, 
+ *	cutFunction(90th percentile, 1/2 amplitude) converges to 1.178&tau; 
+ *	as N grows large
+ */
+/** Tests whether cutting the quantiles at a particular amplitude in order to 
+ * identify a timescale converges to analytical expressions in the limit of 
+ * overwhelming data.
+ */
 BOOST_AUTO_TEST_CASE(quantileCuts)
 {
 	using lcmc::stats::cutFunction;
@@ -158,28 +214,24 @@ BOOST_AUTO_TEST_CASE(quantileCuts)
 	}
 	
 	double mean50Amp3s, error50Amp3s;
-	getSummaryStats(cut50Amp3s, mean50Amp3s, error50Amp3s);
+	lcmc::stats::getSummaryStats(cut50Amp3s, mean50Amp3s, error50Amp3s, "Median @ 1/3 Amp");
 	BOOST_CHECK(gsl_isnan(mean50Amp3s));
 	
 	double mean50Amp2s, error50Amp2s;
-	getSummaryStats(cut50Amp2s, mean50Amp2s, error50Amp2s);
+	lcmc::stats::getSummaryStats(cut50Amp2s, mean50Amp2s, error50Amp2s, "Median @ 1/3 Amp");
 	BOOST_CHECK(gsl_isnan(mean50Amp2s));
 	
 	double mean90Amp3s, error90Amp3s;
-	getSummaryStats(cut90Amp3s, mean90Amp3s, error90Amp3s);
+	lcmc::stats::getSummaryStats(cut90Amp3s, mean90Amp3s, error90Amp3s, "90% @ 1/3 Amp");
 	myTestClose(mean90Amp3s, 0.709, 
 				gsl_isnan(error90Amp3s) || error90Amp3s < BINWIDTH ? 
 				BINWIDTH : 2.0*error90Amp3s);
-//	double sigma = sqrt(2.0*(1.0 - exp(-0.5*mean90Amp3s*mean90Amp3s)));
-//	myTestClose(gsl_cdf_gaussian_Pinv(0.95, sigma), amplitude / 3.0, BINWIDTH);
 
 	double mean90Amp2s, error90Amp2s;
-	getSummaryStats(cut90Amp2s, mean90Amp2s, error90Amp2s);
+	lcmc::stats::getSummaryStats(cut90Amp2s, mean90Amp2s, error90Amp2s, "90% @ 1/3 Amp");
 	myTestClose(mean90Amp2s, 1.178, 
 			gsl_isnan(error90Amp2s) || error90Amp2s < BINWIDTH ? 
 			BINWIDTH : 2.0*error90Amp2s);
-//	sigma = sqrt(2.0*(1.0 - exp(-0.5*mean90Amp2s*mean90Amp2s)));
-//	myTestClose(gsl_cdf_gaussian_Pinv(0.95, sigma), amplitude / 2.0, BINWIDTH);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

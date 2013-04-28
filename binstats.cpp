@@ -129,8 +129,6 @@ LcBinStats::LcBinStats(string modelName, const RangeList& binSpecs, string noise
  * @pre No element of times is NaN
  * @pre Fluxes may contain NaNs
  *
- * @todo Add test case for flux-sine light curve, to see if NaNs get ignored
- *
  * @internal @note The implementation *should not* assume that any particular parameter 
  * is defined in trueParams.
  */

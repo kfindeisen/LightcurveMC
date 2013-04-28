@@ -2,7 +2,7 @@
  * @file lcdeterministic.cpp
  * @author Krzysztof Findeisen
  * @date Created March 18, 2013
- * @date Last modified March 19, 2013
+ * @date Last modified April 27, 2013
  */
 
 #include <vector>
@@ -38,9 +38,17 @@ void Deterministic::getTimes(std::vector<double>& timeArray) const {
  * @param[out] fluxArray A vector containing the desired fluxes.
  *
  * @post fluxArray.size() == getTimes().size()
- *
- * @bug Some light curves still follow a spec that allows them to return 
- *	negative fluxes
+ * @post if getTimes()[i] == getTimes()[j] for i &ne; j, then 
+ *	getFluxes()[i] == getFluxes()[j]
+ * @post fluxArray[i] is determined entirely by getTimes[i] and the 
+ *	parameters passed to the constructor
+ * 
+ * @post No element of fluxArray is NaN
+ * @post All elements in fluxArray are non-negative
+ * @post Either the mean, median, or mode of the flux is one, when 
+ *	averaged over many elements. Subclasses of Deterministic may 
+ *	chose the option (mean, median, or mode) most appropriate 
+ *	for their light curve shape.
  */
 void Deterministic::getFluxes(std::vector<double>& fluxArray) const {
 	// Copy of time vector is for convenience only

@@ -41,15 +41,23 @@ private:
 	 * @param[in] phase The light curve phase at which an observation is 
 	 *	taken. Observations are assumed to be instantaneous, with no 
 	 *	averaging over rapid variability.
+	 * @param[in] amp The light curve amplitude.
 	 * 
 	 * @pre phase &isin; [0, 1)
+ 	 *
+	 * @post the return value is determined entirely by the phase and 
+	 *	the parameters passed to the constructor
 	 *
-	 * @post fluxPhase(phi) is a deterministic function of phi.
+ 	 * @post the return value is not NaN
+	 * @post the return value is non-negative
+	 * @post Either the mean, median, or mode of the flux is one, when 
+	 *	averaged over many times. Subclasses of PeriodicLc may 
+	 *	chose the option (mean, median, or mode) most appropriate 
+	 *	for their light curve shape.
 	 * 
-	 * @return The amplitude-normalized flux emitted by the object at the 
-	 *	specified phase.
+	 * @return The flux emitted by the object at the specified phase.
 	 */
-	virtual double fluxPhase(double phase) const = 0;
+	virtual double fluxPhase(double phase, double amp) const = 0;
 	
 	double amp, period, phase0;
 };
@@ -70,7 +78,7 @@ public:
 private:
 	/** Samples the sinusoidal waveform at the specified phase.
 	 */
-	double fluxPhase(double phase) const;
+	double fluxPhase(double phase, double amp) const;
 };
 
 /** TriangleWave describes pseudo-sinusoidal variables with sharper minima and 
@@ -90,7 +98,7 @@ public:
 private:
 	/** Samples the waveform at the specified phase.
 	 */
-	double fluxPhase(double phase) const;
+	double fluxPhase(double phase, double amp) const;
 };
 
 /** EllipseWave describes pseudo-sinusoidal variables with asymmetric minima 
@@ -110,7 +118,7 @@ public:
 private:
 	/** Samples the waveform at the specified phase.
 	 */
-	double fluxPhase(double phase) const;
+	double fluxPhase(double phase, double amp) const;
 };
 
 /** EclipseWave describes variables with pairs of periodic dimmings. The 
@@ -133,7 +141,7 @@ public:
 private:
 	/** Samples the waveform at the specified phase.
 	 */
-	double fluxPhase(double phase) const;
+	double fluxPhase(double phase, double amp) const;
 };
 
 /** BroadPeakWave describes periodic variables that smoothly rise to a maximum. 
@@ -153,7 +161,7 @@ public:
 private:
 	/** Samples the waveform at the specified phase.
 	 */
-	double fluxPhase(double phase) const;
+	double fluxPhase(double phase, double amp) const;
 };
 
 /** SharpPeakWave describes periodic variables that smoothly rise to a maximum. 
@@ -173,7 +181,7 @@ public:
 private:
 	/** Samples the waveform at the specified phase.
 	 */
-	double fluxPhase(double phase) const;
+	double fluxPhase(double phase, double amp) const;
 };
 
 /** MagSineWave describes sinusoidal variables in magnitude space. The light 
@@ -192,7 +200,7 @@ public:
 private:
 	/** Samples the sinusoidal waveform at the specified phase.
 	 */
-	double fluxPhase(double phase) const;
+	double fluxPhase(double phase, double amp) const;
 };
 
 }}		// end lcmc::models

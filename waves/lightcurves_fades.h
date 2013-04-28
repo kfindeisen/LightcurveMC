@@ -31,7 +31,7 @@ public:
 private:
 	/** Samples the waveform at the specified phase.
 	 */
-	double fluxPhase(double phase) const;
+	double fluxPhase(double phase, double amp) const;
 	
 	double width;
 };
@@ -55,7 +55,7 @@ public:
 private:
 	/** Samples the waveform at the specified phase.
 	 */
-	double fluxPhase(double phase) const;
+	double fluxPhase(double phase, double amp) const;
 	
 	double tExp, tLin;
 };
@@ -77,7 +77,7 @@ public:
 private:
 	/** Samples the waveform at the specified phase.
 	 */
-	double fluxPhase(double phase) const;
+	double fluxPhase(double phase, double amp) const;
 	
 	double width;
 };

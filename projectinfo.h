@@ -2,7 +2,7 @@
  * @file projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified April 26, 2013
+ * @date Last modified April 27, 2013
  *
  * @todo Add proper exception classes. Put exceptions in exception namespace 
  *	within lcmc::models and lcmc::inject.
@@ -51,8 +51,9 @@
  *	lcmc::stats, and lcmc::utils, respectively.
  * - Fixed: tests in test_gp.cpp now report success on completion
  * - Fixed: LcBinStats::analyzeLightCurve() now propagates exception types correctly
- * - Fixed: the Boost.Test library is now statically linked on non-Cygwin 
- *	systems, even if a shared library is found by the linker
+ * - Fixed: the Boost.Test library is now statically linked on systems where I 
+ *	installed it without admin privileges, even if a shared library is 
+ *	found by the linker
  * - Fixed: integration test scripts run more consistently across systems
  * - Changed: refactored test_gp.
  * - Added: test cases to test_stats.
@@ -63,11 +64,12 @@
  *	parameters but different noise levels
  * - Fixed: the -\-add command line argument can no longer be combined with 
  *	either the list of julian dates or with the -\-noise argument
- * - Added: domain checking for all command line arguments
+ * - Added: input validation for all command line arguments
  * - Added: cmdtest.sh, an integration test suite for command line errors
  * - Fixed: LcBinStats::printBinStats() will now report zero standard 
  *	deviation, not NaN, for statistics that were always calculated with 
  *	the same value
+ * - Fixed: Light curves no longer generate negative fluxes
  *
  * @subsection v2_0_0 2.0.0
  *
