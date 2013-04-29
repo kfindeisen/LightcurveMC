@@ -21,7 +21,6 @@
 #endif
 
 #include <boost/test/unit_test.hpp>
-#include <boost/test/floating_point_comparison.hpp>
 
 // Re-enable all compiler warnings
 #ifdef GNUC_FINEWARN
@@ -29,13 +28,14 @@
 #endif
 
 #include <algorithm>
+#include <stdexcept>
 #include <string>
 #include <cmath>
 #include <gsl/gsl_blas.h>
-#include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
+#include "test.h"
 #include "../mcio.h"
 #include "../raiigsl.tmp.h"
 
@@ -55,6 +55,8 @@ void getSummaryStats(const DoubleVec& values, double& mean, double& stddev,
 		const std::string& statName);
 
 }}	// end lcmc::stats
+
+namespace lcmc { namespace test {
 
 /** Data common to the test cases.
  *
@@ -102,68 +104,6 @@ private:
 		fclose(hJulDates);
 		hJulDates = NULL;
 	}
-};
-
-/** Constructs a covariance matrix for a standard Gaussian process
- *
- * @param[in] covars A pointer to the matrix to initialize
- * @param[in] times The observation times at which the Gaussian process is sampled
- * @param[in] tau The coherence time of the Gaussian process
- *
- * @pre covars->size1 == covars->size2 == times.size()
- */
-void initGauss(gsl_matrix* const covars, const vector<double>& times, double tau) {
-	size_t nTimes = times.size();
-	
-	for(size_t i = 0; i < nTimes; i++) {
-		for(size_t j = 0; j < nTimes; j++) {
-			double deltaT = (times[i] - times[j]) / tau;
-			gsl_matrix_set(covars, i, j, 
-					2.0*exp(-0.5*deltaT*deltaT));
-		}
-	}
-}
-
-/** Function object for testing whether two values are approximately equal
- */
-class ApproxEqual {
-public: 
-	/** Defines an object testing for approximate equality with 
-	 *	a particular tolerance
-	 *
-	 * @param[in] epsilon The maximum fractional difference between two 
-	 *	values that are considered equal
-	 * 
-	 * @post ApproxEqual will accept a pair of values as equal 
-	 *	iff |val1 - val2|/|val1| and |val1 - val2|/|val2| < epsilon
-	 */
-	explicit ApproxEqual(double epsilon) : epsilon(epsilon) {
-	}
-
-	/** Tests whether two values are approximately equal
-	 *
-	 * @param[in] x, y The values to compare
-	 * 
-	 * @return true iff |x - y|/|x| and |x - y|/|y| < epsilon
-	 */
-	bool operator() (double x, double y) {
-		using namespace ::boost::test_tools;
-		
-		predicate_result result = check_is_close(x, y, 
-			fraction_tolerance_t<double>(epsilon));
-
-		if (static_cast<bool>(result)) {
-			return true;
-		} else {
-			char buf[256];
-			sprintf(buf, "floating point comparison failed: [%.10g != %.10g] (%.10g >= %.10g)", 
-					x, y, fabs(x-y), epsilon);
-			BOOST_WARN_MESSAGE(false, buf);
-			return false;
-		}
-	}
-private:
-	double epsilon;
 };
 
 /** Tests whether lcmc::utils::getHalfMatrix() correctly decomposes a matrix into two factors
@@ -372,8 +312,10 @@ BOOST_AUTO_TEST_CASE(zero_variance) {
 	double mean, stddev;
 	lcmc::stats::getSummaryStats(constantSignal, mean, stddev, "Constant Signal Test");
 	
-	BOOST_CHECK(!gsl_isnan(stddev));
+	BOOST_CHECK(!testNan(stddev));
 	BOOST_CHECK(stddev < 1e-12);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+}}		// end lcmc::test

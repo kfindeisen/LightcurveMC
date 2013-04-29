@@ -1,7 +1,12 @@
+#! /bin/bash
+
 # Tests the command-line interface
 rm -vf cmdtest_*.log
 rm -vf nonspitzernonvar.cat
-ln -s test1.cat nonspitzernonvar.cat
+#ln will print error message on failure
+ln -vs test1.cat nonspitzernonvar.cat || return $?
+# soft link creation can fail quietly
+if [[ ! -r nonspitzernonvar.cat ]] ; then echo "Cannot read nonspitzernonvar.cat" ; return 1 ; fi
 
 echo "EXPECTED RESULT: FAIL (invalid range)" &>> cmdtest_xor.log
 nice -n 15 ../lightcurveMC -a "1.0" -p "0.25 0.25" --ntrials 5 ptfjds.txt \
@@ -125,3 +130,5 @@ nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 0.25" --ntrials 5 --add NonSpit
 	&>> cmdtest_xor.log
 
 diff -s cmdtarget_xor.log cmdtest_xor.log
+# diff returns 0 iff files are equal
+return $?

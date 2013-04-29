@@ -38,9 +38,9 @@ namespace lcmc { namespace models {
  */
 SineWave::SineWave(const std::vector<double> &times, double amp, double period, double phase) 
 		: PeriodicLc(times, amp, period, phase) {
-	if (amp > 2.0) {
+	if (amp > 1.0) {
 		char errBuf[80];
-		sprintf(errBuf, "SineWaves must have amplitudes less than or equal to 2 (gave %g).", amp);
+		sprintf(errBuf, "SineWaves must have amplitudes less than or equal to 1 (gave %g).", amp);
 		throw std::invalid_argument(errBuf);
 	}
 }
@@ -64,7 +64,7 @@ SineWave::SineWave(const std::vector<double> &times, double amp, double period, 
  * @return The flux emitted by the object at the specified phase.
  */
 double SineWave::fluxPhase(double phase, double amp) const {
-	return 1 + amp*sin(2*M_PI*phase);
+	return 1.0 + amp*sin(2*M_PI*phase);
 }
 
 }}		// end lcmc::models

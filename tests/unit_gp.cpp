@@ -2,7 +2,7 @@
  * @file unit_gp.cpp
  * @author Krzysztof Findeisen
  * @date Created April 17, 2013
- * @date Last modified April 27, 2013
+ * @date Last modified April 28, 2013
  */
 
 #include "../warnflags.h"
@@ -27,14 +27,18 @@
 #pragma GCC diagnostic pop
 #endif
 
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include <vector>
 #include <cstdio>
+#include "test.h"
 #include "../fluxmag.h"
 #include "../lightcurvetypes.h"
 #include "../mcio.h"
 #include "../waves/lightcurves_gp.h"
+
+namespace lcmc { namespace test {
 
 /** Data common to the test cases.
  *
@@ -63,21 +67,6 @@ public:
 	/** Stores the the times at which the Gaussian process is sampled
 	 */
 	std::vector<double> times;
-};
-
-/** Parent factory class for generating lots of identical light curves
- */
-class TestFactory {
-public: 
-	TestFactory() {
-	}
-	virtual ~TestFactory() {
-	}
-	
-	/** Generates a new realization of a damped random walk having the 
-	 * properties given to the constructor
-	 */
-	virtual std::auto_ptr<lcmc::models::ILightCurve> make() const = 0;
 };
 
 /** Factory class for generating lots of identical damped random walks
@@ -274,3 +263,5 @@ BOOST_AUTO_TEST_CASE(gp1)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+}}		// end lcmc::test

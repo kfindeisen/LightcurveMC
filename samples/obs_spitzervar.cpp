@@ -26,7 +26,7 @@ SpitzerVar::SpitzerVar() : Observations() {
 	unsigned long int index = gsl_rng_uniform_int(sourcePicker, library.size());
 	
 	this->init(library.at(index));
-};
+}
 
 /** Returns the list of files from which the class may select sources
  */

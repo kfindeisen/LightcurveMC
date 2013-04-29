@@ -2,7 +2,7 @@
  * @file unit_dmdt.cpp
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified April 27, 2013
+ * @date Last modified April 28, 2013
  */
 
 #include "../warnflags.h"
@@ -21,7 +21,6 @@
 #endif
 
 #include <boost/test/unit_test.hpp>
-#include <boost/test/floating_point_comparison.hpp>
 
 // Re-enable all compiler warnings
 #ifdef GNUC_FINEWARN
@@ -32,15 +31,24 @@
 #include <string>
 #include <vector>
 #include <cmath>
-#include <gsl/gsl_cdf.h>
-#include <gsl/gsl_math.h>
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
+#include "test.h"
 #include "../stats/dmdt.h"
-#include "../nan.h"
 #include "../raiigsl.tmp.h"
 
 using std::vector;
+
+namespace lcmc { namespace stats {
+
+using std::string;
+
+void getSummaryStats(const vector<double>& values, double& mean, double& stddev, 
+		const string& statName);
+
+}}		// end lcmc::stats
+
+namespace lcmc { namespace test {
 
 /** Data common to the test cases.
  *
@@ -136,38 +144,6 @@ private:
 	RaiiGsl<gsl_rng> randomizer;
 };
 
-namespace lcmc { namespace stats {
-
-using std::string;
-
-void getSummaryStats(const vector<double>& values, double& mean, double& stddev, 
-		const string& statName);
-
-}}		// end lcmc::stats
-
-/** This function emulates the BOOST_CHECK_CLOSE_FRACTION macro.
- *
- * The macro crashes whenever the test fails, making it too unstable to use. 
- * This function behaves identically to the macro, except that it cannot 
- * report the code that triggered the test.
- *
- * @param[in] val1, val2 The values to compare
- * @param[in] frac The fractional difference allowed between them
- * 
- * @return true iff |val1 - val2|/|val1| and |val1 - val2|/|val2| < frac
- */
-void myTestClose(double val1, double val2, double frac) {
-	using namespace ::boost::test_tools;
-	
-	predicate_result result = check_is_close(val1, val2, 
-			fraction_tolerance_t<double>(frac));
-	char buf[256];
-	sprintf(buf, "floating point comparison failed: [%.10g != %.10g] (%.10g >= %.10g)", val1, val2, fabs(val1-val2), frac);
-	
-	BOOST_CHECK_MESSAGE(static_cast<bool>(result), buf);
-//	BOOST_CHECK_CLOSE_FRACTION(val1, val2, frac);
-}
-
 /** Test cases for testing &Delta;m&Delta;t-based timescales
  * @class Boost::Test::test_dmdt
  */
@@ -215,23 +191,25 @@ BOOST_AUTO_TEST_CASE(quantileCuts)
 	
 	double mean50Amp3s, error50Amp3s;
 	lcmc::stats::getSummaryStats(cut50Amp3s, mean50Amp3s, error50Amp3s, "Median @ 1/3 Amp");
-	BOOST_CHECK(gsl_isnan(mean50Amp3s));
+	BOOST_CHECK(testNan(mean50Amp3s));
 	
 	double mean50Amp2s, error50Amp2s;
 	lcmc::stats::getSummaryStats(cut50Amp2s, mean50Amp2s, error50Amp2s, "Median @ 1/3 Amp");
-	BOOST_CHECK(gsl_isnan(mean50Amp2s));
+	BOOST_CHECK(testNan(mean50Amp2s));
 	
 	double mean90Amp3s, error90Amp3s;
 	lcmc::stats::getSummaryStats(cut90Amp3s, mean90Amp3s, error90Amp3s, "90% @ 1/3 Amp");
 	myTestClose(mean90Amp3s, 0.709, 
-				gsl_isnan(error90Amp3s) || error90Amp3s < BINWIDTH ? 
+				testNan(error90Amp3s) || error90Amp3s < BINWIDTH ? 
 				BINWIDTH : 2.0*error90Amp3s);
 
 	double mean90Amp2s, error90Amp2s;
 	lcmc::stats::getSummaryStats(cut90Amp2s, mean90Amp2s, error90Amp2s, "90% @ 1/3 Amp");
 	myTestClose(mean90Amp2s, 1.178, 
-			gsl_isnan(error90Amp2s) || error90Amp2s < BINWIDTH ? 
+			testNan(error90Amp2s) || error90Amp2s < BINWIDTH ? 
 			BINWIDTH : 2.0*error90Amp2s);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+}}		// end lcmc::test

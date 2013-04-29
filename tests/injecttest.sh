@@ -1,6 +1,12 @@
+#! /bin/bash
+
 rm -vf injecttest_snr*.log
 rm -vf nonspitzernonvar.cat
-ln -s test1.cat nonspitzernonvar.cat
+#ln will print error message on failure
+ln -vs test1.cat nonspitzernonvar.cat || return $?
+# soft link creation can fail quietly
+if [[ ! -r nonspitzernonvar.cat ]] ; then echo "Cannot read nonspitzernonvar.cat" ; return 1 ; fi
+
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 400.0" -w "0.30 0.30" --width2 "0.030 0.030" --add NonSpitzerNonVar \
 	flat sine slow_peak flare_peak flat_peak \
 	>> injecttest_snr1e6.log
@@ -35,9 +41,15 @@ nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 400.0" -w "0.01 0.01" --width2 
 	slow_peak flare_peak flat_peak \
 	>> injecttest_snr1e6.log
 diff -s injecttarget_snr1e6.log injecttest_snr1e6.log
+# diff returns 0 iff files are equal
+return $?
 
 #rm -vf nonspitzernonvar.cat
-#ln -s test2.cat nonspitzernonvar.cat
+##ln will print error message on failure
+#ln -vs test2.cat nonspitzernonvar.cat || return $?
+## soft link creation can fail quietly
+#if [[ ! -r nonspitzernonvar.cat ]] ; then echo "Cannot read nonspitzernonvar.cat" ; return 1 ; fi
+#
 #nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 400.0" -w "0.30 0.30" --width2 "0.030 0.030" --add NonSpitzerNonVar \
 #	flat sine slow_peak flare_peak flat_peak \
 #	>> injecttest_snr100.log
@@ -72,9 +84,15 @@ diff -s injecttarget_snr1e6.log injecttest_snr1e6.log
 #	slow_peak flare_peak flat_peak \
 #	>> injecttest_snr100.log
 #diff -s injecttarget_snr100.log injecttest_snr100.log
-#
+## diff returns 0 iff files are equal
+#return $?
+
 #rm -vf nonspitzernonvar.cat
-#ln -s test3.cat nonspitzernonvar.cat
+##ln will print error message on failure
+#ln -vs test3.cat nonspitzernonvar.cat || return $?
+## soft link creation can fail quietly
+#if [[ ! -r nonspitzernonvar.cat ]] ; then echo "Cannot read nonspitzernonvar.cat" ; return 1 ; fi
+#
 #nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 400.0" -w "0.30 0.30" --width2 "0.030 0.030" --add NonSpitzerNonVar \
 #	flat sine slow_peak flare_peak flat_peak \
 #	>> injecttest_snr5.log
@@ -109,3 +127,5 @@ diff -s injecttarget_snr1e6.log injecttest_snr1e6.log
 #	slow_peak flare_peak flat_peak \
 #	>> injecttest_snr5.log
 #diff -s injecttarget_snr5.log injecttest_snr5.log
+## diff returns 0 iff files are equal
+#return $?

@@ -1,0 +1,40 @@
+# Common recipes for lightcurveMC compilation
+# by Krzysztof Findeisen
+# Created April 28, 2013
+# Last modified April 28, 2013
+
+#---------------------------------------
+# Actual compilation options
+
+# override default recipe to make sure the flags are used when compiling
+%.o: 
+# Avoid using $^ because it will include any dependencies
+	@echo "Compiling $(@:.o=.cpp)..."
+	@$(CXX) -c $(CXXFLAGS) -o $@ $(@:.o=.cpp) $(addprefix -I ,$(INCDIRS))
+
+#---------------------------------------
+# Set up dependencies
+%.d: %.cpp
+	@echo "Dependencies for $^ -> $@"
+	@$(CXX) $(CXXFLAGS) -MM $^ -MF $@.$$$$; \
+	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
+	$(RM) $@.$$$$
+
+include $(SOURCES:.cpp=.d)
+
+#---------------------------------------
+# Cleanup code
+# Recursion is safe when $(TESTDIRS) is empty
+.PHONY: cleanall clean cleandepend
+clean:
+	-$(RM) -v *.o *.a
+	-@for d in $(TESTDIRS); do (cd $$d; make clean ); done
+
+cleandepend: 
+	-$(RM) -v *.d
+	-@for d in $(TESTDIRS); do (cd $$d; make cleandepend ); done
+
+cleanall: clean cleandepend
+
+.PHONY: rebuild
+rebuild: clean $(PROJ)

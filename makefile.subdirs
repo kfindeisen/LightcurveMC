@@ -1,0 +1,14 @@
+# Common recipes for lightcurveMC compilation
+# by Krzysztof Findeisen
+# Created April 28, 2013
+# Last modified April 28, 2013
+
+OBJS     = $(SOURCES:.cpp=.o)
+
+#---------------------------------------
+# Primary build option
+PROJ := $(PROJ:=.a)
+PROJ := $(PROJ:%=../lib%)
+$(PROJ): $(OBJS)
+	@echo "Packaging $@..."
+	@$(AR) $(ARFLAGS) $@ $^
