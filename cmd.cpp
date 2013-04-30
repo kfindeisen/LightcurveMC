@@ -73,6 +73,9 @@ using models::RangeList;
  *
  * @todo Make dataSet something better than stringly typed.
  * @todo Break up this function.
+ * 
+ * @todo Current implementation vulnerable to mismatches in which argument 
+ *	is being referred to. Rewrite!
  */
 void parseArguments(int argc, char* argv[], 
 		double &sigma, long &nTrials, long &toPrint, 
@@ -127,7 +130,6 @@ void parseArguments(int argc, char* argv[],
 	ValueArg<long> argRepeat("", "ntrials", "Number of light curves generated per bin. 1000 if omitted.", 
 		false, 
 		1000, &posInt, cmd);
-
 	ValueArg<long> argPrint("", "print", "Number of light curves to print. 0 if omitted.", 
 		false, 
 		0, &nonNegInt, cmd);
@@ -148,28 +150,31 @@ void parseArguments(int argc, char* argv[],
 		"the smallest and largest periods, in days, to be tested. The period will be drawn from a log-uniform distribution.", 
 		false, 
 		Range(), &posRange, cmd);
-
 	ValueArg<Range> argAmp ("a", "amp", 
 		"the smallest and largest amplitudes to be tested. The amplitude will be drawn from a log-uniform distribution.", 
 		false, 
 		Range(), &posRange, cmd);
-
 	ValueArg<Range> argPhi ("", "ph", 
 		"the smallest and largest initial phases to be tested. The phase will be drawn from a uniform distribution. MUST be a subinterval of [0.0, 1.0]. Set to \"0.0 1.0\" if unspecified.", 
 		false, 
 		Range(0.0, 1.0), &unitRange, cmd);
-
 	ValueArg<Range> argDiffus ("d", "diffus", 
 		"the smallest and largest diffusion constants to be tested. The constant will be drawn from a log-uniform distribution.", 
 		false, 
 		Range(), &posRange, cmd);
-
 	ValueArg<Range> argWidth ("w", "width", 
 		"the smallest and largest event widths to be tested. The width will be drawn from a log-uniform distribution.", 
 		false, 
 		Range(), &posRange, cmd);
-
 	ValueArg<Range> argWidth2 ("", "width2",   "the smallest and largest secondary widths to be tested. The width will be drawn from a log-uniform distribution.", 
+		false, 
+		Range(), &posRange, cmd);
+	ValueArg<Range> argPer2 ("", "period2", 
+		"the smallest and largest secondary periods, in days, to be tested. The secondary period will be drawn from a log-uniform distribution.", 
+		false, 
+		Range(), &posRange, cmd);
+	ValueArg<Range> argAmp2 ("", "amp2", 
+		"the smallest and largest secondary amplitudes to be tested. The secondary amplitude will be drawn from a log-uniform distribution.", 
 		false, 
 		Range(), &posRange, cmd);
 
@@ -258,6 +263,13 @@ void parseArguments(int argc, char* argv[],
 	// Require user to set diffusion constant for random walks
 	if (argDiffus.isSet()) {
 		paramRanges.add("d",      argDiffus.getValue(), RangeList::LOGUNIFORM);
+	}
+	// Require user to set secondary amplitude and period, where applicable
+	if (argAmp2.isSet()) {
+		paramRanges.add("a2",       argAmp2.getValue(), RangeList::LOGUNIFORM);
+	}
+	if (argPer2.isSet()) {
+		paramRanges.add("p2",       argPer2.getValue(), RangeList::LOGUNIFORM);
 	}
 }
 

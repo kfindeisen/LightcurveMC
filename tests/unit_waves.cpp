@@ -274,9 +274,9 @@ void testPeriodic(size_t nTest, const TestFactory& factory) {
 	}
 }
 
-/** Test cases for testing whether the simulated Gaussian processes have the 
- * correct distribution
- * @class Boost::Test::test_gp
+/** Test cases for testing whether the simulated light curves have the 
+ * correct properties
+ * @class BoostTest::test_wave
  */
 BOOST_FIXTURE_TEST_SUITE(test_wave, WaveData)
 

@@ -15,8 +15,8 @@
 #---------------------------------------
 # Set up dependencies
 %.d: %.cpp
-	@echo "Dependencies for $^ -> $@"
-	@$(CXX) $(CXXFLAGS) -MM $^ -MF $@.$$$$; \
+	@echo "Dependencies for $(filter %.cpp,$^) -> $@"
+	@$(CXX) $(CXXFLAGS) -MM $(filter %.cpp,$^) -MF $@.$$$$; \
 	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
 	$(RM) $@.$$$$
 
@@ -24,15 +24,15 @@ include $(SOURCES:.cpp=.d)
 
 #---------------------------------------
 # Cleanup code
-# Recursion is safe when $(TESTDIRS) is empty
+# Recursion is safe when $(DIRS) is empty
 .PHONY: cleanall clean cleandepend
 clean:
-	-@$(RM) -v *.o *.a
-	-@for d in $(TESTDIRS); do (cd $$d; make clean ); done
+	-@$(RM) -v *.o *.a *.stackdump *~
+	-@for d in $(DIRS); do if [[ -d $$d ]]; then make -C $$d --no-print-directory clean; fi; done
 
 cleandepend: 
 	-@$(RM) -v *.d
-	-@for d in $(TESTDIRS); do (cd $$d; make cleandepend ); done
+	-@for d in $(DIRS); do if [[ -d $$d ]]; then make -C $$d --no-print-directory cleandepend; fi; done
 
 cleanall: clean cleandepend
 

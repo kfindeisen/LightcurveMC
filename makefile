@@ -10,37 +10,37 @@ include makefile.inc
 #---------------------------------------
 # Select all files
 PROJ     = lightcurveMC
-SOURCES  = driver.cpp cmd.cpp cmd_classes.cpp binstats.cpp nanstats.cpp \
+SOURCES  = cmd.cpp cmd_classes.cpp binstats.cpp nanstats.cpp \
 	lcsupport.cpp lightcurve.cpp paramlist.cpp lcregistry.cpp fluxmag.cpp \
 	uncopyable.cpp \
 	mcio.cpp $(INFORMALINC)/kpffileio.cpp ../lightCurveSpecs/lcsio.cpp
 OBJS     = $(SOURCES:.cpp=.o)
 DIRS     = samples stats waves
 LIBS     = timescales gsl gslcblas
-TESTDIRS = $(DIRS) tests
 TESTLIBS = $(LIBS) boost_unit_test_framework 
 
 #---------------------------------------
 # Primary build option
-$(PROJ): $(OBJS) $(DIRS)
-	@echo "Linking $@ with $(addprefix -l,$(LIBS))"
-	@$(CXX) $(CXXFLAGS) $(LIBFLAGS) -o $@ $(OBJS) $(DIRS:%=-l%) $(LIBS:%=-l%) $(LIBDIRS:%=-L%) -L.
+$(PROJ): driver.o $(OBJS) $(DIRS)
+	@echo "Linking $@ with $(LIBS:%=-l%)"
+	@$(CXX) $(CXXFLAGS) $(LIBFLAGS) -o $@ $(filter %.o,$^) $(DIRS:%=-l%) $(LIBS:%=-l%) $(LIBDIRS:%=-L%) -L.
 
 #---------------------------------------
 # Subdirectories
 # Can't declare the directories phony directly, or the program will be built every time
 .PHONY: cd
 samples: cd
-	cd samples; make $(MFLAGS)
+	@make -C samples --no-print-directory $(MFLAGS)
 
 stats: cd
-	cd stats; make $(MFLAGS)
+	@make -C stats --no-print-directory $(MFLAGS)
 
+tests/%.o: tests
 tests: cd
-	cd tests; make $(MFLAGS)
+	@make -C tests --no-print-directory $(MFLAGS)
 
 waves: cd
-	cd waves; make $(MFLAGS)
+	@make -C waves --no-print-directory $(MFLAGS)
 
 include makefile.common
 
@@ -54,8 +54,9 @@ include makefile.common
 
 #---------------------------------------
 # Doxygen
-# No phony needed, since we are literally building a directory
-doc: $(SOURCES) $(TESTSOURCES) doxygen.cfg
+.PHONY: doc
+doc: doc/
+doc/: driver.cpp $(SOURCES) $(DIRS) tests doxygen.cfg
 	$(RM) -r doc/*
 	doxygen doxygen.cfg
 
@@ -63,13 +64,16 @@ doc: $(SOURCES) $(TESTSOURCES) doxygen.cfg
 # Test cases
 .PHONY: unittest
 unittest: tests/test
-tests/test: $(OBJS) $(TESTDIRS)
-	@echo "Linking $@ with $(addprefix -l,$(TESTLIBS))"
-	@$(CXX) $(CXXFLAGS) $(LIBFLAGS) -o $@ $(OBJS) $(TESTDIRS:%=-l%) $(TESTLIBS:%=-l%) $(LIBDIRS:%=-L%) -L.
+tests/test: $(OBJS) $(DIRS)
+	@echo "Linking $@ with $(TESTLIBS:%=-l%)"
+	@$(CXX) $(CXXFLAGS) $(LIBFLAGS) -o $@ $(filter %.o,$^) $(DIRS:%=-l%) $(TESTLIBS:%=-l%) $(LIBDIRS:%=-L%) -L.
 
 .PHONY: autotest
 autotest: $(PROJ) unittest
 	cd tests; source autotest.sh
+
+include test.d
+test.d: tests
 
 #---------------------------------------
 # Doxygen

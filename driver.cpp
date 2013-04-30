@@ -133,7 +133,7 @@ int main(int argc, char* argv[]) {
 	
 	////////////////////
 	// Load and preprocess the data
-	/** The injectMode flag here is dangerous... rewrite later!
+	/** @todo The injectMode flag here is dangerous... rewrite later!
 	 */
 	if (!injectMode) {
 		try {
@@ -198,7 +198,7 @@ int main(int argc, char* argv[]) {
 					// lc[j] already contains the "noise", 
 					// so just add the "real" simulated  
 					// signal
-					/** @bug Either new ILightCurve implementation or its driver code much too slow
+					/** @bug Either new ILightCurve implementation or its driver code much too slow when --add keyword is used
 					 */
 					vector<double> temp;
 					lcInstance->getFluxes(temp);

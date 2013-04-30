@@ -238,7 +238,7 @@ void testVectors(unsigned long int seed, const vector<double>& times)
 
 /** Test cases for testing functions related to generating 
  *	multinormal distributions
- * @class Boost::Test::test_stats
+ * @class BoostTest::test_stats
  */
 BOOST_FIXTURE_TEST_SUITE(test_stats, StatData)
 

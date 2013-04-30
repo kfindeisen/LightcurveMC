@@ -2,7 +2,7 @@
  * @file projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified April 27, 2013
+ * @date Last modified April 29, 2013
  *
  * @todo Add proper exception classes. Put exceptions in exception namespace 
  *	within lcmc::models and lcmc::inject.
@@ -24,7 +24,7 @@
 
 /** @mainpage
  *
- * @section intro Introduction
+ * @section intro Overview
  *
  * Lightcurve MC carries out Monte Carlo simulations of statistical light curve 
  * analysis, given a fixed observing pattern. The program is designed to be 
@@ -49,27 +49,39 @@
  * - Changed: renamed lcmcinject, lcmcmodels, lcmcparse, lcmcstats, 
  *	and lcmcutils to lcmc::inject, lcmc::models, lcmc::parse, 
  *	lcmc::stats, and lcmc::utils, respectively.
- * - Fixed: tests in test_gp.cpp now report success on completion
- * - Fixed: LcBinStats::analyzeLightCurve() now propagates exception types correctly
+ * - Fixed: tests in @ref lcmc::test::BoostTest::test_gp "test_gp" now report 
+ *	success on completion
+ * - Fixed: @ref lcmc::stats::LcBinStats::analyzeLightCurve() 
+ *	"LcBinStats::analyzeLightCurve()" now propagates exception 
+ *	types correctly
  * - Fixed: the Boost.Test library is now statically linked on systems where I 
  *	installed it without admin privileges, even if a shared library is 
  *	found by the linker
  * - Fixed: integration test scripts run more consistently across systems
- * - Changed: refactored test_gp.
- * - Added: test cases to test_stats.
- * - Changed: bug that lcmc::models::SimpleGp produces inconsistent output 
- *	downgraded to a warning, and moved to getHalfMatrix(). See 
- *	getHalfMatrix() documentation for more details.
+ * - Changed: refactored @ref lcmc::test::BoostTest::test_gp "test_gp".
+ * - Added: test cases to @ref lcmc::test::BoostTest::test_stats "test_stats".
+ * - Changed: bug that @ref lcmc::models::SimpleGp "SimpleGp" produces 
+ *	inconsistent output downgraded to a warning, and moved to 
+ *	getHalfMatrix(). See getHalfMatrix() documentation for more details.
  * - Fixed: test output files now distinguish runs with identical light curve 
  *	parameters but different noise levels
  * - Fixed: the -\-add command line argument can no longer be combined with 
  *	either the list of julian dates or with the -\-noise argument
  * - Added: input validation for all command line arguments
  * - Added: cmdtest.sh, an integration test suite for command line errors
- * - Fixed: LcBinStats::printBinStats() will now report zero standard 
- *	deviation, not NaN, for statistics that were always calculated with 
- *	the same value
+ * - Fixed: @ref lcmc::stats::LcBinStats::printBinStats() "LcBinStats::printBinStats()" 
+ *	will now report zero standard deviation, not NaN, for statistics 
+ *	that were always calculated to the same value
+ * - Added: documentation for test code. Declared a new namespace, 
+ *	lcmc::test, containing all test suites.
  * - Fixed: Light curves no longer generate negative fluxes
+ * - Added: @ref lcmc::test::BoostTest::test_wave "test_wave", a unit test 
+ *	suite for the older periodic light curves
+ * - Fixed: makefile now handles include dependencies in 
+ *	subdirectories correctly
+ * - Added: implemented @ref lcmc::models::RandomWalk "RandomWalk" and 
+ *	@ref lcmc::models::TwoScaleGp "TwoScaleGp".
+ * - Added: support for command-line arguments "amp2" and "period2".
  *
  * @subsection v2_0_0 2.0.0
  *
@@ -77,13 +89,16 @@
  *	allows the user to specify an arbitrary set of parameters, but at the 
  *	cost of evaluating only a single bin per run
  * - Changed: redid the entire way information is passed to 
- *	lcmcmodels::ILightCurve subclasses, in particular rewriting the 
- *	interface of the lcmcmodels::ParamList class from scratch and moving 
- *	it outside the lcmcmodels::ILightCurve class.
- * - Changed: redid lcmcmodels::ILightCurve interface to add support for 
- *	stochastic light curves.
- * - Added: implemented lcmcmodels::WhiteNoise, lcmcmodels::DampedRandomWalk, 
- *	and lcmcmodels::SimpleGp
+ *	@ref lcmc::models::ILightCurve "ILightCurve" subclasses, 
+ *	in particular rewriting the interface of the 
+ *	@ref lcmc::models::ParamList "ParamList" class 
+ *	from scratch and moving it outside the 
+ *	@ref lcmc::models::ILightCurve "ILightCurve" class.
+ * - Changed: redid @ref lcmc::models::ILightCurve "ILightCurve" 
+ *	interface to add support for stochastic light curves.
+ * - Added: implemented @ref lcmc::models::WhiteNoise "WhiteNoise", 
+ *	@ref lcmc::models::DampedRandomWalk "DampedRandomWalk", and
+ *	@ref lcmc::models::SimpleGp "SimpleGp".
  * - Changed: cleaned up documentation.
  * - Fixed: C1 will now be calculated correctly in magnitude space for light 
  *	curves where the measured (noisy) flux is negative.
@@ -98,11 +113,18 @@
  *
  * @subsection v1_4 1.4
  *
- * - Changed: Added lcmcmodels::LightCurve heirarchy
+ * - Changed: Added @ref lcmc::models::ILightCurve "LightCurve" heirarchy
  *
  * @subsection v1_3 1.3
  *
  * - Started formal version documentation
+ */
+
+/* Project dependencies
+ * Gnu Scientific Library 1.8+ (set by gsl_ran_gaussian_*) [department has 1.10, I have ???]
+ * TCLAP 1.2+ (set by use of ArgTraits)
+ * Boost.Test 1.31+ (set by key Boost.Test features) [department has Boost 1.53.0, I have Boost 1.47.0]
+ * Timescales 0.3+ (set by use of dmdt())
  */
 
 #endif		// LCMCPROJINFOH

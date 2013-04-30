@@ -2,7 +2,7 @@
  * @file unit_dmdt.cpp
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified April 28, 2013
+ * @date Last modified April 29, 2013
  */
 
 #include "../warnflags.h"
@@ -34,6 +34,7 @@
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
 #include "test.h"
+#include "../binstats.h"
 #include "../stats/dmdt.h"
 #include "../raiigsl.tmp.h"
 
@@ -43,7 +44,7 @@ namespace lcmc { namespace stats {
 
 using std::string;
 
-void getSummaryStats(const vector<double>& values, double& mean, double& stddev, 
+void getSummaryStats(const DoubleVec& values, double& mean, double& stddev, 
 		const string& statName);
 
 }}		// end lcmc::stats
@@ -145,7 +146,7 @@ private:
 };
 
 /** Test cases for testing &Delta;m&Delta;t-based timescales
- * @class Boost::Test::test_dmdt
+ * @class BoostTest::test_dmdt
  */
 BOOST_FIXTURE_TEST_SUITE(test_dmdt, SimData)
 

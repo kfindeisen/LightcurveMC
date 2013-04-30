@@ -143,6 +143,9 @@ void getHalfMatrix(const gsl_matrix* const a, gsl_matrix* & b) {
  * @post corrVec.size() == indVec.size()
  *
  * @todo Add input validation
+ *
+ * @bug Poor performance suggests the cache is missed more often than 
+ *	it should be.
  */
 void multiNormal(const vector<double>& indVec, const gsl_matrix& covar, 
 		vector<double>& corrVec) {

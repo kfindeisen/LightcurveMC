@@ -68,7 +68,7 @@ private:
  */
 class SimpleGp : public Stochastic {
 public: 
-	/** Initializes the light curve to represent a Gaussian process.
+	/** Initializes the light curve to represent a standard Gaussian process.
 	 */
 	explicit SimpleGp(const std::vector<double>& times, double sigma, double tau);
 
@@ -85,10 +85,11 @@ private:
  */
 class TwoScaleGp : public Stochastic {
 public: 
-	/** Initializes the light curve to represent a Gaussian process.
+	/** Initializes the light curve to represent a two-component 
+	 *	Gaussian process.
 	 */
 	explicit TwoScaleGp(const std::vector<double>& times, 
-			double sigma1, double sigma2, double tau1, double tau2);
+			double sigma1, double tau1, double sigma2, double tau2);
 
 private:
 	/** Computes a realization of the light curve. 

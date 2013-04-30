@@ -2,7 +2,7 @@
  * @file lcregistry.cpp
  * @author Krzysztof Findeisen
  * @date Created April 25, 2012
- * @date Last modified April 21, 2013
+ * @date Last modified April 29, 2013
  * 
  * The functions defined here handle the details of the ILightCurve subclasses.
  */
@@ -90,8 +90,10 @@ const LightCurveRegistry & getLightCurveRegistry() {
 
 		// Gaussian process waveforms
 		registry.insert(LightCurveEntry("white_noise",    WHITENOISE() ));
+		registry.insert(LightCurveEntry(       "walk",    RANDOMWALK() ));
 		registry.insert(LightCurveEntry(        "drw",  DAMPRANDWALK() ));
 		registry.insert(LightCurveEntry(  "simple_gp",         ONEGP() ));
+		registry.insert(LightCurveEntry(     "two_gp",         TWOGP() ));
 	}
 
 	// assert: registry is fully defined
@@ -146,10 +148,14 @@ std::auto_ptr<ILightCurve> lcFactory(LightCurveType whichLc, const std::vector<d
 	// Gaussian process light curves	
 	} else if (whichLc ==   WHITENOISE()) {
 		return auto_ptr<ILightCurve>(new WhiteNoise  (times, lcParams.get("a")));
+	} else if (whichLc == RANDOMWALK()) {
+		return auto_ptr<ILightCurve>(new RandomWalk(times, lcParams.get("d")));
 	} else if (whichLc == DAMPRANDWALK()) {
 		return auto_ptr<ILightCurve>(new DampedRandomWalk(times, lcParams.get("d"), lcParams.get("p")));
 	} else if (whichLc == ONEGP()) {
 		return auto_ptr<ILightCurve>(new SimpleGp(times, lcParams.get("a"), lcParams.get("p")));
+	} else if (whichLc == TWOGP()) {
+		return auto_ptr<ILightCurve>(new TwoScaleGp(times, lcParams.get("a"), lcParams.get("p"), lcParams.get("a2"), lcParams.get("p2") ));
 
 	} else {
 		throw std::invalid_argument("Unsupported light curve.");

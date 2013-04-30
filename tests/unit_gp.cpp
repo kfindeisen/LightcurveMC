@@ -69,6 +69,32 @@ public:
 	std::vector<double> times;
 };
 
+/** Factory class for generating lots of identical white noise processes
+ */
+class TestWhiteNoiseFactory : public TestFactory {
+public: 
+	/** Sets the properties of the light curve to generate
+	 *
+	 * @param[in] times the times at which the light curve is sampled
+	 * @param[in] sigma the RMS amplitude of the white noise
+	 */
+	explicit TestWhiteNoiseFactory(const std::vector<double> times, double sigma) 
+			: TestFactory(), times(times), sigma(sigma) {
+	}
+	
+	/** Generates a new realization of a white noise process having the 
+	 * properties given to the constructor
+	 */
+	std::auto_ptr<lcmc::models::ILightCurve> make() const {
+		return std::auto_ptr<lcmc::models::ILightCurve>(
+			new lcmc::models::WhiteNoise(times, sigma));
+	}
+
+private: 
+	std::vector<double> times;
+	double sigma;
+};
+
 /** Factory class for generating lots of identical damped random walks
  */
 class TestDrwFactory : public TestFactory {
@@ -97,6 +123,32 @@ private:
 	double tau;
 };
 
+/** Factory class for generating lots of identical random walks
+ */
+class TestRwFactory : public TestFactory {
+public: 
+	/** Sets the properties of the light curve to generate
+	 *
+	 * @param[in] times the times at which the light curve is sampled
+	 * @param[in] diffus the diffusion constant for the random walk
+	 */
+	explicit TestRwFactory(const std::vector<double> times, double diffus) 
+			: TestFactory(), times(times), diffus(diffus) {
+	}
+	
+	/** Generates a new realization of a damped random walk having the 
+	 * properties given to the constructor
+	 */
+	std::auto_ptr<lcmc::models::ILightCurve> make() const {
+		return std::auto_ptr<lcmc::models::ILightCurve>(
+			new lcmc::models::RandomWalk(times, diffus));
+	}
+
+private: 
+	std::vector<double> times;
+	double diffus;
+};
+
 /** Factory class for generating lots of identical standard Gaussian processes
  */
 class TestGpFactory : public TestFactory {
@@ -123,6 +175,38 @@ private:
 	std::vector<double> times;
 	double sigma;
 	double tau;
+};
+
+/** Factory class for generating lots of identical two-timescale 
+ *	Gaussian processes
+ */
+class TestTwoGpFactory : public TestFactory {
+public: 
+	/** Sets the properties of the light curve to generate
+	 *
+	 * @param[in] times the times at which the light curve is sampled
+	 * @param[in] sigma1, sigma2 the RMS amplitudes of the Gaussian components
+	 * @param[in] tau1, tau2 the coherence times for the Gaussian components
+	 */
+	explicit TestTwoGpFactory(const std::vector<double> times, 
+			double sigma1, double tau1, double sigma2, double tau2) 
+			: TestFactory(), times(times), 
+			sigma1(sigma1), sigma2(sigma2), tau1(tau1), tau2(tau2) {
+	}
+	
+	/** Generates a new realization of a two-timescale Gaussian process 
+	 * having the properties given to the constructor
+	 */
+	std::auto_ptr<lcmc::models::ILightCurve> make() const {
+		return std::auto_ptr<lcmc::models::ILightCurve>(
+			new lcmc::models::TwoScaleGp(times, 
+					sigma1, tau1, sigma2, tau2));
+	}
+
+private: 
+	std::vector<double> times;
+	double sigma1, sigma2;
+	double tau1, tau2;
 };
 
 /** Workhorse function for generating a Gaussian process and testing whether 
@@ -178,6 +262,21 @@ void testGp(size_t nTest, const std::string& fileName, const TestFactory& factor
 	BOOST_CHECK(true);
 }
 
+/** Generates many white noise signals and tests whether they have the 
+ * correct distribution.
+ *
+ * @param[in] nTest The number of light curve instances to generate
+ * @param[in] times The times at which each light curve should be sampled.
+ *
+ * @see testGp()
+ */
+void testWhite(size_t nTest, const std::vector<double>& times) {
+	char fileName[80];
+	sprintf(fileName, "run_white_%i.dat", nTest);
+	
+	testGp(nTest, fileName, TestWhiteNoiseFactory(times, 1.0));
+}
+
 /** Generates many damped random walks and tests whether they have the 
  * correct distribution.
  *
@@ -192,6 +291,22 @@ void testDrw(size_t nTest, const std::vector<double>& times, double tau) {
 	sprintf(fileName, "run_drw_%i_%.1f.dat", nTest, tau);
 	
 	testGp(nTest, fileName, TestDrwFactory(times, 2.0/tau, tau));
+}
+
+/** Generates many random walks and tests whether they have the 
+ * correct distribution.
+ *
+ * @param[in] nTest The number of light curve instances to generate
+ * @param[in] times The times at which each light curve should be sampled.
+ * @param[in] diffus The diffusion constant of the random walk.
+ *
+ * @see testGp()
+ */
+void testRw(size_t nTest, const std::vector<double>& times, double diffus) {
+	char fileName[80];
+	sprintf(fileName, "run_rw_%i_%.3f.dat", nTest, diffus);
+	
+	testGp(nTest, fileName, TestRwFactory(times, diffus));
 }
 
 /** Generates many standard Gaussian processes and tests whether they have 
@@ -210,23 +325,49 @@ void testStandardGp(size_t nTest, const std::vector<double> times, double tau) {
 	testGp(nTest, fileName, TestGpFactory(times, 1.0, tau));
 }
 
+/** Generates many two-timescale Gaussian processes and tests whether 
+ * they have the correct distribution.
+ *
+ * @param[in] nTest The number of light curve instances to generate
+ * @param[in] times The times at which each light curve should be sampled.
+ * @param[in] tau1, tau2 the coherence times of the components
+ *
+ * @see testGp()
+ */
+void testTwoGp(size_t nTest, const std::vector<double> times, double tau1, double tau2) {
+	char fileName[80];
+	sprintf(fileName, "run_gp2_%i_%.1f_%.1f.dat", nTest, tau1, tau2);
+	
+	testGp(nTest, fileName, TestTwoGpFactory(times, 1.0, tau1, 1./3., tau2));
+}
+
 /** Test cases for testing whether the simulated Gaussian processes have the 
  * correct distribution
- * @class Boost::Test::test_gp
+ * @class BoostTest::test_gp
  */
 BOOST_FIXTURE_TEST_SUITE(test_gp, ObsData)
 
+/* @class lcmc::models::WhiteNoise
+ *
+ * @test A WhiteNoise sampled at the PTF epochs has a distribution 
+ *	consistent with a multivariate normal with the expected 
+ *	covariance matrix
+ */
+/** Tests whether the simulated white noise processes have the correct distribution
+ *
+ * @see testWhite()
+ */
+BOOST_AUTO_TEST_CASE(white)
+{
+	testWhite(TEST_COUNT, times);
+}
+
 /* @class lcmc::models::DampedRandomWalk
  *
- * @test A DampedRandomWalk sampled at the PTF epochs and &tau; = 2 days 
- *	has a distribution consistent with a multivariate normal 
- *	with the expected covariance matrix
- * @test A DampedRandomWalk sampled at the PTF epochs and &tau; = 20 days 
- *	has a distribution consistent with a multivariate normal 
- *	with the expected covariance matrix
- * @test A DampedRandomWalk sampled at the PTF epochs and &tau; = 200 days 
- *	has a distribution consistent with a multivariate normal 
- *	with the expected covariance matrix
+ * @test A DampedRandomWalk sampled at the PTF epochs and 
+ *	&tau; &isin; {2 days, 20 days, 200 days} has a distribution 
+ *	consistent with a multivariate normal with the expected 
+ *	covariance matrix
  */
 /** Tests whether the simulated damped random walks have the correct distribution
  *
@@ -239,17 +380,30 @@ BOOST_AUTO_TEST_CASE(drw)
 	testDrw(TEST_COUNT, times, 200.0);
 }
 
+/* @class lcmc::models::RandomWalk
+ *
+ * @test A RandomWalk sampled at the PTF epochs and 
+ *	D &isin; {0.001 day^-1, 0.01 day^-1, and 0.1 day^-1} has a distribution 
+ *	consistent with a multivariate normal with the expected 
+ *	covariance matrix
+ */
+/** Tests whether the simulated random walks have the correct distribution
+ *
+ * @see testRw()
+ */
+BOOST_AUTO_TEST_CASE(rw)
+{
+	testRw(TEST_COUNT, times, 0.001);
+	testRw(TEST_COUNT, times, 0.01 );
+	testRw(TEST_COUNT, times, 0.1  );
+}
+
 /* @class lcmc::models::SimpleGp
  *
- * @test A SimpleGp sampled at the PTF epochs and &tau; = 2 days 
- *	has a distribution consistent with a multivariate normal 
- *	with the expected covariance matrix
- * @test A SimpleGp sampled at the PTF epochs and &tau; = 20 days 
- *	has a distribution consistent with a multivariate normal 
- *	with the expected covariance matrix
- * @test A SimpleGp sampled at the PTF epochs and &tau; = 200 days 
- *	has a distribution consistent with a multivariate normal 
- *	with the expected covariance matrix
+ * @test A SimpleGp sampled at the PTF epochs and 
+ *	&tau; &isin; {2 days, 20 days, 200 days} has a distribution 
+ *	consistent with a multivariate normal with the expected 
+ *	covariance matrix
  */
 /** Tests whether the simulated Gaussian processes have the correct distribution
  *
@@ -260,6 +414,29 @@ BOOST_AUTO_TEST_CASE(gp1)
 	testStandardGp(TEST_COUNT, times,   2.0);
 	testStandardGp(TEST_COUNT, times,  20.0);
 	testStandardGp(TEST_COUNT, times, 200.0);
+}
+
+/* @class lcmc::models::TwoScaleGp
+ *
+ * @test A TwoScaleGp sampled at the PTF epochs and 
+ *	&tau;_1 &isin; {2 days, 20 days, 200 days} and 
+ *	&tau;_2 &isin; {1/10, 1/3, 1, 3, 10} &tau;_1 has a distribution 
+ *	consistent with a multivariate normal with the expected 
+ *	covariance matrix
+ */
+/** Tests whether the simulated Gaussian processes have the correct distribution
+ *
+ * @see testTwoGp()
+ */
+BOOST_AUTO_TEST_CASE(gp2)
+{
+	for(float tau1 = 2; tau1 < 1000.0; tau1 *= 10.0) {
+		testTwoGp(TEST_COUNT, times, tau1, tau1 / 10.0);
+		testTwoGp(TEST_COUNT, times, tau1, tau1 /  3.0);
+		testTwoGp(TEST_COUNT, times, tau1, tau1);
+		testTwoGp(TEST_COUNT, times, tau1, tau1 *  3.0);
+		testTwoGp(TEST_COUNT, times, tau1, tau1 * 10.0);
+	}
 }
 
 BOOST_AUTO_TEST_SUITE_END()

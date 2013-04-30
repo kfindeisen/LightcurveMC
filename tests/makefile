@@ -1,4 +1,4 @@
-# Compilation make for lightcurveMC/tests/*
+# Compilation make for lightcurveMC test driver
 # by Krzysztof Findeisen
 # Created April 28, 2013
 # Last modified April 28, 2013
@@ -9,10 +9,19 @@ include ../makefile.inc
 
 #---------------------------------------
 # Directory contents
-PROJ     = tests
+PROJ     = test
 
 SOURCES  = testdriver.cpp test_common.cpp \
 	unit_stats.cpp unit_dmdt.cpp unit_gp.cpp unit_waves.cpp
 
-include ../makefile.subdirs
+OBJS     = $(SOURCES:.cpp=.o)
+LIBS     = timescales gsl gslcblas boost_unit_test_framework 
+
+#---------------------------------------
+# Primary build option
+.PHONY: $(PROJ)
+$(PROJ): $(OBJS)
+	@echo "Updating list of test code files..."
+	@echo "tests/test: $(OBJS:%=tests/%)" > ../test.d
+
 include ../makefile.common
