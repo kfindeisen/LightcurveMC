@@ -113,41 +113,6 @@ void myTestClose(double val1, double val2, double frac) {
 //	BOOST_CHECK_CLOSE_FRACTION(val1, val2, frac);
 }
 
-/** Defines an object testing for approximate equality with 
- *	a particular tolerance
- *
- * @param[in] epsilon The maximum fractional difference between two 
- *	values that are considered equal
- * 
- * @post ApproxEqual will accept a pair of values as equal 
- *	iff |val1 - val2|/|val1| and |val1 - val2|/|val2| < epsilon
- */
-ApproxEqual::ApproxEqual(double epsilon) : epsilon(epsilon) {
-}
-
-/** Tests whether two values are approximately equal
- *
- * @param[in] x, y The values to compare
- * 
- * @return true iff |x - y|/|x| and |x - y|/|y| < epsilon
- */
-bool ApproxEqual::operator() (double x, double y) {
-	using namespace ::boost::test_tools;
-	
-	predicate_result result = check_is_close(x, y, 
-		fraction_tolerance_t<double>(epsilon));
-
-	if (static_cast<bool>(result)) {
-		return true;
-	} else {
-		char buf[256];
-		sprintf(buf, "floating point comparison failed: [%.10g != %.10g] (%.10g >= %.10g)", 
-				x, y, fabs(x-y), epsilon);
-		BOOST_WARN_MESSAGE(false, buf);
-		return false;
-	}
-}
-
 TestFactory::~TestFactory() {
 }
 

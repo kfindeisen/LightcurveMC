@@ -20,9 +20,6 @@
 #include "stats/magdist.h"
 
 #include "warnflags.h"
-#if USELFP
-#include <lfp/lfp.h>
-#endif
 
 using std::string;
 using lcmc::models::RangeList;
@@ -164,49 +161,13 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 		
 		DoubleVec cleanTimes, cleanMags, deltaT, deltaM;
 		utils::removeNans(mags, cleanMags, times, cleanTimes);
-		#if USELFP
-		PClear(7);
-		PStart(7);
-		try{
-		#endif
 		kpftimes::dmdt(cleanTimes, cleanMags, deltaT, deltaM);
-		#if USELFP
-		PEnd(7);
-		} catch (std::runtime_error &e) {
-			PEnd(7);
-			throw;
-		}
-		#endif
 		
-		#if USELFP
-		PClear(3);
-		PStart(3);
-		try{
-		#endif
 		deltaMBinQuantile(deltaT, deltaM, binEdges, change50, 0.50);
-		#if USELFP
-		PEnd(3);
-		} catch (std::runtime_error &e) {
-			PEnd(3);
-			throw;
-		}
-		#endif
 		dmdtMedianTimes.push_back(binEdges);
 		dmdtMedians    .push_back(change50);
 
-		#if USELFP
-		PClear(4);
-		PStart(4);
-		try{
-		#endif
 		deltaMBinQuantile(deltaT, deltaM, binEdges, change90, 0.90);
-		#if USELFP
-		PEnd(4);
-		} catch (std::runtime_error &e) {
-			PEnd(4);
-			throw;
-		}
-		#endif
 	
 //		periods.push_back(truePeriod);
 

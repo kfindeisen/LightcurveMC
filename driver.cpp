@@ -164,8 +164,7 @@ int main(int argc, char* argv[]) {
 		
 		#if USELFP
 		PClear(1);
-		PClear(2);
-		PClear(3); PClear(4); PClear(7);
+		PClear(2); PClear(3);
 		#endif
 		for(long i = 0; i < nTrials; i++) {
 			#if USELFP
@@ -205,6 +204,9 @@ int main(int argc, char* argv[]) {
 					lc[j] += temp[j];
 				}
 			} else {
+				#if USELFP
+				PStart(3);
+				#endif
 				for(size_t j = 0; j < nObs; j++) {
 					vector<double> temp;
 					lcInstance->getFluxes(temp);
@@ -212,12 +214,15 @@ int main(int argc, char* argv[]) {
 					lc[j] += temp[j] + 
 						gsl_ran_gaussian(mcDriver, sigma);
 				}
+				#if USELFP
+				PEnd(3);
+				#endif
 			}
 
-			// Analyze the light curve
 			#if USELFP
 			PStart(2);
 			#endif
+			// Analyze the light curve
 			curBin.analyzeLightCurve(tSeries, lc, params);
 			#if USELFP
 			PEnd(2);
@@ -238,17 +243,20 @@ int main(int argc, char* argv[]) {
 		curBin.printBinStats(stdout);
 
 		#if USELFP
-		printf("LFP: Average time in loop: %f s\n", GetDoublePTime(1)/1000);
-		printf("LFP: Fraction spent in analyzeLightCurve: %f\n", 
+		fprintf(stderr, "LFP: %i simulations of a %s.\n", nTrials, curName.c_str());
+		fprintf(stderr, "LFP: Average time in loop: %f s\n", GetDoublePTime(1)/1000);
+
+		fprintf(stderr, "LFP: \tFraction spent calculating the data: %f\n", 
+			GetDoublePTime(3)/GetDoublePTime(1));
+		fprintf(stderr, "LFP: Average time spent calculating the data: %f s\n", 
+			GetDoublePTime(3)/1000);
+
+		fprintf(stderr, "LFP: \tFraction spent analyzing the data: %f\n", 
 			GetDoublePTime(2)/GetDoublePTime(1));
-		printf("LFP:\tAverage time spent inside analyzeLightCurve(): %f s\n", 
+		fprintf(stderr, "LFP: Average time spent analyzing the data: %f s\n", 
 			GetDoublePTime(2)/1000);
-		printf("LFP:\tFraction spent computing DMDT Plot: %f\n", 
-			GetDoublePTime(7)/GetDoublePTime(2));
-		printf("LFP:\tFraction spent on 50%% Quantile: %f\n", 
-			GetDoublePTime(3)/GetDoublePTime(2));
-		printf("LFP:\tFraction spent on 95%% Quantile: %f\n", 
-			GetDoublePTime(4)/GetDoublePTime(2));
+
+		fprintf(stderr, "\n");
 		#endif
 
 	}	// end loop over light curve types

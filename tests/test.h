@@ -32,23 +32,6 @@ bool isClose(double val1, double val2, double frac);
  */
 void myTestClose(double val1, double val2, double frac);
 
-/** Function object for testing whether two values are approximately equal
- */
-class ApproxEqual {
-public: 
-	/** Defines an object testing for approximate equality with 
-	 *	a particular tolerance
-	 */
-	explicit ApproxEqual(double epsilon);
-
-	/** Tests whether two values are approximately equal
-	 */
-	bool operator() (double x, double y);
-
-private:
-	double epsilon;
-};
-
 /** Parent factory class for generating lots of identical light curves
  */
 class TestFactory {

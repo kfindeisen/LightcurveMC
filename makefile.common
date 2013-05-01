@@ -28,11 +28,11 @@ include $(SOURCES:.cpp=.d)
 .PHONY: cleanall clean cleandepend
 clean:
 	-@$(RM) -v *.o *.a *.stackdump *~
-	-@for d in $(DIRS); do if [[ -d $$d ]]; then make -C $$d --no-print-directory clean; fi; done
+	-@for d in $(DIRS) tests; do if [[ -d $$d ]]; then make -C $$d --no-print-directory clean; fi; done
 
 cleandepend: 
 	-@$(RM) -v *.d
-	-@for d in $(DIRS); do if [[ -d $$d ]]; then make -C $$d --no-print-directory cleandepend; fi; done
+	-@for d in $(DIRS) tests; do if [[ -d $$d ]]; then make -C $$d --no-print-directory cleandepend; fi; done
 
 cleanall: clean cleandepend
 

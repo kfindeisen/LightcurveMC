@@ -2,12 +2,13 @@
  * @file lightcurves_gp.h
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
- * @date Last modified April 3, 2013
+ * @date Last modified April 30, 2013
  */
 
 #ifndef LCMCCURVEGPH
 #define LCMCCURVEGPH
 
+#include <gsl/gsl_matrix.h>
 #include "lcsubtypes.h"
 
 namespace lcmc { namespace models {
@@ -77,6 +78,11 @@ private:
 	 */	
 	void solveFluxes(std::vector<double>& fluxes) const;
 	
+	/** Allocates and initializes the covariance matrix for the 
+	 *	Gaussian process. 
+	 */
+	gsl_matrix* getCovar() const;
+	
 	double sigma, tau;
 };
 
@@ -96,6 +102,11 @@ private:
 	 */	
 	void solveFluxes(std::vector<double>& fluxes) const;
 	
+	/** Allocates and initializes the covariance matrix for the 
+	 *	Gaussian process. 
+	 */
+	gsl_matrix* getCovar() const;
+
 	double sigma1, sigma2, tau1, tau2;
 };
 

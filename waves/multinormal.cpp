@@ -2,7 +2,7 @@
  * @file multinormal.cpp
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
- * @date Last modified April 20, 2013
+ * @date Last modified April 30, 2013
  */
 
 #include <vector>
@@ -13,47 +13,12 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include "generators.h"
+#include "../approx.h"
 #include "../raiigsl.tmp.h"
 
 namespace lcmc { namespace utils {
 
 using std::vector;
-
-/** Tests whether two matrices have approximately equal elements
- *
- * @param[in] a The first matrix to compare
- * @param[in] b The second matrix to compare
- * @param[in] tolerance The fractional tolerance to which a[i,j] and b[i,j] must match
- *
- * @return True iff a and b have the same dimensions, and each 
- *	corresponding element is equal to within tolerance
- *
- * @note if either a or b is a null pointer, returns false
- */
-bool isMatrixClose(const gsl_matrix * const a, const gsl_matrix * const b, double tolerance) {
-	// Invalid matrices
-	if(a == NULL || b == NULL) {
-		return false;
-
-	// Mismatched matrices
-	} else if (a->size1 != b->size1 || a->size2 != b->size2) {
-		return false;
-	
-	// Element-by-element comparison
-	} else {
-		for(size_t i = 0; i < a->size1; i++) {
-			for(size_t j = 0; j < a->size2; j++) {
-				if (gsl_fcmp(gsl_matrix_get(a, i, j), gsl_matrix_get(b, i, j), 
-						tolerance) != 0) {
-					return false;
-				}
-			}
-		}
-		
-		// All elements compared equal
-		return true;
-	}
-}
 
 /** Replaces one matrix with another
  *
@@ -143,9 +108,6 @@ void getHalfMatrix(const gsl_matrix* const a, gsl_matrix* & b) {
  * @post corrVec.size() == indVec.size()
  *
  * @todo Add input validation
- *
- * @bug Poor performance suggests the cache is missed more often than 
- *	it should be.
  */
 void multiNormal(const vector<double>& indVec, const gsl_matrix& covar, 
 		vector<double>& corrVec) {
@@ -155,7 +117,12 @@ void multiNormal(const vector<double>& indVec, const gsl_matrix& covar,
 	const size_t N = indVec.size();
 
 	// Is the cache valid?
-	if(prefixCache == NULL || !isMatrixClose(covCache, &covar, 1e-10)) {
+	
+	// Note: isMatrixClose() is no longer used because it's 
+	// significantly slower than gsl_matrix_equal(). The extra 
+	// overhead from approximate comparison exceeded the negligible 
+	// risk of a spurious cache miss.
+	if(prefixCache == NULL || gsl_matrix_equal(covCache, &covar) != 1) {
 		replaceMatrix(covCache, &covar);
 		
 		getHalfMatrix(&covar, prefixCache);

@@ -36,6 +36,7 @@
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
 #include "test.h"
+#include "../approx.h"
 #include "../mcio.h"
 #include "../raiigsl.tmp.h"
 
@@ -233,7 +234,7 @@ void testVectors(unsigned long int seed, const vector<double>& times)
 	
 	BOOST_CHECK(fluxes.size() == oldFluxes.size() && 
 		std::equal(fluxes.begin(), fluxes.end(), oldFluxes.begin(), 
-		ApproxEqual(1e-10)) );
+		utils::ApproxEqual(1e-10)) );
 }
 
 /** Test cases for testing functions related to generating 

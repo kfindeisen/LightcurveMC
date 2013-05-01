@@ -2,7 +2,7 @@
  * @file projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified April 29, 2013
+ * @date Last modified April 30, 2013
  *
  * @todo Add proper exception classes. Put exceptions in exception namespace 
  *	within lcmc::models and lcmc::inject.
@@ -20,7 +20,7 @@
 /** Current version of the program, to make version quoted by program 
  *	consistent with documentation.
  */
-#define VERSION_STRING "2.1.0-devel"
+#define VERSION_STRING "2.1.0"
 
 /** @mainpage
  *
@@ -44,11 +44,8 @@
  * 
  * @section changelog Version History
  *
- * @subsection v2_1_0 2.1.0-devel
+ * @subsection v2_1_0 2.1.0
  *
- * - Changed: renamed lcmcinject, lcmcmodels, lcmcparse, lcmcstats, 
- *	and lcmcutils to lcmc::inject, lcmc::models, lcmc::parse, 
- *	lcmc::stats, and lcmc::utils, respectively.
  * - Fixed: tests in @ref lcmc::test::BoostTest::test_gp "test_gp" now report 
  *	success on completion
  * - Fixed: @ref lcmc::stats::LcBinStats::analyzeLightCurve() 
@@ -58,7 +55,6 @@
  *	installed it without admin privileges, even if a shared library is 
  *	found by the linker
  * - Fixed: integration test scripts run more consistently across systems
- * - Changed: refactored @ref lcmc::test::BoostTest::test_gp "test_gp".
  * - Added: test cases to @ref lcmc::test::BoostTest::test_stats "test_stats".
  * - Changed: bug that @ref lcmc::models::SimpleGp "SimpleGp" produces 
  *	inconsistent output downgraded to a warning, and moved to 
@@ -74,14 +70,19 @@
  *	that were always calculated to the same value
  * - Added: documentation for test code. Declared a new namespace, 
  *	lcmc::test, containing all test suites.
- * - Fixed: Light curves no longer generate negative fluxes
+ * - Fixed: light curves no longer generate negative fluxes
  * - Added: @ref lcmc::test::BoostTest::test_wave "test_wave", a unit test 
  *	suite for the older periodic light curves
  * - Fixed: makefile now handles include dependencies in 
  *	subdirectories correctly
  * - Added: implemented @ref lcmc::models::RandomWalk "RandomWalk" and 
- *	@ref lcmc::models::TwoScaleGp "TwoScaleGp".
+ *	@ref lcmc::models::TwoScaleGp "TwoScaleGp". Added corresponding test 
+ *	cases to @ref lcmc::test::BoostTest::test_gp "test_gp".
  * - Added: support for command-line arguments "amp2" and "period2".
+ * - Changed: speeded up evaluation of @ref lcmc::models::SimpleGp "SimpleGp" 
+ *	and @ref lcmc::models::TwoScaleGp "TwoScaleGp" by a factor of five 
+ *	in the case that the model parameters are held fixed 
+ *	(i.e., -\-amp, -\-period, etc. are given with a range of zero length)
  *
  * @subsection v2_0_0 2.0.0
  *
@@ -118,13 +119,6 @@
  * @subsection v1_3 1.3
  *
  * - Started formal version documentation
- */
-
-/* Project dependencies
- * Gnu Scientific Library 1.8+ (set by gsl_ran_gaussian_*) [department has 1.10, I have ???]
- * TCLAP 1.2+ (set by use of ArgTraits)
- * Boost.Test 1.31+ (set by key Boost.Test features) [department has Boost 1.53.0, I have Boost 1.47.0]
- * Timescales 0.3+ (set by use of dmdt())
  */
 
 #endif		// LCMCPROJINFOH

@@ -1,8 +1,8 @@
-/** Functions for trying out new features
- * @file experimental.cpp
+/** Functions for analyzing Delta-m Delta-t plots
+ * @file dmdt.cpp
  * by Krzysztof Findeisen
  * Created April 12, 2013
- * Last modified April 12, 2013
+ * Last modified April 30, 2013
  */
 
 #include <algorithm>
@@ -11,10 +11,6 @@
 #include <cstdio>
 #include <timescales/utils.h>
 #include "dmdt.h"
-
-#if USELFP
-#include <lfp/lfp.h>
-#endif
 
 namespace lcmc { namespace stats {
 
@@ -30,6 +26,8 @@ namespace lcmc { namespace stats {
  * @pre No value in [first, last) is NaN
  *
  * @post The return value is not NaN
+ *
+ * @perform O(D log D), where D = std::distance(first, last).
  *
  * @todo Merge with other quantile implementations
  */
@@ -57,7 +55,7 @@ template <typename InputIterator> 				// Iterator to use
 		sprintf(buf, "Invalid quantile of %0.2f passed to quantile()", quantile);
 		throw std::domain_error(buf);
 	}
-	
+
 	return sortedVec[index];
 }
 
@@ -148,6 +146,10 @@ void hiAmpBinFrac(const DoubleVec &deltaT, const DoubleVec &deltaM,
  *	qth quantile of deltaM where deltaT &isin; 
  *	[binEdges[i], binEdges[i+1])
  *
+ * @perform O(N log (N/M)), where N = deltaT.size() and M = binEdges.size()
+ *
+ * @todo Prove performance
+ *
  * @bug For either a SimpleGp or DampedRandomWalk, the median crosses the 
  *	half-amplitude threshold before it crosses the third-amplitude 
  *	threshold. (UNREPRODUCIBLE AT PRESENT)
@@ -173,9 +175,9 @@ void deltaMBinQuantile(const DoubleVec &deltaT, const DoubleVec &deltaM,
 				+ (deltaTEnd - deltaT.begin());
 		
 		if (deltaMStart != deltaMEnd) {
-			quants.push_back(quantile(
-					static_cast<DoubleVec::const_iterator>(deltaMStart), 
-					deltaMEnd, q));
+			double result = quantile(static_cast<DoubleVec::const_iterator>(deltaMStart), 
+					deltaMEnd, q);
+			quants.push_back(result);
 		} else {
 			// The bin is empty
 			quants.push_back(std::numeric_limits<double>::quiet_NaN());

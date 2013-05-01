@@ -1,7 +1,7 @@
 # Compilation make for lightcurveMC
 # by Krzysztof Findeisen
 # Created March 24, 2010
-# Last modified April 28, 2013
+# Last modified April 29, 2013
 
 SHELL = /bin/sh
 
@@ -10,7 +10,7 @@ include makefile.inc
 #---------------------------------------
 # Select all files
 PROJ     = lightcurveMC
-SOURCES  = cmd.cpp cmd_classes.cpp binstats.cpp nanstats.cpp \
+SOURCES  = cmd.cpp cmd_classes.cpp binstats.cpp approxequal.cpp nanstats.cpp \
 	lcsupport.cpp lightcurve.cpp paramlist.cpp lcregistry.cpp fluxmag.cpp \
 	uncopyable.cpp \
 	mcio.cpp $(INFORMALINC)/kpffileio.cpp ../lightCurveSpecs/lcsio.cpp
@@ -72,6 +72,7 @@ tests/test: $(OBJS) $(DIRS)
 autotest: $(PROJ) unittest
 	cd tests; source autotest.sh
 
+include driver.d
 include test.d
 test.d: tests
 

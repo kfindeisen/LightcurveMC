@@ -2,13 +2,14 @@
  * @file lcgp1.cpp
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
- * @date Last modified April 27, 2013
+ * @date Last modified April 30, 2013
  */
 
 #include <stdexcept>
 #include <vector>
 #include <cmath>
 #include <gsl/gsl_matrix.h>
+#include "../approx.h"
 #include "../fluxmag.h"
 #include "generators.h"
 #include "lightcurves_gp.h"
@@ -61,9 +62,10 @@ SimpleGp::SimpleGp(const std::vector<double>& times, double sigma, double tau)
  */
 void SimpleGp::solveFluxes(std::vector<double>& fluxes) const {
 	// invariant: this->times() is sorted in ascending order
-	std::vector<double> times;
-	this->getTimes(times);
-	size_t nTimes = times.size();
+//	std::vector<double> times;
+//	this->getTimes(times);
+//	size_t nTimes = times.size();
+	size_t nTimes = this->size();
 	
 	fluxes.clear();
 	if (nTimes > 0) {
@@ -73,20 +75,68 @@ void SimpleGp::solveFluxes(std::vector<double>& fluxes) const {
 			fluxes.push_back(rNorm());
 		}
 	
-		RaiiGsl<gsl_matrix> corrs(gsl_matrix_alloc(nTimes, nTimes), &gsl_matrix_free);
-		// in gsl_matrix, consecutive second indices refer to adjacent memory spots
-		// therefore, having the inner loop be over the second index is more localized
-		for(size_t i = 0; i < nTimes; i++) {
-			for(size_t j = 0; j < nTimes; j++) {
-				double deltaTTau = (times[i] - times[j])/tau;
-				gsl_matrix_set(corrs.get(), i, j, 
-						sigma*sigma*exp(-0.5*deltaTTau*deltaTTau));
-			}
-		}
+		// RaiiGsl doesn't allow you to update the internal pointer, 
+		//	so first allocate to a standalone pointer, then pass 
+		//	it to RaiiGsl
+		gsl_matrix* corrPtr = getCovar();
+		RaiiGsl<gsl_matrix> corrs(corrPtr, &gsl_matrix_free);
 		utils::multiNormal(fluxes, *corrs, fluxes);
 		
 		utils::magToFlux(fluxes, fluxes);
 	}
+}
+
+/** Allocates and initializes the covariance matrix for the 
+ *	Gaussian process. 
+ *
+ * @todo Respec using a copyable smart pointer when I get the chance
+ *
+ * @return A pointer containing the new matrix
+ */	
+gsl_matrix* SimpleGp::getCovar() const {
+	// Define a cache to prevent identical simulation runs from having to 
+	const static utils::ApproxEqual cacheCheck(1e-12);
+	static gsl_matrix* oldCov = NULL;
+	static std::vector<double> oldTimes;
+	static double oldSigma = 0.0;
+	static double oldTau = 0.0;
+
+	std::vector<double> times;
+	this->getTimes(times);
+	size_t nTimes = times.size();
+
+	if(oldCov == NULL 
+			|| !cacheCheck(oldSigma, sigma)
+			|| !cacheCheck(oldTau, tau)
+			|| !cacheCheck(oldTimes.size(), nTimes)
+			|| !std::equal(oldTimes.begin(), oldTimes.end(), 
+					times.begin(), cacheCheck) ) {
+		// Cache is out of date
+		if (oldCov != NULL) {
+			gsl_matrix_free(oldCov);
+		}
+		
+		oldCov = gsl_matrix_alloc(nTimes, nTimes);
+		for(size_t i = 0; i < nTimes; i++) {
+			for(size_t j = 0; j < nTimes; j++) {
+				double deltaTTau = (times[i] - times[j])/tau;
+				gsl_matrix_set(oldCov, i, j, 
+						sigma*sigma*exp(-0.5*deltaTTau*deltaTTau));
+			}
+		}
+		
+		oldTimes = times;
+		oldSigma = sigma;
+		oldTau = tau;
+	}
+	
+	// assert: the Cache is up-to-date
+	
+	// Return a copy of the cache as output
+	gsl_matrix* cov = gsl_matrix_alloc(nTimes, nTimes);
+	gsl_matrix_memcpy(cov, oldCov);
+
+	return cov;
 }
 
 }}		// end lcmc::models

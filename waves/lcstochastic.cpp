@@ -73,6 +73,12 @@ void Stochastic::getFluxes(std::vector<double>& fluxArray) const {
 	fluxArray = fluxes;
 }
 
+/** Returns the number of times and fluxes
+ */
+size_t Stochastic::size() const {
+	return times.size();
+}
+	
 /** Draws a standard uniform random variate.
  *
  * @return A number distributed uniformly over [0, 1), drawn independently 

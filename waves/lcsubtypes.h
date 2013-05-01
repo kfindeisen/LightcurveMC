@@ -80,6 +80,10 @@ public:
 	 */
 	virtual void getFluxes(std::vector<double>& fluxArray) const;
 
+	/** Returns the number of times and fluxes
+	 */
+	virtual size_t size() const;
+	
 protected:
 	/** Initializes the light curve to represent an instance of a 
 	 * stochastic time series.

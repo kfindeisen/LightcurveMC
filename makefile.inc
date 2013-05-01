@@ -1,7 +1,7 @@
 # Common makefile definitions
 # by Krzysztof Findeisen
 # Created March 24, 2010
-# Last modified April 28, 2013
+# Last modified April 29, 2013
 
 SHELL = /bin/sh
 
@@ -20,7 +20,7 @@ CXX       = g++
 LANGTYPE  = -std=c++98 -D _USE_MATH_DEFINES 
 WARNINGS  = -Wall -Wextra -Weffc++ -Wdeprecated -Wold-style-cast -Wsign-promo -fdiagnostics-show-option
 OPTFLAGS  = -O3
-CXXFLAGS  = $(LANGTYPE) $(WARNINGS)  $(OPTFLAGS) -Werror
+CXXFLAGS  = $(LANGTYPE) $(WARNINGS) $(OPTFLAGS) -Werror
 LDFLAGS   = 
 
 #---------------------------------------
