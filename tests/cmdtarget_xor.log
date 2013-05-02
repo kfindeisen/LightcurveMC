@@ -32,23 +32,6 @@ Brief USAGE:
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
 
-EXPECTED RESULT: FAIL (jdList and bad wave given)
-PARSE ERROR: Argument: (--lclist)
-             Value 'fakeTestWave' does not meet constraint: broad_peak|drw|eclipse|ellipse|flare_dip|flare_peak|flat|flat_dip|flat_peak|magsine|sharp_peak|simple_gp|sine|slow_dip|slow_peak|triangle|two_gp|walk|white_noise
-
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [--print
-                    <non-negative integer>] [--ntrials <positive integer>]
-                    [--noise <non-negative real number>] [--] [--version]
-                    [-h] <keyword> ...
-
-For complete USAGE and HELP type: 
-   ../lightcurveMC --help
-
 EXPECTED RESULT: RUN (jdList and one wave given)
 LCType		a      	p      	ph     	Noise	Grankin C1±err	C1 Distribution	50% cut at 1/3±err	Finite	50%@1/3 Distribution	50% cut at 1/2±err	Finite	50%@1/2 Distribution	90% cut at 1/3±err	Finite	90%@1/3 Distribution	90% cut at 1/2±err	Finite	90%@1/2 Distribution	DMDT Medians
 magsine       	1	0.25	0	0	 0.494±0.072	run_c1_magsine_a+1.0_p+0.2_p+0.0_n0.dat	0.0327±0.0056	     1	run_cut50_3_magsine_a+1.0_p+0.2_p+0.0_n0.dat	0.0603±2.1e-11	     1	run_cut50_2_magsine_a+1.0_p+0.2_p+0.0_n0.dat	0.0302±    0	     1	run_cut90_3_magsine_a+1.0_p+0.2_p+0.0_n0.dat	0.0427±    0	     1	run_cut90_2_magsine_a+1.0_p+0.2_p+0.0_n0.dat	run_dmdtmed_magsine_a+1.0_p+0.2_p+0.0_n0.dat
@@ -75,11 +58,11 @@ For complete USAGE and HELP type:
 
 EXPECTED RESULT: RUN (--add and one wave given)
 LCType		a      	p      	ph     	Noise	Grankin C1±err	C1 Distribution	50% cut at 1/3±err	Finite	50%@1/3 Distribution	50% cut at 1/2±err	Finite	50%@1/2 Distribution	90% cut at 1/3±err	Finite	90%@1/3 Distribution	90% cut at 1/2±err	Finite	90%@1/2 Distribution	DMDT Medians
-magsine       	1	0.25	0	NonSpitzerNonVar	 0.602±0.073	run_c1_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	0.0352±0.0068	     1	run_cut50_3_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	0.0603±2.1e-11	     1	run_cut50_2_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	0.0284±0.0039	     1	run_cut90_3_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	0.0427±    0	     1	run_cut90_2_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	run_dmdtmed_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat
+magsine       	1	0.25	0	NonSpitzerNonVar	 0.494±0.072	run_c1_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	0.0327±0.0056	     1	run_cut50_3_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	0.0603±2.1e-11	     1	run_cut50_2_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	0.0302±    0	     1	run_cut90_3_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	0.0427±    0	     1	run_cut90_2_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	run_dmdtmed_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat
 EXPECTED RESULT: RUN (--add and multiple waves given)
 LCType		a      	p      	ph     	Noise	Grankin C1±err	C1 Distribution	50% cut at 1/3±err	Finite	50%@1/3 Distribution	50% cut at 1/2±err	Finite	50%@1/2 Distribution	90% cut at 1/3±err	Finite	90%@1/3 Distribution	90% cut at 1/2±err	Finite	90%@1/2 Distribution	DMDT Medians
-magsine       	1	0.25	0	NonSpitzerNonVar	 0.602±0.073	run_c1_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	0.0352±0.0068	     1	run_cut50_3_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	0.0603±2.1e-11	     1	run_cut50_2_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	0.0284±0.0039	     1	run_cut90_3_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	0.0427±    0	     1	run_cut90_2_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	run_dmdtmed_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat
-white_noise   	1	0.25	0	NonSpitzerNonVar	  0.67±0.018	run_c1_white_noise_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	 0.303± 0.17	     1	run_cut50_3_white_noise_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	  0.18± 0.22	   0.4	run_cut50_2_white_noise_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	0.0128±0.0048	     1	run_cut90_3_white_noise_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	0.0189±0.0083	     1	run_cut90_2_white_noise_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	run_dmdtmed_white_noise_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat
+magsine       	1	0.25	0	NonSpitzerNonVar	 0.494±0.072	run_c1_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	0.0327±0.0056	     1	run_cut50_3_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	0.0603±2.1e-11	     1	run_cut50_2_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	0.0302±    0	     1	run_cut90_3_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	0.0427±    0	     1	run_cut90_2_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	run_dmdtmed_magsine_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat
+white_noise   	1	0.25	0	NonSpitzerNonVar	 0.497±0.023	run_c1_white_noise_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	 0.116± 0.14	     1	run_cut50_3_white_noise_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	  0.18± 0.22	   0.4	run_cut50_2_white_noise_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	 0.015±0.0058	     1	run_cut90_3_white_noise_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	 0.015±0.0058	     1	run_cut90_2_white_noise_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat	run_dmdtmed_white_noise_a+1.0_p+0.2_p+0.0_nNonSpitzerNonVar.dat
 EXPECTED RESULT: FAIL (both --add and jdList given, but no waves)
 PARSE ERROR: Argument: (--lclist)
              Value 'ptfjds.txt' does not meet constraint: broad_peak|drw|eclipse|ellipse|flare_dip|flare_peak|flat|flat_dip|flat_peak|magsine|sharp_peak|simple_gp|sine|slow_dip|slow_peak|triangle|two_gp|walk|white_noise

@@ -10,8 +10,8 @@
 #include <cstdio>
 #include "../fluxmag.h"
 #include "observations.h"
-#include "../../lightCurveSpecs/lcsio.h"
-#include "../../featurizer/utils.tmp.h"
+#include "../lcsio.h"
+#include "../utils.tmp.h"
 
 namespace lcmc { namespace inject {
 

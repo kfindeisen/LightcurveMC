@@ -55,7 +55,7 @@ nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 0.25" --ntrials 5 ptfjds.txt \
 echo "EXPECTED RESULT: FAIL (jdList and bad wave given)" &>> cmdtest_domain.log
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 0.25" --ntrials 5 ptfjds.txt \
 	fakeTestWave \
-	&>> cmdtest_xor.log
+	&>> cmdtest_domain.log
 
 echo "EXPECTED RESULT: RUN (jdList and one wave given)" &>> cmdtest_xor.log
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 0.25" --ntrials 5 ptfjds.txt \

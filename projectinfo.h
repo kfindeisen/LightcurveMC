@@ -2,7 +2,7 @@
  * @file projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified May 1, 2013
+ * @date Last modified May 2, 2013
  *
  * @todo Add proper exception classes. Put exceptions in exception namespace 
  *	within lcmc::models and lcmc::inject.
@@ -98,6 +98,10 @@
  * - Fixed: injection tests using the -\-add keyword no longer add a 
  *	constant flux to all measurements, in addition to the desired signal
  * - Fixed: makefile now finds libraries on tcsh
+ * - Changed: removed information about the local GCC configuration from 
+ *	makefile.inc.
+ * - Changed: incorporated mcio.cpp, lcsio.cpp, and kpffileio.cpp into main 
+ *	program rather than as an external dependency.
  *
  * @subsection v2_0_0 2.0.0
  *

@@ -1,8 +1,9 @@
-// mcio.cpp
-// by Krzysztof Findeisen
-// Created February 4, 2011
-// Last modified April 21, 2013
-// Input and output routines for lightcurveMC
+/** Input and output routines for lightcurveMC
+ * @file mcio.cpp
+ * @author Krzysztof Findeisen
+ * @date Created February 4, 2011
+ * @date Last modified April 21, 2013
+ */
 
 #include <algorithm>
 #include <stdexcept>
@@ -76,7 +77,7 @@ void readTimeStamps(FILE* hInput, DoubleVec &dates, double &minDelT, double &max
 
 /** Dumps the contents of a lightcurve to a file
  *
- * @param[in] lcType, logP, logA a complete identifier for the model that generated 
+ * @param[in] lcName, logP, logA a complete identifier for the model that generated 
  *	the lightcurve
  * @param[in] modelNum a unique identifier distinguishing different instances of 
  *	identical models
@@ -122,7 +123,7 @@ void printLightCurve(size_t modelNum, std::string lcName, double logP, double lo
  *	peaks (for reference)
  * @param[in] threshold the height of the smallest peak that would be 
  *	considered significant (for reference)
- * @param[in] omega the true frequency of the lightcurve (for reference)
+ * @param[in] freq the true frequency of the lightcurve (for reference)
  * @param[in] freqGrid a vector containing frequencies to copy to disk
  * @param[in] powerGrid a vector containing powers to copy to disk. Assumed to be the 
  *	same length as freqGrid.

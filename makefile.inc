@@ -7,9 +7,8 @@ SHELL = /bin/sh
 
 #---------------------------------------
 # Directories
-INFORMALINC = /cygdrive/c/krzys/softdev/CPP/lib
-INCDIRS  = $(INFORMALINC) /cygdrive/c/krzys/softdev/importlib/include 
-LIBDIRS  = /cygdrive/c/krzys/softdev/CPP/lib /cygdrive/c/krzys/softdev/importlib/lib     /usr/lib 
+INCDIRS  = 
+LIBDIRS  = 
 
 #---------------------------------------
 # Compiler settings

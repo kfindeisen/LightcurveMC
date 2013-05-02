@@ -23,6 +23,19 @@
 
 namespace lcmc { namespace utils {
 
+/** Tests whether two matrices have approximately equal elements.
+ *
+ * This function is less efficient than gsl_is_matrix_equal(), but is 
+ *	provided for compatibility with older versions of the GSL
+ *
+ * @param[in] a The first matrix to compare
+ * @param[in] b The second matrix to compare
+ *
+ * @return True iff a and b have the same dimensions, and each 
+ *	corresponding element is equal.
+ *
+ * @note if either a or b is a null pointer, returns false
+ */
 bool matrixEqual(const gsl_matrix* const a, const gsl_matrix* const b) {
 	// Invalid matrices
 	if(a == NULL || b == NULL) {

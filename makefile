@@ -13,7 +13,7 @@ PROJ     = lightcurveMC
 SOURCES  = cmd.cpp cmd_classes.cpp binstats.cpp approxequal.cpp nanstats.cpp \
 	lcsupport.cpp lightcurve.cpp paramlist.cpp lcregistry.cpp fluxmag.cpp \
 	uncopyable.cpp \
-	mcio.cpp $(INFORMALINC)/kpffileio.cpp ../lightCurveSpecs/lcsio.cpp
+	mcio.cpp lcsio.cpp kpffileio.cpp
 OBJS     = $(SOURCES:.cpp=.o)
 DIRS     = samples stats waves
 LIBS     = timescales gsl gslcblas
@@ -70,11 +70,13 @@ tests/test: $(OBJS) $(DIRS)
 
 .PHONY: autotest
 autotest: $(PROJ) unittest
-	cd tests; ./autotest.sh
+	@echo "Beginning regression test suite..."
+	@echo "Tests started on `date`"
+	@cd tests; ./autotest.sh; echo "Tests completed on `date`"
 
 include driver.d
 include test.d
-test.d: tests
+test.d: | tests
 
 #---------------------------------------
 # Doxygen
