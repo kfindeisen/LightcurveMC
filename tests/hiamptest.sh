@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 rm -vf hiamptest_snr*.log
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -d "1.0 1.0" -p "0.25 0.25" --noise 1e-6 ptfjds.txt \
@@ -21,4 +21,4 @@ nice -n 15 ../lightcurveMC -a "1.0 1.0" -d "1 1" -p "256.0 256.0" --noise 1e-6 p
 	>> hiamptest_snr1e6.log
 diff -s hiamptarget_snr1e6.log hiamptest_snr1e6.log
 # diff returns 0 iff files are equal
-return $?
+exit $?

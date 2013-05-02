@@ -1,47 +1,47 @@
-#! /bin/bash
+#!/bin/bash
 
 # Tests the command-line interface
 rm -vf cmdtest_*.log
 rm -vf nonspitzernonvar.cat
 #ln will print error message on failure
-ln -vs test1.cat nonspitzernonvar.cat || return $?
+ln -vs test1.cat nonspitzernonvar.cat || exit $?
 # soft link creation can fail quietly
-if [[ ! -r nonspitzernonvar.cat ]] ; then echo "Cannot read nonspitzernonvar.cat" ; return 1 ; fi
+if [[ ! -r nonspitzernonvar.cat ]] ; then echo "Cannot read nonspitzernonvar.cat" ; exit 1 ; fi
 
-echo "EXPECTED RESULT: FAIL (invalid range)" &>> cmdtest_xor.log
+echo "EXPECTED RESULT: FAIL (invalid range)" &>> cmdtest_domain.log
 nice -n 15 ../lightcurveMC -a "1.0" -p "0.25 0.25" --ntrials 5 ptfjds.txt \
 	magsine \
-	&>> cmdtest_xor.log
+	&>> cmdtest_domain.log
 
-echo "EXPECTED RESULT: FAIL (negative range)" &>> cmdtest_xor.log
+echo "EXPECTED RESULT: FAIL (negative range)" &>> cmdtest_domain.log
 nice -n 15 ../lightcurveMC -a "-1.0 -0.5" -p "0.25 0.25" --ntrials 5 ptfjds.txt \
 	magsine \
-	&>> cmdtest_xor.log
+	&>> cmdtest_domain.log
 
-echo "EXPECTED RESULT: FAIL (inverted range)" &>> cmdtest_xor.log
+echo "EXPECTED RESULT: FAIL (inverted range)" &>> cmdtest_domain.log
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "1.0 0.25" --ntrials 5 ptfjds.txt \
 	magsine \
-	&>> cmdtest_xor.log
+	&>> cmdtest_domain.log
 
-echo "EXPECTED RESULT: FAIL (no tests)" &>> cmdtest_xor.log
+echo "EXPECTED RESULT: FAIL (no tests)" &>> cmdtest_domain.log
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 0.25" --ntrials 0 ptfjds.txt \
 	magsine \
-	&>> cmdtest_xor.log
+	&>> cmdtest_domain.log
 
-echo "EXPECTED RESULT: FAIL (negative tests)" &>> cmdtest_xor.log
+echo "EXPECTED RESULT: FAIL (negative tests)" &>> cmdtest_domain.log
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 0.25" --ntrials -10 ptfjds.txt \
 	magsine \
-	&>> cmdtest_xor.log
+	&>> cmdtest_domain.log
 
-echo "EXPECTED RESULT: FAIL (fractional tests)" &>> cmdtest_xor.log
+echo "EXPECTED RESULT: FAIL (fractional tests)" &>> cmdtest_domain.log
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 0.25" --ntrials 5.5 ptfjds.txt \
 	magsine \
-	&>> cmdtest_xor.log
+	&>> cmdtest_domain.log
 
-echo "EXPECTED RESULT: FAIL (negative noise)" &>> cmdtest_xor.log
+echo "EXPECTED RESULT: FAIL (negative noise)" &>> cmdtest_domain.log
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 0.25" --noise -0.1 ptfjds.txt \
 	magsine \
-	&>> cmdtest_xor.log
+	&>> cmdtest_domain.log
 
 echo "EXPECTED RESULT: FAIL (no simulation parameters)" &>> cmdtest_xor.log
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 0.25" --ntrials 5 \
@@ -52,7 +52,7 @@ echo "EXPECTED RESULT: FAIL (jdList but no waves)" &>> cmdtest_xor.log
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 0.25" --ntrials 5 ptfjds.txt \
 	&>> cmdtest_xor.log
 
-echo "EXPECTED RESULT: FAIL (jdList and bad wave given)" &>> cmdtest_xor.log
+echo "EXPECTED RESULT: FAIL (jdList and bad wave given)" &>> cmdtest_domain.log
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 0.25" --ntrials 5 ptfjds.txt \
 	fakeTestWave \
 	&>> cmdtest_xor.log
@@ -71,10 +71,10 @@ echo "EXPECTED RESULT: FAIL (--add but no waves)" &>> cmdtest_xor.log
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 0.25" --ntrials 5 --add NonSpitzerNonVar \
 	&>> cmdtest_xor.log
 
-echo "EXPECTED RESULT: FAIL (--add with bad argument)" &>> cmdtest_xor.log
+echo "EXPECTED RESULT: FAIL (--add with bad argument)" &>> cmdtest_domain.log
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 0.25" --ntrials 5 --add GarbageTestSample \
 	magsine \
-	&>> cmdtest_xor.log
+	&>> cmdtest_domain.log
 
 echo "EXPECTED RESULT: RUN (--add and one wave given)" &>> cmdtest_xor.log
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 0.25" --ntrials 5 --add NonSpitzerNonVar \
@@ -130,5 +130,6 @@ nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 0.25" --ntrials 5 --add NonSpit
 	&>> cmdtest_xor.log
 
 diff -s cmdtarget_xor.log cmdtest_xor.log
+diff -s cmdtarget_domain.log cmdtest_domain.log
 # diff returns 0 iff files are equal
-return $?
+exit $?

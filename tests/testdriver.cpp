@@ -20,11 +20,6 @@
 #pragma GCC diagnostic ignored "-Weffc++"
 #endif
 
-// On KPF4-Hewlett, I can use dynamic linking
-// I can't do so on hazard because I can't register shared libraries
-#ifdef __CYGWIN__
-#define BOOST_TEST_DYN_LINK
-#endif
 /** Name of the unit test module
  */
 #define BOOST_TEST_MODULE LcmcTesting

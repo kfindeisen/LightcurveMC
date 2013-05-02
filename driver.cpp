@@ -197,11 +197,12 @@ int main(int argc, char* argv[]) {
 					// lc[j] already contains the "noise", 
 					// so just add the "real" simulated  
 					// signal
-					/** @bug Either new ILightCurve implementation or its driver code much too slow when --add keyword is used
+					/** @bug Either new ILightCurve implementation or its driver code much too slow when -\-add keyword is used
 					 */
 					vector<double> temp;
 					lcInstance->getFluxes(temp);
-					lc[j] += temp[j];
+					// Typical flux is 1.0 by spec of getFluxes()
+					lc[j] += temp[j] - 1.0;
 				}
 			} else {
 				#if USELFP

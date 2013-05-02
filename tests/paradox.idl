@@ -1,0 +1,51 @@
+; Plots median delta-m delta-t curves from the Paradox test case
+; @file paradox.pro
+; @author Krzysztof Findeisen
+; @date Created May 1, 2013
+; @date Last modified May 1, 2013
+
+@printableplots.idl
+
+oldplot = !d.name
+set_plot, 'ps'
+
+device, file='paradox.ps', xoffset=0.75, yoffset=0.75, xsize=7.0, ysize=9.5, /inches
+;device, file='paradox.ps', /landscape
+
+
+oldmulti = !p.multi
+NPAGES   = 1
+FORMATLC  = [0, 2,4]
+FORMATAVG = [0, 1,2]
+FORMATSTATS = [0, 2,2]
+
+;-------------------------------------------------------------------------------
+; Standard GP
+
+!p.multi = FORMATLC
+
+plotdmdtmed, 'run_dmdtmed_simple_gp_a+0.3_d+2.4_p+0.2_p+0.0_n1e-06.dat', indgen(NPAGES*!p.multi[1]*!p.multi[2]), $
+	/xlog, title='GP Timescale = 0.25 days'
+	
+;-------------------------------------------------------------------------------
+; Damped Random Walk
+
+!p.multi = FORMATLC
+
+plotdmdtmed, 'run_dmdtmed_drw_a+0.3_d+2.4_p+0.2_p+0.0_n1e-06.dat', indgen(NPAGES*!p.multi[1]*!p.multi[2]), $
+	/xlog, title='Damping Timescale = 0.25 days'
+	
+!p.multi = FORMATAVG
+
+averagedmdtmed, 'run_dmdtmed_simple_gp_a+0.3_d+2.4_p+0.2_p+0.0_n1e-06.dat', $
+	/xlog, title='GP Timescale = 0.25 days'
+
+averagedmdtmed, 'run_dmdtmed_drw_a+0.3_d+2.4_p+0.2_p+0.0_n1e-06.dat', $
+	/xlog, title='Damping Timescale = 0.25 days'
+
+!p.multi = oldmulti
+!p.multi[0] = 0
+
+device, /close_file
+
+set_plot, oldplot

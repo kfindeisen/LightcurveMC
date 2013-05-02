@@ -2,7 +2,7 @@
  * @file multinormal.cpp
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
- * @date Last modified April 30, 2013
+ * @date Last modified May 1, 2013
  */
 
 #include <vector>
@@ -12,11 +12,40 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
+#include <gsl/gsl_version.h>
+// Only include this file is is_matrix_equal not defined
+#if GSL_MINOR_VERSION < 15
+	#include "../approx.h"
+#endif
 #include "generators.h"
 #include "../approx.h"
 #include "../raiigsl.tmp.h"
 
 namespace lcmc { namespace utils {
+
+bool matrixEqual(const gsl_matrix* const a, const gsl_matrix* const b) {
+	// Invalid matrices
+	if(a == NULL || b == NULL) {
+		return false;
+
+	// Mismatched matrices
+	} else if (a->size1 != b->size1 || a->size2 != b->size2) {
+		return false;
+	
+	// Element-by-element comparison
+	} else {
+		for(size_t i = 0; i < a->size1; i++) {
+			for(size_t j = 0; j < a->size2; j++) {
+				if (gsl_matrix_get(a, i, j) != gsl_matrix_get(b, i, j)) {
+					return false;
+				}
+			}
+		}
+		
+		// All elements compared equal
+		return true;
+	}
+}
 
 using std::vector;
 
@@ -122,7 +151,11 @@ void multiNormal(const vector<double>& indVec, const gsl_matrix& covar,
 	// significantly slower than gsl_matrix_equal(). The extra 
 	// overhead from approximate comparison exceeded the negligible 
 	// risk of a spurious cache miss.
+	#if GSL_MINOR_VERSION >= 15
 	if(prefixCache == NULL || gsl_matrix_equal(covCache, &covar) != 1) {
+	#else
+	if(prefixCache == NULL || matrixEqual(covCache, &covar)) {
+	#endif
 		replaceMatrix(covCache, &covar);
 		
 		getHalfMatrix(&covar, prefixCache);

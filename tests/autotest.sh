@@ -1,19 +1,23 @@
-#! /bin/bash
+#!/bin/bash
 
 rm -vf *test*.log
 rm -vf lightcurve*.dat
 status=0
 
-nice -n 15 ./test.exe -t test_dmdt,test_stats,test_waves
+#-----------------------------------------------------------
+# Commented-out tests are deemed too expensive for regular regression testing
+# Run them, but less frequently
+
+nice -n 15 ./test -t test_dmdt,test_stats,test_waves
+#nice -n 15 ./test -t test_gp
 status=$(($status || $?))
 
-source sinetest.sh		; status=$(($status || $?))
-#source injecttest.sh		; status=$(($status || $?))
-source periodictest.sh		; status=$(($status || $?))
-source cmdtest.sh		; status=$(($status || $?))
-source gptest.sh		; status=$(($status || $?))
-source hiamptest.sh		; status=$(($status || $?))
-source paradoxtest.sh		; status=$(($status || $?))
+./cmdtest.sh		; status=$(($status || $?))
+./gptest.sh		; status=$(($status || $?))
+./hiamptest.sh		; status=$(($status || $?))
+#./injecttest.sh		; status=$(($status || $?))
+./periodictest.sh	; status=$(($status || $?))
+./sinetest.sh		; status=$(($status || $?))
 rm -f run_*.dat
 
 if [[ $status == 0 ]] ; then
@@ -21,4 +25,4 @@ if [[ $status == 0 ]] ; then
 else 
 	echo "Some tests failed. Please examine output for details."
 fi
-return $status
+exit $status

@@ -1,7 +1,7 @@
 # Compilation make for lightcurveMC
 # by Krzysztof Findeisen
 # Created March 24, 2010
-# Last modified April 29, 2013
+# Last modified May 1, 2013
 
 SHELL = /bin/sh
 
@@ -23,7 +23,7 @@ TESTLIBS = $(LIBS) boost_unit_test_framework
 # Primary build option
 $(PROJ): driver.o $(OBJS) $(DIRS)
 	@echo "Linking $@ with $(LIBS:%=-l%)"
-	@$(CXX) $(CXXFLAGS) $(LIBFLAGS) -o $@ $(filter %.o,$^) $(DIRS:%=-l%) $(LIBS:%=-l%) $(LIBDIRS:%=-L%) -L.
+	@$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(filter %.o,$^) $(DIRS:%=-l%) $(LIBS:%=-l%) $(LIBDIRS:%=-L %) -L .
 
 #---------------------------------------
 # Subdirectories
@@ -50,7 +50,7 @@ include makefile.common
 #	CXXFLAGS = $(CXXFLAGS) -D _DEBUG
 #	make debug2
 #debug2: $(OBJS)
-#	$(CXX) $(CXXFLAGS) $(LIBFLAGS) -o $(PROJ) $^ $(addprefix -l,$(LIBS)) $(addprefix -L ,$(LIBDIRS))
+#	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(PROJ) $(filter %.o,$^) $(DIRS:%=-l%) $(LIBS:%=-l%) $(LIBDIRS:%=-L %) -L .
 
 #---------------------------------------
 # Doxygen
@@ -66,11 +66,11 @@ doc/: driver.cpp $(SOURCES) $(DIRS) tests doxygen.cfg
 unittest: tests/test
 tests/test: $(OBJS) $(DIRS)
 	@echo "Linking $@ with $(TESTLIBS:%=-l%)"
-	@$(CXX) $(CXXFLAGS) $(LIBFLAGS) -o $@ $(filter %.o,$^) $(DIRS:%=-l%) $(TESTLIBS:%=-l%) $(LIBDIRS:%=-L%) -L.
+	@$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(filter %.o,$^) $(DIRS:%=-l%) $(TESTLIBS:%=-l%) $(LIBDIRS:%=-L %) -L .
 
 .PHONY: autotest
 autotest: $(PROJ) unittest
-	cd tests; source autotest.sh
+	cd tests; ./autotest.sh
 
 include driver.d
 include test.d

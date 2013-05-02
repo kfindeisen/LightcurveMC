@@ -2,7 +2,7 @@
  * @file projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified April 30, 2013
+ * @date Last modified May 1, 2013
  *
  * @todo Add proper exception classes. Put exceptions in exception namespace 
  *	within lcmc::models and lcmc::inject.
@@ -51,10 +51,6 @@
  * - Fixed: @ref lcmc::stats::LcBinStats::analyzeLightCurve() 
  *	"LcBinStats::analyzeLightCurve()" now propagates exception 
  *	types correctly
- * - Fixed: the Boost.Test library is now statically linked on systems where I 
- *	installed it without admin privileges, even if a shared library is 
- *	found by the linker
- * - Fixed: integration test scripts run more consistently across systems
  * - Added: test cases to @ref lcmc::test::BoostTest::test_stats "test_stats".
  * - Changed: bug that @ref lcmc::models::SimpleGp "SimpleGp" produces 
  *	inconsistent output downgraded to a warning, and moved to 
@@ -70,6 +66,8 @@
  *	that were always calculated to the same value
  * - Added: documentation for test code. Declared a new namespace, 
  *	lcmc::test, containing all test suites.
+ * - Fixed: --amp parameter for sines now represents the half-amplitude, as 
+ *	intended, not the amplitude
  * - Fixed: light curves no longer generate negative fluxes
  * - Added: @ref lcmc::test::BoostTest::test_wave "test_wave", a unit test 
  *	suite for the older periodic light curves
@@ -83,6 +81,23 @@
  *	and @ref lcmc::models::TwoScaleGp "TwoScaleGp" by a factor of five 
  *	in the case that the model parameters are held fixed 
  *	(i.e., -\-amp, -\-period, etc. are given with a range of zero length)
+ * - Changed: bug where deltaMBinQuantile() appeared to show the 
+ *	&Delta;m median crossing half the amplitude before reaching the 
+ *	third-amplitude in Gaussian processes has been explained. 
+ *	The behavior is the result of half-amplitude crossings happening 
+ *	either in the poorly populated bins where 
+ *	&Delta;t &asymp; 0.5&nbsp;day, or not at all, whereas statistical 
+ *	fluctuations can cause spurious third-amplitude crossings (with no 
+ *	corresponding half-amplitude crossing) in any &Delta;t bin. 
+ *	This behavior, while odd, is a problem with long ground-based survey 
+ *	cadences rather than with the analysis software, and is no longer 
+ *	considered a bug.
+ *	The behavior may be reproduced with the files tests/paradox*.*.
+ * - Fixed: integration test scripts run more consistently across systems. In 
+ *	particular, they are now designed for execution, not sourcing.
+ * - Fixed: injection tests using the -\-add keyword no longer add a 
+ *	constant flux to all measurements, in addition to the desired signal
+ * - Fixed: makefile now finds libraries on tcsh
  *
  * @subsection v2_0_0 2.0.0
  *
