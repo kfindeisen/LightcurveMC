@@ -2,14 +2,14 @@
  * @file mcio.cpp
  * @author Krzysztof Findeisen
  * @date Created February 4, 2011
- * @date Last modified April 21, 2013
+ * @date Last modified May 4, 2013
  */
 
 #include <algorithm>
 #include <stdexcept>
 #include <string>
 #include <cstdio>
-#include <kpffileio.h>
+#include "kpffileio.h"
 #include "mcio.h"
 
 using std::sort;

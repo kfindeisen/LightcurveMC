@@ -2,7 +2,7 @@
  * @file driver.cpp
  * @author Krzysztof Findeisen
  * @date Created January 22, 2010
- * @date Last modified April 21, 2013
+ * @date Last modified May 4, 2013
  */
 
 #include <memory>
@@ -11,9 +11,9 @@
 #include <vector>
 #include <cmath>
 #include <cstdio>
-#include <kpffileio.h>
 #include <gsl/gsl_randist.h>
 #include "binstats.h"
+#include "kpffileio.h"
 #include "lightcurvetypes.h"
 #include "mcio.h"
 #include "paramlist.h"

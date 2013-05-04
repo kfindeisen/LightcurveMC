@@ -2,7 +2,7 @@
  * @file lcsio.cpp
  * @author Krzysztof Findeisen
  * @date Created February 6, 2011
- * @date Last modified November 7, 2011
+ * @date Last modified May 4, 2013
  */
 
 #include <cmath>
@@ -10,7 +10,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include <kpffileio.h>
+#include "kpffileio.h"
 #include "lcsio.h"
 
 using namespace std;

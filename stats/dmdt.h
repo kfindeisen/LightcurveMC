@@ -1,8 +1,8 @@
 /** Functions for extracting timescales out of Delta-m Delta-t plots
  * @file dmdt.h
- * by Krzysztof Findeisen
- * Created April 12, 2013
- * Last modified April 12, 2013
+ * @author Krzysztof Findeisen
+ * @date Created April 12, 2013
+ * @date Last modified April 12, 2013
  */
 
 #ifndef LCMCDMDTH

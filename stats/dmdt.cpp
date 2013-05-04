@@ -1,8 +1,8 @@
 /** Functions for analyzing Delta-m Delta-t plots
  * @file dmdt.cpp
- * by Krzysztof Findeisen
- * Created April 12, 2013
- * Last modified April 30, 2013
+ * @author Krzysztof Findeisen
+ * @date Created April 12, 2013
+ * @date Last modified April 30, 2013
  */
 
 #include <algorithm>

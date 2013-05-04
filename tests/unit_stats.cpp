@@ -50,12 +50,15 @@ void getHalfMatrix(const gsl_matrix* const a, gsl_matrix* & b);
 
 }}	// end lcmc::utils
 
+// Ignore this declaration, since for some reason it confuses Doxygen
+/// @cond
 namespace lcmc { namespace stats {
 
 void getSummaryStats(const DoubleVec& values, double& mean, double& stddev, 
 		const std::string& statName);
 
 }}	// end lcmc::stats
+/// @endcond
 
 namespace lcmc { namespace test {
 

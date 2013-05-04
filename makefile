@@ -1,7 +1,7 @@
 # Compilation make for lightcurveMC
 # by Krzysztof Findeisen
 # Created March 24, 2010
-# Last modified May 1, 2013
+# Last modified May 4, 2013
 
 SHELL = /bin/sh
 
@@ -27,7 +27,7 @@ $(PROJ): driver.o $(OBJS) $(DIRS)
 
 #---------------------------------------
 # Subdirectories
-# Can't declare the directories phony directly, or the program will be built every time
+# Can't declare the directories phony directly, or the executable will be built every time
 .PHONY: cd
 samples: cd
 	@make -C samples --no-print-directory $(MFLAGS)
@@ -43,14 +43,6 @@ waves: cd
 	@make -C waves --no-print-directory $(MFLAGS)
 
 include makefile.common
-
-#---------------------------------------
-# Debug mode
-#debug: clean
-#	CXXFLAGS = $(CXXFLAGS) -D _DEBUG
-#	make debug2
-#debug2: $(OBJS)
-#	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $(PROJ) $(filter %.o,$^) $(DIRS:%=-l%) $(LIBS:%=-l%) $(LIBDIRS:%=-L %) -L .
 
 #---------------------------------------
 # Doxygen
@@ -79,6 +71,6 @@ include test.d
 test.d: | tests
 
 #---------------------------------------
-# Doxygen
+# Build program, test suite, and documentation
 .PHONY: all
 all: $(PROJ) unittest doc

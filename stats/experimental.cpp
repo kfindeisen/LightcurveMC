@@ -1,8 +1,8 @@
 /** Functions for trying out new features
  * @file experimental.cpp
- * by Krzysztof Findeisen
- * Created August 3, 2011
- * Last modified April 12, 2013
+ * @author Krzysztof Findeisen
+ * @date Created August 3, 2011
+ * @date Last modified April 12, 2013
  */
 
 #include <algorithm>
