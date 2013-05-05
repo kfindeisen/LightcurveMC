@@ -2,7 +2,7 @@
  * @file multinormal.cpp
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
- * @date Last modified May 1, 2013
+ * @date Last modified May 4, 2013
  */
 
 #include <vector>
@@ -13,12 +13,7 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_version.h>
-// Only include this file is is_matrix_equal not defined
-#if GSL_MINOR_VERSION < 15
-	#include "../approx.h"
-#endif
 #include "generators.h"
-#include "../approx.h"
 #include "../raiigsl.tmp.h"
 
 namespace lcmc { namespace utils {
@@ -167,7 +162,7 @@ void multiNormal(const vector<double>& indVec, const gsl_matrix& covar,
 	#if GSL_MINOR_VERSION >= 15
 	if(prefixCache == NULL || gsl_matrix_equal(covCache, &covar) != 1) {
 	#else
-	if(prefixCache == NULL || matrixEqual(covCache, &covar)) {
+	if(prefixCache == NULL || !matrixEqual(covCache, &covar)) {
 	#endif
 		replaceMatrix(covCache, &covar);
 		

@@ -40,6 +40,8 @@
 
 using std::vector;
 
+// Ignore this declaration, since for some reason it confuses Doxygen
+/// @cond
 namespace lcmc { namespace stats {
 
 using std::string;
@@ -48,6 +50,7 @@ void getSummaryStats(const DoubleVec& values, double& mean, double& stddev,
 		const string& statName);
 
 }}		// end lcmc::stats
+/// @endcond
 
 namespace lcmc { namespace test {
 

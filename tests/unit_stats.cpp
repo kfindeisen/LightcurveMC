@@ -2,7 +2,7 @@
  * @file unit_stats.cpp
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
- * @date Last modified April 28, 2013
+ * @date Last modified May 4, 2013
  */
 
 #include "../warnflags.h"
@@ -174,72 +174,6 @@ void testProduct(double tau, const vector<double>& times)
 	}
 }
 
-/** Tests whether calls to multiNormal() consistent random vectors on 
- * different machines.
- *
- * The test case is a Gaussian process with &tau; = 2 days and with 
- *	the given sampling.
- *
- * @param[in] seed The seed used for the random number generator
- * @param[in] times The times at which the Gaussian process is sampled. The 
- *	sampling may be highly irregular.
- */
-void testVectors(unsigned long int seed, const vector<double>& times)
-{
-	const static double tau = 2.0;
-	const size_t nTimes = times.size();
-	
-	// Initialize the covariance matrix
-	RaiiGsl<gsl_matrix> covar(gsl_matrix_alloc(nTimes, nTimes), &gsl_matrix_free);
-	initGauss(covar.get(), times, tau);
-
-	// Initialize the noise vector
-	RaiiGsl<gsl_rng> rng(gsl_rng_alloc(gsl_rng_mt19937), &gsl_rng_free);
-	gsl_rng_set(rng.get(), seed);
-	
-	vector<double> fluxes;
-	fluxes.reserve(nTimes);
-	
-	for(size_t i = 0; i < nTimes; i++) {
-		fluxes.push_back(gsl_ran_ugaussian(rng.get()));
-	}
-	
-	// Moment of truth...
-	lcmc::utils::multiNormal(fluxes, *covar, fluxes);
-	
-	// Input
-	char fileName[80];
-	sprintf(fileName, "target_vectors_%lu.txt", seed);
-	FILE* hOriginal = fopen(fileName, "r");
-	if (hOriginal == NULL) {
-		throw std::runtime_error("Could not open reference file.");
-	}
-	
-	vector<double> oldFluxes;
-	oldFluxes.reserve(nTimes);
-	try {
-		while (!feof(hOriginal)) {
-			double curFlux;
-			if (oldFluxes.empty()) {
-				fscanf(hOriginal, "%lf", &curFlux);
-			} else {
-				fscanf(hOriginal, ", %lf", &curFlux);
-			}
-			oldFluxes.push_back(curFlux);
-		}
-	} catch (std::exception& e) {
-		fclose(hOriginal);
-		BOOST_ERROR("Could not finish reading from " << fileName);
-		throw;
-	}
-	
-	fclose(hOriginal);
-	
-	BOOST_CHECK(fluxes.size() == oldFluxes.size() && 
-		std::equal(fluxes.begin(), fluxes.end(), oldFluxes.begin(), 
-		utils::ApproxEqual(1e-10)) );
-}
-
 /** Test cases for testing functions related to generating 
  *	multinormal distributions
  * @class BoostTest::test_stats
@@ -279,26 +213,6 @@ BOOST_AUTO_TEST_CASE(decomposition) {
 	testProduct(  5.0,  ptfTimes);
 	testProduct(  2.5,  ptfTimes);
 	testProduct(  1.0,  ptfTimes);
-}
-
-/* @fn lcmc::utils::multiNormal()
- *
- * @test produces the same output on all platforms if the input 
- * 	random numbers were sampled using a gsl_rng_mt19937 generator 
- *	with seeds of 42, 43, 1196, 1764, 3125
- *
- * @todo Add more rigorous test cases
- */
-/** Tests whether multiNormal() behaves consistently across platforms
- *
- * @see testVectors()
- */
-BOOST_AUTO_TEST_CASE(vec_transformation) {
-	testVectors(42,   unifTimes);
-	testVectors(43,   unifTimes);
-	testVectors(1196, unifTimes);
-	testVectors(1764, unifTimes);
-	testVectors(3125, unifTimes);
 }
 
 /* @fn lcmc::stats::getSummaryStats()

@@ -95,8 +95,6 @@
  *	The behavior may be reproduced with the files tests/paradox*.*.
  * - Fixed: integration test scripts run more consistently across systems. In 
  *	particular, they are now designed for execution, not sourcing.
- * - Fixed: injection tests using the -\-add keyword no longer add a 
- *	constant flux to all measurements, in addition to the desired signal
  * - Fixed: makefile now finds libraries on tcsh
  * - Changed: removed information about the local GCC configuration from 
  *	makefile.inc.
