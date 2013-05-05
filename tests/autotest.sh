@@ -15,7 +15,7 @@ status=$(($status || $?))
 ./cmdtest.sh		; status=$(($status || $?))
 ./gptest.sh		; status=$(($status || $?))
 ./hiamptest.sh		; status=$(($status || $?))
-#./injecttest.sh		; status=$(($status || $?))
+./injecttest.sh		; status=$(($status || $?))
 ./periodictest.sh	; status=$(($status || $?))
 ./sinetest.sh		; status=$(($status || $?))
 rm -f run_*.dat

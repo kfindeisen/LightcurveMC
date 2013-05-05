@@ -2,7 +2,7 @@
  * @file projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified May 2, 2013
+ * @date Last modified May 4, 2013
  *
  * @todo Add proper exception classes. Put exceptions in exception namespace 
  *	within lcmc::models and lcmc::inject.
@@ -20,7 +20,7 @@
 /** Current version of the program, to make version quoted by program 
  *	consistent with documentation.
  */
-#define VERSION_STRING "2.1.0"
+#define VERSION_STRING "2.2.0-devel"
 
 /** @mainpage
  *
@@ -43,6 +43,11 @@
  * - Support for calculation of C1, periods, and &Delta;m&Delta;t timescales
  * 
  * @section changelog Version History
+ *
+ * @subsection v2_2_0 2.2.0-devel
+ *
+ * - Changed: shortened all integration test scripts, cutting the regression 
+ *	testing time by a factor of four without sacrificing accuracy
  *
  * @subsection v2_1_0 2.1.0
  *
