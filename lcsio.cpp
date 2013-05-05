@@ -10,10 +10,26 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include "kpffileio.h"
+#include <boost/algorithm/string.hpp>
 #include "lcsio.h"
 
 using namespace std;
+
+/** Tests whether a character is a newline or not
+ *
+ * @param[in] x The character to test
+ *
+ * @return True if x represents a newline on Windows, Unix, or MacOS.
+ */
+bool isNewLine(char x) {
+	switch (x) {
+	case '\r':
+	case '\n':
+		return true;
+	default:
+		return false;
+	}
+}
 
 /** Reads a file containing a list of file names
  * 
@@ -26,6 +42,8 @@ using namespace std;
  */	
 void readFileNames(FILE* hInput, vector<string> &fileList)
 {
+	using boost::algorithm::trim_right_copy_if;
+	
 	fileList.clear();
 
 	// Read into dates
@@ -45,7 +63,7 @@ void readFileNames(FILE* hInput, vector<string> &fileList)
 		// use strtrim to remove any trailing newline
 		// be careful not to remove spaces, lest there be a 
 		//	pathological filename
-		fileList.push_back(kpffileio::strtrim(buffer, "\r\n"));
+		fileList.push_back(trim_right_copy_if(string(buffer), &isNewLine));
 	}
 }
 

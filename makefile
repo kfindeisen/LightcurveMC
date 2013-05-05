@@ -13,7 +13,7 @@ PROJ     = lightcurveMC
 SOURCES  = cmd.cpp cmd_classes.cpp binstats.cpp approxequal.cpp nanstats.cpp \
 	lcsupport.cpp lightcurve.cpp paramlist.cpp lcregistry.cpp fluxmag.cpp \
 	uncopyable.cpp \
-	mcio.cpp lcsio.cpp kpffileio.cpp
+	mcio.cpp lcsio.cpp
 OBJS     = $(SOURCES:.cpp=.o)
 DIRS     = samples stats waves
 LIBS     = timescales gsl gslcblas

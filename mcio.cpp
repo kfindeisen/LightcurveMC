@@ -9,7 +9,6 @@
 #include <stdexcept>
 #include <string>
 #include <cstdio>
-#include "kpffileio.h"
 #include "mcio.h"
 
 using std::sort;
@@ -100,7 +99,10 @@ void printLightCurve(size_t modelNum, std::string lcName, double logP, double lo
 	sprintf(filename, "lightcurve_%s_p%+0.1f_a%+0.1f_%02i.dat", 
 		lcName.c_str(), logP, logA, modelNum);
 	#endif
-	FILE *hOutput = kpffileio::bestFileOpen(filename, "w");
+	FILE *hOutput = fopen(filename, "w");
+	if (NULL == hOutput) {
+		throw std::runtime_error("Could not open light curve output file.");
+	}
 
 	// Print the FAP value
 	fprintf(hOutput, "Period %7.4f d\n", period);
@@ -142,7 +144,10 @@ void printPeriodogram(size_t modelNum, size_t lcType, double logP, double logA,
 	sprintf(filename, "periodogram_lc%1i_p%+.2f_a%+.2f_%1i.dat", 
 		lcType, logP, logA, modelNum);
 	#endif
-	FILE *hOutput = kpffileio::bestFileOpen(filename, "w");
+	FILE *hOutput = fopen(filename, "w");
+	if (NULL == hOutput) {
+		throw std::runtime_error("Could not open periodogram output file.");
+	}
 
 	// Print the FAP value
 	fprintf(hOutput, "True Frequency %7.4f\n", freq);

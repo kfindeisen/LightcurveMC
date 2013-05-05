@@ -13,7 +13,6 @@
 #include <cstdio>
 #include <gsl/gsl_randist.h>
 #include "binstats.h"
-#include "kpffileio.h"
 #include "lightcurvetypes.h"
 #include "mcio.h"
 #include "paramlist.h"
@@ -137,8 +136,10 @@ int main(int argc, char* argv[]) {
 	 */
 	if (!injectMode) {
 		try {
-			FILE* hJulDates = kpffileio::bestFileOpen(dateList.c_str(), "r", 
-				(string("Could not read photometry dates from ") + dateList).c_str());
+			FILE* hJulDates = fopen(dateList.c_str(), "r");
+			if(NULL == hJulDates) {
+				throw std::runtime_error("Could not open timestamp file.");
+			}
 			readTimeStamps(hJulDates, tSeries, minTStep, maxTStep);
 			nObs = tSeries.size();
 			fclose(hJulDates);
