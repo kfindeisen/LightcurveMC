@@ -2,13 +2,13 @@
  *  @file raiigsl.tmp.h
  *  @author Krzysztof Findeisen
  *  @date Created December 29, 2011
- *  @date Last modified December 31, 2011
+ *  @date Last modified May 5, 2013
  */
 
 #ifndef RAIIGSLH
 #define RAIIGSLH
 
-#include "uncopyable.h"
+#include <boost/utility.hpp>
 #include "warnflags.h"
 
 // GCC isn't clever enough to realize that I've overridden the copy-constructor 
@@ -32,7 +32,7 @@
  *
  * @tparam T a structure in the GSL, such as gsl_vector or gsl_rng.
  */
-template <typename T> class RaiiGsl : private IUncopyable {
+template <typename T> class RaiiGsl : boost::noncopyable {
 public:
 	/** Deallocator represents a function that can free the memory in an 
 	 * object of type T

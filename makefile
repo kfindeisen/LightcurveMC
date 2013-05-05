@@ -1,7 +1,7 @@
 # Compilation make for lightcurveMC
 # by Krzysztof Findeisen
 # Created March 24, 2010
-# Last modified May 4, 2013
+# Last modified May 5, 2013
 
 SHELL = /bin/sh
 
@@ -12,12 +12,11 @@ include makefile.inc
 PROJ     = lightcurveMC
 SOURCES  = cmd.cpp cmd_classes.cpp binstats.cpp approxequal.cpp nanstats.cpp \
 	lcsupport.cpp lightcurve.cpp paramlist.cpp lcregistry.cpp fluxmag.cpp \
-	uncopyable.cpp \
 	mcio.cpp lcsio.cpp
 OBJS     = $(SOURCES:.cpp=.o)
 DIRS     = samples stats waves
 LIBS     = timescales gsl gslcblas
-TESTLIBS = $(LIBS) boost_unit_test_framework 
+TESTLIBS = $(LIBS) boost_unit_test_framework-mt 
 
 #---------------------------------------
 # Primary build option

@@ -46,8 +46,8 @@
  *
  * @subsection v2_2_0 2.2.0-devel
  *
- * - Changed: shortened all integration test scripts, cutting the regression 
- *	testing time by a factor of four without sacrificing accuracy
+ * - Changed: shortened all integration test scripts, cutting the 
+ *	testing time by a factor of five without sacrificing accuracy
  *
  * @subsection v2_1_0 2.1.0
  *
@@ -71,7 +71,7 @@
  *	that were always calculated to the same value
  * - Added: documentation for test code. Declared a new namespace, 
  *	lcmc::test, containing all test suites.
- * - Fixed: --amp parameter for sines now represents the half-amplitude, as 
+ * - Fixed: -\-amp parameter for sines now represents the half-amplitude, as 
  *	intended, not the amplitude
  * - Fixed: light curves no longer generate negative fluxes
  * - Added: @ref lcmc::test::BoostTest::test_wave "test_wave", a unit test 

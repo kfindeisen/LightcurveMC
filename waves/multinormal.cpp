@@ -18,6 +18,7 @@
 
 namespace lcmc { namespace utils {
 
+#if GSL_MINOR_VERSION < 15
 /** Tests whether two matrices have approximately equal elements.
  *
  * This function is less efficient than gsl_is_matrix_equal(), but is 
@@ -54,6 +55,7 @@ bool matrixEqual(const gsl_matrix* const a, const gsl_matrix* const b) {
 		return true;
 	}
 }
+#endif
 
 using std::vector;
 
