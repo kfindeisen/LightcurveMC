@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <cmath>
+#include <boost/shared_ptr.hpp>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_eigen.h>
 #include <gsl/gsl_math.h>
@@ -14,9 +15,11 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_version.h>
 #include "generators.h"
-#include "../raiigsl.tmp.h"
+//#include "../raiigsl.tmp.h"
 
 namespace lcmc { namespace utils {
+
+using boost::shared_ptr;
 
 #if GSL_MINOR_VERSION < 15
 /** Tests whether two matrices have approximately equal elements.
@@ -105,14 +108,19 @@ void getHalfMatrix(const gsl_matrix* const a, gsl_matrix* & b) {
 	
 	const size_t N = a->size1;
 	
-	RaiiGsl<gsl_eigen_symmv_workspace> eigenWork(
+//	RaiiGsl<gsl_eigen_symmv_workspace> eigenWork(
+//			gsl_eigen_symmv_alloc(N), &gsl_eigen_symmv_free);
+//	RaiiGsl<gsl_vector> eigenVals(gsl_vector_alloc(N), &gsl_vector_free);
+//	RaiiGsl<gsl_matrix> eigenVecs(gsl_matrix_alloc(N, N), &gsl_matrix_free);
+	shared_ptr<gsl_eigen_symmv_workspace> eigenWork(
 			gsl_eigen_symmv_alloc(N), &gsl_eigen_symmv_free);
-	RaiiGsl<gsl_vector> eigenVals(gsl_vector_alloc(N), &gsl_vector_free);
-	RaiiGsl<gsl_matrix> eigenVecs(gsl_matrix_alloc(N, N), &gsl_matrix_free);
+	shared_ptr<gsl_vector> eigenVals(gsl_vector_alloc(N), &gsl_vector_free);
+	shared_ptr<gsl_matrix> eigenVecs(gsl_matrix_alloc(N, N), &gsl_matrix_free);
 	
 	// Since gsl_eigen_symmv modifies a matrix in place, 
 	//	make a copy first
-	RaiiGsl<gsl_matrix> aCopy(gsl_matrix_alloc(N, N), &gsl_matrix_free);
+	//RaiiGsl<gsl_matrix> aCopy(gsl_matrix_alloc(N, N), &gsl_matrix_free);
+	shared_ptr<gsl_matrix> aCopy(gsl_matrix_alloc(N, N), &gsl_matrix_free);
 	gsl_matrix_memcpy(aCopy.get(), a);
 			
 	gsl_eigen_symmv(aCopy.get(), eigenVals.get(), eigenVecs.get(), eigenWork.get());
@@ -173,13 +181,15 @@ void multiNormal(const vector<double>& indVec, const gsl_matrix& covar,
 	
 	// In C++11, can directly return a vector_const_view of indVec
 	// For now, make a copy
-	RaiiGsl<gsl_vector> temp(gsl_vector_alloc(N), &gsl_vector_free);
+//	RaiiGsl<gsl_vector> temp(gsl_vector_alloc(N), &gsl_vector_free);
+	shared_ptr<gsl_vector> temp(gsl_vector_alloc(N), &gsl_vector_free);
 	for(size_t i = 0; i < N; i++) {
 		gsl_vector_set(temp.get(), i, indVec[i]);
 	}
 	// Storage for the output
 	// calloc to prevent weirdness in the call to gsl_blas_dgemv
-	RaiiGsl<gsl_vector> result(gsl_vector_calloc(N), &gsl_vector_free);
+//	RaiiGsl<gsl_vector> result(gsl_vector_calloc(N), &gsl_vector_free);
+	shared_ptr<gsl_vector> result(gsl_vector_calloc(N), &gsl_vector_free);
 	
 	// Multiply the prefix matrix by the uncorrelated vector to 
 	//	get the correlated one

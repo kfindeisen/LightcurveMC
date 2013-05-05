@@ -8,12 +8,12 @@
 #include <stdexcept>
 #include <vector>
 #include <cmath>
+#include <boost/shared_ptr.hpp>
 #include <gsl/gsl_matrix.h>
 #include "../approx.h"
 #include "../fluxmag.h"
 #include "generators.h"
 #include "lightcurves_gp.h"
-#include "../raiigsl.tmp.h"
 
 namespace lcmc { namespace models {
 
@@ -62,9 +62,6 @@ SimpleGp::SimpleGp(const std::vector<double>& times, double sigma, double tau)
  */
 void SimpleGp::solveFluxes(std::vector<double>& fluxes) const {
 	// invariant: this->times() is sorted in ascending order
-//	std::vector<double> times;
-//	this->getTimes(times);
-//	size_t nTimes = times.size();
 	size_t nTimes = this->size();
 	
 	fluxes.clear();
@@ -75,11 +72,12 @@ void SimpleGp::solveFluxes(std::vector<double>& fluxes) const {
 			fluxes.push_back(rNorm());
 		}
 	
-		// RaiiGsl doesn't allow you to update the internal pointer, 
-		//	so first allocate to a standalone pointer, then pass 
-		//	it to RaiiGsl
+		// shared_ptr does not allow its internal pointer to be changed
+		// So assign to a dummy pointer, then give it to shared_ptr 
+		//	once the pointer target is known
 		gsl_matrix* corrPtr = getCovar();
-		RaiiGsl<gsl_matrix> corrs(corrPtr, &gsl_matrix_free);
+		boost::shared_ptr<gsl_matrix> corrs(corrPtr, &gsl_matrix_free);
+	
 		utils::multiNormal(fluxes, *corrs, fluxes);
 		
 		utils::magToFlux(fluxes, fluxes);

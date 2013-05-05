@@ -31,12 +31,12 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include <boost/shared_ptr.hpp>
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
 #include "test.h"
 #include "../binstats.h"
 #include "../stats/dmdt.h"
-#include "../raiigsl.tmp.h"
 
 using std::vector;
 
@@ -145,7 +145,7 @@ public:
 	
 private: 
 	// For generating random data
-	RaiiGsl<gsl_rng> randomizer;
+	boost::shared_ptr<gsl_rng> randomizer;
 };
 
 /** Test cases for testing &Delta;m&Delta;t-based timescales

@@ -31,6 +31,7 @@
 #include <stdexcept>
 #include <string>
 #include <cmath>
+#include <boost/shared_ptr.hpp>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_randist.h>
@@ -38,11 +39,11 @@
 #include "test.h"
 #include "../approx.h"
 #include "../mcio.h"
-#include "../raiigsl.tmp.h"
 
 #include "../waves/generators.h"
 
 using std::vector;
+using boost::shared_ptr;
 
 namespace lcmc { namespace utils {
 
@@ -125,20 +126,21 @@ void testProduct(double tau, const vector<double>& times)
 {
 	const size_t nTimes = times.size();
 	
-	RaiiGsl<gsl_matrix> initial(gsl_matrix_alloc(nTimes, nTimes), &gsl_matrix_free);
+	shared_ptr<gsl_matrix> initial(gsl_matrix_alloc(nTimes, nTimes), &gsl_matrix_free);
 	initGauss(initial.get(), times, tau);
 	
-	// RaiiGsl does not allow its internal pointer to be changed
-	// So assign to a dummy pointer, then add RaiiGsl once the value is fixed
+	// shared_ptr does not allow its internal pointer to be changed
+	// So assign to a dummy pointer, then give it to shared_ptr once the 
+	//	pointer target is known
 	gsl_matrix * temp = NULL;
 	lcmc::utils::getHalfMatrix(initial.get(), temp);
-	RaiiGsl<gsl_matrix> result(temp, &gsl_matrix_free);
+	shared_ptr<gsl_matrix> result(temp, &gsl_matrix_free);
 	
-	RaiiGsl<gsl_matrix> product(gsl_matrix_calloc(nTimes, nTimes), &gsl_matrix_free);
+	shared_ptr<gsl_matrix> product(gsl_matrix_calloc(nTimes, nTimes), &gsl_matrix_free);
 	gsl_blas_dgemm(CblasNoTrans, CblasTrans, 1.0, result.get(), result.get(), 
 			0.0, product.get());
 
-	RaiiGsl<gsl_matrix> residuals(gsl_matrix_calloc(nTimes, nTimes), &gsl_matrix_free);
+	shared_ptr<gsl_matrix> residuals(gsl_matrix_calloc(nTimes, nTimes), &gsl_matrix_free);
 	gsl_matrix_memcpy(residuals.get(), product.get());
 	gsl_matrix_sub (residuals.get(), initial.get());
 	
