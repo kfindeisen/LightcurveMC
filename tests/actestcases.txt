@@ -1,0 +1,14 @@
+lc/205059.73+444049.1.levrel.cat
+lc/205114.80+424819.8.levrel.cat
+lc/205122.81+443342.5.levrel.cat
+lc/205133.39+443454.4.levrel.cat
+lc/205145.99+442835.1.levrel.cat
+lc/205215.13+433007.4.levrel.cat
+lc/205254.20+432119.0.levrel.cat
+lc/205356.91+445131.9.levrel.cat
+lc/205446.61+441205.7.levrel.cat
+lc/205647.84+443836.9.levrel.cat
+lc/205722.84+441416.7.levrel.cat
+lc/205811.44+435257.5.levrel.cat
+lc/205905.98+442655.9.levrel.cat
+lc/210216.84+433240.0.levrel.cat

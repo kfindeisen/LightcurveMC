@@ -1,0 +1,23 @@
+;; Generates consistency test cases for autocorrinterp.pro
+; @file actestgen.idl
+; @author Krzysztof Findeisen
+; @date Created May 7, 2013
+; @date Last modified May 8, 2013
+
+readcol, 'actestcases.txt',  format='A', lcList, comment='#'
+
+for i = 0, n_elements(lcList)-1 do begin &$
+	readcol, lcList[i], format='D,F', time, mag, /silent &$
+
+	time = time[0:49] &$
+	 mag =  mag[0:49] &$
+	
+	autocorrinterp, time, mag, inttime, acf, itime=itime, imag=imag &$
+	
+	forprint, textout='acfi_target_in_' + string(i, format='(I0)') + '.txt', $
+		time, mag, format='(F0.10, " ", F0.10)', comment=['# DUMMY COMMENT\n# TO MATCH LCS FORMAT'] &$
+	forprint, textout='acfi_target_interp_' + string(i, format='(I0)') + '.txt', $
+		itime, imag, format='(F0.10, " ", F0.10)', comment=['# DUMMY COMMENT\n# TO MATCH LCS FORMAT'] &$
+	forprint, textout='acfi_target_out_' + string(i, format='(I0)') + '.txt', $
+		inttime, acf, format='(F0.10, " ", F0.10)', comment=['# DUMMY COMMENT\n# TO MATCH LCS FORMAT'] &$
+endfor

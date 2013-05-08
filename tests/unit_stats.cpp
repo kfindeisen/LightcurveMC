@@ -36,9 +36,11 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
-#include "test.h"
+#include "../stats/acfinterp.h"
 #include "../approx.h"
+#include "../lcsio.h"
 #include "../mcio.h"
+#include "test.h"
 
 #include "../waves/generators.h"
 
@@ -57,6 +59,8 @@ namespace lcmc { namespace stats {
 
 void getSummaryStats(const DoubleVec& values, double& mean, double& stddev, 
 		const std::string& statName);
+
+void autoCorrelation_stat(const double data[], double acfs[], size_t n);
 
 }}	// end lcmc::stats
 /// @endcond
@@ -234,6 +238,114 @@ BOOST_AUTO_TEST_CASE(zero_variance) {
 	
 	BOOST_CHECK(!testNan(stddev));
 	BOOST_CHECK(stddev < 1e-12);
+}
+
+/* @fn lcmc::stats::autoCorrelation_stat()
+ *
+ * @test Consistent results with a_correlate() procedure from IDL
+ */
+/** Tests whether lcmc::stats::autoCorrelation_stat() matches existing 
+ *	autocorrelation implementations from other languages
+ */
+BOOST_AUTO_TEST_CASE(acf) {
+	FILE* hTarget = fopen("acftarget.txt", "r");
+	if (hTarget == NULL) {
+		throw std::runtime_error("Could not open reference file: acftarget.txt");
+	}
+	try {
+		while(!feof(hTarget)) {
+			double data[10];
+			for(size_t i = 0; i < 10 && !feof(hTarget); i++) {
+				double curVal;
+				fscanf(hTarget, "%lf", &curVal);
+				data[i] = curVal;
+			}
+			if (feof(hTarget)) {
+				break;
+			}
+
+			double corrs[10];
+			for(size_t i = 0; i < 10 && !feof(hTarget); i++) {
+				double curVal;
+				fscanf(hTarget, "%lf", &curVal);
+				corrs[i] = curVal;
+			}
+			if (feof(hTarget)) {
+				break;
+			}
+			
+			double acfs[10];
+			lcmc::stats::autoCorrelation_stat(data, acfs, 10);
+			
+			for(size_t i = 0; i < 10; i++) {
+				myTestClose(acfs[i], corrs[i], 1e-5);
+			}
+		}
+	} catch (std::exception &e) {
+		fclose(hTarget);
+		BOOST_ERROR("Could not finish reading from acftarget.txt.");
+		throw;
+	}
+	
+	fclose(hTarget);
+}
+
+/* @fn lcmc::stats::interp::autoCorrelation()
+ *
+ * @test Consistent results with original IDL code
+ */
+/** Tests whether lcmc::stats::interp::autoCorrelation() matches 
+ *	Ann Marie's original program
+ */
+BOOST_AUTO_TEST_CASE(acf_interp) {
+	for(size_t i = 0; i <= 13; i++) {
+		vector<double> times, mags;
+		double offsetIn;
+		{
+			char fileName[80];
+			sprintf(fileName, "acfi_target_in_%i.txt", i);
+			FILE* hInput = fopen(fileName, "r");
+			if (hInput == NULL) {
+				throw std::runtime_error("Could not open reference file: " 
+					+ std::string(fileName));
+			}
+			readMcLightCurve(hInput, offsetIn, times, mags);
+			fclose(hInput);
+		}
+
+		vector<double> lags, acfs;
+		double offsetOut;
+		{
+			char fileName[80];
+			sprintf(fileName, "acfi_target_out_%i.txt", i);
+			FILE* hOutput = fopen(fileName, "r");
+			if (hOutput == NULL) {
+				throw std::runtime_error("Could not open reference file: "
+					+ std::string(fileName));
+			}
+			readMcLightCurve(hOutput, offsetOut, lags, acfs);
+			fclose(hOutput);
+		}
+		
+		size_t   nAcf = lags.size();
+		// Add a small offset to prevent roundoff errors from making 
+		//	a longer grid than AMC used
+		double deltaT = (lags.back() - lags.front())/(nAcf-1) + 1e-14;
+		
+		vector<double> myAcfs;
+		BOOST_CHECK_NO_THROW(lcmc::stats::interp::autoCorr(times, mags, 
+			deltaT, nAcf, myAcfs));
+		
+		unsigned int nBad = 0;
+		for(size_t j = 0; j < nAcf; j++) {
+			/*myTestClose(acfs[j], myAcfs[j], 1e-5);*/
+			if (!isClose(acfs[j], myAcfs[j], 1e-5)) {
+				nBad++;
+			}
+		}
+		BOOST_WARN(nBad > 0 && nBad < nAcf/1000);
+		BOOST_CHECK(nBad < nAcf/1000);
+	}	// end loop over examples
 }
 
 BOOST_AUTO_TEST_SUITE_END()
