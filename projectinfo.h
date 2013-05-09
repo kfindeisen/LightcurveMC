@@ -28,20 +28,25 @@
  *
  * Lightcurve MC carries out Monte Carlo simulations of statistical light curve 
  * analysis, given a fixed observing pattern. The program is designed to be 
- * highly flexible with respect to the models adopted, as these can be 
- * selected at run time. It is also somewhat modular with respect to the 
- * statistical tests run on each light curve, although at present these need 
- * to be selected in the code itself.
+ * highly flexible with respect to the models adopted and to the statistical 
+ * tests run on each light curve. The user may select either at run time, 
+ * allowing for simulation details to be fine-tuned to the problem at hand.
  *
  * Current features include:
  * - Support for periodic light curves having a variety of shapes
  * - Support for stochastic light curves having a variety of correlation 
  *	properties
- * - Support for a user-selected amount of Gaussian white noise
+ * - Support for a user-selected amount of Gaussian measurement error
  * - Support for signal injection tests using a randomized sample of base 
  * 	light curves
  * - Support for calculation of C1, periods, &Delta;m&Delta;t timescales, and 
  *	ACF timescales
+ * 
+ * @section install Installation
+ * 
+ * @section use Usage
+ * 
+ * @section examples Examples
  * 
  * @section changelog Version History
  *
@@ -52,6 +57,8 @@
  * - Added: --stat (-s) keyword now allows run time selection of statistics 
  *	to compute for each light curve
  * - Added: support for ACF timescales
+ * - Fixed: output files now give more significant digits for the 
+ *	simulation parameters, reducing naming conflicts between bins
  *
  * @subsection v2_1_0 2.1.0
  *

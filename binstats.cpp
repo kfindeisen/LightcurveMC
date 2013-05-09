@@ -392,7 +392,7 @@ string LcBinStats::makeFileName(string lcName, const RangeList& binSpecs, string
 		char shortName = (*it)[0];
 		double paramMin = binSpecs.getMin(*it);
 		
-		sprintf(binId, "%s_%c%+0.1f", binId, shortName, paramMin);
+		sprintf(binId, "%s_%c%0.2f", binId, shortName, paramMin);
 	}
 	sprintf(binId, "%s_n%s", binId, noise.c_str());
 	
