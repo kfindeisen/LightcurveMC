@@ -106,14 +106,14 @@ private:
 	/** Tests whether the object needs to calculate a particular statistic
 	 */
 	static bool hasStat(const std::vector<StatType>& orders, StatType x);
-
+	
 	std::string binName;
 	std::string fileName;
-
+	
 	std::vector<StatType> stats;
 	
 	DoubleVec C1vals;
-
+	
 //	DoubleVec periods;
 	DoubleVec cut50Amp3s;
 	DoubleVec cut50Amp2s;
@@ -121,7 +121,7 @@ private:
 	DoubleVec cut90Amp2s;
 	std::vector<DoubleVec> dmdtMedianTimes;
 	std::vector<DoubleVec> dmdtMedians;
-
+	
 	DoubleVec cutAcf9s;
 	DoubleVec cutAcf4s;
 	DoubleVec cutAcf2s;

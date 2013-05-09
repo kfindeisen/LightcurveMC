@@ -42,57 +42,29 @@ namespace lcmc { namespace stats {
 using interp::autoCorr;
 
 /** Calculates the mean and standard deviation of a collection of statistics
- *
- * @param[in] values The statistics to be summarized.
- * @param[out] mean The mean of the statistics.
- * @param[out] stddev The standard deviation of the statistics.
- * @param[in] statName The name of the statistic, for error messages.
- *
- * @post mean and stddev ignore any NaNs present in values.
- * @post If there are no non-NaN elements in values, mean equals NaN
- * @post If there are less than two non-NaN elements in values, stddev equals NaN
  */
 void getSummaryStats(const DoubleVec& values, double& mean, double& stddev, 
-		const string& statName) {
-	mean   = std::numeric_limits<double>::quiet_NaN();
-	stddev = std::numeric_limits<double>::quiet_NaN();
-	
-	try {
-		// For the exception handling to work right, order matters!
-		// Mean requires at least one measurement
-		// Standard deviation requires at least two, i.e. it has 
-		//	strictly tighter requirements than the mean and must 
-		//	go later
-		mean   =      utils::    meanNoNan(values);
-		stddev = sqrt(utils::varianceNoNan(values));
-	} catch (std::invalid_argument &e) {
-		// These should just be warnings that a statistic is undefined
-		fprintf(stderr, "WARNING: %s summary: %s\n", statName.c_str(), e.what());
-	}
-}
+		const string& statName);
 
 /** Calculates the mean, standard deviation, and definition rate of a collection of statistics
- *
- * @param[in] values The statistics to be summarized.
- * @param[out] mean The mean of the statistics.
- * @param[out] stddev The standard deviation of the statistics.
- * @param[out] goodFrac The fraction of measurements that are finite values.
- * @param[in] statName The name of the statistic, for error messages.
- *
- * @post mean and stddev ignore and NaNs present in values.
- * @post If there are no non-NaN elements in values, mean equals NaN
- * @post If there are less than two non-NaN elements in values, stddev equals NaN
  */
 void getSummaryStats(const DoubleVec& values, double& mean, double& stddev, 
-		double& goodFrac, 
-		const string& statName) {
-	size_t n = values.size();
-	
-	double badCount = static_cast<double>(
-		std::count_if(values.begin(), values.end(), &utils::isNanOrInf));
-	goodFrac = (n > 0 ? 1.0 - badCount/n : 0.0);
-	getSummaryStats(values, mean, stddev, statName);
-}
+		double& goodFrac, const string& statName);
+
+/** Prints a single family of statistics to the specified file
+ */
+void printStat(FILE* const file, const DoubleVec& archive, 
+	const std::string& statName, const std::string& distribFile);
+
+/** Prints a single family of statistics to the specified file
+ */
+void printStatAlwaysDefined(FILE* const file, const DoubleVec& archive, 
+	const std::string& statName, const std::string& distribFile);
+
+/** Prints a set of functions to the specified file
+ */
+void printStat(FILE* const file, const std::vector<DoubleVec>& timeArchive, 
+	const std::vector<DoubleVec>& statArchive, const std::string& distribFile);
 
 /** Creates a new stat counter.
  *
@@ -105,6 +77,9 @@ void getSummaryStats(const DoubleVec& values, double& mean, double& stddev,
  *	mean-square noise level. If instead signal injection is being used, 
  *	this string is the name of the light curve library to which signals 
  *	are added.
+ * @param[in] toCalc A list of statistics whose values will be calculated.
+ *
+ * @pre toCalc is not empty
  */
 LcBinStats::LcBinStats(string modelName, const RangeList& binSpecs, string noise, 
 		std::vector<StatType> toCalc) 
@@ -276,188 +251,33 @@ void LcBinStats::printBinStats(FILE* const file) const {
 	fprintf(file, "%s", binName.c_str());
 
 	if (hasStat(stats, C1)) {
-		// For now, define summary variables for each statistic
-		// Eventually statistics will be objects, with mean, filename, etc. 
-		//	accessible as members
-		double meanC1, stddevC1;
-		getSummaryStats(C1vals, meanC1, stddevC1, "C1");
-		string    c1File =      "run_c1_" + fileName + ".dat";
-		
-		fprintf(file, "\t%6.3g±%5.2g\t%s", meanC1, stddevC1, c1File.c_str());
-	
-		// Store the C1 distribution
-		{
-			FILE* auxFile = fopen(c1File.c_str(), "w");
-			for(size_t i = 0; i < C1vals.size(); i++) {
-				fprintf(auxFile, "%0.3f\n", C1vals[i]);
-			}
-			fclose(auxFile);
-		}
+		printStatAlwaysDefined(file, C1vals, "C1", "run_c1_" + fileName + ".dat");
 	}
 	if (hasStat(stats, PERIOD)) {
 	}
 	if (hasStat(stats, PERIODOGRAM)) {
 	}
 	if (hasStat(stats, DMDTCUT)) {
-		// For now, define summary variables for each statistic
-		// Eventually statistics will be objects, with mean, filename, etc. 
-		//	accessible as members
-		double mean50Rise3, stddev50Rise3, frac50Rise3;
-		getSummaryStats(cut50Amp3s, mean50Rise3, stddev50Rise3, frac50Rise3, 
-				"50th percentile crossing 1/3 amp");
-		string cut50File3 =   "run_cut50_3_" + fileName + ".dat";
-		
-		double mean50Rise2, stddev50Rise2, frac50Rise2;
-		getSummaryStats(cut50Amp2s, mean50Rise2, stddev50Rise2, frac50Rise2, 
-				"50th percentile crossing 1/2 amp");
-		string cut50File2 =   "run_cut50_2_" + fileName + ".dat";
-		
-		double mean90Rise3, stddev90Rise3, frac90Rise3;
-		getSummaryStats(cut90Amp3s, mean90Rise3, stddev90Rise3, frac90Rise3, 
-				"90th percentile crossing 1/3 amp");
-		string cut90File3 =   "run_cut90_3_" + fileName + ".dat";
-		
-		double mean90Rise2, stddev90Rise2, frac90Rise2;
-		getSummaryStats(cut90Amp2s, mean90Rise2, stddev90Rise2, frac90Rise2, 
-				"90th percentile crossing 1/2 amp");
-		string cut90File2 =   "run_cut90_2_" + fileName + ".dat";
-		
-		fprintf(file, "\t%6.3g±%5.2g\t%6.3g\t%s\t%6.3g±%5.2g\t%6.3g\t%s\t%6.3g±%5.2g\t%6.3g\t%s\t%6.3g±%5.2g\t%6.3g\t%s",
-				mean50Rise3, stddev50Rise3, frac50Rise3, cut50File3.c_str(), 
-				mean50Rise2, stddev50Rise2, frac50Rise2, cut50File2.c_str(), 
-				mean90Rise3, stddev90Rise3, frac90Rise3, cut90File3.c_str(), 
-				mean90Rise2, stddev90Rise2, frac90Rise2, cut90File2.c_str());
-
-		// Store the 50% cut at 1/3 amp distribution
-		{
-			FILE* auxFile = fopen(cut50File3.c_str(), "w");
-			for(size_t i = 0; i < cut50Amp3s.size(); i++) {
-				fprintf(auxFile, "%0.3f\n", cut50Amp3s[i]);
-			}
-			fclose(auxFile);
-		}
-		
-		// Store the 50% cut at 1/2 amp distribution
-		{
-			FILE* auxFile = fopen(cut50File2.c_str(), "w");
-			for(size_t i = 0; i < cut50Amp2s.size(); i++) {
-				fprintf(auxFile, "%0.3f\n", cut50Amp2s[i]);
-			}
-			fclose(auxFile);
-		}
-		
-		// Store the 90% cut at 1/3 amp distribution
-		{
-			FILE* auxFile = fopen(cut90File3.c_str(), "w");
-			for(size_t i = 0; i < cut90Amp3s.size(); i++) {
-				fprintf(auxFile, "%0.3f\n", cut90Amp3s[i]);
-			}
-			fclose(auxFile);
-		}
-		
-		// Store the 90% cut at 1/2 amp distribution
-		{
-			FILE* auxFile = fopen(cut90File2.c_str(), "w");
-			for(size_t i = 0; i < cut90Amp2s.size(); i++) {
-				fprintf(auxFile, "%0.3f\n", cut90Amp2s[i]);
-			}
-			fclose(auxFile);
-		}
+		printStat(file, cut50Amp3s, "50th percentile crossing 1/3 amp", 
+			"run_cut50_3_" + fileName + ".dat");
+		printStat(file, cut50Amp2s, "50th percentile crossing 1/2 amp", 
+			"run_cut50_2_" + fileName + ".dat");
+		printStat(file, cut90Amp3s, "90th percentile crossing 1/3 amp", 
+			"run_cut90_3_" + fileName + ".dat");
+		printStat(file, cut90Amp2s, "90th percentile crossing 1/2 amp", 
+			"run_cut90_2_" + fileName + ".dat");
 	}
 	if (hasStat(stats, DMDT)) {
-		string  dmdtFile = "run_dmdtmed_" + fileName + ".dat";
-		
-		fprintf(file, "\t%s", dmdtFile.c_str());
-
-		// Store the dmdt medians
-		{
-			FILE* auxFile = fopen(dmdtFile.c_str(), "w");
-			for(size_t i = 0; i < dmdtMedians.size(); i++) {
-				for(size_t j = 0; j < dmdtMedianTimes[i].size(); j++) {
-					fprintf(auxFile, "%0.3f ", dmdtMedianTimes[i][j]);
-				}
-				fprintf(auxFile, "\n");
-				for(size_t j = 0; j < dmdtMedians[i].size(); j++) {
-					fprintf(auxFile, "%0.3f ", dmdtMedians[i][j]);
-				}
-				fprintf(auxFile, "\n");
-			}
-			fclose(auxFile);
-		}
+		printStat(file, dmdtMedianTimes, dmdtMedians, 
+			"run_dmdtmed_" + fileName + ".dat");
 	}
 	if (hasStat(stats, ACFCUT)) {
-		// For now, define summary variables for each statistic
-		// Eventually statistics will be objects, with mean, filename, etc. 
-		//	accessible as members
-		double meanAcf9, stddevAcf9, fracAcf9;
-		getSummaryStats(cutAcf9s, meanAcf9, stddevAcf9, fracAcf9, 
-				"ACF crossing 1/9");
-		string cutAcf9 =   "run_acf9_" + fileName + ".dat";
-		
-		double meanAcf4, stddevAcf4, fracAcf4;
-		getSummaryStats(cutAcf4s, meanAcf4, stddevAcf4, fracAcf4, 
-				"ACF crossing 1/4");
-		string cutAcf4 =   "run_acf4_" + fileName + ".dat";
-		
-		double meanAcf2, stddevAcf2, fracAcf2;
-		getSummaryStats(cutAcf2s, meanAcf2, stddevAcf2, fracAcf2, 
-				"ACF crossing 1/2");
-		string cutAcf2 =   "run_acf2_" + fileName + ".dat";
-		
-		
-		fprintf(file, "\t%6.3g±%5.2g\t%6.3g\t%s\t%6.3g±%5.2g\t%6.3g\t%s\t%6.3g±%5.2g\t%6.3g\t%s",
-				meanAcf9, stddevAcf9, fracAcf9, cutAcf9.c_str(), 
-				meanAcf4, stddevAcf4, fracAcf4, cutAcf4.c_str(), 
-				meanAcf2, stddevAcf2, fracAcf2, cutAcf2.c_str());
-
-		// Store the ACF cut at 1/9 distribution
-		{
-			FILE* auxFile = fopen(cutAcf9.c_str(), "w");
-			for(size_t i = 0; i < cutAcf9.size(); i++) {
-				fprintf(auxFile, "%0.3f\n", cutAcf9s[i]);
-			}
-			fclose(auxFile);
-		}
-		
-		// Store the ACF cut at 1/4 distribution
-		{
-			FILE* auxFile = fopen(cutAcf4.c_str(), "w");
-			for(size_t i = 0; i < cutAcf4.size(); i++) {
-				fprintf(auxFile, "%0.3f\n", cutAcf4s[i]);
-			}
-			fclose(auxFile);
-		}
-		
-		// Store the ACF cut at 1/2 distribution
-		{
-			FILE* auxFile = fopen(cutAcf2.c_str(), "w");
-			for(size_t i = 0; i < cutAcf2.size(); i++) {
-				fprintf(auxFile, "%0.3f\n", cutAcf2s[i]);
-			}
-			fclose(auxFile);
-		}
-		
+		printStat(file, cutAcf9s, "ACF crossing 1/9", "run_acf9_" + fileName + ".dat");
+		printStat(file, cutAcf4s, "ACF crossing 1/4", "run_acf4_" + fileName + ".dat");
+		printStat(file, cutAcf2s, "ACF crossing 1/2", "run_acf2_" + fileName + ".dat");
 	}
 	if (hasStat(stats, ACF)) {
-		string  acfFile = "run_acf_" + fileName + ".dat";
-		
-		fprintf(file, "\t%s", acfFile.c_str());
-
-		// Store the dmdt medians
-		{
-			FILE* auxFile = fopen(acfFile.c_str(), "w");
-			for(size_t i = 0; i < acfs.size(); i++) {
-				for(size_t j = 0; j < acfTimes[i].size(); j++) {
-					fprintf(auxFile, "%0.3f ", acfTimes[i][j]);
-				}
-				fprintf(auxFile, "\n");
-				for(size_t j = 0; j < acfs[i].size(); j++) {
-					fprintf(auxFile, "%0.3f ", acfs[i][j]);
-				}
-				fprintf(auxFile, "\n");
-			}
-			fclose(auxFile);
-		}
+		printStat(file, acfTimes, acfs, "run_acf_" + fileName + ".dat");
 	}
 
 	fprintf(file, "\n");
@@ -473,6 +293,7 @@ void LcBinStats::printBinStats(FILE* const file) const {
  * @param[in] binSpecs The properties of the model being tested. Used to 
  *	determine the parameter column headings. The values of the ranges are 
  *	ignored.
+ * @param[in] outputStats A list of statistics whose headers need to be included.
  */
 void LcBinStats::printBinHeader(FILE* const file, const RangeList& binSpecs, 
 		const std::vector<StatType>& outputStats) {
@@ -576,6 +397,163 @@ string LcBinStats::makeFileName(string lcName, const RangeList& binSpecs, string
 	sprintf(binId, "%s_n%s", binId, noise.c_str());
 	
 	return binId;
+}
+
+/** Calculates the mean and standard deviation of a collection of statistics
+ *
+ * @param[in] values The statistics to be summarized.
+ * @param[out] mean The mean of the statistics.
+ * @param[out] stddev The standard deviation of the statistics.
+ * @param[in] statName The name of the statistic, for error messages.
+ *
+ * @post mean and stddev ignore any NaNs present in values.
+ * @post If there are no non-NaN elements in values, mean equals NaN
+ * @post If there are less than two non-NaN elements in values, stddev equals NaN
+ */
+void getSummaryStats(const DoubleVec& values, double& mean, double& stddev, 
+		const string& statName) {
+	mean   = std::numeric_limits<double>::quiet_NaN();
+	stddev = std::numeric_limits<double>::quiet_NaN();
+	
+	try {
+		// For the exception handling to work right, order matters!
+		// Mean requires at least one measurement
+		// Standard deviation requires at least two, i.e. it has 
+		//	strictly tighter requirements than the mean and must 
+		//	go later
+		mean   =      utils::    meanNoNan(values);
+		stddev = sqrt(utils::varianceNoNan(values));
+	} catch (std::invalid_argument &e) {
+		// These should just be warnings that a statistic is undefined
+		fprintf(stderr, "WARNING: %s summary: %s\n", statName.c_str(), e.what());
+	}
+}
+
+/** Calculates the mean, standard deviation, and definition rate of a collection of statistics
+ *
+ * @param[in] values The statistics to be summarized.
+ * @param[out] mean The mean of the statistics.
+ * @param[out] stddev The standard deviation of the statistics.
+ * @param[out] goodFrac The fraction of measurements that are finite values.
+ * @param[in] statName The name of the statistic, for error messages.
+ *
+ * @post mean and stddev ignore and NaNs present in values.
+ * @post If there are no non-NaN elements in values, mean equals NaN
+ * @post If there are less than two non-NaN elements in values, stddev equals NaN
+ */
+void getSummaryStats(const DoubleVec& values, double& mean, double& stddev, 
+		double& goodFrac, 
+		const string& statName) {
+	size_t n = values.size();
+	
+	double badCount = static_cast<double>(
+		std::count_if(values.begin(), values.end(), &utils::isNanOrInf));
+	goodFrac = (n > 0 ? 1.0 - badCount/n : 0.0);
+	getSummaryStats(values, mean, stddev, statName);
+}
+
+/** Prints a single family of statistics to the specified file
+ *
+ * The function will print, in order: the mean of the statistic, the 
+ * standard deviation of the statistic, the fraction of times each 
+ * statistic was defined, and the name of a file containing the 
+ * distribution of the statistics. The row is in tab-delimited 
+ * format, except that the mean and standard deviation are separated by 
+ * a ± sign for improved readability.
+ *
+ * This function differs from printStatAlwaysDefined() only in that the 
+ * latter does not print the number of times each statistic had a value.
+ * 
+ * @param[in] file An open file handle representing the text file to write to.
+ * @param[in] archive The statistics to summarize.
+ * @param[in] statName The name of the statistic to use for error messages.
+ * @param[in] distribFile The prefix identifying the distribution file as 
+ *	being for this particular statistic.
+ */
+void printStat(FILE* const file, const DoubleVec& archive, 
+		const std::string& statName, const std::string& distribFile) {
+	// For now, define summary variables for each statistic
+	// Eventually statistics will be objects, with mean, filename, etc. 
+	//	accessible as members
+	double meanStats, stddevStats, fracStats;
+	getSummaryStats(archive, meanStats, stddevStats, fracStats, 
+			statName);
+	
+	fprintf(file, "\t%6.3g±%5.2g\t%6.3g\t%s",
+			meanStats, stddevStats, fracStats, distribFile.c_str() );
+
+	FILE* auxFile = fopen(distribFile.c_str(), "w");
+	for(size_t i = 0; i < archive.size(); i++) {
+		fprintf(auxFile, "%0.3f\n", archive[i]);
+	}
+	fclose(auxFile);
+}
+
+/** Prints a single family of statistics to the specified file
+ *
+ * The function will print, in order: the mean of the statistic, the 
+ * standard deviation of the statistic, and the name of a file 
+ * containing the distribution of the statistics. The row is in tab-delimited 
+ * format, except that the mean and standard deviation are separated by 
+ * a ± sign for improved readability.
+ * 
+ * This function differs from printStat() only in that the 
+ * latter also prints the number of times each statistic had a value.
+ * 
+ * @param[in] file An open file handle representing the text file to write to.
+ * @param[in] archive The statistics to summarize.
+ * @param[in] statName The name of the statistic to use for error messages.
+ * @param[in] distribFile The prefix identifying the distribution file as 
+ *	being for this particular statistic.
+ */
+void printStatAlwaysDefined(FILE* const file, const DoubleVec& archive, 
+		const std::string& statName, const std::string& distribFile) {
+	// For now, define summary variables for each statistic
+	// Eventually statistics will be objects, with mean, filename, etc. 
+	//	accessible as members
+	double meanStats, stddevStats;
+	getSummaryStats(archive, meanStats, stddevStats, statName);
+	
+	fprintf(file, "\t%6.3g±%5.2g\t%s",
+			meanStats, stddevStats, distribFile.c_str() );
+
+	FILE* auxFile = fopen(distribFile.c_str(), "w");
+	for(size_t i = 0; i < archive.size(); i++) {
+		fprintf(auxFile, "%0.3f\n", archive[i]);
+	}
+	fclose(auxFile);
+}
+
+/** Prints a set of functions to the specified file
+ *
+ * The function will print only the name of a file containing the 
+ * distribution of the functions. The row is in tab-delimited 
+ * format.
+ * 
+ * @param[in] file An open file handle representing the text file to write to.
+ * @param[in] timeArchive The times of the functions to print.
+ * @param[in] statArchive The values of the functions to print.
+ * @param[in] distribFile The prefix identifying the distribution file as 
+ *	being for this particular statistic.
+ */
+void printStat(FILE* const file, const std::vector<DoubleVec>& timeArchive, 
+		const std::vector<DoubleVec>& statArchive, 
+		const std::string& distribFile) {
+	
+	fprintf(file, "\t%s", distribFile.c_str());
+
+	FILE* auxFile = fopen(distribFile.c_str(), "w");
+	for(size_t i = 0; i < statArchive.size(); i++) {
+		for(size_t j = 0; j < timeArchive[i].size(); j++) {
+			fprintf(auxFile, "%0.3f ", timeArchive[i][j]);
+		}
+		fprintf(auxFile, "\n");
+		for(size_t j = 0; j < statArchive[i].size(); j++) {
+			fprintf(auxFile, "%0.3f ", statArchive[i][j]);
+		}
+		fprintf(auxFile, "\n");
+	}
+	fclose(auxFile);
 }
 
 }}	// end lcmc::stats
