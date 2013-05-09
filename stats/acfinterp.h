@@ -22,7 +22,7 @@ namespace interp {
 
 /** Calculates the autocorrelation function for a time series. 
  */
-void autoCorr(const DoubleVec &times, const DoubleVec &measures, 
+void autoCorr(const DoubleVec &times, const DoubleVec &data, 
 		double deltaT, size_t nAcf, DoubleVec &acf);
 
 }		// end lcmc::stats::interp

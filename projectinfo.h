@@ -2,7 +2,7 @@
  * @file projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified May 4, 2013
+ * @date Last modified May 8, 2013
  *
  * @todo Add proper exception classes. Put exceptions in exception namespace 
  *	within lcmc::models and lcmc::inject.
@@ -40,7 +40,8 @@
  * - Support for a user-selected amount of Gaussian white noise
  * - Support for signal injection tests using a randomized sample of base 
  * 	light curves
- * - Support for calculation of C1, periods, and &Delta;m&Delta;t timescales
+ * - Support for calculation of C1, periods, &Delta;m&Delta;t timescales, and 
+ *	ACF timescales
  * 
  * @section changelog Version History
  *
@@ -48,6 +49,9 @@
  *
  * - Changed: shortened all integration test scripts, cutting the 
  *	testing time by a factor of five without sacrificing accuracy
+ * - Added: --stat (-s) keyword now allows run time selection of statistics 
+ *	to compute for each light curve
+ * - Added: support for ACF timescales
  *
  * @subsection v2_1_0 2.1.0
  *

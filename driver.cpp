@@ -2,7 +2,7 @@
  * @file driver.cpp
  * @author Krzysztof Findeisen
  * @date Created January 22, 2010
- * @date Last modified May 4, 2013
+ * @date Last modified May 8, 2013
  */
 
 #include <memory>
@@ -50,6 +50,7 @@ void parseArguments(int argc, char* argv[],
 	RangeList& paramRanges, 
 	string& jdList, vector<string>& lcNameList, 
 	vector<models::LightCurveType>& lcList, 
+	vector< stats::      StatType>& statList, 
 	string& dataSet, bool& injectMode);
 
 }	// end lcmc::parse
@@ -112,6 +113,7 @@ int main(int argc, char* argv[]) {
 	RangeList limits;
 	vector<string> lcNameList;
 	vector<LightCurveType> lcList;
+	vector<stats::StatType> statList;
 	string dateList, injectType;
 	bool injectMode;
 
@@ -124,7 +126,7 @@ int main(int argc, char* argv[]) {
 	// Parse the input
 	try {
 		parse::parseArguments(argc, argv, sigma, nTrials, numToPrint, 
-			limits, dateList, lcNameList, lcList, injectType, injectMode);
+			limits, dateList, lcNameList, lcList, statList, injectType, injectMode);
 	} catch(std::runtime_error &e) {
 		fprintf(stderr, "ERROR: %s\n", e.what());
 		return 1;
@@ -153,7 +155,7 @@ int main(int argc, char* argv[]) {
 	////////////////////
 	// And start simulating
 //	printf("%li trials per bin\n", nTrials);
-	LcBinStats::printBinHeader(stdout, limits);
+	LcBinStats::printBinHeader(stdout, limits, statList);
 
 	try {
 	for(vector<LightCurveType>::const_iterator curve = lcList.begin(); 
@@ -161,7 +163,8 @@ int main(int argc, char* argv[]) {
 		const string curName = *(lcNameList.begin() + (curve - lcList.begin()));
 		char noiseStr[20];
 		sprintf(noiseStr, "%0.2g", sigma);
-		LcBinStats curBin(curName, limits, (injectMode ? injectType : noiseStr));
+		LcBinStats curBin(curName, limits, (injectMode ? injectType : noiseStr), 
+			statList);
 		
 		#if USELFP
 		PClear(1);

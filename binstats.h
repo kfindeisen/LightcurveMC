@@ -2,7 +2,7 @@
  * @file binstats.h
  * @author Krzysztof Findeisen
  * @date Reconstructed June 23, 2011
- * @date Last modified April 12, 2013
+ * @date Last modified May 8, 2013
  */
 
 #ifndef BINSTATSH
@@ -27,6 +27,32 @@ using models::ParamList;
  */
 typedef std::vector<double> DoubleVec;
 
+/** Type used to tell the program which statistics to calculate
+ */
+enum StatType {
+	/** Represents the C1 statistic
+	 */
+	C1, 
+	/** Represents the period
+	 */
+	PERIOD, 
+	/** Represents dumps of periodograms
+	 */
+	PERIODOGRAM, 
+	/** Represents cuts through &Delta;m&Delta;t plots
+	 */
+	DMDTCUT, 
+	/** Represents dumps of &Delta;m&Delta;t plots
+	 */
+	DMDT, 
+	/** Represents cuts through ACF plots
+	 */
+	ACFCUT, 
+	/** Represents dumps of ACF plots
+	 */
+	ACF
+};
+
 /** Organizes test statistics on artificial light curves. LcBinStats can 
  * collate the results from multiple runs and print summary statistics to log 
  * files.
@@ -34,7 +60,8 @@ typedef std::vector<double> DoubleVec;
  * The following statistics are supported:
  * - C1
  * - Period [disabled]
- * - &Delta;m-&Delta;t timescales
+ * - &Delta;m-&Delta;t-based timescales
+ * - ACF-based timescales
  *
  * @todo May be good idea to redesign in terms of strategy pattern, to allow 
  * for more flexibility in which tests get run.
@@ -44,7 +71,7 @@ public:
 	/** Creates a new stat counter
 	 */
 	explicit LcBinStats(std::string modelName, const RangeList& binSpecs, 
-			std::string noise);
+			std::string noise, std::vector<StatType> toCalc);
 
 	/** Calculates statistics from the light curve and records them in lcBinStats.
 	 */
@@ -72,13 +99,19 @@ public:
 	/** Prints a header row representing the statistics printed by 
 	 *	printBinStats to the specified file
 	 */
-	static void printBinHeader(FILE* const file, const 
-		RangeList& binSpecs);
+	static void printBinHeader(FILE* const file, const RangeList& binSpecs, 
+		const std::vector<StatType>& outputStats);
 
 private: 
+	/** Tests whether the object needs to calculate a particular statistic
+	 */
+	static bool hasStat(const std::vector<StatType>& orders, StatType x);
+
 	std::string binName;
 	std::string fileName;
 
+	std::vector<StatType> stats;
+	
 	DoubleVec C1vals;
 
 //	DoubleVec periods;
@@ -88,7 +121,19 @@ private:
 	DoubleVec cut90Amp2s;
 	std::vector<DoubleVec> dmdtMedianTimes;
 	std::vector<DoubleVec> dmdtMedians;
+
+	DoubleVec cutAcf9s;
+	DoubleVec cutAcf4s;
+	DoubleVec cutAcf2s;
 };
+
+/** Returns a list of all statistic names recognized on the command line. 
+ */
+const std::vector<std::string> statTypes();
+
+/** Converts a string to its associated StatType.
+ */
+StatType parseStat(const std::string& statName);
 
 }}		// end lcmc::stats
 

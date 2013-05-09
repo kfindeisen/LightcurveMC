@@ -7,10 +7,10 @@ Brief USAGE:
                     interval>] [--period2 <positive interval>] [--width2
                     <positive interval>] [-w <positive interval>] [-d
                     <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [--print
-                    <non-negative integer>] [--ntrials <positive integer>]
-                    [--noise <non-negative real number>] [--] [--version]
-                    [-h] <keyword> ...
+                    <positive interval>] [-p <positive interval>] [-s
+                    <keyword>] ...  [--print <non-negative integer>]
+                    [--ntrials <positive integer>] [--noise <non-negative
+                    real number>] [--] [--version] [-h] <keyword> ...
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
@@ -24,10 +24,10 @@ Brief USAGE:
                     interval>] [--period2 <positive interval>] [--width2
                     <positive interval>] [-w <positive interval>] [-d
                     <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [--print
-                    <non-negative integer>] [--ntrials <positive integer>]
-                    [--noise <non-negative real number>] [--] [--version]
-                    [-h] <keyword> ...
+                    <positive interval>] [-p <positive interval>] [-s
+                    <keyword>] ...  [--print <non-negative integer>]
+                    [--ntrials <positive integer>] [--noise <non-negative
+                    real number>] [--] [--version] [-h] <keyword> ...
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
@@ -41,10 +41,10 @@ Brief USAGE:
                     interval>] [--period2 <positive interval>] [--width2
                     <positive interval>] [-w <positive interval>] [-d
                     <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [--print
-                    <non-negative integer>] [--ntrials <positive integer>]
-                    [--noise <non-negative real number>] [--] [--version]
-                    [-h] <keyword> ...
+                    <positive interval>] [-p <positive interval>] [-s
+                    <keyword>] ...  [--print <non-negative integer>]
+                    [--ntrials <positive integer>] [--noise <non-negative
+                    real number>] [--] [--version] [-h] <keyword> ...
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
@@ -58,10 +58,10 @@ Brief USAGE:
                     interval>] [--period2 <positive interval>] [--width2
                     <positive interval>] [-w <positive interval>] [-d
                     <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [--print
-                    <non-negative integer>] [--ntrials <positive integer>]
-                    [--noise <non-negative real number>] [--] [--version]
-                    [-h] <keyword> ...
+                    <positive interval>] [-p <positive interval>] [-s
+                    <keyword>] ...  [--print <non-negative integer>]
+                    [--ntrials <positive integer>] [--noise <non-negative
+                    real number>] [--] [--version] [-h] <keyword> ...
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
@@ -75,10 +75,10 @@ Brief USAGE:
                     interval>] [--period2 <positive interval>] [--width2
                     <positive interval>] [-w <positive interval>] [-d
                     <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [--print
-                    <non-negative integer>] [--ntrials <positive integer>]
-                    [--noise <non-negative real number>] [--] [--version]
-                    [-h] <keyword> ...
+                    <positive interval>] [-p <positive interval>] [-s
+                    <keyword>] ...  [--print <non-negative integer>]
+                    [--ntrials <positive integer>] [--noise <non-negative
+                    real number>] [--] [--version] [-h] <keyword> ...
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
@@ -92,10 +92,10 @@ Brief USAGE:
                     interval>] [--period2 <positive interval>] [--width2
                     <positive interval>] [-w <positive interval>] [-d
                     <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [--print
-                    <non-negative integer>] [--ntrials <positive integer>]
-                    [--noise <non-negative real number>] [--] [--version]
-                    [-h] <keyword> ...
+                    <positive interval>] [-p <positive interval>] [-s
+                    <keyword>] ...  [--print <non-negative integer>]
+                    [--ntrials <positive integer>] [--noise <non-negative
+                    real number>] [--] [--version] [-h] <keyword> ...
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
@@ -109,10 +109,10 @@ Brief USAGE:
                     interval>] [--period2 <positive interval>] [--width2
                     <positive interval>] [-w <positive interval>] [-d
                     <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [--print
-                    <non-negative integer>] [--ntrials <positive integer>]
-                    [--noise <non-negative real number>] [--] [--version]
-                    [-h] <keyword> ...
+                    <positive interval>] [-p <positive interval>] [-s
+                    <keyword>] ...  [--print <non-negative integer>]
+                    [--ntrials <positive integer>] [--noise <non-negative
+                    real number>] [--] [--version] [-h] <keyword> ...
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
@@ -126,10 +126,10 @@ Brief USAGE:
                     interval>] [--period2 <positive interval>] [--width2
                     <positive interval>] [-w <positive interval>] [-d
                     <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [--print
-                    <non-negative integer>] [--ntrials <positive integer>]
-                    [--noise <non-negative real number>] [--] [--version]
-                    [-h] <keyword> ...
+                    <positive interval>] [-p <positive interval>] [-s
+                    <keyword>] ...  [--print <non-negative integer>]
+                    [--ntrials <positive integer>] [--noise <non-negative
+                    real number>] [--] [--version] [-h] <keyword> ...
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
@@ -143,10 +143,10 @@ Brief USAGE:
                     interval>] [--period2 <positive interval>] [--width2
                     <positive interval>] [-w <positive interval>] [-d
                     <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [--print
-                    <non-negative integer>] [--ntrials <positive integer>]
-                    [--noise <non-negative real number>] [--] [--version]
-                    [-h] <keyword> ...
+                    <positive interval>] [-p <positive interval>] [-s
+                    <keyword>] ...  [--print <non-negative integer>]
+                    [--ntrials <positive integer>] [--noise <non-negative
+                    real number>] [--] [--version] [-h] <keyword> ...
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help

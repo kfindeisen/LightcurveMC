@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include "binstats.h"
 #include "cmd_constraints.tmp.h"
 #include "cmd_ranges.tmp.h"
 #include "lightcurveparser.h"
@@ -45,6 +46,7 @@ namespace lcmc { namespace parse {
 
 using std::string;
 using std::vector;
+using  stats::StatType;
 using models::LightCurveType;
 using models::RangeList;
 
@@ -64,8 +66,9 @@ using models::RangeList;
  *	simulated observations
  * @param[out] lcNameList the list of light curve types to simulate, one 
  *	after the other
- * @param[out] lcList the list of light curve types to simulate, one after 
- *	the other
+ * @param[out] lcList the list of light curve types to simulate
+ * @param[out] statList the list of statistics to calculate for each simulated 
+ *	light curve
  * @param[out] dataSet the hardcoded name of an observational data set into 
  *	which to inject light curves
  * @param[out] injectMode if true, the program will carry out an injection 
@@ -78,10 +81,11 @@ using models::RangeList;
  *	is being referred to. Rewrite!
  */
 void parseArguments(int argc, char* argv[], 
-		double &sigma, long &nTrials, long &toPrint, 
+		double& sigma, long& nTrials, long& toPrint, 
 		RangeList& paramRanges, 
-		string &jdList, vector<string> &lcNameList, 
-		vector<LightCurveType> &lcList, 
+		string& jdList, vector<string>& lcNameList, 
+		vector<LightCurveType>&  lcList, 
+		vector<      StatType>& statList, 
 		string& dataSet, bool& injectMode) {
 	using namespace TCLAP;
 	typedef std::pair<double, double> Range;
@@ -143,6 +147,15 @@ void parseArguments(int argc, char* argv[],
 		"List of light curves to model, in order. Allowed values are: " + lcAllowed.description(), 
 		true, 
 		&lcAllowed, cmd);
+	
+	//--------------------------------------------------
+	// Statistics list
+	std::vector<string> statNames = stats::statTypes();
+	KeywordConstraint statAllowed(statNames);
+	MultiArg<string> argStatList("s", "stat", 
+		"List of statistics to calculate, in order. Allowed values are: " + statAllowed.description(), 
+		false, 
+		&statAllowed, cmd);
 	
 	//--------------------------------------------------
 	// Model parameters
@@ -230,6 +243,37 @@ void parseArguments(int argc, char* argv[],
 			}
 		} catch(std::domain_error e) {
 			// If there's an invalid light curve, print a warning but keep going
+			fprintf(stderr, "WARNING: %s\n", e.what());
+		}
+	}
+	if (lcList.size() <= 0) {
+		char errbuf[80];
+		sprintf(errbuf, "No valid light curves given, type %s -h for a list \
+				of choices.", argv[0]);
+		throw std::runtime_error(errbuf);
+	}
+
+	//--------------------
+	// Statistics list
+	
+	// Iterate over the argument list
+	vector<string> fullStatList(argStatList.getValue());
+	if (fullStatList.empty()) {
+		fullStatList = stats::statTypes();
+	}
+	
+	statList.clear();
+	for(vector<string>::const_iterator it=fullStatList.begin(); 
+			it != fullStatList.end(); it++) {
+		try {
+			const StatType curStat = stats::parseStat(*it);
+			// Don't count light curves multiple times
+			if (find(statList.begin(), statList.end(), curStat) == statList.end())
+			{
+				statList.push_back(curStat);
+			}
+		} catch(std::domain_error e) {
+			// If there's an invalid statistic, print a warning but keep going
 			fprintf(stderr, "WARNING: %s\n", e.what());
 		}
 	}
