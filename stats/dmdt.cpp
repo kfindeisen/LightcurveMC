@@ -2,7 +2,7 @@
  * @file dmdt.cpp
  * @author Krzysztof Findeisen
  * @date Created April 12, 2013
- * @date Last modified April 30, 2013
+ * @date Last modified May 9, 2013
  */
 
 #include <algorithm>
@@ -178,62 +178,6 @@ void deltaMBinQuantile(const DoubleVec &deltaT, const DoubleVec &deltaM,
 			// The bin is empty
 			quants.push_back(std::numeric_limits<double>::quiet_NaN());
 		}
-	}
-}
-
-/** Finds the first element of a range that exceeds a given value.
- *
- * Unlike std::max_element(), does not require the range to be sorted.
- *
- * @param[in] grid The range in which to search for a value.
- * @param[in] threshold The largest value that cannot be returned.
- *
- * @pre grid may contain NaNs
- *
- * @return An iterator pointing to the first element in grid that is larger 
- *	than threshold, or grid.end() if no such element exists.
- */
-DoubleVec::const_iterator crossThreshold(const DoubleVec& grid, double threshold) {
-	// Original idea was to use std::partition() followed by 
-	//	std::upper_bound() to find the maximum value in O(log N)
-	// However, partition() doesn't give you a way to match elements in 
-	//	the partitioned range to elements in the original range. Doing 
-	//	a value-by-value based search would take O(N) time.
-	// So I might as well just do the search directly.
-	
-	DoubleVec::const_iterator it = grid.begin();
-	for(; it != grid.end(); it++) {
-		// Should be NaN-safe: if *it == NaN, then condition is 
-		//	always false
-		if (*it > threshold) {
-			return it;
-		}
-	}
-
-	return it;
-}
-
-/** Finds the location on a grid where a function exceeds a threshold.
- *
- * @param[in] pos The position grid on which to search.
- * @param[in] func The function to test against cut.
- * @param[in] cut The threshold func must exceed.
- *
- * @return The value of pos at which func first exceeds cut, or NaN if no 
- *	such value exists.
- *
- * @pre pos.size() == func.size()
- * 
- * @pre pos does not contain NaNs
- * @pre func may contain NaNs
- */
-double cutFunction(const DoubleVec& pos, const DoubleVec& func, double cut) {
-	DoubleVec::const_iterator whereCut = crossThreshold(func, cut);
-
-	if (whereCut != func.end()) {
-		return *(pos.begin() + (whereCut-func.begin()));
-	} else {
-		return std::numeric_limits<double>::quiet_NaN();
 	}
 }
 

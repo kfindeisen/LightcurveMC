@@ -2,7 +2,7 @@
  * @file unit_dmdt.cpp
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified April 29, 2013
+ * @date Last modified May 9, 2013
  */
 
 #include "../warnflags.h"
@@ -36,6 +36,7 @@
 #include <gsl/gsl_rng.h>
 #include "test.h"
 #include "../binstats.h"
+#include "../stats/cut.tmp.h"
 #include "../stats/dmdt.h"
 
 using std::vector;
@@ -175,6 +176,7 @@ BOOST_FIXTURE_TEST_SUITE(test_dmdt, SimData)
 BOOST_AUTO_TEST_CASE(quantileCuts)
 {
 	using lcmc::stats::cutFunction;
+	using lcmc::stats::MoreThan;
 	using lcmc::stats::deltaMBinQuantile;
 	
 	vector<double> cut50Amp3s, cut50Amp2s, cut90Amp3s, cut90Amp2s;
@@ -186,11 +188,11 @@ BOOST_AUTO_TEST_CASE(quantileCuts)
 		deltaMBinQuantile(deltaT, deltaM, binEdges, change50, 0.50);
 		deltaMBinQuantile(deltaT, deltaM, binEdges, change90, 0.90);
 		
-		cut50Amp3s.push_back(cutFunction(binEdges, change50, amplitude / 3.0));
-		cut50Amp2s.push_back(cutFunction(binEdges, change50, amplitude / 2.0));
+		cut50Amp3s.push_back(cutFunction(binEdges, change50, MoreThan(amplitude / 3.0) ));
+		cut50Amp2s.push_back(cutFunction(binEdges, change50, MoreThan(amplitude / 2.0) ));
 	
-		cut90Amp3s.push_back(cutFunction(binEdges, change90, amplitude / 3.0));
-		cut90Amp2s.push_back(cutFunction(binEdges, change90, amplitude / 2.0));
+		cut90Amp3s.push_back(cutFunction(binEdges, change90, MoreThan(amplitude / 3.0) ));
+		cut90Amp2s.push_back(cutFunction(binEdges, change90, MoreThan(amplitude / 2.0) ));
 	}
 	
 	double mean50Amp3s, error50Amp3s;

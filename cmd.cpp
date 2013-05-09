@@ -2,7 +2,7 @@
  * @file cmd.cpp
  * @author Krzysztof Findeisen
  * @date Created April 12, 2013
- * @date Last modified April 27, 2013
+ * @date Last modified May 9, 2013
  */
 
 #include <stdexcept>
@@ -15,6 +15,7 @@
 #include "lightcurvetypes.h"
 #include "paramlist.h"
 #include "projectinfo.h"
+#include "statparser.h"
 
 #include "warnflags.h"
 
@@ -150,7 +151,7 @@ void parseArguments(int argc, char* argv[],
 	
 	//--------------------------------------------------
 	// Statistics list
-	std::vector<string> statNames = stats::statTypes();
+	std::vector<string> statNames = statTypes();
 	KeywordConstraint statAllowed(statNames);
 	MultiArg<string> argStatList("s", "stat", 
 		"List of statistics to calculate, in order. Allowed values are: " + statAllowed.description(), 
@@ -259,14 +260,14 @@ void parseArguments(int argc, char* argv[],
 	// Iterate over the argument list
 	vector<string> fullStatList(argStatList.getValue());
 	if (fullStatList.empty()) {
-		fullStatList = stats::statTypes();
+		fullStatList = statTypes();
 	}
 	
 	statList.clear();
 	for(vector<string>::const_iterator it=fullStatList.begin(); 
 			it != fullStatList.end(); it++) {
 		try {
-			const StatType curStat = stats::parseStat(*it);
+			const StatType curStat = parseStat(*it);
 			// Don't count light curves multiple times
 			if (find(statList.begin(), statList.end(), curStat) == statList.end())
 			{

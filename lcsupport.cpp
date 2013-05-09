@@ -2,7 +2,7 @@
  * @file lcsupport.cpp
  * @author Krzysztof Findeisen
  * @date Created April 20, 2012
- * @date Last modified April 21, 2013
+ * @date Last modified May 29, 2013
  * 
  * The functions defined here act as an interface between the LightCurve class 
  * heirarchy and the main program.
@@ -75,13 +75,7 @@ const models::LightCurveType parseLightCurve(const string& lcName) {
 	if (it != registry.end()) {
 		return it->second;
 	} else {
-		char errbuf[80];
-		#ifdef _WIN32
-		sprintf_s(errbuf, 80, "No such light curve: %s", lcName.c_str());
-		#else
-		sprintf(errbuf, "No such light curve: %s", lcName.c_str());
-		#endif
-		throw std::domain_error(errbuf);
+		throw std::domain_error("No such light curve: " + lcName);
 	}
 }
 

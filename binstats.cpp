@@ -2,7 +2,7 @@
  * @file binstats.cpp
  * @author Krzysztof Findeisen
  * @date Created June 6, 2011
- * @date Last modified May 8, 2013
+ * @date Last modified May 9, 2013
  */
 
 #include <algorithm>
@@ -16,6 +16,7 @@
 #include "fluxmag.h"
 #include "nan.h"
 #include "stats/acfinterp.h"
+#include "stats/cut.tmp.h"
 #include "stats/dmdt.h"
 #include "stats/experimental.h"
 #include "stats/magdist.h"
@@ -113,37 +114,9 @@ LcBinStats::LcBinStats(string modelName, const RangeList& binSpecs, string noise
 		C1vals()/*, periods()*/, cut50Amp3s(), cut50Amp2s(), 
 		cut90Amp3s(), cut90Amp2s(), 
 		dmdtMedianTimes(), dmdtMedians(),
-		cutAcf9s(), cutAcf4s(), cutAcf2s() {
+		cutAcf9s(), cutAcf4s(), cutAcf2s(), 
+		acfTimes(), acfs() {
 }
-
-/** Unary predicate for whether a value is less than some threshold
- */
-class LessThan {
-public: 
-	/** Sets the value to which other values will be compared
-	 *
-	 * @param[in] threshold The value to use for comparisons.
-	 *
-	 * @exceptsafe Does not throw exceptions.
-	 */
-	LessThan(double threshold) : limit(threshold) {
-	}
-	
-	/** Unary comparison of x
-	 *
-	 * @param[in] x The value to compare to threshold
-	 *
-	 * @return True if x < threshold, false otherwise.
-	 *
-	 * @exceptsafe Does not throw exceptions.
-	 */
-	bool operator() (double x) {
-		return (x < limit);
-	}
-
-private: 
-	double limit;
-};
 
 // Current implementation of analyzeLightCurve does not use  
 // trueParams, but it should still be part of the interface
@@ -214,14 +187,14 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 				
 				// Key cuts
 				cut50Amp3s.push_back(cutFunction(binEdges, change50, 
-					amplitude / 3.0));
+					MoreThan(amplitude / 3.0) ));
 				cut50Amp2s.push_back(cutFunction(binEdges, change50, 
-					amplitude / 2.0));
+					MoreThan(amplitude / 2.0) ));
 				
 				cut90Amp3s.push_back(cutFunction(binEdges, change90, 
-					amplitude / 3.0));
+					MoreThan(amplitude / 3.0) ));
 				cut90Amp2s.push_back(cutFunction(binEdges, change90, 
-					amplitude / 2.0));
+					MoreThan(amplitude / 2.0) ));
 			}
 		} catch (std::runtime_error &e) {
 			// Don't add any dmdt stats; move on
@@ -242,6 +215,10 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 			DoubleVec cleanTimes, cleanMags, acf;
 			utils::removeNans(mags, cleanMags, times, cleanTimes);
 			autoCorr(cleanTimes, cleanMags, offStep, offsets.size(), acf);
+			if (hasStat(stats, ACF)) {
+				acfTimes.push_back(offsets);
+				acfs    .push_back(acf);
+			}
 			
 			if (hasStat(stats, ACFCUT)) {
 				// Key cuts
@@ -281,6 +258,8 @@ void LcBinStats::clear() {
 	cutAcf9s.clear();
 	cutAcf4s.clear();
 	cutAcf2s.clear();
+	acfTimes.clear();
+	acfs.clear();
 }
 
 /** Prints a row representing the accumulated statistics to the specified file.
@@ -460,6 +439,25 @@ void LcBinStats::printBinStats(FILE* const file) const {
 		
 	}
 	if (hasStat(stats, ACF)) {
+		string  acfFile = "run_acf_" + fileName + ".dat";
+		
+		fprintf(file, "\t%s", acfFile.c_str());
+
+		// Store the dmdt medians
+		{
+			FILE* auxFile = fopen(acfFile.c_str(), "w");
+			for(size_t i = 0; i < acfs.size(); i++) {
+				for(size_t j = 0; j < acfTimes[i].size(); j++) {
+					fprintf(auxFile, "%0.3f ", acfTimes[i][j]);
+				}
+				fprintf(auxFile, "\n");
+				for(size_t j = 0; j < acfs[i].size(); j++) {
+					fprintf(auxFile, "%0.3f ", acfs[i][j]);
+				}
+				fprintf(auxFile, "\n");
+			}
+			fclose(auxFile);
+		}
 	}
 
 	fprintf(file, "\n");
@@ -504,6 +502,7 @@ void LcBinStats::printBinHeader(FILE* const file, const RangeList& binSpecs,
 		sprintf(binLabel, "%s\tACF cut at 1/9±err\tFinite\tACF@1/3 Distribution\tACF cut at 1/4±err\tFinite\tACF@1/4 Distribution\tACF cut at 1/2±err\tFinite\tACF@1/2 Distribution", binLabel);
 	}
 	if (hasStat(outputStats, ACF)) {
+		sprintf(binLabel, "%s\tACFs", binLabel);
 	}
 
 	fprintf(file, "%s\n", binLabel);
@@ -577,57 +576,6 @@ string LcBinStats::makeFileName(string lcName, const RangeList& binSpecs, string
 	sprintf(binId, "%s_n%s", binId, noise.c_str());
 	
 	return binId;
-}
-
-/** Returns a list of all statistic names recognized on the command line. 
- * 
- * @return A list of string identifiers, one for each allowed StatType 
- *	value. The order of the strings may be whatever is most convenient for 
- *	enumerating the types of statistics.
- */
-const std::vector<string> statTypes() {
-	std::vector<string> theList;
-	
-	theList.push_back("C1");
-	theList.push_back("period");
-	theList.push_back("pgram");
-	theList.push_back("dmdtcut");
-	theList.push_back("dmdtplot");
-	theList.push_back("acfcut");
-	theList.push_back("acfplot");
-	
-	return theList;
-}
-
-/** Converts a string to its associated StatType.
- *
- * @param[in] statName A short string describing the type of statistic to calculate.
- *
- * @pre statName is an element of statTypes()
- * 
- * @return The statistic identifier, if one exists.
- * 
- * @exception domain_error Thrown if the statistic name does not have a 
- *	corresponding type.
- */
-StatType parseStat(const string& statName) {
-	if(statName == "C1") {
-		return C1;
-	} else if (statName == "period") {
-		return PERIOD;
-	} else if (statName == "pgram") {
-		return PERIODOGRAM;
-	} else if (statName == "dmdtcut") {
-		return DMDTCUT;
-	} else if (statName == "dmdtplot") {
-		return DMDT;
-	} else if (statName == "acfcut") {
-		return ACFCUT;
-	} else if (statName == "acfplot") {
-		return ACF;
-	} else {
-		throw std::domain_error("Unknown statistic: " + statName);
-	}
 }
 
 }}	// end lcmc::stats

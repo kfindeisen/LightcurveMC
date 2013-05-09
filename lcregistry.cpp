@@ -2,7 +2,7 @@
  * @file lcregistry.cpp
  * @author Krzysztof Findeisen
  * @date Created April 25, 2012
- * @date Last modified April 29, 2013
+ * @date Last modified Nay 9, 2013
  * 
  * The functions defined here handle the details of the ILightCurve subclasses.
  */
@@ -69,7 +69,8 @@ const LightCurveRegistry & getLightCurveRegistry() {
 	static LightCurveRegistry registry;
 	static bool called = false;
 	if (called == false) {
-		called = true;
+		registry.clear();
+
 		// Original waveforms
 		registry.insert(LightCurveEntry(       "flat",      FLATWAVE() ));
 		registry.insert(LightCurveEntry(       "sine",      SINEWAVE() ));
@@ -94,6 +95,8 @@ const LightCurveRegistry & getLightCurveRegistry() {
 		registry.insert(LightCurveEntry(        "drw",  DAMPRANDWALK() ));
 		registry.insert(LightCurveEntry(  "simple_gp",         ONEGP() ));
 		registry.insert(LightCurveEntry(     "two_gp",         TWOGP() ));
+
+		called = true;
 	}
 
 	// assert: registry is fully defined

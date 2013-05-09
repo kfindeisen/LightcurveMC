@@ -2,7 +2,7 @@
  * @file binstats.h
  * @author Krzysztof Findeisen
  * @date Reconstructed June 23, 2011
- * @date Last modified May 8, 2013
+ * @date Last modified May 9, 2013
  */
 
 #ifndef BINSTATSH
@@ -125,15 +125,9 @@ private:
 	DoubleVec cutAcf9s;
 	DoubleVec cutAcf4s;
 	DoubleVec cutAcf2s;
+	std::vector<DoubleVec> acfTimes;
+	std::vector<DoubleVec> acfs;
 };
-
-/** Returns a list of all statistic names recognized on the command line. 
- */
-const std::vector<std::string> statTypes();
-
-/** Converts a string to its associated StatType.
- */
-StatType parseStat(const std::string& statName);
 
 }}		// end lcmc::stats
 
