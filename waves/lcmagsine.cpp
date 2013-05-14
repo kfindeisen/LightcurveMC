@@ -2,11 +2,10 @@
  * @file lcmagsine.cpp
  * @author Krzysztof Findeisen
  * @date Created April 11, 2013
- * @date Last modified April 27, 2013
+ * @date Last modified May 11, 2013
  */
 
 #include <cmath>
-#include <cstdio>
 #include "../fluxmag.h"
 #include "lightcurves_periodic.h"
 
@@ -32,8 +31,12 @@ namespace lcmc { namespace models {
  * @post The object represents a sinusoidal signal with the given 
  *	amplitude, period, and initial phase.
  *
- * @exception std::invalid_argument Thrown if any of the parameters are 
- *	outside their allowed ranges.
+ * @exception bad_alloc Thrown if there is not enough memory to 
+ *	construct the object.
+ * @exception lcmc::models::except::BadParam Thrown if any of the 
+ *	parameters are outside their allowed ranges.
+ *
+ * @exceptsafe Object construction is atomic.
  */
 MagSineWave::MagSineWave(const std::vector<double> &times, double amp, double period, 
 		double phase) : PeriodicLc(times, amp, period, phase) {
@@ -55,6 +58,11 @@ MagSineWave::MagSineWave(const std::vector<double> &times, double amp, double pe
  * @post the median of the flux is one, when averaged over many times.
  * 
  * @return The flux emitted by the object at the specified phase.
+ * 
+ * @exception logic_error Thrown if a bug was found in the flux calculations.
+ *
+ * @exceptsafe Neither the object nor the argument are changed in the 
+ *	event of an exception.
  */
 double MagSineWave::fluxPhase(double phase, double amp) const {
 	return utils::magToFlux(amp*sin(2*M_PI*phase));

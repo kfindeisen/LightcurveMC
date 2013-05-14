@@ -2,13 +2,33 @@
  * @file paramlist.h
  * @author Krzysztof Findeisen
  * @date Created April 3, 2012
- * @date Last modified April 21, 2013
+ * @date Last modified May 7, 2013
  * 
  * These types handle information needed to set up simulation runs.
  */
 
 #ifndef LCMCPARAMLISTH
 #define LCMCPARAMLISTH
+
+#include "warnflags.h"
+
+// std::iterator<> uses non-virtual destructors
+#ifdef GNUC_COARSEWARN
+#pragma GCC diagnostic ignored "-Weffc++"
+#endif
+
+// std::iterator<> uses non-virtual destructors
+#ifdef GNUC_FINEWARN
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
+#endif
+
+#include <iterator>
+
+// Re-enable all compiler warnings
+#ifdef GNUC_FINEWARN
+#pragma GCC diagnostic pop
+#endif
 
 #include <map>
 #include <string>
@@ -52,6 +72,8 @@ public:
 	double get(ParamType param) const;
 private: 
 	typedef std::map<ParamType, double> MapType;
+	/** @todo replace lookup with a smart pointer
+	 */
 	MapType* const lookup;
 };
 
@@ -76,7 +98,7 @@ public:
 
 	/** Minimal iterator class for finding the parameters stored in a RangeList.
 	 */
-	class ConstIterator;
+	class const_iterator;
 	
 	/** Initializes an empty list
 	 */
@@ -117,23 +139,29 @@ public:
 	
 	/** Returns an iterator to the first element in the RangeList
 	 */
-	ConstIterator begin() const;
+	const_iterator begin() const;
 
 	/** Returns an iterator to after the last element in the RangeList
 	 */
-	ConstIterator end() const;
+	const_iterator end() const;
 	
 private: 
+	/** Tests whether x has an allowed value for a RangeType
+	 */
+	static bool checkRangeType(RangeType x);
+	
 	/** Stores all the information about the range for a particular 
 	 * parameter.
 	 */
 	class RangeInfo;
 
-	/** Shorthand used by RangeInfo and ConstIterator to refer to the 
+	/** Shorthand used by RangeInfo and const_iterator to refer to the 
 	 * internal data
 	 */	
 	typedef std::map<ParamType, RangeInfo> MapType;
 
+	/** @todo replace lookup with a smart pointer
+	 */
 	MapType* const lookup;
 };
 
@@ -162,45 +190,78 @@ private:
 	RangeType distrib;
 };
 
-/** Minimal iterator class for finding the parameters stored in a RangeList.
+/** Iterator class for finding the parameters stored in a RangeList.
  *
- * The ConstIterator allows callers to access the entire RangeList 
+ * The RangeList::const_iterator allows callers to access the entire RangeList 
  * while hiding the implementation of the class.
+ *
+ * Similar to a std::BidirectionalIterator, but does not model it 
+ * because it is not default-constructible.
+ *
+ * @note The name const_iterator does not follow the conventions of the rest 
+ * of this program. This is to accommodate libraries that assume the 
+ * standard C++ conventions for an iterable container.
+ *
+ * @invariant RangeList::const_iterator points to an element in a RangeList, 
+ *	or to the position immediately after the last element.
  */
-class RangeList::ConstIterator {
+class RangeList::const_iterator 
+		: public std::iterator<std::bidirectional_iterator_tag, 
+		RangeList::MapType::key_type, 
+		RangeList::MapType::difference_type, 
+		RangeList::MapType::const_pointer, 
+		RangeList::MapType::const_reference> {
+	// Private constructor ensures that only RangeLists can construct 
+	// 	const_iterators from scratch
+	friend class RangeList;
+	
 public: 
-	/** Default constructor.
+	/** Copy-constructor for const_iterator.
 	 */
-	ConstIterator();
-	/** Standard constructor for ConstIterator.
-	 */
-	ConstIterator(const MapType::const_iterator& where);
+	const_iterator(const const_iterator& other);
 
+	/** Assignment for const_iterator.
+	 */
+	const_iterator& operator=(const const_iterator& other);
+	
 	/** Implements std::BidirectionalIterator::==
 	 */
-	bool operator==(const ConstIterator& other) const;
+	bool operator==(const const_iterator& other) const;
 	/** Implements std::BidirectionalIterator::!=
 	 */
-	bool operator!=(const ConstIterator& other) const;
+	bool operator!=(const const_iterator& other) const;
 
 	/** Implements std::BidirectionalIterator::*
 	 */
 	const ParamType& operator*() const;
 
+	/** Implements std::BidirectionalIterator::->
+	 */
+	const ParamType* operator->() const;
+
 	/** Implements std::BidirectionalIterator::++ (prefix)
 	 */
-	ConstIterator& operator++();
+	const_iterator& operator++();
 	/** Implements std::BidirectionalIterator::++ (postfix)
 	 */
-	ConstIterator operator++(int);
+	const_iterator operator++(int);
 	/** Implements std::BidirectionalIterator::-\- (prefix)
 	 */
-	ConstIterator& operator--();
+	const_iterator& operator--();
 	/** Implements std::BidirectionalIterator::-\- (postfix)
 	 */
-	ConstIterator operator--(int);
+	const_iterator operator--(int);
 private:
+	/** Standard constructor for const_iterator.
+	 */
+	const_iterator(MapType::const_iterator where, const RangeList::MapType* parent);
+
+	MapType::const_iterator begin() const;
+	MapType::const_iterator end() const;
+	
 	MapType::const_iterator it;
+	// Used to implement begin() and end() in the presence of changes to RangeList
+	const RangeList::MapType* parent;
 };
 
 }}		// end lcmc::models

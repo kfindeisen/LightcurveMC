@@ -2,14 +2,14 @@
  * @file lightcurves_periodic.h
  * @author Krzysztof Findeisen
  * @date Created February 23, 2012
- * @date Last modified April 3, 2013
+ * @date Last modified May 11, 2013
  */
 
 #ifndef LCMCCURVEPERIH
 #define LCMCCURVEPERIH
 
 #include <string>
-#include "lcsubtypes.h"
+#include "lcdeterministic.h"
 
 namespace lcmc { namespace models {
 
@@ -56,6 +56,11 @@ private:
 	 *	for their light curve shape.
 	 * 
 	 * @return The flux emitted by the object at the specified phase.
+	 * 
+	 * @except logic_error Thrown if a bug was found in the flux calculations.
+	 *
+	 * @exceptsafe Neither the object nor the argument are changed in the 
+	 *	event of an exception.
 	 */
 	virtual double fluxPhase(double phase, double amp) const = 0;
 	
@@ -126,9 +131,7 @@ private:
  * the depth of the other. The light curve can be described entirely by its 
  * amplitude, period, and phase offset.
  *
- * @invariant Zero is the maximum flux returned by EclipseWave. Note this 
- *	behavior differs from that of many other subclasses of PeriodicLc.
- * @todo Find a spec that doesn't violate least surprise?
+ * @invariant One is the maximum flux returned by EclipseWave.
  */
 class EclipseWave : public PeriodicLc {
 public: 

@@ -8,8 +8,8 @@
 #ifndef LCMCPARSEH
 #define LCMCPARSEH
 
-#include <list>
 #include <string>
+#include <vector>
 #include "lightcurvetypes.h"
 
 namespace lcmc { 
@@ -21,7 +21,7 @@ namespace parse {
 
 /** Returns a list of all lightCurve names recognized on the command line. 
  */
-const std::list<std::string> lightCurveTypes();
+const std::vector<std::string> lightCurveTypes();
 
 /** Converts a string to its associated LightCurveType.
  */

@@ -2,15 +2,21 @@
  * @file lcdrw.cpp
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
- * @date Last modified April 27, 2013
+ * @date Last modified May 12, 2013
  */
 
+#include <memory>
 #include <vector>
 #include <cmath>
+#include <boost/lexical_cast.hpp>
+#include "../except/data.h"
 #include "../fluxmag.h"
 #include "lightcurves_gp.h"
 
 namespace lcmc { namespace models {
+
+using std::auto_ptr;
+using boost::lexical_cast;
 
 /** Initializes the light curve to represent a damped random walk.
  *
@@ -25,13 +31,23 @@ namespace lcmc { namespace models {
  * @post The object represents a damped random walk with the given diffusion 
  *	constant and correlation time.
  *
- * @exception std::invalid_argument Thrown if any of the parameters are 
+ * @exception bad_alloc Thrown if there is not enough memory to 
+ *	construct the object.
+ * @exception except::BadParam Thrown if any of the parameters are 
  *	outside their allowed ranges.
  *
- * @todo Implement input validation
+ * @exceptsafe Object construction is atomic.
  */
 DampedRandomWalk::DampedRandomWalk(const std::vector<double>& times, double diffus, double tau) 
 		: Stochastic(times), sigma(sqrt(0.5*diffus*tau)), tau(tau) {
+	if (diffus <= 0.0) {
+		throw except::BadParam("All DampedRandomWalk light curves need positive diffusion coefficients (gave " 
+			+ lexical_cast<string, double>(diffus) + ").");
+	}
+	if (tau <= 0.0) {
+		throw except::BadParam("All DampedRandomWalk light curves need positive coherence times (gave " 
+			+ lexical_cast<string, double>(tau) + ").");
+	}
 }
 
 /** Computes a realization of the light curve. 
@@ -56,31 +72,45 @@ DampedRandomWalk::DampedRandomWalk(const std::vector<double>& times, double diff
  *	sqrt(0.5*diffus/tau)
  * @post cov(fluxToMag(fluxes[i]), fluxToMag(fluxes[j])) == 
  *	0.5*diffus/tau &times; exp(|getTimes()[i]-getTimes()[j]|/tau) 
+ * 
+ * @exception bad_alloc Thrown if there is not enough memory to compute 
+ *	the light curve.
+ * @exception logic_error Thrown if a bug was found in the flux calculations.
+ *
+ * @exceptsafe Neither the object nor the argument are changed in the 
+ *	event of an exception.
  */	
 void DampedRandomWalk::solveFluxes(std::vector<double>& fluxes) const {
+	using std::swap;
+
 	// invariant: this->times() is sorted in ascending order
 	std::vector<double> times;
 	this->getTimes(times);
 	
-	fluxes.clear();
+	// copy-and-swap
+	auto_ptr<StochasticRng> rng = checkout();
+	std::vector<double> temp;
+
 	if (times.size() > 0) {
-		fluxes.reserve(times.size());
+		temp.reserve(times.size());
+
 		// f(t0) ~ N(0, sigma) to ensure self-similarity
-		fluxes.push_back(sigma * rNorm());
+		temp.push_back(sigma * rng->rNorm());
 		
 		// Evaluate f(t > t0)
 		// This simplified algorithm works only for an exponential covariance, 
 		//	a white noise process, or a constant process, since it 
 		//	requires rho(t1,t3) = rho(t1,t2)*rho(t2,t3). However, it's 
 		//	much faster than the general-purpose, matrix-based algorithm.
-		for(std::vector<double>::const_iterator it = times.begin()+1; it != times.end(); it++) {
-			double oldFlux = fluxes.back();
+		for(std::vector<double>::const_iterator it = times.begin()+1; 
+				it != times.end(); it++) {
+			double oldFlux = temp.back();
 			
 			// Observations taken at the same time should have the same flux
 			// Sorting invariant guarantees that all duplicate times will 
 			//	be next to each other
 			if (*it == *(it-1)) {
-				fluxes.push_back(oldFlux);
+				temp.push_back(oldFlux);
 			// Observations taken at different times are partially 
 			//	correlated
 			} else {
@@ -89,13 +119,19 @@ void DampedRandomWalk::solveFluxes(std::vector<double>& fluxes) const {
 				//	relies heavily on deltaT being constant
 				double deltaTTau  = (*it - *(it-1))/tau;
 				
-				fluxes.push_back(oldFlux*exp(-deltaTTau) 
-					+ sigma*sqrt((1.0 - exp(-2.0*deltaTTau))) * rNorm());
+				temp.push_back(oldFlux*exp(-deltaTTau) 
+					+ sigma*sqrt((1.0 - exp(-2.0*deltaTTau))) 
+						* rng->rNorm());
 			}
 		}
 		
-		utils::magToFlux(fluxes, fluxes);
+		utils::magToFlux(temp, temp);
 	}
+		
+	// IMPORTANT: no exceptions past this point
+		
+	swap(fluxes, temp);
+	commit(rng);
 }
 
 }}		// end lcmc::models

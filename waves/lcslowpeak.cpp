@@ -2,15 +2,17 @@
  * @file lcslowpeak.cpp
  * @author Krzysztof Findeisen
  * @date Created May 2, 2012
- * @date Last modified April 27, 2013
+ * @date Last modified May 11, 2013
  */
 
-#include <stdexcept>
 #include <cmath>
-#include <cstdio>
+#include <boost/lexical_cast.hpp>
+#include "../except/data.h"
 #include "lightcurves_outbursts.h"
 
 namespace lcmc { namespace models {
+
+using boost::lexical_cast;
 
 /** Initializes the light curve to represent a periodically outbursting 
  * function flux(time).
@@ -34,16 +36,19 @@ namespace lcmc { namespace models {
  *	width: knowing these values is sufficient to determine flux(t) for any 
  *	value of t.
  *
- * @exception std::invalid_argument Thrown if any of the parameters are 
- *	outside their allowed ranges.
+ * @exception bad_alloc Thrown if there is not enough memory to 
+ *	construct the object.
+ * @exception lcmc::models::except::BadParam Thrown if any of the 
+ *	parameters are outside their allowed ranges.
+ *
+ * @exceptsafe Object construction is atomic.
  */
 SlowPeak::SlowPeak(const std::vector<double> &times, 
 		double amp, double period, double phase, double width) 
 		: PeriodicLc(times, amp, period, phase), width(width) {
-	char errBuf[80];
 	if (width <= 0.0) {
-		sprintf(errBuf, "All SlowPeak light curves need positive widths (gave %g).", width);
-		throw std::invalid_argument(errBuf);
+		throw except::BadParam("All SlowPeak light curves need positive widths (gave " 
+			+ lexical_cast<string, double>(width) + ").");
 	}
 }
 
@@ -63,6 +68,11 @@ SlowPeak::SlowPeak(const std::vector<double> &times,
  * @post the mode of the flux is one, when averaged over many times.
  * 
  * @return The flux emitted by the object at the specified phase.
+ * 
+ * @exception logic_error Thrown if a bug was found in the flux calculations.
+ *
+ * @exceptsafe Neither the object nor the argument are changed in the 
+ *	event of an exception.
  */
 double SlowPeak::fluxPhase(double phase, double amp) const {
 	return 1.0 + amp * exp(-(   phase *   phase) /(2.0*width*width)) 

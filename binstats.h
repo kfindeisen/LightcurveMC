@@ -2,7 +2,7 @@
  * @file binstats.h
  * @author Krzysztof Findeisen
  * @date Reconstructed June 23, 2011
- * @date Last modified May 9, 2013
+ * @date Last modified May 13, 2013
  */
 
 #ifndef BINSTATSH
@@ -70,8 +70,8 @@ class LcBinStats {
 public: 
 	/** Creates a new stat counter
 	 */
-	explicit LcBinStats(std::string modelName, const RangeList& binSpecs, 
-			std::string noise, std::vector<StatType> toCalc);
+	explicit LcBinStats(const std::string& modelName, const RangeList& binSpecs, 
+			const std::string& noise, std::vector<StatType> toCalc);
 
 	/** Calculates statistics from the light curve and records them in lcBinStats.
 	 */
@@ -88,13 +88,13 @@ public:
 
 	/** Creates a unique name for the simulation run, formatted to go in a table.
 	 */
-	static std::string makeBinName(std::string lcName, 
-		const RangeList& binSpecs, std::string noise);
+	static std::string makeBinName(const std::string& lcName, 
+		const RangeList& binSpecs, const std::string& noise);
 
 	/** Creates a unique name for the simulation run, formatted for use in a file name.
 	 */
-	static std::string makeFileName(std::string lcName, 
-		const RangeList& binSpecs, std::string noise);
+	static std::string makeFileName(const std::string& lcName, 
+		const RangeList& binSpecs, const std::string& noise);
 
 	/** Prints a header row representing the statistics printed by 
 	 *	printBinStats to the specified file

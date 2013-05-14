@@ -2,7 +2,7 @@
  * @file fluxmag.cpp
  * @author Krzysztof Findeisen
  * @date Created April 4, 2013
- * @date Last modified April 21, 2013
+ * @date Last modified May 13, 2013
  */
 
 #include <algorithm>
@@ -21,7 +21,7 @@ using std::vector;
  * @return The corresponding magnitude, assuming a flux of 1 unit corresponds 
  *	to a magnitude of 0. Returns NaN if the flux is negative.
  *
- * @todo Desired behavior for negative fluxes?
+ * @exceptsafe Does not throw exceptions.
  */
 double fluxToMag(double flux) {
 	return -2.5*log10(flux);
@@ -32,6 +32,8 @@ double fluxToMag(double flux) {
  * @param[in] mag The magnitude to convert.
  *
  * @return The corresponding flux, assuming a flux of 1 unit at 0th magnitude.
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 double magToFlux(double mag) {
 	return pow(10.0, -0.4*mag);
@@ -44,13 +46,23 @@ double magToFlux(double mag) {
  *	corresponds to a magnitude of 0. Returns NaN wherever flux is negative.
  *
  * @post mags.size() == fluxes.size()
+ * @post for all i in mags, mags[i] = fluxToMag(fluxes[i])
+ *
+ * @exception std::bad_alloc Thrown if there is not enough room 
+ *	to store the magnitudes
+ *
+ * @exceptsafe The arguments are unchanged in the event of an exception
  */
 void fluxToMag(const vector<double>& fluxes, vector<double>& mags) {
+	using std::swap;
+	
+	// Explicit declaration to disambiguate which fluxToMag is being called
 	static double (* fp)(double) = fluxToMag;
 
 	vector<double> temp(fluxes.size());
 	std::transform(fluxes.begin(), fluxes.end(), temp.begin(), fp);
-	mags = temp;
+	
+	swap(mags, temp);
 }
 
 /** Converts magnitudes to fluxes.
@@ -60,13 +72,23 @@ void fluxToMag(const vector<double>& fluxes, vector<double>& mags) {
  *	0th magnitude.
  * 
  * @post fluxes.size() == mags.size()
+ * @post for all i in mags, fluxes[i] = magToFlux(mags[i])
+ *
+ * @exception std::bad_alloc Thrown if there is not enough room 
+ *	to store the fluxes
+ *
+ * @exceptsafe The arguments are unchanged in the event of an exception
  */
 void magToFlux(const vector<double>& mags, vector<double>& fluxes) {
+	using std::swap;
+
+	// Explicit declaration to disambiguate which magToFlux is being called
 	static double (* fp)(double) = magToFlux;
 
 	vector<double> temp(mags.size());
 	std::transform(mags.begin(), mags.end(), temp.begin(), fp);
-	fluxes = temp;
+	
+	swap(fluxes, temp);
 }
 
 }}	// end lcmc::utils

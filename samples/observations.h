@@ -2,7 +2,7 @@
  * @file observations.h
  * @author Krzysztof Findeisen
  * @date Created May 4, 2012
- * @date Last modified May 7, 2012
+ * @date Last modified May 9, 2012
  * 
  * These types represent different sets of observations that can be used to 
  * inject simulated signals into real data. The actual population of the sets 
@@ -14,7 +14,6 @@
 #define LCMCDATAH
 
 #include <memory>
-#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -24,8 +23,6 @@ namespace lcmc {
  * of data so that it can be injected with simulated data.
  */
 namespace inject {
-
-class FileIo;
 
 /** Interface class for generating data samples for signal injection testing. 
  * Subclasses represent particular samples from which example observations are 
@@ -47,40 +44,31 @@ class FileIo;
  */
 class Observations {
 public: 
-	/** Returns the timestamps associated with this simulation.
+	/** Initializes the object to represent a randomly selected light 
+	 * curve from the selected catalog.
+	 */
+	Observations(const std::string& catalogName);
+	
+	/** Returns the timestamps associated with this source.
 	 */
 	void getTimes(std::vector<double>& timeArray) const;
 
-	/** Returns the flux measurements associated with this simulation.
+	/** Returns the flux measurements associated with this source.
 	 */
 	void getFluxes(std::vector<double>& fluxArray) const;
 
 	// Virtual destructor following Effective C++
 	virtual ~Observations() {};
 
-protected:
-	/** Default constructor prevents Observations from being created 
-	 * directly.
+private:
+	/** Initializes an object to the value of a particular light curve.
 	 */
-	Observations();
-	
-	/** Initializes an object to the value of a particular light curve. To 
-	 * enforce nondeterminism, the choice of light curve should be made 
-	 * within the constructor of the subtype 
-	 *
-	 * @param[in] fileName Path to a text file containing a single light 
-	 * curve. Currently only space-delimited tables in the format (JD, 
-	 * flux, error) are supported. Support for additional formats will be 
-	 * added later.
-	 * 
-	 * @exception FileIo Thrown if the file could not be read.
-	 *
-	 * @todo Find a better way to deal with classes distinguishable only 
-	 * by how they're constructed. A friend factory function, maybe?
-	 */
-	void init(const std::string& fileName);
+	void readFile(const std::string& fileName);
 
-private: 
+	/** Returns the list of files from which the class may select sources
+	 */
+	static const std::vector<std::string> getLcLibrary(const std::string& catalogName);
+
 	/** Store the light curve itself
 	 */
 	std::vector<double> times;
@@ -88,29 +76,9 @@ private:
 };
 
 /** dataSampler is a factory method that allocates and initializes an 
- *	Observations object of a particular type. Use of an auto_ptr prevents 
- *	client-side memory management issues.
- *
- * @param[in] whichSample The type of light curve to be read.
- *
- * @return A smart pointer to an object of the subclass of Observations 
- *	corresponding to the value of whichSample.
- *
- * @exception invalid_argument Thrown if whichSample is not the name of a 
- *	recognized sample.
+ *	Observations object of a particular type.
  */
 std::auto_ptr<Observations> dataSampler(const std::string& whichSample);
-
-
-/** Exception thrown when a file could not be opened for reading or writing.
- */
-class FileIo: public std::runtime_error {
-public:
-	/** Basic constructor.
-	 * @param[in] what_arg The content for the value returned by member what.
-	 */
-	FileIo(const std::string& what_arg);
-};
 
 }}		// end lcmc::inject
 

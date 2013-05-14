@@ -2,32 +2,12 @@ EXPECTED RESULT: FAIL (no simulation parameters)
 PARSE ERROR:  
              Required arguments missing: add, lclist
 
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
-
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
 
 EXPECTED RESULT: FAIL (jdList but no waves)
 PARSE ERROR:  
              Required arguments missing: add, lclist
-
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
@@ -43,16 +23,6 @@ EXPECTED RESULT: FAIL (--add but no waves)
 PARSE ERROR:  
              Required arguments missing: jdlist, lclist
 
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
-
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
 
@@ -67,32 +37,12 @@ EXPECTED RESULT: FAIL (both --add and jdList given, but no waves)
 PARSE ERROR: Argument: (--lclist)
              Value 'ptfjds.txt' does not meet constraint: broad_peak|drw|eclipse|ellipse|flare_dip|flare_peak|flat|flat_dip|flat_peak|magsine|sharp_peak|simple_gp|sine|slow_dip|slow_peak|triangle|two_gp|walk|white_noise
 
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
-
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
 
 EXPECTED RESULT: FAIL (both --add and jdList given, with one wave)
 PARSE ERROR: Argument: (--lclist)
              Value 'ptfjds.txt' does not meet constraint: broad_peak|drw|eclipse|ellipse|flare_dip|flare_peak|flat|flat_dip|flat_peak|magsine|sharp_peak|simple_gp|sine|slow_dip|slow_peak|triangle|two_gp|walk|white_noise
-
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
@@ -101,16 +51,6 @@ EXPECTED RESULT: FAIL (both --add and jdList given, with multiple waves)
 PARSE ERROR: Argument: (--lclist)
              Value 'ptfjds.txt' does not meet constraint: broad_peak|drw|eclipse|ellipse|flare_dip|flare_peak|flat|flat_dip|flat_peak|magsine|sharp_peak|simple_gp|sine|slow_dip|slow_peak|triangle|two_gp|walk|white_noise
 
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
-
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
 
@@ -118,32 +58,12 @@ EXPECTED RESULT: FAIL (--noise given without jdList)
 PARSE ERROR:  
              Required arguments missing: add, lclist
 
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
-
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
 
 EXPECTED RESULT: FAIL (--noise and jdList given, but no waves)
 PARSE ERROR:  
              Required arguments missing: add, lclist
-
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
@@ -159,32 +79,12 @@ EXPECTED RESULT: FAIL (--noise and --add given)
 PARSE ERROR: Argument: (--noise)
              Mutually exclusive argument already set!
 
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
-
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
 
 EXPECTED RESULT: FAIL (--noise, --add, and jdList all given)
 PARSE ERROR: Argument: (--lclist)
              Value 'ptfjds.txt' does not meet constraint: broad_peak|drw|eclipse|ellipse|flare_dip|flare_peak|flat|flat_dip|flat_peak|magsine|sharp_peak|simple_gp|sine|slow_dip|slow_peak|triangle|two_gp|walk|white_noise
-
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help

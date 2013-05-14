@@ -2,15 +2,21 @@
  * @file lcrw.cpp
  * @author Krzysztof Findeisen
  * @date Created April 29, 2013
- * @date Last modified April 29, 2013
+ * @date Last modified May 12, 2013
  */
 
+#include <memory>
 #include <vector>
 #include <cmath>
+#include <boost/lexical_cast.hpp>
+#include "../except/data.h"
 #include "../fluxmag.h"
 #include "lightcurves_gp.h"
 
 namespace lcmc { namespace models {
+
+using std::auto_ptr;
+using boost::lexical_cast;
 
 /** Initializes the light curve to represent a damped random walk.
  *
@@ -23,13 +29,19 @@ namespace lcmc { namespace models {
  * @post The object represents a random walk with the given diffusion 
  *	constant.
  *
- * @exception std::invalid_argument Thrown if any of the parameters are 
+ * @exception bad_alloc Thrown if there is not enough memory to 
+ *	construct the object.
+ * @exception except::BadParam Thrown if any of the parameters are 
  *	outside their allowed ranges.
  *
- * @todo Implement input validation
+ * @exceptsafe Object construction is atomic.
  */
 RandomWalk::RandomWalk(const std::vector<double>& times, double diffus) 
 		: Stochastic(times), d(diffus) {
+	if (diffus <= 0.0) {
+		throw except::BadParam("All RandomWalk light curves need positive diffusion coefficients (gave " 
+			+ lexical_cast<string, double>(diffus) + ").");
+	}
 }
 
 /** Computes a realization of the light curve. 
@@ -54,39 +66,58 @@ RandomWalk::RandomWalk(const std::vector<double>& times, double diffus)
  *	each time t, of sqrt(diffus*(t-getTimes()[0]))
  * @post cov(fluxToMag(fluxes[i]), fluxToMag(fluxes[j])) == 
  *	diffus * (min{getTimes()[i], getTimes()[j]} - getTimes()[0])
+ * 
+ * @exception bad_alloc Thrown if there is not enough memory to compute 
+ *	the light curve.
+ * @exception logic_error Thrown if a bug was found in the flux calculations.
+ *
+ * @exceptsafe Neither the object nor the argument are changed in the 
+ *	event of an exception.
  */	
 void RandomWalk::solveFluxes(std::vector<double>& fluxes) const {
+	using std::swap;
+
 	// invariant: this->times() is sorted in ascending order
 	std::vector<double> times;
 	this->getTimes(times);
 	
-	fluxes.clear();
+	// copy-and-swap
+	auto_ptr<StochasticRng> rng = checkout();
+	std::vector<double> temp;
+
 	if (times.size() > 0) {
-		fluxes.reserve(times.size());
+		temp.reserve(times.size());
+
 		// A damped random walk is self-similar regardless of its starting value
-		fluxes.push_back(0.0);
+		temp.push_back(0.0);
 		
 		// Evaluate f(t > t0)
 		// Derived analogously to eq. 2.47 in Gillespie (1996)
-		for(std::vector<double>::const_iterator it = times.begin()+1; it != times.end(); it++) {
-			double oldFlux = fluxes.back();
+		for(std::vector<double>::const_iterator it = times.begin()+1; 
+				it != times.end(); it++) {
+			double oldFlux = temp.back();
 			
 			// Observations taken at the same time should have the same flux
 			// Sorting invariant guarantees that all duplicate times will 
 			//	be next to each other
 			if (*it == *(it-1)) {
-				fluxes.push_back(oldFlux);
+				temp.push_back(oldFlux);
 			// Observations taken at different times are partially 
 			//	correlated
 			} else {
 				double deltaT = (*it - *(it-1));
 				
-				fluxes.push_back(oldFlux + sqrt(d * deltaT) * rNorm());
+				temp.push_back(oldFlux + sqrt(d * deltaT) * rng->rNorm());
 			}
 		}
 		
-		utils::magToFlux(fluxes, fluxes);
+		utils::magToFlux(temp, temp);
 	}
+		
+	// IMPORTANT: no exceptions past this point
+		
+	swap(fluxes, temp);
+	commit(rng);
 }
 
 }}		// end lcmc::models

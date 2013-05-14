@@ -2,15 +2,17 @@
  * @file lcflarepeak.cpp
  * @author Krzysztof Findeisen
  * @date Created May 2, 2012
- * @date Last modified April 28, 2013
+ * @date Last modified May 11, 2013
  */
 
-#include <stdexcept>
 #include <cmath>
-#include <cstdio>
+#include <boost/lexical_cast.hpp>
+#include "../except/data.h"
 #include "lightcurves_outbursts.h"
 
 namespace lcmc { namespace models {
+
+using boost::lexical_cast;
 
 /** Initializes the light curve to represent a periodically 
  * outbursting function flux(time).
@@ -34,20 +36,23 @@ namespace lcmc { namespace models {
  *	width: knowing these values is sufficient to determine flux(t) for any 
  *	value of t.
  *
- * @exception std::invalid_argument Thrown if any of the parameters are 
- *	outside their allowed ranges.
+ * @exception bad_alloc Thrown if there is not enough memory to 
+ *	construct the object.
+ * @exception lcmc::models::except::BadParam Thrown if any of the 
+ *	parameters are outside their allowed ranges.
+ *
+ * @exceptsafe Object construction is atomic.
  */
 FlarePeak::FlarePeak(const std::vector<double> &times, 
 			double amp, double period, double phase, double rise, double fade) 
 			: PeriodicLc(times, amp, period, phase), tExp(fade), tLin(rise) {
-	char errBuf[80];
 	if (rise <= 0.0) {
-		sprintf(errBuf, "All FlarePeak light curves need positive rise times (gave %g).", rise);
-		throw std::invalid_argument(errBuf);
+		throw except::BadParam("All FlarePeak light curves need positive rise times (gave " 
+			+ lexical_cast<string, double>(rise) + ").");
 	}
 	if (fade <= 0.0) {
-		sprintf(errBuf, "All FlarePeak light curves need positive fade times (gave %g).", fade);
-		throw std::invalid_argument(errBuf);
+		throw except::BadParam("All FlarePeak light curves need positive fade times (gave " 
+			+ lexical_cast<string, double>(fade) + ").");
 	}
 }
 
@@ -67,6 +72,11 @@ FlarePeak::FlarePeak(const std::vector<double> &times,
  * @post the mode of the flux is one, when averaged over many times.
  * 
  * @return The flux emitted by the object at the specified phase.
+ * 
+ * @exception logic_error Thrown if a bug was found in the flux calculations.
+ *
+ * @exceptsafe Neither the object nor the argument are changed in the 
+ *	event of an exception.
  */
 double FlarePeak::fluxPhase(double phase, double amp) const {
 	double tail = amp*exp(-phase/tExp);

@@ -1,7 +1,7 @@
 # Compilation make for lightcurveMC/waves/*
 # by Krzysztof Findeisen
 # Created April 28, 2013
-# Last modified April 29, 2013
+# Last modified May 12, 2013
 
 SHELL = /bin/sh
 
@@ -11,7 +11,7 @@ include ../makefile.inc
 # Directory contents
 PROJ     = waves
 
-SOURCES  = multinormal.cpp \
+SOURCES  = multinormal.cpp stochasticrng.cpp \
 	lcdeterministic.cpp lcperiodic.cpp lcstochastic.cpp \
 	lcflat.cpp lcsine.cpp lcellipse.cpp lctriangle.cpp lcmagsine.cpp lceclipse.cpp lcbroad.cpp \
 	lcsharp.cpp lcflarepeak.cpp lcslowpeak.cpp lcsquarepeak.cpp lcflaredip.cpp \

@@ -2,7 +2,7 @@
  * @file cut.tmp.h
  * @author Krzysztof Findeisen
  * @date Created May 9, 2013
- * @date Last modified May 9, 2013
+ * @date Last modified May 12, 2013
  */
 
 #ifndef LCMCCUTH
@@ -29,6 +29,9 @@ using std::vector;
  * 
  * @pre pos does not contain NaNs
  * @pre func may contain NaNs
+ *
+ * @exceptsafe If pred throws exceptions, then cutFunction() has the same 
+ *	exception guarantee as pred. Otherwise, does not throw exceptions.
  */
 template <class UnaryPredicate> 
 BOOST_CONCEPT_REQUIRES(

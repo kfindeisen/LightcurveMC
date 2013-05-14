@@ -1,14 +1,24 @@
-/** Support code for Featurizer
+/** Generic statistics for data sets in containers
  * @file utils.tmp.h
  * @author Krzysztof Findeisen
  * @date Created July 21, 2011
- * @date Last modified April 21, 2013
+ * @date Last modified May 13, 2013
  */
 
 #include <algorithm>
 #include <stdexcept>
 #include <vector>
 #include <cstdio>
+#include <boost/concept/requires.hpp>
+#include <boost/iterator/iterator_concepts.hpp>
+#include "utils_except.h"
+
+namespace kpfutils {
+
+using namespace boost;
+using boost_concepts::ReadableIteratorConcept;
+using boost_concepts::ForwardTraversalConcept;
+using boost_concepts::RandomAccessTraversalConcept;
  
 /** A convenient shorthand for vectors of doubles.
  */
@@ -24,8 +34,8 @@ typedef std::vector<double> DoubleVec;
  *	class is accessed using first and last iterators, as in the C++ STL 
  *	convention, and the variance is computed over the interval [first, last).
  * 
- * @tparam InputIterator The iterator type for the container over which the 
- *	mean is to be calculated
+ * @tparam ConstInputIterator The iterator type for the container over which the 
+ *	mean is to be calculated. Must be <a href="http://www.boost.org/doc/libs/release/libs/iterator/doc/ReadableIterator.html">readable</a> and support <a href="http://www.boost.org/doc/libs/release/libs/iterator/doc/ForwardTraversal.html">forward traversal</a>.
  * @param[in] first Input iterator marking the first element in the container.
  * @param[in] last Input iterator marking the position after the last 
  *	element in the container.
@@ -34,10 +44,13 @@ typedef std::vector<double> DoubleVec;
  *	last, exclusive. The return type is that of the elements pointed to by the first and 
  *	last iterators.
  *
- * @pre first is "before" last in the sense that incrementing first repeatedly 
- *	would reach last.
- * @pre There is at least one element in the interval [first, last)
- * @exception invalid_argument Thrown if there are not enough elements.
+ * @pre [first, last) is a valid range
+ * @pre There is at least one element in the range [first, last)
+ *
+ * @exception kpfutils::except::NotEnoughData Thrown if there are not enough 
+ *	elements to define a mean.
+ * 
+ * @exceptsafe The range [first, last) is unchanged in the event of an exception.
  *
  * @test List of ints, length 0. Expected behavior: throw invalid_argument.
  * @test List of ints, length 1. Expected behavior: return list[0]
@@ -49,21 +62,28 @@ typedef std::vector<double> DoubleVec;
  *	agrees with gsl_stats_mean to within 1e-10 in 10 out of 10 trials.
  * @test Array of doubles, length 100, randomly generated. Expected behavior: 
  *	agrees with gsl_stats_mean to within 1e-10 in 10 out of 10 trials.
+ *
+ * @todo Apply concept checking to the return type
  */
-template <typename InputIterator> 				// Iterator to use
-		typename std::iterator_traits<InputIterator>::value_type 	// Type pointed to by iterator
-		mean(InputIterator first, InputIterator last) {
-	typedef typename std::iterator_traits<InputIterator>::value_type Value;
+template <typename ConstInputIterator> 				// Iterator to use
+BOOST_CONCEPT_REQUIRES(
+	((ReadableIteratorConcept<ConstInputIterator>)) 
+	((ForwardTraversalConcept<ConstInputIterator>)),	// Iterator semantics
+	(typename std::iterator_traits<ConstInputIterator>::value_type)) // Return type
+mean(ConstInputIterator first, ConstInputIterator last) {
+	typedef typename std::iterator_traits<ConstInputIterator>::value_type Value;
 
 	Value  sum = 0;
 	long count = 0;
 
+	// Since iterators are passed by value, incrementing first does not 
+	//	violate exception guarantee
 	for(; first != last; first++) {
 		sum += (*first);
 		count++;
 	}
 	if (count <= 0) {
-		throw std::invalid_argument("Not enough data to compute mean");
+		throw except::NotEnoughData("Not enough data to compute mean");
 	}
 	return static_cast<Value>(sum / count);
 }
@@ -73,8 +93,8 @@ template <typename InputIterator> 				// Iterator to use
  *	C++ STL convention, and the mean is computed over the interval 
  *	[first, last).
  * 
- * @tparam InputIterator The iterator type for the container over which the 
- *	variance is to be calculated
+ * @tparam ConstInputIterator The iterator type for the container over which the 
+ *	variance is to be calculated. Must be <a href="http://www.boost.org/doc/libs/release/libs/iterator/doc/ReadableIterator.html">readable</a> and support <a href="http://www.boost.org/doc/libs/release/libs/iterator/doc/ForwardTraversal.html">forward traversal</a>.
  * @param[in] first Input iterator marking the first element in the container.
  * @param[in] last Input iterator marking the position after the last element in the container.
  *
@@ -82,10 +102,13 @@ template <typename InputIterator> 				// Iterator to use
  *	inclusive, and last, exclusive. The return type is that of the 
  *	elements pointed to by the first and last iterators.
  *
- * @pre first is "before" last in the sense that incrementing first repeatedly 
- *	would reach last.
- * @pre There is at least two elements in the interval [first, last)
- * @exception invalid_argument Thrown if there are not enough elements.
+ * @pre [first, last) is a valid range
+ * @pre There are at least two elements in the range [first, last)
+ *
+ * @exception kpfutils::except::NotEnoughData Thrown if there are not enough 
+ *	elements to define a variance.
+ * 
+ * @exceptsafe The range [first, last) is unchanged in the event of an exception.
  *
  * @test List of ints, length 0. Expected behavior: throw invalid_argument.
  * @test List of ints, length 1. Expected behavior: throw invalid_argument.
@@ -98,22 +121,29 @@ template <typename InputIterator> 				// Iterator to use
  *	agrees with gsl_stats_variance to within 1e-10 in 10 out of 10 trials.
  * @test Array of doubles, length 100, randomly generated. Expected behavior: 
  *	agrees with gsl_stats_variance to within 1e-10 in 10 out of 10 trials.
+ *
+ * @todo Apply concept checking to the return type
  */
-template <typename InputIterator> 				// Iterator to use
-		typename std::iterator_traits<InputIterator>::value_type 	// Type pointed to by iterator 
-		variance(InputIterator first, InputIterator last) {
-	typedef typename std::iterator_traits<InputIterator>::value_type Value;
+template <typename ConstInputIterator> 				// Iterator to use
+BOOST_CONCEPT_REQUIRES(
+	((ReadableIteratorConcept<ConstInputIterator>)) 
+	((ForwardTraversalConcept<ConstInputIterator>)),	// Iterator semantics
+	(typename std::iterator_traits<ConstInputIterator>::value_type)) // Return type
+variance(ConstInputIterator first, ConstInputIterator last) {
+	typedef typename std::iterator_traits<ConstInputIterator>::value_type Value;
 
 	Value  sum = 0, sumsq = 0;
 	long count = 0;
 
+	// Since iterators are passed by value, incrementing first does not 
+	//	violate exception guarantee
 	for(; first != last; first++) {
 		sum   += (*first);
 		sumsq += (*first)*(*first);
 		count++;
 	}
 	if (count <= 1) {
-		throw std::invalid_argument("Not enough data to compute variance");
+		throw except::NotEnoughData("Not enough data to compute variance");
 	}
 
 	// Minimize number of divisions and maximize dividend in case value_type is integral
@@ -125,8 +155,8 @@ template <typename InputIterator> 				// Iterator to use
  *	iterators, as in the C++ STL convention, and the quantile is 
  *	computed over the interval [first, last). Data is assumed unsorted.
  * 
- * @tparam InputIterator The iterator type for the container over which the 
- *	variance is to be calculated
+ * @tparam ConstRandomAccessIterator The iterator type for the container over which the 
+ *	variance is to be calculated. Must be <a href="http://www.boost.org/doc/libs/release/libs/iterator/doc/ReadableIterator.html">readable</a> and support <a href="http://www.boost.org/doc/libs/release/libs/iterator/doc/RandomAccessTraversal.html">random access</a>
  * @param[in] first Input iterator marking the first element in the 
  *	container.
  * @param[in] last Input iterator marking the position after the last 
@@ -136,12 +166,22 @@ template <typename InputIterator> 				// Iterator to use
  * @return The largest value whose quantile is less than or equal to the 
  *	parameter "quantile".
  *
- * @pre first is "before" last in the sense that incrementing first repeatedly 
- *	would reach last.
- * @pre There is at least two elements in the interval [first, last)
+ * @pre [first, last) is a valid range
+ * @pre There are at least two elements in the range [first, last)
  * @pre 0 <= quantile <= 1
- * @exception invalid_argument Thrown if there are not enough elements.
- * @exception domain_error Thrown if quantile is an invalid number.
+ * @pre No value in [first, last) is NaN
+ *
+ * @post The return value is not NaN
+ * 
+ * @exception kpfutils::except::InvalidQuantile Thrown if quantile is not 
+ *	in the interval [0, 1].
+ *
+ * @exception kpfutils::except::NotEnoughData Thrown if there are not enough 
+ *	elements to define a mean.
+ * 
+ * @exceptsafe The range [first, last) is unchanged in the event of an exception.
+ *
+ * @perform O(D log D), where D = std::distance(first, last).
  *
  * @todo Finish designing test cases. Can't use gsl_stats_quantile_from_sorted_data 
  *	as an oracle because it interpolates
@@ -161,17 +201,28 @@ template <typename InputIterator> 				// Iterator to use
  *	Expected behavior: TBD
  *
  * @bug Behavior inconsistent with Wikipedia's definition of quantile
+ *
+ * @todo Apply concept checking to the return type
  */
-template <typename InputIterator> 				// Iterator to use
-		typename std::iterator_traits<InputIterator>::value_type 	// Type pointed to by iterator 
-		quantile(InputIterator first, InputIterator last, double quantile) {
-	typedef typename std::iterator_traits<InputIterator>::value_type Value;
+template <typename ConstRandomAccessIterator> 				// Iterator to use
+BOOST_CONCEPT_REQUIRES(
+	((ReadableIteratorConcept<ConstRandomAccessIterator>)) 
+	((RandomAccessTraversalConcept<ConstRandomAccessIterator>)),	// Iterator semantics
+	(typename std::iterator_traits<ConstRandomAccessIterator>::value_type)) // Return type
+quantile(ConstRandomAccessIterator first, ConstRandomAccessIterator last, double quantile) {
+	typedef typename std::iterator_traits<ConstRandomAccessIterator>::value_type Value;
 	
+	if (quantile < 0.0 || quantile > 1.0) {
+		char buf[60];
+		sprintf(buf, "Invalid quantile of %0.2f passed to quantile()", quantile);
+		throw except::InvalidQuantile(buf);
+	}
+
 	// We don't want to alter the data, so we copy while sorting
 	// Copy to a vector because sorting requires random access
 	size_t vecSize = distance(first, last);
 	if (vecSize < 1) {
-		throw std::invalid_argument("Supplied empty data set to quantile()");
+		throw except::NotEnoughData("Supplied empty data set to quantile()");
 	}
 	std::vector<Value> sortedVec(vecSize);
 	std::partial_sort_copy(first, last, sortedVec.begin(), sortedVec.end());
@@ -181,11 +232,48 @@ template <typename InputIterator> 				// Iterator to use
 		index = static_cast<size_t>(quantile*vecSize);
 	} else if (quantile == 1.0) {
 		index = vecSize-1;
-	} else {
-		char buf[60];
-		sprintf(buf, "Invalid quantile of %0.2f passed to quantile()", quantile);
-		throw std::domain_error(buf);
 	}
 	
 	return sortedVec[index];
 }
+
+/** Tests whether a range is sorted.
+ *
+ * This function emulates std::is_sorted() for platforms without access 
+ * to either a C++11-compliant compiler or Boost 1.50 or later.
+ *
+ * @tparam ForwardIteratorIterator The iterator type for the container to be tested. 
+ * Must be a <a href="http://www.boost.org/doc/libs/release/doc/html/ForwardIterator.html">forward iterator</a>.
+ * @param[in] first,last Forward iterators to the range to test. The range 
+ *	is all elements in the interval [first, last).
+ *
+ * @return True if [first, last) is sorted in ascending order. A range 
+ *	containing less than two elements is always sorted.
+ *
+ * @exceptsafe The range [first, last) is unchanged in the event of 
+ *	an exception if ForwardIterator provides at least the basic 
+ *	guarantee. Does not throw exceptions unless ForwardIterator throws.
+ */
+template <class ForwardIterator>
+BOOST_CONCEPT_REQUIRES(
+	((ReadableIteratorConcept<ForwardIterator>)) 
+	((ForwardTraversalConcept<ForwardIterator>)),	// Iterator semantics
+	(bool)) 					// Return type
+isSorted (ForwardIterator first, ForwardIterator last) {
+	// Code shamelessly copied from http://www.cplusplus.com/reference/algorithm/is_sorted/
+	if (first==last) {
+		return true;
+	}
+	
+	// Since iterators are passed by value, incrementing first does not 
+	//	violate exception guarantee
+	ForwardIterator next = first;
+	for(ForwardIterator next = first; ++next != last; ++first) {
+		if (*next<*first) {
+			return false;
+		}
+	}
+	return true;
+}
+
+}	// end kpfutils

@@ -2,7 +2,7 @@
  * @file lcregistry.cpp
  * @author Krzysztof Findeisen
  * @date Created April 25, 2012
- * @date Last modified Nay 9, 2013
+ * @date Last modified May 10, 2013
  * 
  * The functions defined here handle the details of the ILightCurve subclasses.
  */
@@ -64,8 +64,17 @@ typedef pair<string, const LightCurveType> LightCurveEntry;
  * constructing a map is somewhat less efficient than hardcoding the light 
  * curve information into the two functions, it is much easier to update 
  * because all the information for each light curve is declared in one place.
+ *
+ * @return The registry.
+ *
+ * @exception std::bad_alloc Thrown if there is not enough memory to create 
+ *	the registry.
+ *
+ * @exceptsafe The program state is unchanged in the event of an exception.
  */
 const LightCurveRegistry & getLightCurveRegistry() {
+	// invariant: registry contains the names of all valid light curves, 
+	//	or called == false
 	static LightCurveRegistry registry;
 	static bool called = false;
 	if (called == false) {
@@ -96,6 +105,10 @@ const LightCurveRegistry & getLightCurveRegistry() {
 		registry.insert(LightCurveEntry(  "simple_gp",         ONEGP() ));
 		registry.insert(LightCurveEntry(     "two_gp",         TWOGP() ));
 
+		// No exceptions past this point
+		// To preserve the invariant in the face of exceptions, 
+		//	only set called flag when we know the registry 
+		//	is ready
 		called = true;
 	}
 
@@ -113,6 +126,10 @@ std::auto_ptr<ILightCurve> lcFactory(LightCurveType whichLc, const std::vector<d
 	/** @todo Look into using argument forwarding to make calls like 
 	 *	lcFactory(Sine, amp, per, phase)
 	 */
+
+	// once the LightCurve is constructed, constructing auto_ptr 
+	//	does not throw an exception.
+	// Therefore, no memory is leaked if an exception is thrown
 
 	// Basic periodic light curves	
 	if (whichLc == FLATWAVE()) {

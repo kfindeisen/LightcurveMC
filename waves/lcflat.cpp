@@ -2,7 +2,7 @@
  * @file lcflat.cpp
  * @author Krzysztof Findeisen
  * @date Created May 2, 2012
- * @date Last modified April 27, 2013
+ * @date Last modified May 11, 2013
  */
 
 #include "null.h"
@@ -48,6 +48,8 @@ FlatWave::FlatWave(const std::vector<double> &times) : Deterministic(times) {
  * @post flux(t) == 1.0 for all t.
  * 
  * @return The flux of the object.
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 double FlatWave::flux(double time) const {
 	return 1.0;

@@ -5,11 +5,11 @@
  * @date Last modified May 4, 2013
  */
 
-#include <cmath>
 #include <algorithm>
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <cmath>
 #include <boost/algorithm/string.hpp>
 #include "lcsio.h"
 
@@ -20,6 +20,8 @@ using namespace std;
  * @param[in] x The character to test
  *
  * @return True if x represents a newline on Windows, Unix, or MacOS.
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 bool isNewLine(char x) {
 	switch (x) {
@@ -39,9 +41,14 @@ bool isNewLine(char x) {
  *	std::runtime_error.
  *@param[out] fileList a list of strings that stores the filenames in 
  *	hInput. The list may be empty.
+ *
+ * @exception std::bad_alloc Thrown if there is not enough memory to store 
+ *	the file list.
+ * @exception std::runtime_error Thrown if the file has the wrong format.
+ *
+ * @exceptsafe Program is in a consistent state in the event of an exception.
  */	
-void readFileNames(FILE* hInput, vector<string> &fileList)
-{
+void readFileNames(FILE* hInput, vector<string> &fileList) {
 	using boost::algorithm::trim_right_copy_if;
 	
 	fileList.clear();
@@ -86,10 +93,15 @@ void readFileNames(FILE* hInput, vector<string> &fileList)
  *		observation, minus offset
  * @param[out] fluxVec a vector containing the flux observed at each time
  * @param[out] errVec a vector containing the error on each flux
+ *
+ * @exception std::bad_alloc Thrown if there is not enough memory to store 
+ *	the data.
+ * @exception std::runtime_error Thrown if any file operation fails.
+ *
+ * @exceptsafe Program is in a consistent state in the event of an exception.
  */	
 void readWgLightCurve(FILE* hInput, double errMax, double &offset, DoubleVec &timeVec, 
-	DoubleVec &fluxVec, DoubleVec &errVec)
-{
+		DoubleVec &fluxVec, DoubleVec &errVec) {
 	timeVec.clear();
 	fluxVec.clear();
 	errVec .clear();
@@ -107,11 +119,7 @@ void readWgLightCurve(FILE* hInput, double errMax, double &offset, DoubleVec &ti
 		
 		// Test whether it's a comment line
 		// Grab the first NON-WHITESPACE character
-		#if _WIN32
-		nRead = fscanf_s(hInput, " %1c\n", &commentTest);
-		#else
 		nRead = fscanf(  hInput, " %1c\n", &commentTest);
-		#endif
 		if(nRead == EOF) {
 			break;
 		} else if(nRead < 1 || ferror(hInput)) {
@@ -128,18 +136,19 @@ void readWgLightCurve(FILE* hInput, double errMax, double &offset, DoubleVec &ti
 			if (0 != fsetpos(hInput, &curLine)) {
 				throw runtime_error("Could not read data line.");
 			}
-			#if _WIN32
-			nRead = fscanf_s(hInput, " %lf %lf %lf\n", 
-				&timeBuffer, &magBuffer, &errBuffer);
-			#else
 			nRead = fscanf(  hInput, " %lf %lf %lf\n", 
 				&timeBuffer, &magBuffer, &errBuffer);
-			#endif
 			if(nRead < 1 || ferror(hInput) || nRead == EOF) {
 				throw runtime_error("Misformatted file.");
 			}
 			// Valid photometry only
 			if (errBuffer <= errMax) {
+				// use atomic guarantee for vector::reserve to ensure 
+				// that a bad_alloc doesn't interrupt the addition 
+				// halfway through
+				timeVec.reserve(timeVec.size() + 1);
+				fluxVec.reserve(fluxVec.size() + 1);
+				 errVec.reserve( errVec.size() + 1);
 				timeVec.push_back(timeBuffer);
 				fluxVec.push_back( magBuffer);
 				errVec .push_back( errBuffer);
@@ -192,10 +201,15 @@ void readWgLightCurve(FILE* hInput, double errMax, double &offset, DoubleVec &ti
  *	observation, minus offset
  * @param[out] fluxVec a vector containing the flux observed at each time
  * @param[out] errVec a vector containing the error on each flux
- */	
+ *
+ * @exception std::bad_alloc Thrown if there is not enough memory to store 
+ *	the data.
+ * @exception std::runtime_error Thrown if any file operation fails.
+ *
+ * @exceptsafe Program is in a consistent state in the event of an exception.
+ */
 void readWg2LightCurve(FILE* hInput, double errMax, double &offset, DoubleVec &timeVec, 
-	DoubleVec &fluxVec, DoubleVec &errVec)
-{
+		DoubleVec &fluxVec, DoubleVec &errVec) {
 	timeVec.clear();
 	fluxVec.clear();
 	errVec .clear();
@@ -213,11 +227,7 @@ void readWg2LightCurve(FILE* hInput, double errMax, double &offset, DoubleVec &t
 		
 		// Test whether it's a comment line
 		// Grab the first NON-WHITESPACE character
-		#if _WIN32
-		nRead = fscanf_s(hInput, " %1c\n", &commentTest);
-		#else
 		nRead = fscanf(  hInput, " %1c\n", &commentTest);
-		#endif
 		if(nRead == EOF) {
 			break;
 		} else if(nRead < 1 || ferror(hInput)) {
@@ -234,18 +244,19 @@ void readWg2LightCurve(FILE* hInput, double errMax, double &offset, DoubleVec &t
 			if (0 != fsetpos(hInput, &curLine)) {
 				throw runtime_error("Could not read data line.");
 			}
-			#if _WIN32
-			nRead = fscanf_s(  hInput, " %*i %lf %lf %lf %lf", 
-				&timeBuffer, &magBuffer, &errBuffer, &limBuffer);
-			#else
 			nRead = fscanf(  hInput, " %*i %lf %lf %lf %lf", 
 				&timeBuffer, &magBuffer, &errBuffer, &limBuffer);
-			#endif
 			if(nRead < 1 || ferror(hInput) || nRead == EOF) {
 				throw runtime_error("Misformatted file.");
 			}
 			// Valid photometry only
 			if (errBuffer <= errMax && magBuffer < limBuffer) {
+				// use atomic guarantee for vector::reserve to ensure 
+				// that a bad_alloc doesn't interrupt the addition 
+				// halfway through
+				timeVec.reserve(timeVec.size() + 1);
+				fluxVec.reserve(fluxVec.size() + 1);
+				 errVec.reserve( errVec.size() + 1);
 				timeVec.push_back(timeBuffer);
 				fluxVec.push_back( magBuffer);
 				errVec .push_back( errBuffer);
@@ -293,10 +304,15 @@ void readWg2LightCurve(FILE* hInput, double errMax, double &offset, DoubleVec &t
  * @param[out] timeVec a [not yet sorted] vector containing the times of each 
  *	observation, minus offset
  * @param[out] fluxVec a vector containing the flux observed at each time
- */	
+ *
+ * @exception std::bad_alloc Thrown if there is not enough memory to store 
+ *	the data.
+ * @exception std::runtime_error Thrown if any file operation fails.
+ *
+ * @exceptsafe Program is in a consistent state in the event of an exception.
+ */
 void readMcLightCurve(FILE* hInput, double &offset, DoubleVec &timeVec, 
-	DoubleVec &fluxVec)
-{
+		DoubleVec &fluxVec) {
 	timeVec.clear();
 	fluxVec.clear();
 	
@@ -319,11 +335,7 @@ void readMcLightCurve(FILE* hInput, double &offset, DoubleVec &timeVec,
 		
 		// Test whether it's a comment line
 		// Grab the first NON-WHITESPACE character
-		#if _WIN32
-		nRead = fscanf_s(hInput, " %1c\n", &commentTest);
-		#else
 		nRead = fscanf(  hInput, " %1c\n", &commentTest);
-		#endif
 		if(nRead == EOF) {
 			break;
 		} else if(nRead < 1 || ferror(hInput)) {
@@ -340,16 +352,16 @@ void readMcLightCurve(FILE* hInput, double &offset, DoubleVec &timeVec,
 			if (0 != fsetpos(hInput, &curLine)) {
 				throw runtime_error("Could not read data line.");
 			}
-			#if _WIN32
-			nRead = fscanf_s(hInput, " %lf %lf\n", 
-				&timeBuffer, &fluxBuffer);
-			#else
 			nRead = fscanf(  hInput, " %lf %lf\n", 
 				&timeBuffer, &fluxBuffer);
-			#endif
 			if(nRead < 1 || ferror(hInput) || nRead == EOF) {
 				throw runtime_error("Misformatted file.");
 			}
+			// use atomic guarantee for vector::reserve to ensure 
+			// that a bad_alloc doesn't interrupt the addition 
+			// halfway through
+			timeVec.reserve(timeVec.size() + 1);
+			fluxVec.reserve(fluxVec.size() + 1);
 			timeVec.push_back(timeBuffer);
 			fluxVec.push_back(fluxBuffer);
 		}
@@ -378,10 +390,15 @@ void readMcLightCurve(FILE* hInput, double &offset, DoubleVec &timeVec,
  * @param[out] timeVec a [not yet sorted] vector containing the times of each 
  *	observation, minus offset
  * @param[out] fluxVec a vector containing the flux observed at each time
- */	
+ *
+ * @exception std::bad_alloc Thrown if there is not enough memory to store 
+ *	the data.
+ * @exception std::runtime_error Thrown if any file operation fails.
+ *
+ * @exceptsafe Program is in a consistent state in the event of an exception.
+ */
 void readCsvLightCurve(FILE* hInput, double &offset, DoubleVec &timeVec, 
-	DoubleVec &fluxVec)
-{
+		DoubleVec &fluxVec) {
 	timeVec.clear();
 	fluxVec.clear();
 	
@@ -398,11 +415,7 @@ void readCsvLightCurve(FILE* hInput, double &offset, DoubleVec &timeVec,
 		
 		// Test whether it's a comment line
 		// Grab the first NON-WHITESPACE character
-		#if _WIN32
-		nRead = fscanf_s(hInput, " %1c\n", &commentTest);
-		#else
 		nRead = fscanf(  hInput, " %1c\n", &commentTest);
-		#endif
 		if(nRead == EOF) {
 			break;
 		} else if(nRead < 1 || ferror(hInput)) {
@@ -422,16 +435,16 @@ void readCsvLightCurve(FILE* hInput, double &offset, DoubleVec &timeVec,
 			if(NULL == fgets (lineBuffer, 256, hInput)) {
 				throw runtime_error("Unexpected end of file.");
 			}
-			#if _WIN32
-			nRead = sscanf_s(lineBuffer, 256, " %lf , %lf", 
-				&timeBuffer, &fluxBuffer);
-			#else
 			nRead = sscanf(  lineBuffer, " %lf , %lf", 
 				&timeBuffer, &fluxBuffer);
-			#endif
 			if(nRead < 1 || ferror(hInput) || nRead == EOF) {
 				throw runtime_error(string("Misformatted file: ") + lineBuffer);
 			}
+			// use atomic guarantee for vector::reserve to ensure 
+			// that a bad_alloc doesn't interrupt the addition 
+			// halfway through
+			timeVec.reserve(timeVec.size() + 1);
+			fluxVec.reserve(fluxVec.size() + 1);
 			timeVec.push_back(timeBuffer);
 			fluxVec.push_back(fluxBuffer);
 		}
@@ -458,20 +471,35 @@ void readCsvLightCurve(FILE* hInput, double &offset, DoubleVec &timeVec,
  * @post Produces a text file containing two header lines in the format "THRESHOLD: #" 
  *	and "FAP: #", followed by two space-delimited columns 
  *	containing the frequencies and corresponding power.
- */	
+ *
+ * @exception std::runtime_error Thrown if any file operation fails.
+ *
+ * @exceptsafe Program is in a consistent state in the event of an exception.
+ */
 void printPeriodogram(FILE* hOutput, const DoubleVec &freq, const DoubleVec &power, 
-	double threshold, double fap)
-{
+		double threshold, double fap) {
 	// Print the FAP value
 	if (fap < 0.05) {
-		fprintf(hOutput, "FAP %.1g%% above %7.1f\n", fap*100.0, threshold);
+		int status = fprintf(hOutput, "FAP %.1g%% above %7.1f\n", fap*100.0, threshold);
+		if (status < 0) {
+			throw std::runtime_error("Could not print periodogram header.");
+		}
 	} else {
-		fprintf(hOutput, "FAP %.0f%% above %7.1f\n", fap*100.0, threshold);
+		int status = fprintf(hOutput, "FAP %.0f%% above %7.1f\n", fap*100.0, threshold);
+		if (status < 0) {
+			throw std::runtime_error("Could not print periodogram header.");
+		}
 	}
 	// Print the table
-	fprintf(hOutput, "Freq\tPower\n");
+	int status = fprintf(hOutput, "Freq\tPower\n");
+	if (status < 0) {
+		throw std::runtime_error("Could not print periodogram column header.");
+	}
 	for(size_t i = 0; i < freq.size(); i++) {
-		fprintf(hOutput, "%7.4f\t%7.4f\n", freq[i], power[i]);
+		status = fprintf(hOutput, "%7.4f\t%7.4f\n", freq[i], power[i]);
+		if (status < 0) {
+			throw std::runtime_error("Could not print periodogram.");
+		}
 	}
 }
 
@@ -483,13 +511,23 @@ void printPeriodogram(FILE* hOutput, const DoubleVec &freq, const DoubleVec &pow
  * 
  * @post Produces a text file containing two space-delimited columns containing the 
  *	offsets and corresponding autocorrelation.
+ *
+ * @exception std::runtime_error Thrown if any file operation fails.
+ *
+ * @exceptsafe Program is in a consistent state in the event of an exception.
  */	
 void printAcf(FILE* hOutput, const DoubleVec &times, const DoubleVec &acf)
 {
 	// Print the table
-	fprintf(hOutput, "Offset\tACF\n");
+	int status = fprintf(hOutput, "Offset\tACF\n");
+	if (status < 0) {
+		throw std::runtime_error("Could not print ACF column header.");
+	}
 	for(size_t i = 0; i < times.size(); i++) {
-		fprintf(hOutput, "%7.4f\t%7.4f\n", times[i], acf[i]);
+		status = fprintf(hOutput, "%7.4f\t%7.4f\n", times[i], acf[i]);
+		if (status < 0) {
+			throw std::runtime_error("Could not print Acf.");
+		}
 	}
 }
 
@@ -502,13 +540,23 @@ void printAcf(FILE* hOutput, const DoubleVec &times, const DoubleVec &acf)
  * 
  * @post Produces a text file containing two space-delimited columns containing the 
  *	time and magnitude offsets, respectively
+ *
+ * @exception std::runtime_error Thrown if any file operation fails.
+ *
+ * @exceptsafe Program is in a consistent state in the event of an exception.
  */	
 void printDmDt(FILE* hOutput, const DoubleVec &times, const DoubleVec &deltam)
 {
 	// Print the table
-	fprintf(hOutput, "Offset\tMag Diff.\n");
+	int status = fprintf(hOutput, "Offset\tMag Diff.\n");
+	if (status < 0) {
+		throw std::runtime_error("Could not print dmdt column header.");
+	}
 	for(size_t i = 0; i < times.size(); i++) {
-		fprintf(hOutput, "%7.4f\t%7.4f\n", times[i], deltam[i]);
+		status = fprintf(hOutput, "%7.4f\t%7.4f\n", times[i], deltam[i]);
+		if (status < 0) {
+			throw std::runtime_error("Could not print dmdt plot.");
+		}
 	}
 }
 
@@ -520,14 +568,27 @@ void printDmDt(FILE* hOutput, const DoubleVec &times, const DoubleVec &deltam)
  * 
  * @post Produces a text file containing two space-delimited columns containing the 
  *	time and magnitude offsets, respectively
+ *
+ * @exception std::runtime_error Thrown if any file operation fails.
+ *
+ * @exceptsafe Program is in a consistent state in the event of an exception.
  */	
 void printHist(FILE* hOutput, const DoubleVec &binEdges, const DoubleVec &values) {
 	// Print the table
-	fprintf(hOutput, "Bin Start\tValue\n");
-	for(size_t i = 0; i < values.size(); i++) {
-		fprintf(hOutput, "%7.4f\t%7.4f\n", binEdges[i], values[i]);
+	int status = fprintf(hOutput, "Bin Start\tValue\n");
+	if (status < 0) {
+		throw std::runtime_error("Could not print histogram column header.");
 	}
-	fprintf(hOutput, "%7.4f\n", binEdges[values.size()]);
+	for(size_t i = 0; i < values.size(); i++) {
+		status = fprintf(hOutput, "%7.4f\t%7.4f\n", binEdges[i], values[i]);
+		if (status < 0) {
+			throw std::runtime_error("Could not print histogram.");
+		}
+	}
+	status = fprintf(hOutput, "%7.4f\n", binEdges[values.size()]);
+	if (status < 0) {
+		throw std::runtime_error("Could not print histogram.");
+	}
 }
 
 /** Prints a file containing a rms vs. t scatter plot
@@ -538,13 +599,23 @@ void printHist(FILE* hOutput, const DoubleVec &binEdges, const DoubleVec &values
  * 
  * @post Produces a text file containing two space-delimited columns containing the 
  *	time and RMS values, respectively
+ *
+ * @exception std::runtime_error Thrown if any file operation fails.
+ *
+ * @exceptsafe Program is in a consistent state in the event of an exception.
  */	
 void printRmsT(FILE* hOutput, const DoubleVec &times, const DoubleVec &rmsVals)
 {
 	// Print the table
-	fprintf(hOutput, "Interval\tRMS\n");
+	int status = fprintf(hOutput, "Interval\tRMS\n");
+	if (status < 0) {
+		throw std::runtime_error("Could not print RMS header.");
+	}
 	for(size_t i = 0; i < times.size(); i++) {
-		fprintf(hOutput, "%7.4f\t%7.4f\n", times[i], rmsVals[i]);
+		status = fprintf(hOutput, "%7.4f\t%7.4f\n", times[i], rmsVals[i]);
+		if (status < 0) {
+			throw std::runtime_error("Could not print RMS vs t plot.");
+		}
 	}
 }
 
@@ -554,18 +625,22 @@ void printRmsT(FILE* hOutput, const DoubleVec &times, const DoubleVec &rmsVals)
  * @param[in] date2 the largest Julian date to be allowed in times
  * @param[in,out] times a vector of times to be trimmed to date1, date2, assumed 
  *	sorted in ascending order
- * @param[in] arr1 a vector of measurements corresponding to times, to be trimmed 
+ * @param[in,out] arr1 a vector of measurements corresponding to times, to be trimmed 
  *	in parallel
- * @param[in] arr2 a vector of measurements corresponding to times, to be trimmed 
+ * @param[in,out] arr2 a vector of measurements corresponding to times, to be trimmed 
  *	in parallel
  * 
  * @post times is updated to contain only items greater than or equal to date1 
  *	and less than or equal to date 2. Any entries corresponding to 
  *	deleted entries of times are deleted from arr1 and arr2
+ *
+ * @exception std::bad_alloc Thrown if there is not enough memory to 
+ *	reprocess the vectors
+ *
+ * @exception The function arguments are unchanged in the event of an exception.
  */
 void filterLightCurve(double date1, double date2, DoubleVec &times, 
-	DoubleVec &arr1, DoubleVec &arr2)
-{
+		DoubleVec &arr1, DoubleVec &arr2) {
 	DoubleVec::iterator timeStart=times.begin(), 
 		arr1Start=arr1.begin(), arr2Start=arr2.begin();
 	DoubleVec::iterator firstOk=times.end(), firstNotOk=times.end();
@@ -593,15 +668,25 @@ void filterLightCurve(double date1, double date2, DoubleVec &times,
 	if (firstOk == firstNotOk) {
 		throw runtime_error("No valid photometry");
 	} else {
-		// Order matters to avoid invalidating the iterators
-		//	Delete back, then front, and delete times last
+		using std::swap;
+		
 		size_t offsetNotOk = distance(timeStart, firstNotOk);
 		size_t offsetOk    = distance(timeStart, firstOk   );
-		arr1.erase(arr1Start+offsetNotOk, arr1.end());
-		arr1.erase(arr1.begin(), arr1Start+offsetOk);
-		arr2.erase(arr2Start+offsetNotOk, arr2.end());
-		arr2.erase(arr2.begin(), arr2Start+offsetOk);
-		times.erase(firstNotOk, times.end());
-		times.erase(times.begin(), firstOk);
+		
+		// copy-and-swap
+		vector<double> temp1(arr1), temp2(arr2), tempTimes(times);
+		
+		// Order matters to avoid invalidating the iterators
+		//	Delete back, then front, and delete times last
+		temp1    .erase(temp1    .begin()+offsetNotOk, temp1    .end());
+		temp1    .erase(temp1    .begin()            , temp1    .begin()+offsetOk);
+		temp2    .erase(temp2    .begin()+offsetNotOk, temp2    .end());
+		temp2    .erase(temp2    .begin()            , temp2    .begin()+offsetOk);
+		tempTimes.erase(tempTimes.begin()+offsetNotOk, tempTimes.end());
+		tempTimes.erase(tempTimes.begin()            , tempTimes.begin()+offsetOk);
+		
+		swap(arr1, temp1);
+		swap(arr2, temp2);
+		swap(times, tempTimes);
 	}
 }

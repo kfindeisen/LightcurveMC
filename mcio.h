@@ -2,7 +2,7 @@
  * @file mcio.h
  * @author Krzysztof Findeisen
  * @date Created February 4, 2011
- * @date Last modified February 4, 2011
+ * @date Last modified May 14, 2013
  */
 
 #ifndef LMCIOH
@@ -22,13 +22,8 @@ typedef std::vector<double> DoubleVec;
 void readTimeStamps(FILE* hInput, DoubleVec &dates, double &minDelT, double &maxDelT);
 
 /** Dumps the contents of a lightcurve to a file
- */	
-void printLightCurve(size_t modelNum, std::string lcName, double logP, double logA, 
-	double period, DoubleVec timeGrid, DoubleVec fluxGrid);
-
-/** Dumps the contents of a periodogram to a file
- */	
-void printPeriodogram(size_t modelNum, size_t lcType, double logP, double logA, 
-	double fap, double threshold, double freq, DoubleVec freqGrid, DoubleVec powerGrid);
+ */
+void printLightCurve(const std::string& fileName, 
+		const DoubleVec& timeGrid, const DoubleVec& fluxGrid);
 
 #endif		// end ifndef LMCIOH

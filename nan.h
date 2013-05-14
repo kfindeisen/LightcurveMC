@@ -27,7 +27,24 @@ bool isNan(double x);
  */
 bool isNanOrInf(double x);
 
-/** lessFinite allows floating-point numbers to be compared safely in the 
+/** Default-constructible predicate for testing whether something is not NaN
+ */
+class NotNan {
+public: 
+	/** Returns true iff the argument is not NaN.
+	 *
+	 * @param[in] x
+	 *
+	 * @return x == NaN
+	 *
+	 * @exceptsafe Does not throw exceptions.
+	 */
+	bool operator() (double x) {
+		return !isNan(x);
+	}
+};
+
+/** lessFinite allows floating-point numbers to be ordered consistently in the 
  *	presence of NaNs.
  */
 bool lessFinite(double x, double y);

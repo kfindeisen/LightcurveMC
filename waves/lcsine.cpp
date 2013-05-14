@@ -2,12 +2,12 @@
  * @file lcsine.cpp
  * @author Krzysztof Findeisen
  * @date Created April 24, 2012
- * @date Last modified April 27, 2013
+ * @date Last modified May 11, 2013
  */
 
-#include <stdexcept>
 #include <cmath>
-#include <cstdio>
+#include <boost/lexical_cast.hpp>
+#include "../except/data.h"
 #include "lightcurves_periodic.h"
 
 /** Define Pi for convenience
@@ -17,6 +17,8 @@
 #endif
 
 namespace lcmc { namespace models {
+
+using boost::lexical_cast;
 
 /** Initializes the light curve to represent a periodic function flux(time).
  *
@@ -33,15 +35,17 @@ namespace lcmc { namespace models {
  * @post The object represents a sinusoidal signal with the given 
  *	amplitude, period, and initial phase.
  *
- * @exception std::invalid_argument Thrown if any of the parameters are 
- *	outside their allowed ranges.
+ * @exception bad_alloc Thrown if there is not enough memory to 
+ *	construct the object.
+ * @exception lcmc::models::except::BadParam Thrown if any of the 
+ *	parameters are outside their allowed ranges.
+ *
+ * @exceptsafe Object construction is atomic.
  */
 SineWave::SineWave(const std::vector<double> &times, double amp, double period, double phase) 
 		: PeriodicLc(times, amp, period, phase) {
 	if (amp > 1.0) {
-		char errBuf[80];
-		sprintf(errBuf, "SineWaves must have amplitudes less than or equal to 1 (gave %g).", amp);
-		throw std::invalid_argument(errBuf);
+		throw except::BadParam("SineWaves must have amplitudes less than or equal to 1 (gave " + lexical_cast<string, double>(amp) + ").");
 	}
 }
 
@@ -62,6 +66,11 @@ SineWave::SineWave(const std::vector<double> &times, double amp, double period, 
  * @post 0 &le; return value &le; 2
  * 
  * @return The flux emitted by the object at the specified phase.
+ * 
+ * @exception logic_error Thrown if a bug was found in the flux calculations.
+ *
+ * @exceptsafe Neither the object nor the argument are changed in the 
+ *	event of an exception.
  */
 double SineWave::fluxPhase(double phase, double amp) const {
 	return 1.0 + amp*sin(2*M_PI*phase);

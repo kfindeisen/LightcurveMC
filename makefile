@@ -1,7 +1,7 @@
 # Compilation make for lightcurveMC
 # by Krzysztof Findeisen
 # Created March 24, 2010
-# Last modified May 9, 2013
+# Last modified May 11, 2013
 
 SHELL = /bin/sh
 
@@ -10,12 +10,13 @@ include makefile.inc
 #---------------------------------------
 # Select all files
 PROJ     = lightcurveMC
-SOURCES  = cmd.cpp cmd_classes.cpp binstats.cpp approxequal.cpp nanstats.cpp \
+SOURCES  = binstats.cpp approxequal.cpp nanstats.cpp \
 	lcsupport.cpp lightcurve.cpp paramlist.cpp lcregistry.cpp \
 	fluxmag.cpp statsupport.cpp \
-	mcio.cpp lcsio.cpp
+	mcio.cpp lcsio.cpp utils_except.cpp
 OBJS     = $(SOURCES:.cpp=.o)
-DIRS     = samples stats waves
+# except must be last because other libraries depend on it
+DIRS     = cmd samples stats waves except 
 LIBS     = timescales gsl gslcblas
 TESTLIBS = $(LIBS) boost_unit_test_framework-mt 
 
@@ -29,6 +30,12 @@ $(PROJ): driver.o $(OBJS) $(DIRS)
 # Subdirectories
 # Can't declare the directories phony directly, or the executable will be built every time
 .PHONY: cd
+cmd: cd
+	@make -C cmd --no-print-directory $(MFLAGS)
+
+except: cd
+	@make -C except --no-print-directory $(MFLAGS)
+
 samples: cd
 	@make -C samples --no-print-directory $(MFLAGS)
 

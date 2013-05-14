@@ -8,7 +8,7 @@ status=0
 # Commented-out tests are deemed too expensive for regular regression testing
 # Run them, but less frequently
 
-nice -n 15 ./test -t test_dmdt,test_stats,test_waves
+nice -n 15 ./test -t test_dmdt,test_nan,test_paramlist,test_rangelist,test_stats,test_wave
 #nice -n 15 ./test -t test_gp
 status=$(($status || $?))
 
@@ -18,6 +18,9 @@ status=$(($status || $?))
 ./injecttest.sh		; status=$(($status || $?))
 ./periodictest.sh	; status=$(($status || $?))
 ./sinetest.sh		; status=$(($status || $?))
+./gptest_acf.sh		; status=$(($status || $?))
+./periodictest_acf.sh	; status=$(($status || $?))
+./sinetest_acf.sh	; status=$(($status || $?))
 rm -f run_*.dat
 
 if [[ $status == 0 ]] ; then

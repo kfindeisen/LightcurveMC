@@ -140,4 +140,4 @@ diff -s injecttarget_snr5.log injecttest_snr5.log
 # diff returns 0 iff files are equal
 status=$(($status || $?))
 
-exit $?
+exit $status

@@ -1,8 +1,8 @@
 /** Classes defining valid input
- * @file cmd_constraints.tmp.h
+ * @file cmd/cmd_constraints.tmp.h
  * @author Krzysztof Findeisen
  * @date Created April 27, 2013
- * @date Last modified April 27, 2013
+ * @date Last modified May 11, 2013
  */
 
 #ifndef LCMCCMDCONSTH
@@ -13,7 +13,7 @@
 #include <utility>
 #include <vector>
 
-#include "warnflags.h"
+#include "../warnflags.h"
 
 // TCLAP uses C-style casts
 #ifdef GNUC_COARSEWARN
@@ -47,6 +47,8 @@ public:
 	/** Returns a long description used when a value fails the constraint
 	 *
 	 * @return string specifying the exact requirements for the value
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string description() const {
 		return string("positive ") + typeid(T).name();
@@ -55,6 +57,8 @@ public:
 	/** Returns a short description used in the interface documentation
 	 *
 	 * @return string summarizing the data type
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string shortID() const {
 		return string("positive ") + typeid(T).name();
@@ -65,6 +69,8 @@ public:
 	 * @param[in] value The number that must be greater than zero.
 	 *
 	 * @return True if value > 0, false otherwise
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual bool check(const T& value) const {
 		return (value > 0);
@@ -83,6 +89,8 @@ public:
 	/** Returns a long description used when a value fails the constraint
 	 *
 	 * @return string specifying the exact requirements for the value
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string description() const {
 		return "positive integer";
@@ -91,6 +99,8 @@ public:
 	/** Returns a short description used in the interface documentation
 	 *
 	 * @return string summarizing the data type
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string shortID() const {
 		return "positive integer";
@@ -101,6 +111,8 @@ public:
 	 * @param[in] value The number that must be greater than zero.
 	 *
 	 * @return True if value > 0, false otherwise
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual bool check(const long& value) const {
 		return (value > 0);
@@ -119,6 +131,8 @@ public:
 	/** Returns a long description used when a value fails the constraint
 	 *
 	 * @return string specifying the exact requirements for the value
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string description() const {
 		return "positive real number";
@@ -127,6 +141,8 @@ public:
 	/** Returns a short description used in the interface documentation
 	 *
 	 * @return string summarizing the data type
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string shortID() const {
 		return "positive real number";
@@ -137,6 +153,8 @@ public:
 	 * @param[in] value The number that must be greater than zero.
 	 *
 	 * @return True if value > 0, false otherwise
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual bool check(const double& value) const {
 		return (value > 0.0);
@@ -156,6 +174,8 @@ public:
 	/** Returns a long description used when a value fails the constraint
 	 *
 	 * @return string specifying the exact requirements for the value
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string description() const {
 		return "both numbers in the range must be positive, and the second must be no smaller than the first";
@@ -164,6 +184,8 @@ public:
 	/** Returns a short description used in the interface documentation
 	 *
 	 * @return string summarizing the data type
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string shortID() const {
 		return "positive interval";
@@ -174,6 +196,8 @@ public:
 	 * @param[in] value The interval that must be greater than zero.
 	 *
 	 * @return True if the interval is valid and both ends are > 0, false otherwise
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual bool check(const pair<double, double>& value) const {
 		return (value.first > 0.0 && value.second >= value.first);
@@ -192,6 +216,8 @@ public:
 	/** Returns a long description used when a value fails the constraint
 	 *
 	 * @return string specifying the exact requirements for the value
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string description() const {
 		return string("non-negative ") + typeid(T).name();
@@ -200,6 +226,8 @@ public:
 	/** Returns a short description used in the interface documentation
 	 *
 	 * @return string summarizing the data type
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string shortID() const {
 		return string("non-negative ") + typeid(T).name();
@@ -211,6 +239,8 @@ public:
 	 *	to zero.
 	 *
 	 * @return True if value >= 0, false otherwise
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual bool check(const T& value) const {
 		return (value >= 0);
@@ -229,6 +259,8 @@ public:
 	/** Returns a long description used when a value fails the constraint
 	 *
 	 * @return string specifying the exact requirements for the value
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string description() const {
 		return "non-negative integer";
@@ -237,6 +269,8 @@ public:
 	/** Returns a short description used in the interface documentation
 	 *
 	 * @return string summarizing the data type
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string shortID() const {
 		return "non-negative integer";
@@ -248,6 +282,8 @@ public:
 	 *	to zero.
 	 *
 	 * @return True if value >= 0, false otherwise
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual bool check(const long& value) const {
 		return (value >= 0);
@@ -266,6 +302,8 @@ public:
 	/** Returns a long description used when a value fails the constraint
 	 *
 	 * @return string specifying the exact requirements for the value
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string description() const {
 		return "non-negative real number";
@@ -274,6 +312,8 @@ public:
 	/** Returns a short description used in the interface documentation
 	 *
 	 * @return string summarizing the data type
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string shortID() const {
 		return "non-negative real number";
@@ -285,6 +325,8 @@ public:
 	 *	to zero.
 	 *
 	 * @return True if value >= 0, false otherwise
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual bool check(const double& value) const {
 		return (value >= 0.0);
@@ -305,6 +347,8 @@ public:
 	/** Returns a long description used when a value fails the constraint
 	 *
 	 * @return string specifying the exact requirements for the value
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string description() const {
 		return "both numbers in the range must be non-negative, and the second must be no smaller than the first";
@@ -313,6 +357,8 @@ public:
 	/** Returns a short description used in the interface documentation
 	 *
 	 * @return string summarizing the data type
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string shortID() const {
 		return "non-negative interval";
@@ -325,6 +371,8 @@ public:
 	 *
 	 * @return True if the interval is valid and both ends are >= 0, 
 	 *	false otherwise
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual bool check(const pair<double, double>& value) const {
 		return (value.first >= 0.0 && value.second >= value.first);

@@ -2,11 +2,7 @@
  * @file projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified May 8, 2013
- *
- * @todo Add proper exception classes. Put exceptions in exception namespace 
- *	within lcmc::models and lcmc::inject.
- * @todo Add exception guarantees to every function and method.
+ * @date Last modified May 14, 2013
  */
 
 #ifndef LCMCPROJINFOH
@@ -54,11 +50,17 @@
  *
  * - Changed: shortened all integration test scripts, cutting the 
  *	testing time by a factor of five without sacrificing accuracy
- * - Added: --stat (-s) keyword now allows run time selection of statistics 
+ * - Added: -\-stat (-s) keyword now allows run time selection of statistics 
  *	to compute for each light curve
  * - Added: support for ACF timescales
  * - Fixed: output files now give more significant digits for the 
- *	simulation parameters, reducing naming conflicts between bins
+ *	simulation parameters, reducing naming conflicts between bins. Light 
+ *	curve dump files created with the -\-print keyword now use the same 
+ *	naming convention as the statistic output files.
+ * - Changed: -\-add keyword can now take arbitrary file names as arguments. 
+ *	The use of the keywords NonSpitzerNonVar, NonSpitzerVar, 
+ *	SpitzerNonVar, and SpitzerVar is now deprecated.
+ * - Changed: improved error recovery and reporting
  *
  * @subsection v2_1_0 2.1.0
  *

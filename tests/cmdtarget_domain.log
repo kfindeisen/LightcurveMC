@@ -2,32 +2,12 @@ EXPECTED RESULT: FAIL (invalid range)
 PARSE ERROR: Argument: -a (--amp)
              Couldn't read argument value from string '1.0'
 
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
-
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
 
 EXPECTED RESULT: FAIL (negative range)
 PARSE ERROR: Argument: -a (--amp)
              Value '-1.0 -0.5' does not meet constraint: both numbers in the range must be positive, and the second must be no smaller than the first
-
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
@@ -36,32 +16,12 @@ EXPECTED RESULT: FAIL (inverted range)
 PARSE ERROR: Argument: -p (--period)
              Value '1.0 0.25' does not meet constraint: both numbers in the range must be positive, and the second must be no smaller than the first
 
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
-
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
 
 EXPECTED RESULT: FAIL (no tests)
 PARSE ERROR: Argument: (--ntrials)
              Value '0' does not meet constraint: positive integer
-
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
@@ -70,32 +30,12 @@ EXPECTED RESULT: FAIL (negative tests)
 PARSE ERROR: Argument: (--ntrials)
              Value '-10' does not meet constraint: positive integer
 
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
-
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
 
 EXPECTED RESULT: FAIL (fractional tests)
 PARSE ERROR: Argument: (--ntrials)
              Couldn't read argument value from string '5.5'
-
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
@@ -104,16 +44,6 @@ EXPECTED RESULT: FAIL (negative noise)
 PARSE ERROR: Argument: (--noise)
              Value '-0.1' does not meet constraint: non-negative real number
 
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
-
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
 
@@ -121,33 +51,9 @@ EXPECTED RESULT: FAIL (jdList and bad wave given)
 PARSE ERROR: Argument: (--lclist)
              Value 'fakeTestWave' does not meet constraint: broad_peak|drw|eclipse|ellipse|flare_dip|flare_peak|flat|flat_dip|flat_peak|magsine|sharp_peak|simple_gp|sine|slow_dip|slow_peak|triangle|two_gp|walk|white_noise
 
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
-
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
 
 EXPECTED RESULT: FAIL (--add with bad argument)
-PARSE ERROR: Argument: (--add)
-             Value 'GarbageTestSample' does not meet constraint: NonSpitzerNonVar|NonSpitzerVar|SpitzerNonVar|SpitzerVar
-
-Brief USAGE: 
-   ../lightcurveMC  {--add <keyword>|<date file>} [--amp2 <positive
-                    interval>] [--period2 <positive interval>] [--width2
-                    <positive interval>] [-w <positive interval>] [-d
-                    <positive interval>] [--ph <unit subinterval>] [-a
-                    <positive interval>] [-p <positive interval>] [-s
-                    <keyword>] ...  [--print <non-negative integer>]
-                    [--ntrials <positive integer>] [--noise <non-negative
-                    real number>] [--] [--version] [-h] <keyword> ...
-
-For complete USAGE and HELP type: 
-   ../lightcurveMC --help
-
+ERROR: Could not open file 'GarbageTestSample'.
+LCType		a      	p      	ph     	Noise	Grankin C1±err	C1 Distribution	50% cut at 1/3±err	Finite	50%@1/3 Distribution	50% cut at 1/2±err	Finite	50%@1/2 Distribution	90% cut at 1/3±err	Finite	90%@1/3 Distribution	90% cut at 1/2±err	Finite	90%@1/2 Distribution

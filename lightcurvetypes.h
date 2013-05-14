@@ -2,7 +2,7 @@
  * @file lightcurvetypes.h
  * @author Krzysztof Findeisen
  * @date Created February 9, 2012
- * @date Last modified April 27, 2013
+ * @date Last modified May 11, 2013
  * 
  * These types represent the interface lightcurveMC uses to handle light 
  * curves in an abstract fashion. Do not add anything to this header unless 
@@ -41,6 +41,8 @@ public:
 	 *
 	 * @param[in] id The unique constant identifying a particular value of 
 	 *	the LightCurveType enumeration.
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	explicit LightCurveType(unsigned int id) : id(id) {
 	}
@@ -51,6 +53,8 @@ public:
 	 *
 	 * @return True if and only if the two LightCurveTypes correspond to 
 	 *	the same constant.
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	bool operator== (const LightCurveType& other) const {
 		return (this->id == other.id);
@@ -62,6 +66,8 @@ public:
 	 *
 	 * @return True if and only if the two LightCurveTypes correspond to 
 	 *	different constants.
+	 *
+	 * @exceptsafe Does not throw exceptions.
 	 */
 	bool operator!= (const LightCurveType& other) const {
 		return (this->id != other.id);
@@ -93,6 +99,12 @@ public:
 	 * @post timeArray.size() == getFluxes().size()
 	 * 
 	 * @post No element of timeArray is NaN
+	 *
+	 * @exception bad_alloc Thrown if there is not enough memory to 
+	 *	return a copy of the times.
+	 *
+	 * @exceptsafe Neither the object nor the argument are changed in the 
+	 *	event of an exception.
 	 */
 	virtual void getTimes(std::vector<double>& timeArray) const = 0;
 
@@ -111,9 +123,27 @@ public:
 	 *	Subclasses of ILightCurve may chose the option 
 	 *	(mean, median, or mode) most appropriate for their light 
 	 *	curve shape.
+	 *
+	 * @exception bad_alloc Thrown if there is not enough memory to compute 
+	 *	the light curve.
+	 * @exception logic_error Thrown if a bug was found in the flux calculations.
+	 *
+	 * @exceptsafe Neither the object nor the argument are changed in the 
+	 *	event of an exception.
 	 */
 	virtual void getFluxes(std::vector<double>& fluxArray) const = 0;
 
+
+	/** Returns the number of times and fluxes
+	 *
+	 * @return The number of data points represented by the ILightCurve.
+	 *
+	 * @post return value == getTimes().size() == getFluxes.size()
+	 *
+	 * @exceptsafe Does not throw exceptions.
+	 */
+	virtual size_t size() const = 0;
+	
 protected: 
 	/** Initializes the light curve to represent a particular data set.
 	 */

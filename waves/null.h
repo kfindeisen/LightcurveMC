@@ -8,7 +8,7 @@
 #ifndef LCMCCURVENULLH
 #define LCMCCURVENULLH
 
-#include "lcsubtypes.h"
+#include "lcdeterministic.h"
 
 namespace lcmc { namespace models {
 

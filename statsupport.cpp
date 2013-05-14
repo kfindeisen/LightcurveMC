@@ -2,7 +2,7 @@
  * @file statsupport.cpp
  * @author Krzysztof Findeisen
  * @date Created May 9, 2013
- * @date Last modified May 9, 2013
+ * @date Last modified May 10, 2013
  * 
  * The functions defined here act as an interface between the StatType 
  * parameters and the parser.
@@ -31,8 +31,17 @@ typedef  std::map<string, const StatType> StatRegistry;
 typedef std::pair<string, const StatType> StatEntry;
 
 /** Implements a global registry of statistics.
+ *
+ * @return The registry.
+ *
+ * @exception std::bad_alloc Thrown if there is not enough memory to create 
+ *	the registry.
+ *
+ * @exceptsafe The program state is unchanged in the event of an exception.
  */
 const StatRegistry& getStatRegistry() {
+	// invariant: registry contains the names of all valid statistics, 
+	//	or called == false
 	static StatRegistry registry;
 	static bool called = false;
 	if (called == false) {
@@ -47,6 +56,10 @@ const StatRegistry& getStatRegistry() {
 		registry.insert(StatEntry( "acfcut" , ACFCUT     ));
 		registry.insert(StatEntry( "acfplot", ACF        ));
 		
+		// No exceptions past this point
+		// To preserve the invariant in the face of exceptions, 
+		//	only set called flag when we know the registry 
+		//	is ready
 		called = true;
 	}
 
@@ -66,10 +79,23 @@ using namespace stats;
  * @return A list of string identifiers, one for each allowed StatType 
  *	value. The order of the strings may be whatever is most convenient for 
  *	enumerating the types of statistics.
+ *
+ * @exception std::bad_alloc Thrown if not enough memory to construct the 
+ *	list, or if there is not enough memory to enumerate the 
+ *	allowed statistics.
+ *
+ * @exceptsafe The program state is unchanged in the event of an exception.
  */
 const vector<string> statTypes() {
+	// Let the exception propagate up: if there's not enough memory to 
+	// call getStatRegistry(), there's not enough memory to do anything 
+	// with the statistic names anyway
 	const StatRegistry& registry = getStatRegistry();
+	
 	std::vector<string> theList;
+	theList.reserve(registry.size());
+	
+	// no exceptions past this point
 	
 	for(StatRegistry::const_iterator it = registry.begin(); 
 			it != registry.end(); it++) {
@@ -89,6 +115,13 @@ const vector<string> statTypes() {
  * 
  * @exception domain_error Thrown if the statistic name does not have a 
  *	corresponding type.
+ * @exception std::bad_alloc Thrown if not enough memory to match names 
+ *	to statistics.
+ *
+ * @exceptsafe The arguments are unchanged in the event of an exception.
+ *
+ * @todo Is there a way to handle bad_alloc internally? Letting it get 
+ *	thrown exposes the internal implementation.
  */
 StatType parseStat(const string& statName) {
 	const StatRegistry& registry = getStatRegistry();
@@ -97,7 +130,7 @@ StatType parseStat(const string& statName) {
 	if (it != registry.end()) {
 		return it->second;
 	} else {
-		throw std::domain_error("No such light curve: " + statName);
+		throw std::domain_error("No such statistic: " + statName);
 	}
 }
 

@@ -2,15 +2,17 @@
  * @file lcperiodic.cpp
  * @author Krzysztof Findeisen
  * @date Created April 23, 2012
- * @date Last modified April 27, 2013
+ * @date Last modified May 11, 2013
  */
 
-#include <stdexcept>
 #include <cmath>
-#include <cstdio>
+#include <boost/lexical_cast.hpp>
+#include "../except/data.h"
 #include "lightcurves_periodic.h"
 
 namespace lcmc { namespace models {
+
+using boost::lexical_cast;
 
 /** Initializes the light curve to represent a periodic function flux(time).
  *
@@ -27,24 +29,24 @@ namespace lcmc { namespace models {
  *	and phase: knowing them is sufficient to determine flux(t) for any 
  *	value of t.
  *
- * @exception std::invalid_argument Thrown if any of the parameters are 
- *	outside their allowed ranges.
+ * @exception bad_alloc Thrown if there is not enough memory to 
+ *	construct the object.
+ * @exception lcmc::models::except::BadParam Thrown if any of the 
+ *	parameters are outside their allowed ranges.
+ *
+ * @exceptsafe Object construction is atomic.
  */
 PeriodicLc::PeriodicLc(const std::vector<double> &times, 
 			double amp, double period, double phase) 
 			: Deterministic(times), amp(amp), period(period), phase0(phase) {
-	char errBuf[80];
 	if (amp <= 0.0) {
-		sprintf(errBuf, "All periodic light curves need positive amplitudes (gave %g).", amp);
-		throw std::invalid_argument(errBuf);
+		throw except::BadParam("All periodic light curves need positive amplitudes (gave " + lexical_cast<string, double>(amp) + ").");
 	}
 	if (period <= 0.0) {
-		sprintf(errBuf, "All periodic light curves need positive periods (gave %g).", period);
-		throw std::invalid_argument(errBuf);
+		throw except::BadParam("All periodic light curves need positive periods (gave " + lexical_cast<string, double>(period) + ").");
 	}
 	if (phase < 0.0 || phase >= 1.0) {
-		sprintf(errBuf, "All periodic light curves need initial phases in the interval [0, 1) (gave %g).", phase);
-		throw std::invalid_argument(errBuf);
+		throw except::BadParam("All periodic light curves need initial phases in the interval [0, 1) (gave " + lexical_cast<string, double>(phase) + ").");
 	}
 }
 
@@ -68,6 +70,11 @@ PeriodicLc::~PeriodicLc() {
  *	for their light curve shape.
  * 
  * @return The flux emitted by the object at the specified time.
+ * 
+ * @exception logic_error Thrown if a bug was found in the flux calculations.
+ *
+ * @exceptsafe Neither the object nor the argument are changed in the 
+ *	event of an exception.
  *
  * @note This method is final. Subclasses should override fluxPhase() 
  * 	instead.
@@ -75,6 +82,7 @@ PeriodicLc::~PeriodicLc() {
 double PeriodicLc::flux(double time) const {
 	double phase = phase0 + time / period;
 	phase = phase - floor(phase);
+	
 	return fluxPhase(phase, amp);
 }
 

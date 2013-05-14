@@ -2,7 +2,7 @@
  * @file driver.cpp
  * @author Krzysztof Findeisen
  * @date Created January 22, 2010
- * @date Last modified May 8, 2013
+ * @date Last modified May 14, 2013
  */
 
 #include <memory>
@@ -11,11 +11,15 @@
 #include <vector>
 #include <cmath>
 #include <cstdio>
+#include <boost/lexical_cast.hpp>
+#include <boost/shared_ptr.hpp>
 #include <gsl/gsl_randist.h>
 #include "binstats.h"
+#include "except/fileio.h"
 #include "lightcurvetypes.h"
 #include "mcio.h"
 #include "paramlist.h"
+#include "except/parse.h"
 #include "samples/observations.h"
 
 #if USELFP
@@ -25,6 +29,8 @@
 using namespace lcmc;
 using std::string;
 using std::vector;
+using boost::shared_ptr;
+
 using models::RangeList;
 using models::ParamList;
 using inject::Observations;
@@ -40,7 +46,7 @@ namespace lcmc {
 
 /** Randomly generates parameter values within the specified limits
  */
-ParamList drawParams(RangeList limits);
+ParamList drawParams(const RangeList& limits);
 
 namespace parse {
 /** Converts the input arguments to a set of variables.
@@ -76,9 +82,16 @@ namespace models {
  *	smart pointer has been initialized with the data in lcParams.
  *
  * @pre No element of times is NaN
+  *
+ * @exception bad_alloc Thrown if there is not enough memory to 
+ *	construct the object.
+ * @exception invalid_argument Thrown if whichLc is invalid.
+ * @exception except::MissingParam Thrown if a required parameter is 
+ *	missing from lcParams.
+ * @exception except::BadParam Thrown if any of the light curve 
+ *	parameters are outside their allowed ranges.
  *
- * @exception invalid_argument Thrown if whichLc is invalid or if 
- *	lcParams does not have all the parameters needed by whichLc.
+ * @exceptsafe Function arguments are unchanged in the event of an exception.
  */
 std::auto_ptr<ILightCurve> lcFactory(LightCurveType whichLc, const vector<double> &times, const ParamList &lcParams);
 
@@ -93,6 +106,8 @@ std::auto_ptr<ILightCurve> lcFactory(LightCurveType whichLc, const vector<double
  *	convention
  *
  * @return 0 if successful, 1 if an error occurred
+ *
+ * @todo Break up this function
  */
 int main(int argc, char* argv[]) {
 	using std::auto_ptr;
@@ -102,12 +117,17 @@ int main(int argc, char* argv[]) {
 	PInit();
 	#endif
 	
+	try {
 	////////////////////
-	// Major variables
-	gsl_rng * mcDriver = gsl_rng_alloc(gsl_rng_mt19937);
-	gsl_rng_set(mcDriver, 42);
+	// Noise generator
+	shared_ptr<gsl_rng> mcDriver(gsl_rng_alloc(gsl_rng_mt19937), &gsl_rng_free);
+	if (mcDriver.get() == NULL) {
+		throw std::bad_alloc();
+	}
+	gsl_rng_set(mcDriver.get(), 42);
 
-	// Storage for run-time parameters
+	////////////////////
+	// Parse the input
 	long nTrials, numToPrint;
 	double sigma;
 	RangeList limits;
@@ -117,52 +137,37 @@ int main(int argc, char* argv[]) {
 	string dateList, injectType;
 	bool injectMode;
 
-	// Storage for the data
-	vector<double> tSeries, lc;
-	double minTStep, maxTStep;
-	size_t nObs = 0;
-
-	////////////////////
-	// Parse the input
-	try {
-		parse::parseArguments(argc, argv, sigma, nTrials, numToPrint, 
-			limits, dateList, lcNameList, lcList, statList, injectType, injectMode);
-	} catch(std::runtime_error &e) {
-		fprintf(stderr, "ERROR: %s\n", e.what());
-		return 1;
-	}
+	parse::parseArguments(argc, argv, sigma, nTrials, numToPrint, 
+		limits, dateList, lcNameList, lcList, statList, injectType, injectMode);
 	
 	////////////////////
 	// Load and preprocess the data
 	/** @todo The injectMode flag here is dangerous... rewrite later!
 	 */
+	vector<double> tSeries;
+	double minTStep, maxTStep;
+	size_t nObs = 0;
 	if (!injectMode) {
-		try {
-			FILE* hJulDates = fopen(dateList.c_str(), "r");
-			if(NULL == hJulDates) {
-				throw std::runtime_error("Could not open timestamp file.");
-			}
-			readTimeStamps(hJulDates, tSeries, minTStep, maxTStep);
-			nObs = tSeries.size();
-			fclose(hJulDates);
-			hJulDates = NULL;
-		} catch(std::runtime_error &e) {
-			fprintf(stderr, "ERROR: %s\n", e.what());
-			return 1;
+		shared_ptr<FILE> hJulDates(fopen(dateList.c_str(), "r"), &fclose);
+		if(NULL == hJulDates.get()) {
+			throw lcmc::except::FileIo("Could not open timestamp file.");
 		}
+		readTimeStamps(hJulDates.get(), tSeries, minTStep, maxTStep);
+		nObs = tSeries.size();
 	}
 
 	////////////////////
 	// And start simulating
-//	printf("%li trials per bin\n", nTrials);
 	LcBinStats::printBinHeader(stdout, limits, statList);
 
-	try {
 	for(vector<LightCurveType>::const_iterator curve = lcList.begin(); 
 			curve != lcList.end(); curve++) {
 		const string curName = *(lcNameList.begin() + (curve - lcList.begin()));
 		char noiseStr[20];
-		sprintf(noiseStr, "%0.2g", sigma);
+		int status = sprintf(noiseStr, "%0.2g", sigma);
+		if (status < 0) {
+			throw std::runtime_error("Could not format bin name.");
+		}
 		LcBinStats curBin(curName, limits, (injectMode ? injectType : noiseStr), 
 			statList);
 		
@@ -176,6 +181,7 @@ int main(int argc, char* argv[]) {
 			#endif
 		
 			auto_ptr<Observations> curData;
+			vector<double> lc;
 			if (injectMode) {
 				// Load the data into which the signal will be injected
 				curData = dataSampler(injectType);
@@ -183,11 +189,10 @@ int main(int argc, char* argv[]) {
 				curData->getFluxes(lc);
 				nObs = tSeries.size();
 				if (nObs <= 0) {
-					throw std::runtime_error("Empty light curve read.");
+					throw std::runtime_error("Empty light curve read from " + injectType);
 				}
 			} else {
 				// Generate a new dataset
-				lc.clear();
 				lc.resize(nObs);
 			}
 
@@ -217,7 +222,7 @@ int main(int argc, char* argv[]) {
 					lcInstance->getFluxes(temp);
 					// Include noise in the observations
 					lc[j] += temp[j] + 
-						gsl_ran_gaussian(mcDriver, sigma);
+						gsl_ran_gaussian(mcDriver.get(), sigma);
 				}
 				#if USELFP
 				PEnd(3);
@@ -235,9 +240,11 @@ int main(int argc, char* argv[]) {
 
 			// Print a few
 			if(i < numToPrint) {
-				printLightCurve(i, curName, limits.getMin("p"), 
-						limits.getMin("a"),  params.get("p"), 
-						tSeries, lc);
+				string dumpFile = "lightcurve_" 
+					+ LcBinStats::makeFileName(curName, limits, 
+						(injectMode ? injectType : noiseStr)) 
+					+ "_" + boost::lexical_cast<string, long>(i) + ".dat";
+				printLightCurve(dumpFile, tSeries, lc);
 			}
 
 			#if USELFP
@@ -265,21 +272,26 @@ int main(int argc, char* argv[]) {
 		#endif
 
 	}	// end loop over light curve types
+
+	// End of program; use Pokemon exception handling to 
+	//	handle error messages gracefully
+	} catch(lcmc::parse::except::ParseError &e) {
+		fprintf(stderr, "PARSE ERROR: %s\n", e.what());
+		return 1;
+	} catch(std::logic_error &e) {
+		fprintf(stderr, "BUG: %s\nPlease report this to the developer at krzys@astro.caltech.edu.\n", e.what());
+		return 1;
 	} catch(std::runtime_error &e) {
 		fprintf(stderr, "ERROR: %s\n", e.what());
 		return 1;
-	// End of program; use Pokemon exception handling to 
-	//	handle error messages gracefully
 	} catch (std::exception &e) {
 		fprintf(stderr, "ERROR: %s\n", e.what());
 		return 1;
 	} catch (...) {
-		fprintf(stderr, "ERROR: Unknown exception. Sorry!\n");
+		fprintf(stderr, "BUG: Unknown exception.\nPlease report this to the developer at krzys@astro.caltech.edu.\n");
 		return 1;
 	}
 	
-	gsl_rng_free(mcDriver);
-
 	return 0;
 }
 
@@ -299,11 +311,28 @@ namespace lcmc {
  *	limits.getMin(X) <= return.get(X) <= limits.getMax(X) 
  *
  * @post No element of the return value is NaN.
+ *
+ * @exception std::bad_alloc Thrown if not enough memory to generate random 
+ *	values.
+ * @exception std::logic_error Thrown if drawParams() does not support all 
+ *	distributions in limits
+ *
+ * @exceptsafe Function parameters are unchanged in the event of an 
+ *	exception.
  */
-ParamList drawParams(RangeList limits) {
+ParamList drawParams(const RangeList& limits) {
 	// Need a random number generator
-	static gsl_rng * randomizer = gsl_rng_alloc(gsl_rng_mt19937);
+	static gsl_rng * randomizer = NULL;
 	static bool seeded = false;
+
+	// Separate initialization to ensure that drawParams() will try to 
+	// allocate an RNG until it succeeds
+	if (!randomizer) {
+		randomizer = gsl_rng_alloc(gsl_rng_mt19937);
+		if (!randomizer) {
+			throw std::bad_alloc();
+		}
+	}
 	if (!seeded) {
 		gsl_rng_set(randomizer, 42);
 		seeded = true;
@@ -311,7 +340,7 @@ ParamList drawParams(RangeList limits) {
 	
 	ParamList returnValue;
 	// Convert all parameters
-	for(RangeList::ConstIterator it = limits.begin(); it != limits.end(); it++) {
+	for(RangeList::const_iterator it = limits.begin(); it != limits.end(); it++) {
 		double min                   = limits.getMin(*it);
 		double max                   = limits.getMax(*it);
 		RangeList::RangeType distrib = limits.getType(*it);
@@ -328,11 +357,12 @@ ParamList drawParams(RangeList limits) {
 				value = pow(10.0, value);
 				break;
 			default:
-				throw std::logic_error("Unknown distribution!");
+				throw std::invalid_argument("Unknown distribution!");
 		};
 		
 		returnValue.add(*it, value);
 	}
+	// If limits is empty, then returnValue is empty as well
 	
 	return returnValue;
 }

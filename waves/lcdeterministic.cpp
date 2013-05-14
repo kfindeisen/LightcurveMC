@@ -2,11 +2,11 @@
  * @file lcdeterministic.cpp
  * @author Krzysztof Findeisen
  * @date Created March 18, 2013
- * @date Last modified April 27, 2013
+ * @date Last modified May 11, 2013
  */
 
 #include <vector>
-#include "lcsubtypes.h"
+#include "lcdeterministic.h"
 
 namespace lcmc { namespace models {
 
@@ -16,6 +16,11 @@ namespace lcmc { namespace models {
  *
  * @post getTimes() and getFluxes() return suitable data. getTimes() contains 
  * the same elements as times, possibly reordered.
+ *
+ * @exception bad_alloc Thrown if there is not enough memory to 
+ *	construct the object.
+ *
+ * @exceptsafe Object construction is atomic.
  */
 Deterministic::Deterministic(const std::vector<double> &times) : ILightCurve(), times(times) {
 }
@@ -28,9 +33,21 @@ Deterministic::~Deterministic() {
  * @param[out] timeArray A vector containing the desired times.
  *
  * @post timeArray.size() == getFluxes().size()
+ *
+ * @exception bad_alloc Thrown if there is not enough memory to 
+ *	return a copy of the times.
+ *
+ * @exceptsafe Neither the object nor the argument are changed in the 
+ *	event of an exception.
  */
 void Deterministic::getTimes(std::vector<double>& timeArray) const {
-	timeArray = times;
+	using std::swap;
+
+	// copy-and-swap to allow atomic guarantee
+	// vector::= only offers the basic guarantee
+	std::vector<double> temp = times;
+	
+	swap(timeArray, temp);
 }
 
 /** Returns the simulated fluxes at the corresponding times
@@ -49,21 +66,45 @@ void Deterministic::getTimes(std::vector<double>& timeArray) const {
  *	averaged over many elements. Subclasses of Deterministic may 
  *	chose the option (mean, median, or mode) most appropriate 
  *	for their light curve shape.
+ * 
+ * @exception bad_alloc Thrown if there is not enough memory to compute 
+ *	the light curve.
+ * @exception logic_error Thrown if a bug was found in the flux calculations.
+ *
+ * @exceptsafe Neither the object nor the argument are changed in the 
+ *	event of an exception.
  */
 void Deterministic::getFluxes(std::vector<double>& fluxArray) const {
-	// Copy of time vector is for convenience only
+	using std::swap;
+
 	// Must use virtual getTimes() to ensure consistency with getFluxes()
 	std::vector<double> times;
 	getTimes(times);
 	
 	size_t n = times.size();
-	fluxArray.clear();
-	fluxArray.reserve(n);
+
+	// copy-and-swap
+	std::vector<double> temp;
+	temp.reserve(n);
 	
 	for(std::vector<double>::const_iterator it = times.begin();
 			it != times.end(); it++) {
-		fluxArray.push_back(flux(*it));
+		temp.push_back(flux(*it));
 	}
+	
+	swap(fluxArray, temp);
 }
 
+/** Returns the number of times and fluxes
+ *
+ * @return The number of data points represented by the light curve.
+ *
+ * @post return value == getTimes().size() == getFluxes.size()
+ *
+ * @exceptsafe Does not throw exceptions.
+ */
+size_t Deterministic::size() const {
+	return times.size();
+}
+	
 }}		// end lcmc::models

@@ -2,16 +2,21 @@
  * @file lcstochastic.cpp
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
- * @date Last modified April 27, 2013
+ * @date Last modified May 12, 2013
  */
 
 #include <algorithm>
+#include <memory>
 #include <vector>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
-#include "lcsubtypes.h"
+#include "lcstochastic.h"
+
+#include "../warnflags.h"
 
 namespace lcmc { namespace models {
+
+using std::auto_ptr;
 
 /** Initializes the light curve to represent a particular function flux(time).
  *
@@ -19,20 +24,22 @@ namespace lcmc { namespace models {
  *
  * @post getTimes() and getFluxes() return suitable data. getTimes() contains 
  * the same elements as times, possibly reordered.
+ *
+ * @post Calls to Stochastic::rng() will not throw exceptions.
+ *
+ * @exception bad_alloc Thrown if there is not enough memory to 
+ *	construct the object.
+ *
+ * @exceptsafe Object construction is atomic.
  */
 Stochastic::Stochastic(const std::vector<double> &times) 
 		: ILightCurve(), times(times), fluxes(), fluxesSolved(false) {
 	// Allow subclasses to assume times are in increasing order
 	std::sort(this->times.begin(), this->times.end());
-}
-
-gsl_rng * const Stochastic::rng = Stochastic::init_rng();
-/** Defines the random number state of the first Stochastic object.
- */
-gsl_rng * Stochastic::init_rng() {
-	gsl_rng * foo = gsl_rng_alloc(gsl_rng_mt19937);
-	gsl_rng_set(foo, 42);
-	return foo;
+	
+	// Since only the first call to rng() throws exceptions, deal with it 
+	//	in the constructor
+	rng();
 }
 
 Stochastic::~Stochastic() {
@@ -43,9 +50,21 @@ Stochastic::~Stochastic() {
  * @param[out] timeArray A vector containing the desired times.
  *
  * @post timeArray.size() == getFluxes().size()
+ *
+ * @exception bad_alloc Thrown if there is not enough memory to 
+ *	return a copy of the times.
+ *
+ * @exceptsafe Neither the object nor the argument are changed in the 
+ *	event of an exception.
  */
 void Stochastic::getTimes(std::vector<double>& timeArray) const {
-	timeArray = times;
+	using std::swap;
+
+	// copy-and-swap to allow atomic guarantee
+	// vector::= only offers the basic guarantee
+	std::vector<double> temp = times;
+	
+	swap(timeArray, temp);
 }
 
 /** Returns the simulated fluxes at the corresponding times
@@ -63,40 +82,93 @@ void Stochastic::getTimes(std::vector<double>& timeArray) const {
  *	Subclasses of ILightCurve may chose the option 
  *	(mean, median, or mode) most appropriate for their light 
  *	curve shape.
+ * 
+ * @exception bad_alloc Thrown if there is not enough memory to compute 
+ *	the light curve.
+ * @exception logic_error Thrown if a bug was found in the flux calculations.
+ *
+ * @exceptsafe Neither the object nor the argument are changed in the 
+ *	event of an exception.
  */
 void Stochastic::getFluxes(std::vector<double>& fluxArray) const {
+	using std::swap;
+
 	if (!fluxesSolved) {
+		// solveFluxes() already has the atomic guarantee
 		solveFluxes(fluxes);
 		fluxesSolved = true;
 	}
 	
-	fluxArray = fluxes;
+	// copy-and-swap to allow atomic guarantee
+	// vector::= only offers the basic guarantee
+	std::vector<double> temp = fluxes;
+	
+	swap(fluxArray, temp);
 }
 
 /** Returns the number of times and fluxes
+ *
+ * @return The number of data points represented by the light curve.
+ *
+ * @post return value == getTimes().size() == getFluxes.size()
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 size_t Stochastic::size() const {
 	return times.size();
 }
 	
-/** Draws a standard uniform random variate.
+/** Defines the random number state of the first Stochastic object.
  *
- * @return A number distributed uniformly over [0, 1), drawn independently 
- *	of any other calls to rUnif() or rNorm().
+ * @exception bad_alloc Thrown if there is not enough memory to 
+ *	allocate the random number generator.
+ *
+ * @exceptsafe The program state is unchanged in the event of an exception. 
+ *	Does not throw exceptions after the first call.
  */
-double Stochastic::rUnif() const {
-	return gsl_rng_uniform(rng);
+StochasticRng& Stochastic::rng() {
+	static StochasticRng* foo = NULL;
+	static bool ready = false;
+	
+	if(!ready) {
+		foo = new StochasticRng(42);
+	
+		// Only set the flag once no exceptions will be thrown
+		ready = true;
+	}
+	
+	return *foo;
 }
 
-/** Draws a standard normal random variate.
+/** Creates a temporary copy of a random number generator
  *
- * @return A number distributed normally with mean 0 and variance 1, drawn 
- *	independently of any other calls to rUnif() or rNorm().
+ * @return A newly allocated StochasticRng equal to the internal random 
+ *	number generator
  *
- * @todo Benchmark which of several Gaussian generators works best on cowling
+ * @exception std::bad_alloc Thrown if there was not enough memory 
+ *	to construct the generator.
+ *
+ * @exceptsafe Object construction is atomic.
  */
-double Stochastic::rNorm() const {
-	return gsl_ran_ugaussian(rng);
+auto_ptr<StochasticRng> Stochastic::checkout() const {
+	// Since Stochastic has been constructed, rng() no longer 
+	//	throws exceptions
+	return auto_ptr<StochasticRng>(new StochasticRng(rng()));
+}
+
+/** Updates the state of the random number generator
+ *
+ * @param[in] newState A temporary copy of the internal random 
+ *	number generator
+ *
+ * @post The internal generator is in the same state as newState
+ *
+ * @exceptsafe Does not throw exceptions.
+ */
+void Stochastic::commit(auto_ptr<StochasticRng> newState) const {
+	// Since Stochastic has been constructed, rng() no longer 
+	//	throws exceptions
+	rng() = *(newState.get());
 }
 
 }}		// end lcmc::models

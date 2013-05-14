@@ -2,7 +2,7 @@
  * @file unit_stats.cpp
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
- * @date Last modified May 4, 2013
+ * @date Last modified May 5, 2013
  */
 
 #include "../warnflags.h"
@@ -28,6 +28,7 @@
 #endif
 
 #include <algorithm>
+#include <limits>
 #include <stdexcept>
 #include <string>
 #include <cmath>
@@ -38,18 +39,20 @@
 #include <gsl/gsl_rng.h>
 #include "../stats/acfinterp.h"
 #include "../approx.h"
+#include "../waves/generators.h"
 #include "../lcsio.h"
 #include "../mcio.h"
+#include "../nan.h"
 #include "test.h"
+#include "../except/undefined.h"
 
-#include "../waves/generators.h"
 
 using std::vector;
 using boost::shared_ptr;
 
 namespace lcmc { namespace utils {
 
-void getHalfMatrix(const gsl_matrix* const a, gsl_matrix* & b);
+shared_ptr<gsl_matrix> getHalfMatrix(const shared_ptr<gsl_matrix>& a);
 
 }}	// end lcmc::utils
 
@@ -115,6 +118,62 @@ private:
 	}
 };
 
+/** Data common to the test cases.
+ *
+ * At present, contains only sampling times
+ */
+class StatDummy {
+public: 
+	StatDummy() : emptyVec(), awfulVec() {
+		awfulVec.reserve(TEST_LEN);
+		for(size_t i = 0; i < TEST_LEN; i++) {
+			awfulVec.push_back(std::numeric_limits<double>::quiet_NaN());
+		}
+	}
+	
+	~StatDummy() {
+	}
+
+	/** Number of times to use for a uniformly sampled data set
+	 */
+	const static size_t TEST_LEN = 100;
+
+	/** Represents an empty data set.
+	 */
+	vector<double> emptyVec;
+
+	/** Represents a data set consisting only of NaNs.
+	 */
+	vector<double> awfulVec;
+};
+
+/** Tests whether meanNoNan() and varianceNoNan() correctly handle NaN values
+ */
+void testNanProof(unsigned long int seed, size_t nTests) {
+	vector<double> dirty, clean;
+	dirty.reserve(nTests);
+	clean.reserve(nTests);
+		
+	shared_ptr<gsl_rng> rng(gsl_rng_alloc(gsl_rng_mt19937), &gsl_rng_free);
+	gsl_rng_set(rng.get(), seed);
+	
+	// Clean is identical to dirty, except that is doesn't have any NaNs
+	for(size_t i = 0; i < nTests; i++) {
+		if (gsl_rng_uniform(rng.get()) < 0.1) {
+  			dirty.push_back(std::numeric_limits<double>::quiet_NaN());
+		} else {
+			double x = gsl_ran_ugaussian(rng.get());
+			dirty.push_back(x);
+			clean.push_back(x);
+		}
+	}
+	
+	BOOST_CHECK_NO_THROW(myTestClose(utils::    meanNoNan(dirty), 
+		utils::    meanNoNan(clean), 1e-10));
+	BOOST_CHECK_NO_THROW(myTestClose(utils::varianceNoNan(dirty), 
+		utils::varianceNoNan(clean), 1e-10));
+}
+
 /** Tests whether lcmc::utils::getHalfMatrix() correctly decomposes a matrix into two factors
  *
  * The specification is tested directly; i.e. the output of getHalfMatrix() 
@@ -136,9 +195,7 @@ void testProduct(double tau, const vector<double>& times)
 	// shared_ptr does not allow its internal pointer to be changed
 	// So assign to a dummy pointer, then give it to shared_ptr once the 
 	//	pointer target is known
-	gsl_matrix * temp = NULL;
-	lcmc::utils::getHalfMatrix(initial.get(), temp);
-	shared_ptr<gsl_matrix> result(temp, &gsl_matrix_free);
+	shared_ptr<gsl_matrix> result = lcmc::utils::getHalfMatrix(initial);
 	
 	shared_ptr<gsl_matrix> product(gsl_matrix_calloc(nTimes, nTimes), &gsl_matrix_free);
 	gsl_blas_dgemm(CblasNoTrans, CblasTrans, 1.0, result.get(), result.get(), 
@@ -179,6 +236,66 @@ void testProduct(double tau, const vector<double>& times)
 		BOOST_CHECK(true);
 	}
 }
+
+/** Test cases for testing functions related to handling Nan values
+ * @class BoostTest::test_nan
+ */
+BOOST_FIXTURE_TEST_SUITE(test_nan, StatDummy)
+
+/** Tests whether NaN-proof statistics are consistent with normal ones
+ *
+ * @see testNanProof()
+ */
+BOOST_AUTO_TEST_CASE(nan_proof) {
+	testNanProof(  42, TEST_LEN);
+	testNanProof(  43, TEST_LEN);
+	testNanProof(1196, TEST_LEN);
+	testNanProof(1764, TEST_LEN);
+	testNanProof(3125, TEST_LEN);
+	
+	using lcmc::utils::    meanNoNan;
+	using lcmc::utils::varianceNoNan;
+	BOOST_CHECK_THROW(    meanNoNan(emptyVec), stats::except::NotEnoughData);
+	BOOST_CHECK_THROW(varianceNoNan(emptyVec), stats::except::NotEnoughData);
+	BOOST_CHECK_THROW(    meanNoNan(awfulVec), stats::except::NotEnoughData);
+	BOOST_CHECK_THROW(varianceNoNan(awfulVec), stats::except::NotEnoughData);
+}
+
+/** Tests whether NaN diagnostics work as advertised
+ */
+BOOST_AUTO_TEST_CASE(nan_check) {
+	// Easy access to special double values
+	typedef std::numeric_limits<double> d;
+	
+	using lcmc::utils::        isNan;
+	using lcmc::utils::   isNanOrInf;
+	using lcmc::utils::    meanNoNan;
+	using lcmc::utils::varianceNoNan;
+	
+	BOOST_WARN(d::     has_infinity);
+	BOOST_WARN(d::    has_quiet_NaN);
+	BOOST_WARN(d::has_signaling_NaN);
+
+	// Skip tests if the system doesn't support special floating-point values
+	BOOST_CHECK(!d::     has_infinity || !isNan( d::     infinity()));
+	BOOST_CHECK(                         !isNan( 3.0               ));
+	BOOST_CHECK(                         !isNan( 0.0               ));
+	BOOST_CHECK(                         !isNan(-3.0               ));
+	BOOST_CHECK(!d::     has_infinity || !isNan(-d::     infinity()));
+	BOOST_CHECK(!d::    has_quiet_NaN ||  isNan(-d::    quiet_NaN()));
+	BOOST_CHECK(!d::has_signaling_NaN ||  isNan(-d::signaling_NaN()));
+	
+	BOOST_CHECK(!d::     has_infinity ||  isNanOrInf( d::     infinity()));
+	BOOST_CHECK(                         !isNanOrInf( 3.0               ));
+	BOOST_CHECK(                         !isNanOrInf( 0.0               ));
+	BOOST_CHECK(                         !isNanOrInf(-3.0               ));
+	BOOST_CHECK(!d::     has_infinity ||  isNanOrInf(-d::     infinity()));
+	BOOST_CHECK(!d::    has_quiet_NaN ||  isNanOrInf(-d::    quiet_NaN()));
+	BOOST_CHECK(!d::has_signaling_NaN ||  isNanOrInf(-d::signaling_NaN()));
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
 
 /** Test cases for testing functions related to generating 
  *	multinormal distributions

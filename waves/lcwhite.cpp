@@ -2,15 +2,20 @@
  * @file lcwhite.cpp
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
- * @date Last modified April 27, 2013
+ * @date Last modified May 12, 2013
  */
 
-#include <stdexcept>
+#include <memory>
 #include <vector>
+#include <boost/lexical_cast.hpp>
+#include "../except/data.h"
 #include "../fluxmag.h"
 #include "lightcurves_gp.h"
 
 namespace lcmc { namespace models {
+
+using std::auto_ptr;
+using boost::lexical_cast;
 
 /** Initializes the light curve to represent a white noise process.
  *
@@ -22,13 +27,19 @@ namespace lcmc { namespace models {
  * @post The object represents an uncorrelated Gaussian signal with the 
  *	given amplitude.
  *
- * @exception std::invalid_argument Thrown if any of the parameters are 
+ * @exception bad_alloc Thrown if there is not enough memory to 
+ *	construct the object.
+ * @exception except::BadParam Thrown if any of the parameters are 
  *	outside their allowed ranges.
  *
- * @todo Implement input validation
+ * @exceptsafe Object construction is atomic.
  */
 WhiteNoise::WhiteNoise(const std::vector<double>& times, double sigma) 
 		: Stochastic(times), sigma(sigma) {
+	if (sigma <= 0.0) {
+		throw except::BadParam("All WhiteNoise light curves need positive standard deviations (gave " 
+			+ lexical_cast<string, double>(sigma) + ").");
+	}
 }
 
 /** Computes a realization of the light curve. 
@@ -52,17 +63,30 @@ WhiteNoise::WhiteNoise(const std::vector<double>& times, double sigma)
  * @post fluxToMag(fluxes) has a mean of zero and a standard deviation of sigma
  * @post cov(fluxToMag(fluxes[i]), fluxToMag(fluxes[j])) == 0 
  *	if getTimes()[i] &ne; getTimes()[j]
+ * 
+ * @exception bad_alloc Thrown if there is not enough memory to compute 
+ *	the light curve.
+ * @exception logic_error Thrown if a bug was found in the flux calculations.
+ *
+ * @exceptsafe Neither the object nor the argument are changed in the 
+ *	event of an exception.
  */	
 void WhiteNoise::solveFluxes(std::vector<double>& fluxes) const {
+	using std::swap;
+
 	// invariant: this->times() is sorted in ascending order
 	std::vector<double> times;
 	this->getTimes(times);
 	
-	fluxes.clear();
+	// copy-and-swap
+	auto_ptr<StochasticRng> rng = checkout();
+	std::vector<double> temp;
+
 	if (times.size() > 0) {
-		fluxes.reserve(times.size());
+		temp.reserve(times.size());
+
 		// f(t0) ~ N(0, sigma) to avoid giving first point any special treatment
-		fluxes.push_back(sigma * rNorm());
+		temp.push_back(sigma * rng->rNorm());
 		
 		// Evaluate f(t > t0)
 		for(std::vector<double>::const_iterator it = times.begin()+1; 
@@ -71,15 +95,20 @@ void WhiteNoise::solveFluxes(std::vector<double>& fluxes) const {
 			// Sorting invariant guarantees that all duplicate times will 
 			//	be next to each other
 			if (*it == *(it-1)) {
-				fluxes.push_back(fluxes.back());
+				temp.push_back(temp.back());
 			// Observations taken at different times are uncorrelated
 			} else {
-				fluxes.push_back(sigma * rNorm());
+				temp.push_back(sigma * rng->rNorm());
 			}
 		}
 		
-		utils::magToFlux(fluxes, fluxes);
+		utils::magToFlux(temp, temp);
 	}
+	
+	// IMPORTANT: no exceptions past this point
+	
+	swap(fluxes, temp);
+	commit(rng);
 }
 
 }}		// end lcmc::models

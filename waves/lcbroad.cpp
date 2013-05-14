@@ -2,7 +2,7 @@
  * @file lcbroad.cpp
  * @author Krzysztof Findeisen
  * @date Created April 24, 2012
- * @date Last modified April 27, 2013
+ * @date Last modified May 11, 2013
  */
 
 #include <cmath>
@@ -30,9 +30,13 @@ namespace lcmc { namespace models {
  *
  * @post The object represents a peaked periodic signal with the 
  *	given amplitude, period, and initial phase.
- * 
- * @exception std::invalid_argument Thrown if any of the parameters are 
- *	outside their allowed ranges.
+ *
+ * @exception bad_alloc Thrown if there is not enough memory to 
+ *	construct the object.
+ * @exception lcmc::models::except::BadParam Thrown if any of the 
+ *	parameters are outside their allowed ranges.
+ *
+ * @exceptsafe Object construction is atomic.
  *
  * @todo Reimplement as a more generic function?
  */
@@ -57,6 +61,11 @@ BroadPeakWave::BroadPeakWave(const std::vector<double> &times,
  * @post return value &ge; 1
  * 
  * @return The flux emitted by the object at the specified phase.
+ * 
+ * @exception logic_error Thrown if a bug was found in the flux calculations.
+ *
+ * @exceptsafe Neither the object nor the argument are changed in the 
+ *	event of an exception.
  */
 double BroadPeakWave::fluxPhase(double phase, double amp) const {
 	return 1 + amp*(-0.25 + 0.625/(1.5 + sin(2*M_PI*phase)));

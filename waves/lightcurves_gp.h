@@ -2,14 +2,15 @@
  * @file lightcurves_gp.h
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
- * @date Last modified April 30, 2013
+ * @date Last modified May 12, 2013
  */
 
 #ifndef LCMCCURVEGPH
 #define LCMCCURVEGPH
 
+#include <boost/shared_ptr.hpp>
 #include <gsl/gsl_matrix.h>
-#include "lcsubtypes.h"
+#include "lcstochastic.h"
 
 namespace lcmc { namespace models {
 
@@ -83,7 +84,7 @@ private:
 	/** Allocates and initializes the covariance matrix for the 
 	 *	Gaussian process. 
 	 */
-	gsl_matrix* getCovar() const;
+	boost::shared_ptr<gsl_matrix> getCovar() const;
 	
 	double sigma, tau;
 };
@@ -107,7 +108,7 @@ private:
 	/** Allocates and initializes the covariance matrix for the 
 	 *	Gaussian process. 
 	 */
-	gsl_matrix* getCovar() const;
+	boost::shared_ptr<gsl_matrix> getCovar() const;
 
 	double sigma1, sigma2, tau1, tau2;
 };

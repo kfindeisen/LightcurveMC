@@ -2,15 +2,17 @@
  * @file lcFlareDip.cpp
  * @author Krzysztof Findeisen
  * @date Created August 21, 2012
- * @date Last modified April 27, 2013
+ * @date Last modified May 11, 2013
  */
 
-#include <stdexcept>
 #include <cmath>
-#include <cstdio>
+#include <boost/lexical_cast.hpp>
+#include "../except/data.h"
 #include "lightcurves_fades.h"
 
 namespace lcmc { namespace models {
+
+using boost::lexical_cast;
 
 /** Initializes the light curve to represent a periodically fading function flux(time).
  *
@@ -34,24 +36,27 @@ namespace lcmc { namespace models {
  *	fade, and width: knowing these values is sufficient to determine 
  *	flux(t) for any value of t.
  *
- * @exception std::invalid_argument Thrown if any of the parameters are 
- *	outside their allowed ranges.
+ * @exception bad_alloc Thrown if there is not enough memory to 
+ *	construct the object.
+ * @exception lcmc::models::except::BadParam Thrown if any of the 
+ *	parameters are outside their allowed ranges.
+ *
+ * @exceptsafe Object construction is atomic.
  */
 FlareDip::FlareDip(const std::vector<double> &times, 
 			double amp, double period, double phase, double fade, double width) 
 			: PeriodicLc(times, amp, period, phase), tExp(width), tLin(fade) {
-	char errBuf[80];
 	if (amp > 1.0) {
-		sprintf(errBuf, "All SlowDip light curves need amplitudes < 1 (gave %g).", amp);
-		throw std::invalid_argument(errBuf);
+		throw except::BadParam("All SlowDip light curves need amplitudes < 1 (gave " 
+			+ lexical_cast<string, double>(amp) + ").");
 	}
 	if (fade <= 0.0) {
-		sprintf(errBuf, "All FlareDip light curves need positive fall times (gave %g).", fade);
-		throw std::invalid_argument(errBuf);
+		throw except::BadParam("All FlareDip light curves need positive fall times (gave " 
+			+ lexical_cast<string, double>(fade) + ").");
 	}
 	if (width <= 0.0) {
-		sprintf(errBuf, "All FlareDip light curves need positive recovery times (gave %g).", width);
-		throw std::invalid_argument(errBuf);
+		throw except::BadParam("All FlareDip light curves need positive recovery times (gave " 
+			+ lexical_cast<string, double>(width) + ").");
 	}
 }
 
@@ -71,6 +76,11 @@ FlareDip::FlareDip(const std::vector<double> &times,
  * @post the mode of the flux is one, when averaged over many times.
  * 
  * @return The flux emitted by the object at the specified phase.
+ * 
+ * @exception logic_error Thrown if a bug was found in the flux calculations.
+ *
+ * @exceptsafe Neither the object nor the argument are changed in the 
+ *	event of an exception.
  */
 double FlareDip::fluxPhase(double phase, double amp) const {
 	double tail = exp(-phase/tExp);

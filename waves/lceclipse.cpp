@@ -2,15 +2,17 @@
  * @file lceclipse.cpp
  * @author Krzysztof Findeisen
  * @date Created April 24, 2012
- * @date Last modified April 27, 2013
+ * @date Last modified May 11, 2013
  */
 
 #include <cmath>
-#include <cstdio>
-#include <stdexcept>
+#include <boost/lexical_cast.hpp>
+#include "../except/data.h"
 #include "lightcurves_periodic.h"
 
 namespace lcmc { namespace models {
+
+using boost::lexical_cast;
 
 /** Initializes the light curve to represent a periodic function flux(time).
  *
@@ -28,8 +30,12 @@ namespace lcmc { namespace models {
  *	amplitude, period, and initial phase. The light curve shows two 
  *	minima of different depths per cycle.
  *
- * @exception std::invalid_argument Thrown if any of the parameters are 
- *	outside their allowed ranges.
+ * @exception bad_alloc Thrown if there is not enough memory to 
+ *	construct the object.
+ * @exception lcmc::models::except::BadParam Thrown if any of the 
+ *	parameters are outside their allowed ranges.
+ *
+ * @exceptsafe Object construction is atomic.
  *
  * @todo Reimplement as a more generic function?
  */
@@ -37,9 +43,7 @@ EclipseWave::EclipseWave(const std::vector<double> &times,
 			double amp, double period, double phase) 
 			: PeriodicLc(times, amp, period, phase) {
 	if (amp > 1.0) {
-		char errBuf[80];
-		sprintf(errBuf, "EclipseWaves must have amplitudes less than or equal to 1 (gave %g).", amp);
-		throw std::invalid_argument(errBuf);
+		throw except::BadParam("EclipseWaves must have amplitudes less than or equal to 1 (gave " + lexical_cast<string, double>(amp) + ").");
 	}
 }
 
@@ -55,11 +59,16 @@ EclipseWave::EclipseWave(const std::vector<double> &times,
  *	the parameters passed to the constructor
  *
  * @post the return value is not NaN
- * @post The mode of the flux is zero, when averaged over many times.
+ * @post The mode of the flux is 1, when averaged over many times.
  * @post 0 &le; return value &le; 1
  * @post the mode of the flux is one, when averaged over many times.
  * 
  * @return The flux emitted by the object at the specified phase.
+ * 
+ * @exception logic_error Thrown if a bug was found in the flux calculations.
+ *
+ * @exceptsafe Neither the object nor the argument are changed in the 
+ *	event of an exception.
  */
 double EclipseWave::fluxPhase(double phase, double amp) const {
 	// Primary eclipse

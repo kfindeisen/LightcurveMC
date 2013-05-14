@@ -2,7 +2,7 @@
  * @file magdist.cpp
  * @author Krzysztof Findeisen
  * @date Created April 12, 2011
- * @date Last modified April 12, 2013
+ * @date Last modified May 12, 2013
  */
 
 #include <algorithm>
@@ -10,6 +10,7 @@
 #include <vector>
 #include "magdist.h"
 #include "../nan.h"
+#include "../except/undefined.h"
 
 #if USELFP
 #include <lfp/lfp.h>
@@ -37,11 +38,17 @@ typedef std::vector<double> DoubleVec;
  *
  * @todo Decide on correct treatment of infinite magnitudes.
  *
- * @exception std::runtime_error Thrown if mags does not have enough distinct 
- * values to calculate C1
+ * @exception std::bad_alloc Thrown if not enough memory to calculate C1
+ * @exception lcmc::stats::except::Undefined Thrown if C1 is undefined 
+ *	because mags has no variability
+ * @exception lcmc::stats::except::NotEnoughData Thrown if mags does not 
+ *	have enough values to calculate C1
+ *
+ * @exceptsafe Program state is unchanged in the event of an exception.
  */
 double getC1(const DoubleVec& mags) {
 	// Get rid of all NaN values
+	// Need to make a copy anyway since mags is constant
 	DoubleVec sMags(mags.size());
 	DoubleVec::iterator newEnd = std::remove_copy_if(mags.begin(), mags.end(), 
 			sMags.begin(), &utils::isNan);
@@ -50,24 +57,26 @@ double getC1(const DoubleVec& mags) {
 	// Sort the survivors
 	std::sort(sMags.begin(), sMags.end());
 	size_t n = sMags.size();
+	
+	if (n < 3) {
+		throw except::NotEnoughData("Need at least 3 values to compute C1.");
+	}
 
 	double medMin = 0.0, amplitude = 0.0;
-	if (n >= 3) {
-		// Find the percentiles
-		size_t lowRank = static_cast<size_t>(0.05 * n);
-		size_t midRank = static_cast<size_t>(0.50 * n);
-		size_t  hiRank = static_cast<size_t>(0.95 * n);
-		// assert: 0 <= lowRank < midRank < hiRank < n
+	// Find the percentiles
+	size_t lowRank = static_cast<size_t>(0.05 * n);
+	size_t midRank = static_cast<size_t>(0.50 * n);
+	size_t  hiRank = static_cast<size_t>(0.95 * n);
+	// assert: 0 <= lowRank < midRank < hiRank < n
 
-		if (sMags[hiRank] > sMags[lowRank]) {
-			medMin    = sMags[midRank] - sMags[lowRank];
-			amplitude = sMags[hiRank]  - sMags[lowRank];
-		}
-		// else no variability, so C1 is singular
+	if (sMags[hiRank] > sMags[lowRank]) {
+		medMin    = sMags[midRank] - sMags[lowRank];
+		amplitude = sMags[hiRank]  - sMags[lowRank];
 	}
+	// else no variability, so C1 is singular
 	
 	if (amplitude == 0.0) {
-		throw std::runtime_error("C1 is singular");
+		throw except::Undefined("No variability, so C1 is singular");
 	}
 	
 	return medMin / amplitude;
@@ -89,11 +98,15 @@ double getC1(const DoubleVec& mags) {
  *
  * @todo Decide on correct treatment of infinite magnitudes.
  *
- * @exception std::runtime_error Thrown if mags does not have enough distinct 
- * values to calculate an amplitude
+ * @exception std::bad_alloc Thrown if not enough memory to calculate amplitude
+ * @exception lcmc::stats::except::NotEnoughData Thrown if mags does not 
+ *	have enough values to calculate an amplitude
+ *
+ * @exceptsafe Program state is unchanged in the event of an exception.
  */
 double getAmplitude(const DoubleVec& mags) {
 	// Get rid of all NaN values
+	// Need to make a copy anyway since mags is constant
 	DoubleVec sMags(mags.size());
 	DoubleVec::iterator newEnd = std::remove_copy_if(mags.begin(), mags.end(), 
 			sMags.begin(), &utils::isNan);
@@ -103,19 +116,16 @@ double getAmplitude(const DoubleVec& mags) {
 	std::sort(sMags.begin(), sMags.end());
 	size_t n = sMags.size();
 
-	double amplitude = 0.0;
-	if (n >= 2) {
-		// Find the percentiles
-		size_t lowRank = static_cast<size_t>(0.05 * n);
-		size_t  hiRank = static_cast<size_t>(0.95 * n);
-		// assert: 0 <= lowRank < midRank < hiRank < n
+	if (n < 2) {
+		throw except::NotEnoughData("Need at least 2 values to compute amplitude.");
+	}
 
-		amplitude = sMags[hiRank]  - sMags[lowRank];
-	}
-	
-	if (amplitude <= 0.0) {
-		throw std::runtime_error("Zero amplitude");
-	}
+	// Find the percentiles
+	size_t lowRank = static_cast<size_t>(0.05 * n);
+	size_t  hiRank = static_cast<size_t>(0.95 * n);
+	// assert: 0 <= lowRank < midRank < hiRank < n
+
+	double amplitude = sMags[hiRank]  - sMags[lowRank];
 	
 	return amplitude;
 }

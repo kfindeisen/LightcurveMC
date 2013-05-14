@@ -33,6 +33,7 @@
 #include <cstdio>
 #include <gsl/gsl_math.h>
 #include "test.h"
+#include "../except/data.h"
 #include "../fluxmag.h"
 #include "../lightcurvetypes.h"
 #include "../mcio.h"
@@ -310,16 +311,16 @@ BOOST_AUTO_TEST_CASE(sine)
 		}
 	}
 	BOOST_CHECK_THROW(testPeriodic(TEST_COUNT, TestSineFactory(times,-2.0, 0.2)), 
-			std::invalid_argument);
+			models::except::BadParam);
 	BOOST_CHECK_THROW(testPeriodic(TEST_COUNT, TestSineFactory(times, 0.0, 0.2)), 
-			std::invalid_argument);
+			models::except::BadParam);
 	testPeriodic(TEST_COUNT, TestSineFactory(times, 1.0, 0.2));
 	BOOST_CHECK_THROW(testPeriodic(TEST_COUNT, TestSineFactory(times, 1.1, 0.2)), 
-			std::invalid_argument);
+			models::except::BadParam);
 	BOOST_CHECK_THROW(testPeriodic(TEST_COUNT, TestSineFactory(times, 0.05, 0.0)), 
-			std::invalid_argument);
+			models::except::BadParam);
 	BOOST_CHECK_THROW(testPeriodic(TEST_COUNT, TestSineFactory(times, 0.05,-1.0)), 
-			std::invalid_argument);
+			models::except::BadParam);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

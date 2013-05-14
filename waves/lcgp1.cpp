@@ -2,20 +2,28 @@
  * @file lcgp1.cpp
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
- * @date Last modified April 30, 2013
+ * @date Last modified May 12, 2013
  */
 
+#include <algorithm>
+#include <memory>
 #include <stdexcept>
 #include <vector>
 #include <cmath>
+#include <boost/lexical_cast.hpp>
 #include <boost/shared_ptr.hpp>
 #include <gsl/gsl_matrix.h>
 #include "../approx.h"
+#include "../except/data.h"
 #include "../fluxmag.h"
 #include "generators.h"
 #include "lightcurves_gp.h"
 
 namespace lcmc { namespace models {
+
+using boost::lexical_cast;
+using boost::shared_ptr;
+using std::auto_ptr;
 
 /** Initializes the light curve to represent a standard Gaussian process.
  *
@@ -29,13 +37,23 @@ namespace lcmc { namespace models {
  * @post The object represents a correlated Gaussian signal with the 
  *	given amplitude and correlation time.
  *
- * @exception std::invalid_argument Thrown if any of the parameters are 
+ * @exception bad_alloc Thrown if there is not enough memory to 
+ *	construct the object.
+ * @exception except::BadParam Thrown if any of the parameters are 
  *	outside their allowed ranges.
  *
- * @todo Implement input validation
+ * @exceptsafe Object construction is atomic.
  */
 SimpleGp::SimpleGp(const std::vector<double>& times, double sigma, double tau) 
 		: Stochastic(times), sigma(sigma), tau(tau) {
+	if (sigma <= 0.0) {
+		throw except::BadParam("All DampedRandomWalk light curves need positive standard deviations (gave " 
+			+ lexical_cast<string, double>(sigma) + ").");
+	}
+	if (tau <= 0.0) {
+		throw except::BadParam("All DampedRandomWalk light curves need positive coherence times (gave " 
+			+ lexical_cast<string, double>(tau) + ").");
+	}
 }
 
 /** Computes a realization of the light curve. 
@@ -59,42 +77,71 @@ SimpleGp::SimpleGp(const std::vector<double>& times, double sigma, double tau)
  * @post fluxToMag(fluxes) has a mean of zero and a standard deviation of sigma
  * @post cov(fluxToMag(fluxes[i]), fluxToMag(fluxes[j])) == 
  *	sigma^2 &times; exp(-0.5*((getTimes()[i]-getTimes()[j])/tau)^2) 
+ * 
+ * @exception bad_alloc Thrown if there is not enough memory to compute 
+ *	the light curve.
+ * @exception logic_error Thrown if a bug was found in the flux calculations.
+ *
+ * @exceptsafe Neither the object nor the argument are changed in the 
+ *	event of an exception.
  */
 void SimpleGp::solveFluxes(std::vector<double>& fluxes) const {
+	using std::swap;
+
 	// invariant: this->times() is sorted in ascending order
-	size_t nTimes = this->size();
+	std::vector<double> times;
+	this->getTimes(times);
 	
-	fluxes.clear();
-	if (nTimes > 0) {
-		fluxes.reserve(nTimes);
+	// copy-and-swap
+	auto_ptr<StochasticRng> rng = checkout();
+	std::vector<double> temp;
+
+	if (times.size() > 0) {
+		temp.reserve(times.size());
 		
-		for(size_t i = 0; i < nTimes; i++) {
-			fluxes.push_back(rNorm());
+		for(size_t i = 0; i < times.size(); i++) {
+			temp.push_back(rng->rNorm());
 		}
 	
-		// shared_ptr does not allow its internal pointer to be changed
-		// So assign to a dummy pointer, then give it to shared_ptr 
-		//	once the pointer target is known
-		gsl_matrix* corrPtr = getCovar();
-		boost::shared_ptr<gsl_matrix> corrs(corrPtr, &gsl_matrix_free);
+		shared_ptr<gsl_matrix> corrs = getCovar();
 	
-		utils::multiNormal(fluxes, *corrs, fluxes);
+		try {
+			utils::multiNormal(temp, corrs, temp);
+		} catch (std::invalid_argument& e) {
+			throw std::logic_error("BUG: SimpleGp uses invalid correlation matrix.\nOriginal error: " + std::string(e.what()));
+		}
 		
-		utils::magToFlux(fluxes, fluxes);
+		utils::magToFlux(temp, temp);
 	}
+	
+	// IMPORTANT: no exceptions past this point
+	
+	swap(fluxes, temp);
+	commit(rng);
 }
 
 /** Allocates and initializes the covariance matrix for the 
  *	Gaussian process. 
  *
- * @todo Respec using a copyable smart pointer when I get the chance
- *
  * @return A pointer containing the new matrix
- */	
-gsl_matrix* SimpleGp::getCovar() const {
+ *
+ * @exception std::bad_alloc Thrown if there is not enough memory to compute 
+ *	the covariance matrix
+ *
+ * @exceptsafe The object is unchanged in the event of an exception
+ *
+ * @internal @exceptsafe The internal cache in getCovar() provides only the 
+ *	basic exception guarantee. However, aside from run time this is not 
+ *	visible to the rest of the program.
+ */
+shared_ptr<gsl_matrix> SimpleGp::getCovar() const {
+	using std::swap;
+	
 	// Define a cache to prevent identical simulation runs from having to 
+	//	recalculate the covariance
 	const static utils::ApproxEqual cacheCheck(1e-12);
-	static gsl_matrix* oldCov = NULL;
+	// invariant: oldCov is empty <=> oldTimes is empty
+	static shared_ptr<gsl_matrix> oldCov;
 	static std::vector<double> oldTimes;
 	static double oldSigma = 0.0;
 	static double oldTau = 0.0;
@@ -106,24 +153,28 @@ gsl_matrix* SimpleGp::getCovar() const {
 	if(oldCov == NULL 
 			|| !cacheCheck(oldSigma, sigma)
 			|| !cacheCheck(oldTau, tau)
-			|| !cacheCheck(oldTimes.size(), nTimes)
+			|| oldTimes.size() != nTimes
 			|| !std::equal(oldTimes.begin(), oldTimes.end(), 
 					times.begin(), cacheCheck) ) {
 		// Cache is out of date
-		if (oldCov != NULL) {
-			gsl_matrix_free(oldCov);
-		}
 		
-		oldCov = gsl_matrix_alloc(nTimes, nTimes);
+		// copy-and-swap
+		shared_ptr <gsl_matrix> temp(gsl_matrix_alloc(nTimes, nTimes), 
+			&gsl_matrix_free);
 		for(size_t i = 0; i < nTimes; i++) {
 			for(size_t j = 0; j < nTimes; j++) {
+				// i and j are valid indices for temp and times
+				// therefore, no out-of-range errors
 				double deltaTTau = (times[i] - times[j])/tau;
-				gsl_matrix_set(oldCov, i, j, 
+				gsl_matrix_set(temp.get(), i, j, 
 						sigma*sigma*exp(-0.5*deltaTTau*deltaTTau));
 			}
 		}
 		
-		oldTimes = times;
+		// No exceptions beyond this point
+		
+		swap(oldCov, temp);
+		swap(oldTimes, times);
 		oldSigma = sigma;
 		oldTau = tau;
 	}
@@ -131,8 +182,8 @@ gsl_matrix* SimpleGp::getCovar() const {
 	// assert: the Cache is up-to-date
 	
 	// Return a copy of the cache as output
-	gsl_matrix* cov = gsl_matrix_alloc(nTimes, nTimes);
-	gsl_matrix_memcpy(cov, oldCov);
+	shared_ptr<gsl_matrix> cov(gsl_matrix_alloc(nTimes, nTimes), &gsl_matrix_free);
+	gsl_matrix_memcpy(cov.get(), oldCov.get());
 
 	return cov;
 }

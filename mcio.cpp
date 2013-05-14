@@ -2,16 +2,22 @@
  * @file mcio.cpp
  * @author Krzysztof Findeisen
  * @date Created February 4, 2011
- * @date Last modified May 4, 2013
+ * @date Last modified May 14, 2013
  */
 
 #include <algorithm>
 #include <stdexcept>
 #include <string>
+#include <cerrno>
 #include <cstdio>
+#include <cstring>
+#include <boost/lexical_cast.hpp>
+#include <boost/shared_ptr.hpp>
+#include "except/fileio.h"
 #include "mcio.h"
 
 using std::sort;
+using boost::shared_ptr;
 
 /** Reads a file containing timestamps into a vector of dates
  *
@@ -28,22 +34,23 @@ using std::sort;
  *
  * @post dates does not contain any NaNs
  * @post neither minDelT nor maxDelT are NaNs
+ *
+ * @exception std::bad_alloc Thrown if there is not enough memory to store the 
+ *	file contents.
+ * @exception lcmc::except::FileIo Thrown if file has the wrong format.
+ *
+ * @exceptsafe Program is in a consistent state in the event of an exception. 
  */
-void readTimeStamps(FILE* hInput, DoubleVec &dates, double &minDelT, double &maxDelT)
-{
+void readTimeStamps(FILE* hInput, DoubleVec& dates, double& minDelT, double& maxDelT) {
 	dates.clear();
 
 	// Read into dates
 	double buffer;
 	int nRead;
 	while(!feof(hInput)) {
-		#if _WIN32
-		nRead = fscanf_s(hInput, "%lf\n", &buffer);
-		#else
 		nRead = fscanf(  hInput, "%lf\n", &buffer);
-		#endif
 		if(nRead < 1 || ferror(hInput) || nRead == EOF) {
-			throw std::runtime_error("Misformatted time stamp file");
+			throw lcmc::except::FileIo("Misformatted time stamp file");
 		}
 		dates.push_back(buffer);
 	}
@@ -51,13 +58,11 @@ void readTimeStamps(FILE* hInput, DoubleVec &dates, double &minDelT, double &max
 
 	// Clean up the dates to make them easier to work with
 	// While we're at it, find the minimum and maximum intervals
-//	offset = 1000.0*floor(dates[0] / 1000.0);
 	double last = 0.0;
 	int count = 0;
 	// Default values in case dates.size() == 1
 	minDelT = maxDelT = 0.0;
 	for(DoubleVec::iterator it = dates.begin(); it != dates.end(); it++) {
-//		*it -= offset;
 		if (count > 1) {
 			// Update minDelT
 			if (*it - last < minDelT) {
@@ -76,87 +81,37 @@ void readTimeStamps(FILE* hInput, DoubleVec &dates, double &minDelT, double &max
 
 /** Dumps the contents of a lightcurve to a file
  *
- * @param[in] lcName, logP, logA a complete identifier for the model that generated 
- *	the lightcurve
- * @param[in] modelNum a unique identifier distinguishing different instances of 
- *	identical models
- * @param[in] period the true period of the lightcurve (for reference)
+ * @param[in] fileName The name of the file to which to log the light curve
  * @param[in] timeGrid a vector containing timestamps to copy to disk
  * @param[in] fluxGrid a vector containing fluxes to copy to disk. Assumed to be the 
  *	same length as timeGrid.
  *
  * @pre timeGrid does not contain any NaNs
  * @pre fluxGrid does not contain any NaNs
- */	
-void printLightCurve(size_t modelNum, std::string lcName, double logP, double logA, 
-	double period, DoubleVec timeGrid, DoubleVec fluxGrid)
-{
-	char filename[50];
-	#ifdef _WIN32
-	sprintf_s(filename, 50, "lightcurve_%s_p%+0.1f_a%+0.1f_%02li.dat", 
-		lcName.c_str(), logP, logA, modelNum);
-	#else
-	sprintf(filename, "lightcurve_%s_p%+0.1f_a%+0.1f_%02i.dat", 
-		lcName.c_str(), logP, logA, modelNum);
-	#endif
-	FILE *hOutput = fopen(filename, "w");
-	if (NULL == hOutput) {
-		throw std::runtime_error("Could not open light curve output file.");
+ *
+ * @exception lcmc::except::FileIo Thrown if file has the wrong format.
+ *
+ * @exceptsafe Program is in a consistent state in the event of an exception. 
+ */
+void printLightCurve(const std::string& fileName, 
+		const DoubleVec& timeGrid, const DoubleVec& fluxGrid) {
+	shared_ptr<FILE> hOutput(fopen(fileName.c_str(), "w"), &fclose);
+	if (NULL == hOutput.get()) {
+		throw lcmc::except::FileIo("Could not open light curve output file '" 
+			+ fileName + "' in printLightCurve(): " + strerror(errno));
 	}
 
-	// Print the FAP value
-	fprintf(hOutput, "Period %7.4f d\n", period);
 	// Print the table
-	fprintf(hOutput, "#Time\tFlux\n");
+	int status = fprintf(hOutput.get(), "#Time\tFlux\n");
+	if (status < 0) {
+		throw lcmc::except::FileIo("Could not write to file '" 
+			+ fileName + "' in printLightCurve(): " + strerror(errno));
+	}
 	for(size_t i = 0; i < timeGrid.size(); i++) {
-		fprintf(hOutput, "%0.5f\t%7.4f\n", timeGrid[i], fluxGrid[i]);
+		status = fprintf(hOutput.get(), "%0.5f\t%7.4f\n", timeGrid[i], fluxGrid[i]);
+		if (status < 0) {
+			throw lcmc::except::FileIo("Could not write to file '" 
+				+ fileName + "' in printLightCurve(): " + strerror(errno));
+		}
 	}
-
-	fclose(hOutput);
-}
-
-/** Dumps the contents of a periodogram to a file
- *
- * @param[in] lcType, logP, logA a complete identifier for the model that generated 
- *	the periodogram
- * @param[in] modelNum a unique identifier distinguishing different instances of 
- *	identical models
- * @param[in] fap the false alarm probability used to search for significant 
- *	peaks (for reference)
- * @param[in] threshold the height of the smallest peak that would be 
- *	considered significant (for reference)
- * @param[in] freq the true frequency of the lightcurve (for reference)
- * @param[in] freqGrid a vector containing frequencies to copy to disk
- * @param[in] powerGrid a vector containing powers to copy to disk. Assumed to be the 
- *	same length as freqGrid.
- *
- * @pre timeGrid does not contain any NaNs
- * @pre fluxGrid does not contain any NaNs
- */	
-void printPeriodogram(size_t modelNum, size_t lcType, double logP, double logA, 
-	double fap, double threshold, double freq, DoubleVec freqGrid, DoubleVec powerGrid)
-{
-	char filename[40];
-	#ifdef _WIN32
-	sprintf_s(filename, 40, "periodogram_lc%1i_p%+.2f_a%+.2f_%1i.dat", 
-		lcType, logP, logA, modelNum);
-	#else
-	sprintf(filename, "periodogram_lc%1i_p%+.2f_a%+.2f_%1i.dat", 
-		lcType, logP, logA, modelNum);
-	#endif
-	FILE *hOutput = fopen(filename, "w");
-	if (NULL == hOutput) {
-		throw std::runtime_error("Could not open periodogram output file.");
-	}
-
-	// Print the FAP value
-	fprintf(hOutput, "True Frequency %7.4f\n", freq);
-	fprintf(hOutput, "FAP %.1g%% above %7.1f\n", fap*100.0, threshold);
-	// Print the table
-	fprintf(hOutput, "Freq\tPower\n");
-	for(size_t i = 0; i < freqGrid.size(); i++) {
-		fprintf(hOutput, "%7.4f\t%7.4f\n", freqGrid[i], powerGrid[i]);
-	}
-
-	fclose(hOutput);
 }

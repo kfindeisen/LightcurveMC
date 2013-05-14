@@ -1,64 +1,57 @@
-/** Declares the direct subclasses of LightCurve
- * @file lcsubtypes.h
+/** Declares the stochastic light curve class
+ * @file lcstochastic.h
  * @author Krzysztof Findeisen
- * @date Created March 18, 2013
- * @date Last modified April 27, 2013
+ * @date Created May 12, 2013
+ * @date Last modified May 12, 2013
  */
 
-#ifndef LCMCCURVEMAJORH
-#define LCMCCURVEMAJORH
+#ifndef LCMCCURVESTOCHH
+#define LCMCCURVESTOCHH
 
+#include <memory>
 #include <gsl/gsl_rng.h>
 #include "../lightcurvetypes.h"
 
 
 namespace lcmc { namespace models {
 
-/** Deterministic is the base class for all light curve models that can, in 
- * principle, be expressed as a well-defined function of time. A Deterministic 
- * object represents a function whose value is determined entirely by the 
- * parameters passed to its constructor. 
+using std::auto_ptr;
+
+/** Wrapper class for a random number generator.
+ *
+ * This class allows stochastic light curves to use basic RNG functionality 
+ *	without being sensitive to the implementation of the random number 
+ *	generator.
+ *
+ * @todo Rewrite in terms of pImpl.
  */
-class Deterministic : public ILightCurve {
+class StochasticRng {
 public: 
-	virtual ~Deterministic();
-
-	/** Returns the times at which the simulated data were taken
+	/** Initializes a random number generator
 	 */
-	virtual void getTimes(std::vector<double>& timeArray) const;
+	explicit StochasticRng(unsigned long seed);
 
-	/** Returns the simulated fluxes at the corresponding times
+	~StochasticRng();
+	
+	/** Creates a random number generator with an identical 
+	 *	state to another
 	 */
-	virtual void getFluxes(std::vector<double>& fluxArray) const;
+	StochasticRng(const StochasticRng& other);
 
-protected:
-	/** Initializes the light curve to represent a particular function 
-	 * flux(time).
+	/** Sets the random number generator state equal to another generator
 	 */
-	explicit Deterministic(const std::vector<double> &times);
+	const StochasticRng& operator=(const StochasticRng& other);
+	
+	/** Draws a standard uniform random variate.
+	 */
+	double rUnif() const;
+	
+	/** Draws a standard normal random variate.
+	 */
+	double rNorm() const;
 
 private:
-	/** Samples the light curve at the specified time.
-	 * 
-	 * @param[in] time The time at which an observation is taken. 
-	 *	Observations are assumed to be instantaneous, with no averaging over 
-	 *	rapid variability.
-	 *
- 	 * @post the return value is determined entirely by the time and 
- 	 *	the parameters passed to the constructor
- 	 *
- 	 * @post the return value is not NaN
- 	 * @post the return value is non-negative
-	 * @post Either the mean, median, or mode of the flux is one, when 
-	 *	averaged over many times. Subclasses of Deterministic may 
-	 *	chose the option (mean, median, or mode) most appropriate 
-	 *	for their light curve shape.
-	 *
-	 * @return The flux emitted by the object at the specified time.
-	 */	
-	virtual double flux(double time) const = 0;
-
-	std::vector<double> times;
+	gsl_rng * const rng;
 };
 
 /** Stochastic is the base class for all light curve models that have a 
@@ -89,13 +82,14 @@ protected:
 	 * stochastic time series.
 	 */
 	explicit Stochastic(const std::vector<double> &times);
-	/** Draws a standard uniform random variate.
-	 */
-	double rUnif() const;
 	
-	/** Draws a standard normal random variate.
+	/** Creates a temporary copy of a random number generator
 	 */
-	double rNorm() const;
+	auto_ptr<StochasticRng> checkout() const;
+
+	/** Updates the state of the random number generator
+	 */
+	void commit(auto_ptr<StochasticRng> newState) const;
 
 private:
 	/** Computes a realization of the light curve. 
@@ -121,12 +115,19 @@ private:
 	 *	Subclasses of Stochastic may chose the option 
 	 *	(mean, median, or mode) most appropriate for their light 
 	 *	curve shape.
+	 * 
+	 * @except bad_alloc Thrown if there is not enough memory to compute 
+	 *	the light curve.
+	 * @except logic_error Thrown if a bug was found in the flux calculations.
+	 *
+	 * @exceptsafe Neither the object nor the argument are changed in the 
+	 *	event of an exception.
 	 */	
 	virtual void solveFluxes(std::vector<double>& fluxes) const = 0;
 	
-	/** Defines the random number state of the first object in the class.
+	/** Defines the random number generator for stochastic light curves
 	 */
-	static gsl_rng * init_rng();
+	static StochasticRng& rng();
 
 	std::vector<double> times;
 	// Mutable allows use of solveFluxes() as a cache
@@ -134,8 +135,6 @@ private:
 	//	these values
 	mutable std::vector<double> fluxes;
 	mutable bool fluxesSolved;
-	
-	static gsl_rng * const rng;
 };
 
 }}	// end lcmc::models
