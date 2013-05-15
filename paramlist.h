@@ -1,5 +1,5 @@
 /** Type definitions for ParamList and related types
- * @file paramlist.h
+ * @file lightcurveMC/paramlist.h
  * @author Krzysztof Findeisen
  * @date Created April 3, 2012
  * @date Last modified May 7, 2013

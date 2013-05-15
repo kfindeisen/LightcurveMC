@@ -1,5 +1,5 @@
 /** Test unit for wavelike periodic functions
- * @file unit_waves.cpp
+ * @file lightcurveMC/tests/unit_waves.cpp
  * @author Krzysztof Findeisen
  * @date Created April 28, 2013
  * @date Last modified April 28, 2013

@@ -1,5 +1,5 @@
 /** Declares the direct subclasses of LightCurve
- * @file lcdeterministic.h
+ * @file lightcurveMC/waves/lcdeterministic.h
  * @author Krzysztof Findeisen
  * @date Created May 12, 2013
  * @date Last modified May 12, 2013

@@ -1,5 +1,5 @@
 /** Input and output routines for lightcurveMC
- * @file mcio.cpp
+ * @file lightcurveMC/mcio.cpp
  * @author Krzysztof Findeisen
  * @date Created February 4, 2011
  * @date Last modified May 14, 2013

@@ -1,5 +1,5 @@
 /** Test statistics based on examining the magnitude distribution
- * @file magdist.h
+ * @file lightcurveMC/stats/magdist.h
  * @author Krzysztof Findeisen
  * @date Created April 12, 2011
  * @date Last modified April 12, 2013

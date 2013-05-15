@@ -1,5 +1,5 @@
 /** Exceptions related to Not-a-Number
- * @file except/nan.h
+ * @file lightcurveMC/except/nan.h
  * @author Krzysztof Findeisen
  * @date Created May 2, 2013
  * @date Last modified May 2, 2013

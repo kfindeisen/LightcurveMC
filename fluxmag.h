@@ -1,5 +1,5 @@
 /** Functions for converting flux and magnitude representations of vectors
- * @file fluxmag.h
+ * @file lightcurveMC/fluxmag.h
  * @author Krzysztof Findeisen
  * @date Created April 4, 2013
  * @date Last modified April 11, 2013

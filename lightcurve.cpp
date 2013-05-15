@@ -1,5 +1,5 @@
 /** Defines the LightCurve base class.
- * @file lightcurve.cpp
+ * @file lightcurveMC/lightcurve.cpp
  * @author Krzysztof Findeisen
  * @date Created April 23, 2012
  * @date Last modified May 11, 2013

@@ -1,5 +1,5 @@
 /** Test unit for Delta-m Delta-t analysis
- * @file unit_dmdt.cpp
+ * @file lightcurveMC/tests/unit_dmdt.cpp
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
  * @date Last modified May 9, 2013

@@ -1,5 +1,5 @@
 /** Defines macros for overriding compiler warnings
- * @file warnflags.h
+ * @file lightcurveMC/warnflags.h
  * @author Krzysztof Findeisen
  * @date Created June 11, 2013
  * @date Last modified April 11, 2013

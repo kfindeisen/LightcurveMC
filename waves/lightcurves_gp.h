@@ -1,5 +1,5 @@
 /** Type definitions for light curves describable as Gaussian processes
- * @file lightcurves_gp.h
+ * @file lightcurveMC/waves/lightcurves_gp.h
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
  * @date Last modified May 12, 2013

@@ -1,5 +1,5 @@
 /** Defines the FlatWave light curve class.
- * @file lcflat.cpp
+ * @file lightcurveMC/waves/lcflat.cpp
  * @author Krzysztof Findeisen
  * @date Created May 2, 2012
  * @date Last modified May 11, 2013

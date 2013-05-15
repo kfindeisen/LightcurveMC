@@ -1,5 +1,5 @@
 /** Defines the Stochastic base class.
- * @file lcstochastic.cpp
+ * @file lightcurveMC/waves/lcstochastic.cpp
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
  * @date Last modified May 12, 2013

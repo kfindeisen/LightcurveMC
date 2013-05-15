@@ -1,5 +1,5 @@
 /** Null hypotheses for light curve analysis
- * @file lightcurves_periodic.h
+ * @file lightcurveMC/waves/lightcurves_periodic.h
  * @author Krzysztof Findeisen
  * @date Created May 2, 2012
  * @date Last modified March 19, 2013

@@ -1,5 +1,5 @@
 /** Defines a random number generator wrapper
- * @file stochasticrng.cpp
+ * @file lightcurveMC/waves/stochasticrng.cpp
  * @author Krzysztof Findeisen
  * @date Created May 12, 2013
  * @date Last modified May 12, 2013

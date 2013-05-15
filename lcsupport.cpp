@@ -1,5 +1,5 @@
 /** Definitions for lightcurveMC supporting infrastructure
- * @file lcsupport.cpp
+ * @file lightcurveMC/lcsupport.cpp
  * @author Krzysztof Findeisen
  * @date Created April 20, 2012
  * @date Last modified May 10, 2013

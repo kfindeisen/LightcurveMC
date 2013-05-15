@@ -1,5 +1,5 @@
 /** Test unit for Gaussian process generators
- * @file unit_gp.cpp
+ * @file lightcurveMC/tests/unit_gp.cpp
  * @author Krzysztof Findeisen
  * @date Created April 17, 2013
  * @date Last modified April 28, 2013

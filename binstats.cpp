@@ -1,8 +1,8 @@
 /** Class that calculates test statistics on artificial light curves
- * @file binstats.cpp
+ * @file lightcurveMC/binstats.cpp
  * @author Krzysztof Findeisen
  * @date Created June 6, 2011
- * @date Last modified May 13, 2013
+ * @date Last modified May 15, 2013
  */
 
 #include <algorithm>
@@ -25,13 +25,14 @@
 #include "fluxmag.h"
 #include "stats/magdist.h"
 #include "nan.h"
+#include "stats/peakfind.h"
 #include "except/undefined.h"
 
 #include "warnflags.h"
 
 /** Size of character buffers to use when generating strings
  */
-#define MAX_STRING 512
+#define MAX_STRING 1024
 
 // Current implementation of analyzeLightCurve does not use 
 // trueParams, but it should still be part of the interface
@@ -98,11 +99,13 @@ LcBinStats::LcBinStats(const string& modelName, const RangeList& binSpecs, const
 		: binName(makeBinName(modelName, binSpecs, noise)), 
 		fileName(makeFileName(modelName, binSpecs, noise)), 
 		stats(toCalc), 
-		C1vals()/*, periods()*/, cut50Amp3s(), cut50Amp2s(), 
-		cut90Amp3s(), cut90Amp2s(), 
+		C1vals()/*, periods()*/, 
+		cutDmdt50Amp3s(), cutDmdt50Amp2s(), cutDmdt90Amp3s(), cutDmdt90Amp2s(), 
 		dmdtMedianTimes(), dmdtMedians(),
-		cutAcf9s(), cutAcf4s(), cutAcf2s(), 
-		acfTimes(), acfs() {
+		cutIAcf9s(), cutIAcf4s(), cutIAcf2s(), 
+		iAcfTimes(), iAcfs(), 
+		cutPeakAmp3s(), cutPeakAmp2s(), 
+		peakTimes(), peakValues() {
 	if (stats.size() == 0) {
 		throw std::invalid_argument("LcBinStats won't calculate any statistics");
 	}
@@ -143,8 +146,8 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 	
 	if (times.size() != fluxes.size()) {
 		throw std::invalid_argument("Times and fluxes must have the same length in analyzeLightCurve() (gave " 
-			+ lexical_cast<string, size_t>(times.size()) + " for times and " 
-			+ lexical_cast<string, size_t>(fluxes.size()) + " for fluxes).");
+			+ lexical_cast<string>(times.size()) + " for times and " 
+			+ lexical_cast<string>(fluxes.size()) + " for fluxes).");
 	}
 
 	DoubleVec mags;
@@ -211,15 +214,15 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 					deltaMBinQuantile(deltaT, deltaM, binEdges, change90, 0.90);
 					
 					// Key cuts
-					cut50Amp3s.push_back(cutFunction(binEdges, change50, 
-						MoreThan(amplitude / 3.0) ));
-					cut50Amp2s.push_back(cutFunction(binEdges, change50, 
-						MoreThan(amplitude / 2.0) ));
+					cutDmdt50Amp3s.push_back(cutFunction(binEdges, 
+						change50, MoreThan(amplitude / 3.0) ));
+					cutDmdt50Amp2s.push_back(cutFunction(binEdges, 
+						change50, MoreThan(amplitude / 2.0) ));
 					
-					cut90Amp3s.push_back(cutFunction(binEdges, change90, 
-						MoreThan(amplitude / 3.0) ));
-					cut90Amp2s.push_back(cutFunction(binEdges, change90, 
-						MoreThan(amplitude / 2.0) ));
+					cutDmdt90Amp3s.push_back(cutFunction(binEdges, 
+						change90, MoreThan(amplitude / 3.0) ));
+					cutDmdt90Amp2s.push_back(cutFunction(binEdges, 
+						change90, MoreThan(amplitude / 2.0) ));
 				}
 			}
 		} catch (except::NotEnoughData &e) {
@@ -232,7 +235,7 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 
 	////////////////////////////////////////
 	// ACF plots
-	if (hasStat(stats, ACFCUT) || hasStat(stats, ACF)) {
+	if (hasStat(stats, IACFCUT) || hasStat(stats, IACF)) {
 		try {
 			const static double offStep = 0.1;
 			
@@ -245,27 +248,88 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 			DoubleVec cleanTimes, cleanMags, acf;
 			utils::removeNans(mags, cleanMags, times, cleanTimes);
 			autoCorr(cleanTimes, cleanMags, offStep, offsets.size(), acf);
-			if (hasStat(stats, ACF)) {
+			if (hasStat(stats, IACF)) {
 				// Since vector::reserve() has the strong guarantee 
 				// and doesn't change the data in any case, it's 
 				// effectively a function that is guaranteed to not 
 				// change the content of a vector. 
 				// Use it to ensure that either vector is changed 
 				// only if no exception is thrown
-				acfTimes.reserve(acfTimes.size() + 1);
-				acfs    .reserve(acfs    .size() + 1);
-				acfTimes.push_back(offsets);
-				acfs    .push_back(acf);
+				iAcfTimes.reserve(iAcfTimes.size() + 1);
+				iAcfs    .reserve(iAcfs    .size() + 1);
+				iAcfTimes.push_back(offsets);
+				iAcfs    .push_back(acf);
 			}
 			
-			if (hasStat(stats, ACFCUT)) {
+			if (hasStat(stats, IACFCUT)) {
 				// Key cuts
-				cutAcf9s.push_back(cutFunction(offsets, acf, 
+				cutIAcf9s.push_back(cutFunction(offsets, acf, 
 					LessThan(1.0/9.0)));
-				cutAcf4s.push_back(cutFunction(offsets, acf, 
+				cutIAcf4s.push_back(cutFunction(offsets, acf, 
 					LessThan(0.25)   ));
-				cutAcf2s.push_back(cutFunction(offsets, acf, 
+				cutIAcf2s.push_back(cutFunction(offsets, acf, 
 					LessThan(0.5)    ));
+			}
+		} catch (except::NotEnoughData &e) {
+			// The one kind of Undefined we don't want to ignore
+			throw;
+		} catch (except::Undefined &e) {
+			// Don't add any acf stats; move on
+		}
+	}
+
+	////////////////////////////////////////
+	// Peak-finding plots
+	if (hasStat(stats, PEAKCUT)) {
+		try {
+			double amplitude = getAmplitude(mags);
+			
+			if (amplitude > 0) {
+				DoubleVec magCuts;
+				magCuts.push_back(amplitude / 3.0);
+				magCuts.push_back(amplitude / 2.0);
+			
+				DoubleVec cleanTimes, cleanMags, cutTimes;
+				utils::removeNans(mags, cleanMags, times, cleanTimes);
+				peakFindTimescales(cleanTimes, cleanMags, magCuts, cutTimes);
+				
+				// Key cuts
+				cutPeakAmp3s.push_back(cutTimes[0]);
+				cutPeakAmp2s.push_back(cutTimes[1]);
+			}
+		} catch (except::NotEnoughData &e) {
+			// The one kind of Undefined we don't want to ignore
+			throw;
+		} catch (except::Undefined &e) {
+			// Don't add any acf stats; move on
+		}
+	}
+	if (hasStat(stats, PEAKFIND)) {
+		try {
+			double amplitude = getAmplitude(mags);
+			
+			if (amplitude > 0) {
+				double minMag = 0.01;
+				
+				DoubleVec magCuts;
+				for (double mag = minMag; mag < amplitude; mag += minMag) {
+					magCuts.push_back(mag);
+				}
+				
+				DoubleVec cleanTimes, cleanMags, cutTimes;
+				utils::removeNans(mags, cleanMags, times, cleanTimes);
+				peakFindTimescales(cleanTimes, cleanMags, magCuts, cutTimes);
+				
+				// Since vector::reserve() has the strong guarantee 
+				// and doesn't change the data in any case, it's 
+				// effectively a function that is guaranteed to not 
+				// change the content of a vector. 
+				// Use it to ensure that either vector is changed 
+				// only if no exception is thrown
+				peakTimes .reserve(peakTimes .size() + 1);
+				peakValues.reserve(peakValues.size() + 1);
+				peakTimes .push_back(magCuts);
+				peakValues.push_back(cutTimes);
 			}
 		} catch (except::NotEnoughData &e) {
 			// The one kind of Undefined we don't want to ignore
@@ -291,18 +355,25 @@ void LcBinStats::clear() {
 	C1vals.clear();
 
 //	periods.clear();
-	cut50Amp3s.clear();
-	cut50Amp2s.clear();
-	cut90Amp3s.clear();
-	cut90Amp2s.clear();
+
+	cutDmdt50Amp3s.clear();
+	cutDmdt50Amp2s.clear();
+	cutDmdt90Amp3s.clear();
+	cutDmdt90Amp2s.clear();
 	dmdtMedianTimes.clear();
 	dmdtMedians.clear();
 
-	cutAcf9s.clear();
-	cutAcf4s.clear();
-	cutAcf2s.clear();
-	acfTimes.clear();
-	acfs.clear();
+	cutIAcf9s.clear();
+	cutIAcf4s.clear();
+	cutIAcf2s.clear();
+	iAcfTimes.clear();
+	iAcfs.clear();
+	
+	// Peak-finding statistics
+	cutPeakAmp3s.clear();
+	cutPeakAmp2s.clear();
+	peakTimes.clear();
+	peakValues.clear();
 }
 
 /** Prints a row representing the accumulated statistics to the specified file.
@@ -338,26 +409,36 @@ void LcBinStats::printBinStats(FILE* const file) const {
 	if (hasStat(stats, PERIODOGRAM)) {
 	}
 	if (hasStat(stats, DMDTCUT)) {
-		printStat(file, cut50Amp3s, "50th percentile crossing 1/3 amp", 
+		printStat(file, cutDmdt50Amp3s, "50th percentile crossing 1/3 amp", 
 			"run_cut50_3_" + fileName + ".dat");
-		printStat(file, cut50Amp2s, "50th percentile crossing 1/2 amp", 
+		printStat(file, cutDmdt50Amp2s, "50th percentile crossing 1/2 amp", 
 			"run_cut50_2_" + fileName + ".dat");
-		printStat(file, cut90Amp3s, "90th percentile crossing 1/3 amp", 
+		printStat(file, cutDmdt90Amp3s, "90th percentile crossing 1/3 amp", 
 			"run_cut90_3_" + fileName + ".dat");
-		printStat(file, cut90Amp2s, "90th percentile crossing 1/2 amp", 
+		printStat(file, cutDmdt90Amp2s, "90th percentile crossing 1/2 amp", 
 			"run_cut90_2_" + fileName + ".dat");
 	}
 	if (hasStat(stats, DMDT)) {
 		printStat(file, dmdtMedianTimes, dmdtMedians, 
 			"run_dmdtmed_" + fileName + ".dat");
 	}
-	if (hasStat(stats, ACFCUT)) {
-		printStat(file, cutAcf9s, "ACF crossing 1/9", "run_acf9_" + fileName + ".dat");
-		printStat(file, cutAcf4s, "ACF crossing 1/4", "run_acf4_" + fileName + ".dat");
-		printStat(file, cutAcf2s, "ACF crossing 1/2", "run_acf2_" + fileName + ".dat");
+	if (hasStat(stats, IACFCUT)) {
+		printStat(file, cutIAcf9s, "ACF crossing 1/9", "run_acf9_" + fileName + ".dat");
+		printStat(file, cutIAcf4s, "ACF crossing 1/4", "run_acf4_" + fileName + ".dat");
+		printStat(file, cutIAcf2s, "ACF crossing 1/2", "run_acf2_" + fileName + ".dat");
 	}
-	if (hasStat(stats, ACF)) {
-		printStat(file, acfTimes, acfs, "run_acf_" + fileName + ".dat");
+	if (hasStat(stats, IACF)) {
+		printStat(file, iAcfTimes, iAcfs, "run_acf_" + fileName + ".dat");
+	}
+
+	if (hasStat(stats, PEAKCUT)) {
+		printStat(file, cutPeakAmp3s, "Peak timescales crossing 1/3 amp", 
+			"run_cutpeak3_" + fileName + ".dat");
+		printStat(file, cutPeakAmp2s, "Peak timescales crossing 1/2 amp", 
+			"run_cutpeak2_" + fileName + ".dat");
+	}
+	if (hasStat(stats, PEAKFIND)) {
+		printStat(file, peakTimes, peakValues, "run_peaks_" + fileName + ".dat");
 	}
 
 	status = fprintf(file, "\n");
@@ -432,15 +513,29 @@ void LcBinStats::printBinHeader(FILE* const file, const RangeList& binSpecs,
 				+ string(strerror(errno)));
 		}
 	}
-	if (hasStat(outputStats, ACFCUT)) {
+	if (hasStat(outputStats, IACFCUT)) {
 		status = sprintf(binLabel, "%s\tACF cut at 1/9±err\tFinite\tACF@1/3 Distribution\tACF cut at 1/4±err\tFinite\tACF@1/4 Distribution\tACF cut at 1/2±err\tFinite\tACF@1/2 Distribution", binLabel);
 		if (status < 0) {
 			throw std::runtime_error("String formatting error in printBinHeader(): " 
 				+ string(strerror(errno)));
 		}
 	}
-	if (hasStat(outputStats, ACF)) {
+	if (hasStat(outputStats, IACF)) {
 		status = sprintf(binLabel, "%s\tACFs", binLabel);
+		if (status < 0) {
+			throw std::runtime_error("String formatting error in printBinHeader(): " 
+				+ string(strerror(errno)));
+		}
+	}
+	if (hasStat(outputStats, PEAKCUT)) {
+		status = sprintf(binLabel, "%s\tPeakFind cut at 1/3±err\tFinite\tPeakFind@1/3 Distribution\tPeakFind at 1/2±err\tFinite\tPeakFind@1/2 Distribution", binLabel);
+		if (status < 0) {
+			throw std::runtime_error("String formatting error in printBinHeader(): " 
+				+ string(strerror(errno)));
+		}
+	}
+	if (hasStat(outputStats, PEAKFIND)) {
+		status = sprintf(binLabel, "%s\tPeaks", binLabel);
 		if (status < 0) {
 			throw std::runtime_error("String formatting error in printBinHeader(): " 
 				+ string(strerror(errno)));

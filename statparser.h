@@ -1,5 +1,5 @@
 /** Definitions for functions that handle statistic types
- * @file statparser.h
+ * @file lightcurveMC/statparser.h
  * @author Krzysztof Findeisen
  * @date Created May 9, 2013
  * @date Last modified May 9, 2013

@@ -1,5 +1,5 @@
 /** Functions for testing approximately equal values
- * @file approx.h
+ * @file lightcurveMC/approx.h
  * @author Krzysztof Findeisen
  * @date Created April 30, 2013
  * @date Last modified April 30, 2013

@@ -1,5 +1,5 @@
 /** Unit test code for lightcurveMC
- * @file testdriver.cpp
+ * @file lightcurveMC/tests/testdriver.cpp
  * @author Krzysztof Findeisen
  * @date Created April 17, 2013
  * @date Last modified April 26, 2013

@@ -1,5 +1,5 @@
 /** Defines the Deterministic base class.
- * @file lcdeterministic.cpp
+ * @file lightcurveMC/waves/lcdeterministic.cpp
  * @author Krzysztof Findeisen
  * @date Created March 18, 2013
  * @date Last modified May 11, 2013

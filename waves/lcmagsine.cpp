@@ -1,5 +1,5 @@
 /** Defines the MagSineWave light curve class.
- * @file lcmagsine.cpp
+ * @file lightcurveMC/waves/lcmagsine.cpp
  * @author Krzysztof Findeisen
  * @date Created April 11, 2013
  * @date Last modified May 11, 2013

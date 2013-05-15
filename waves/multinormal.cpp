@@ -1,5 +1,5 @@
 /** Generates a multivariate normal with a given covariance matrix
- * @file multinormal.cpp
+ * @file lightcurveMC/waves/multinormal.cpp
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
  * @date Last modified May 9, 2013
@@ -82,8 +82,8 @@ void multiNormal(const vector<double>& indVec, const shared_ptr<gsl_matrix>& cov
 	const size_t N = indVec.size();
 	if(covar->size1 != covar->size2) {
 		try {
-			std::string len1 = lexical_cast<std::string, size_t>(covar->size1);
-			std::string len2 = lexical_cast<std::string, size_t>(covar->size2);
+			std::string len1 = lexical_cast<std::string>(covar->size1);
+			std::string len2 = lexical_cast<std::string>(covar->size2);
 			throw std::invalid_argument(len1 + "×" + len2 
 				+ " covariance matrix passed to multiNormal().");
 		} catch (boost::bad_lexical_cast &e) {
@@ -93,8 +93,8 @@ void multiNormal(const vector<double>& indVec, const shared_ptr<gsl_matrix>& cov
 	}
 	if(N != covar->size1) {
 		try {
-			std::string lenV = lexical_cast<std::string, size_t>(N);
-			std::string lenM = lexical_cast<std::string, size_t>(covar->size1);
+			std::string lenV = lexical_cast<std::string>(N);
+			std::string lenM = lexical_cast<std::string>(covar->size1);
 			throw std::invalid_argument("Vector of length " + lenV 
 				+ " cannot be multiplied by " 
 				+ lenM + "×" + lenM + " covariance matrix in multiNormal().");

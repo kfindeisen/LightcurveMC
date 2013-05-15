@@ -1,5 +1,5 @@
 /** Type definitions for all periodic light curves
- * @file lightcurves_periodic.h
+ * @file lightcurveMC/waves/lightcurves_periodic.h
  * @author Krzysztof Findeisen
  * @date Created February 23, 2012
  * @date Last modified May 11, 2013

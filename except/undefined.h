@@ -1,5 +1,5 @@
 /** Exception declarations for missing data errors
- * @file except/undefined.h
+ * @file lightcurveMC/except/undefined.h
  * @author Krzysztof Findeisen
  * @date Created May 5, 2013
  * @date Last modified May 7, 2013

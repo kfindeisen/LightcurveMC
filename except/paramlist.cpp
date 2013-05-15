@@ -1,5 +1,5 @@
 /** Exceptions for ParamList and related types
- * @file except/paramlist.cpp
+ * @file lightcurveMC/except/paramlist.cpp
  * @author Krzysztof Findeisen
  * @date Created April 22, 2013
  * @date Last modified May 7, 2013

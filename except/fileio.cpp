@@ -1,5 +1,5 @@
 /** Exception definitions for file operations
- * @file except/fileio.cpp
+ * @file lightcurveMC/except/fileio.cpp
  * @author Krzysztof Findeisen
  * @date Created May 8, 2013
  * @date Last modified May 8, 2013

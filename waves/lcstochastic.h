@@ -1,5 +1,5 @@
 /** Declares the stochastic light curve class
- * @file lcstochastic.h
+ * @file lightcurveMC/waves/lcstochastic.h
  * @author Krzysztof Findeisen
  * @date Created May 12, 2013
  * @date Last modified May 12, 2013

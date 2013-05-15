@@ -1,5 +1,5 @@
 /** Test statistics based on examining the magnitude distribution
- * @file magdist.cpp
+ * @file lightcurveMC/stats/magdist.cpp
  * @author Krzysztof Findeisen
  * @date Created April 12, 2011
  * @date Last modified May 12, 2013
@@ -35,8 +35,6 @@ typedef std::vector<double> DoubleVec;
  * @pre mags contains at least two distinct finite values
  *
  * @pre mags may contain NaNs
- *
- * @todo Decide on correct treatment of infinite magnitudes.
  *
  * @exception std::bad_alloc Thrown if not enough memory to calculate C1
  * @exception lcmc::stats::except::Undefined Thrown if C1 is undefined 
@@ -95,8 +93,6 @@ double getC1(const DoubleVec& mags) {
  * @pre mags contains at least two finite values
  *
  * @pre mags may contain NaNs
- *
- * @todo Decide on correct treatment of infinite magnitudes.
  *
  * @exception std::bad_alloc Thrown if not enough memory to calculate amplitude
  * @exception lcmc::stats::except::NotEnoughData Thrown if mags does not 

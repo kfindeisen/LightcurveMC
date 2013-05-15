@@ -1,5 +1,5 @@
 /** Functions for trying out new features
- * @file experimental.cpp
+ * @file lightcurveMC/stats/experimental.cpp
  * @author Krzysztof Findeisen
  * @date Created August 3, 2011
  * @date Last modified May 12, 2013
@@ -60,12 +60,12 @@ void rmsVsTRooted(const DoubleVec &times, const DoubleVec &fluxes,
 	
 	if(nData < 2) {
 		throw std::invalid_argument("Can't take RMS over a light curve of less than 2 points (gave " 
-		+ lexical_cast<std::string, size_t>(nData) + ")");
+		+ lexical_cast<std::string>(nData) + ")");
 	}
 	if(nData != fluxes.size()) {
 		throw std::invalid_argument("Times and fluxes have different lengths in rmsVsTRooted() (gave " 
-		+ lexical_cast<std::string, size_t>(nData) + " for times and " 
-		+ lexical_cast<std::string, size_t>(fluxes.size()) + " for fluxes)");
+		+ lexical_cast<std::string>(nData) + " for times and " 
+		+ lexical_cast<std::string>(fluxes.size()) + " for fluxes)");
 	}
 	if (!kpfutils::isSorted(times.begin(), times.end())) {
 		throw except::NotSorted("times is not sorted in rmsVsTRooted()");
@@ -130,12 +130,12 @@ void rmsVsTAllPairs(const DoubleVec &times, const DoubleVec &fluxes,
 	
 	if(nData < 2) {
 		throw std::invalid_argument("Can't take RMS over a light curve of less than 2 points (gave " 
-		+ lexical_cast<std::string, size_t>(nData) + ")");
+		+ lexical_cast<std::string>(nData) + ")");
 	}
 	if(nData != fluxes.size()) {
 		throw std::invalid_argument("Times and fluxes have different lengths in rmsVsTRooted() (gave " 
-		+ lexical_cast<std::string, size_t>(nData) + " for times and " 
-		+ lexical_cast<std::string, size_t>(fluxes.size()) + " for fluxes)");
+		+ lexical_cast<std::string>(nData) + " for times and " 
+		+ lexical_cast<std::string>(fluxes.size()) + " for fluxes)");
 	}
 	if (!kpfutils::isSorted(times.begin(), times.end())) {
 		throw except::NotSorted("times is not sorted in rmsVsTAllPairs()");

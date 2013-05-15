@@ -1,5 +1,5 @@
 /** Functions for handling data containing NaN values
- * @file nan.h
+ * @file lightcurveMC/nan.h
  * @author Krzysztof Findeisen
  * @date Created April 11, 2013
  * @date Last modified April 21, 2013

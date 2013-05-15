@@ -1,5 +1,5 @@
 /** Defines the EllipseWave light curve class.
- * @file lcellipse.cpp
+ * @file lightcurveMC/waves/lcellipse.cpp
  * @author Krzysztof Findeisen
  * @date Created April 24, 2012
  * @date Last modified May 11, 2013
@@ -48,7 +48,7 @@ EllipseWave::EllipseWave(const std::vector<double> &times,
 		double amp, double period, double phase) 
 		: PeriodicLc(times, amp, period, phase) {
 	if (amp > 1.0) {
-		throw except::BadParam("EllipseWaves must have amplitudes less than or equal to 1 (gave " + lexical_cast<string, double>(amp) + ").");
+		throw except::BadParam("EllipseWaves must have amplitudes less than or equal to 1 (gave " + lexical_cast<string>(amp) + ").");
 	}
 }
 

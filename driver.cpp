@@ -1,5 +1,5 @@
 /** Main program for monte carlo lightcurve simulator
- * @file driver.cpp
+ * @file lightcurveMC/driver.cpp
  * @author Krzysztof Findeisen
  * @date Created January 22, 2010
  * @date Last modified May 14, 2013
@@ -243,7 +243,7 @@ int main(int argc, char* argv[]) {
 				string dumpFile = "lightcurve_" 
 					+ LcBinStats::makeFileName(curName, limits, 
 						(injectMode ? injectType : noiseStr)) 
-					+ "_" + boost::lexical_cast<string, long>(i) + ".dat";
+					+ "_" + boost::lexical_cast<string>(i) + ".dat";
 				printLightCurve(dumpFile, tSeries, lc);
 			}
 

@@ -1,5 +1,5 @@
 /** Exception for command-line parser
- * @file except/parse.cpp
+ * @file lightcurveMC/except/parse.cpp
  * @author Krzysztof Findeisen
  * @date Created May 11, 2013
  * @date Last modified May 11, 2013

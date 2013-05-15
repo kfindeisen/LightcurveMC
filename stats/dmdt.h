@@ -1,5 +1,5 @@
 /** Functions for extracting timescales out of Delta-m Delta-t plots
- * @file dmdt.h
+ * @file lightcurveMC/stats/dmdt.h
  * @author Krzysztof Findeisen
  * @date Created April 12, 2013
  * @date Last modified May 9, 2013

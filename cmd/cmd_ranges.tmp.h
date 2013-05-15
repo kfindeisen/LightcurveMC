@@ -1,5 +1,5 @@
 /** Definitions for parsing ranges of values
- * @file cmd/cmd_ranges.tmp.h
+ * @file lightcurveMC/cmd/cmd_ranges.tmp.h
  * @author Krzysztof Findeisen
  * @date Created April 27, 2013
  * @date Last modified May 11, 2013

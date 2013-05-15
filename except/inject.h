@@ -1,5 +1,5 @@
 /** Exception declarations for injection tests
- * @file except/inject.h
+ * @file lightcurveMC/except/inject.h
  * @author Krzysztof Findeisen
  * @date Created May 8, 2013
  * @date Last modified May 8, 2013

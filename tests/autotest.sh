@@ -21,6 +21,9 @@ status=$(($status || $?))
 ./gptest_acf.sh		; status=$(($status || $?))
 ./periodictest_acf.sh	; status=$(($status || $?))
 ./sinetest_acf.sh	; status=$(($status || $?))
+./gptest_peak.sh	; status=$(($status || $?))
+./periodictest_peak.sh	; status=$(($status || $?))
+./sinetest_peak.sh	; status=$(($status || $?))
 rm -f run_*.dat
 
 if [[ $status == 0 ]] ; then

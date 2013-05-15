@@ -1,5 +1,5 @@
 /** Definitions for lightcurveMC type manipulation functions
- * @file lcregistry.cpp
+ * @file lightcurveMC/lcregistry.cpp
  * @author Krzysztof Findeisen
  * @date Created April 25, 2012
  * @date Last modified May 10, 2013

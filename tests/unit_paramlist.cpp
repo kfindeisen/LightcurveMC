@@ -1,5 +1,5 @@
 /** Test unit for ParamList and RangeList
- * @file unit_paramlist.cpp
+ * @file lightcurveMC/tests/unit_paramlist.cpp
  * @author Krzysztof Findeisen
  * @date Created May 3, 2013
  * @date Last modified May 4, 2013

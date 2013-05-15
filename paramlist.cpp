@@ -1,5 +1,5 @@
 /** Defines the ParamList and RangeList classes
- * @file paramlist.cpp
+ * @file lightcurveMC/paramlist.cpp
  * @author Krzysztof Findeisen
  * @date Created March 19, 2012
  * @date Last modified May 7, 2013
@@ -108,7 +108,7 @@ void ParamList::add(ParamType name, double value) {
 	if (utils::isNan(value)) {
 		try {
 			throw utils::except::UnexpectedNan("NaN value for parameter: " 
-				+ lexical_cast<std::string, ParamType>(name));
+				+ lexical_cast<std::string>(name));
 		} catch (boost::bad_lexical_cast &e) {
 			throw utils::except::UnexpectedNan("NaN value for parameter");
 		}
@@ -120,7 +120,7 @@ void ParamList::add(ParamType name, double value) {
 	if (lookup->count(name) > 0) {
 		try {
 			throw except::ExtraParam("Duplicate parameter to ParamList: " 
-				+ lexical_cast<std::string, ParamType>(name), 
+				+ lexical_cast<std::string>(name), 
 				name);
 		} catch (boost::bad_lexical_cast &e) {
 			throw except::ExtraParam("Duplicate parameter to ParamList.", name);
@@ -152,7 +152,7 @@ double ParamList::get(ParamType param) const {
 	if (it == lookup->end()) {
 		try {
 			throw except::MissingParam("Required parameter not found: " 
-				+ lexical_cast<std::string, ParamType>(param), 
+				+ lexical_cast<std::string>(param), 
 				param);
 		} catch (boost::bad_lexical_cast &e) {
 			throw except::MissingParam("Required parameter not found.", param);
@@ -260,7 +260,7 @@ void RangeList::add(ParamType name, double min, double max, RangeType distrib) {
 	if (lookup->count(name) > 0) {
 		try {
 			throw except::ExtraParam("Duplicate parameter to RangeList: " 
-				+ lexical_cast<std::string, ParamType>(name), 
+				+ lexical_cast<std::string>(name), 
 				name);
 		} catch (boost::bad_lexical_cast &e) {
 			throw except::ExtraParam("Duplicate parameter to RnageList.", name);
@@ -332,7 +332,7 @@ double RangeList::getMin(ParamType param) const {
 	if (it == lookup->end()) {
 		try {
 			throw except::MissingParam("Required parameter not found: " 
-				+ lexical_cast<std::string, ParamType>(param), 
+				+ lexical_cast<std::string>(param), 
 				param);
 		} catch (boost::bad_lexical_cast &e) {
 			throw except::MissingParam("Required parameter not found.", param);
@@ -361,7 +361,7 @@ double RangeList::getMax(ParamType param) const {
 	if (it == lookup->end()) {
 		try {
 			throw except::MissingParam("Required parameter not found: " 
-				+ lexical_cast<std::string, ParamType>(param), 
+				+ lexical_cast<std::string>(param), 
 				param);
 		} catch (boost::bad_lexical_cast &e) {
 			throw except::MissingParam("Required parameter not found.", param);
@@ -388,7 +388,7 @@ RangeList::RangeType RangeList::getType(ParamType param) const {
 	if (it == lookup->end()) {
 		try {
 			throw except::MissingParam("Required parameter not found: " 
-				+ lexical_cast<std::string, ParamType>(param), 
+				+ lexical_cast<std::string>(param), 
 				param);
 		} catch (boost::bad_lexical_cast &e) {
 			throw except::MissingParam("Required parameter not found.", param);

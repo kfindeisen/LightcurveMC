@@ -1,5 +1,5 @@
 /** Type definitions for periodically fading light curves
- * @file lightcurves_fades.h
+ * @file lightcurveMC/waves/lightcurves_fades.h
  * @author Krzysztof Findeisen
  * @date Created August 21, 2012
  * @date Last modified March 20, 2013

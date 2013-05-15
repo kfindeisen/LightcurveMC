@@ -1,5 +1,5 @@
 /** Functions for converting flux and magnitude representations of vectors
- * @file fluxmag.cpp
+ * @file lightcurveMC/fluxmag.cpp
  * @author Krzysztof Findeisen
  * @date Created April 4, 2013
  * @date Last modified May 13, 2013

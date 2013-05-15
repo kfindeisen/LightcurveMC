@@ -1,5 +1,5 @@
 /** Code for converting command line objects into program variables
- * @file cmd/cmd_load.cpp
+ * @file lightcurveMC/cmd/cmd_load.cpp
  * @author Krzysztof Findeisen
  * @date Created May 11, 2013
  * @date Last modified May 11, 2013

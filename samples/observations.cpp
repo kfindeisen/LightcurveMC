@@ -1,5 +1,5 @@
 /** Implementation of Observations
- * @file observations.cpp
+ * @file lightcurveMC/samples/observations.cpp
  * @author Krzysztof Findeisen
  * @date Created May 4, 2012
  * @date Last modified May 10, 2013

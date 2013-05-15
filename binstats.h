@@ -1,8 +1,8 @@
 /** Class for organizing test statistics on artificial light curves
- * @file binstats.h
+ * @file lightcurveMC/binstats.h
  * @author Krzysztof Findeisen
  * @date Reconstructed June 23, 2011
- * @date Last modified May 13, 2013
+ * @date Last modified May 15, 2013
  */
 
 #ifndef BINSTATSH
@@ -45,12 +45,18 @@ enum StatType {
 	/** Represents dumps of &Delta;m&Delta;t plots
 	 */
 	DMDT, 
-	/** Represents cuts through ACF plots
+	/** Represents cuts through interpolated ACF plots
 	 */
-	ACFCUT, 
-	/** Represents dumps of ACF plots
+	IACFCUT, 
+	/** Represents dumps of interpolated ACF plots
 	 */
-	ACF
+	IACF, 
+	/** Represents cuts through peak-find plots
+	 */
+	PEAKCUT, 
+	/** Represents dumps of peak-find plots
+	 */
+	PEAKFIND
 };
 
 /** Organizes test statistics on artificial light curves. LcBinStats can 
@@ -115,18 +121,27 @@ private:
 	DoubleVec C1vals;
 	
 //	DoubleVec periods;
-	DoubleVec cut50Amp3s;
-	DoubleVec cut50Amp2s;
-	DoubleVec cut90Amp3s;
-	DoubleVec cut90Amp2s;
+
+	// Delta-m Delta-t statistics
+	DoubleVec cutDmdt50Amp3s;
+	DoubleVec cutDmdt50Amp2s;
+	DoubleVec cutDmdt90Amp3s;
+	DoubleVec cutDmdt90Amp2s;
 	std::vector<DoubleVec> dmdtMedianTimes;
 	std::vector<DoubleVec> dmdtMedians;
 	
-	DoubleVec cutAcf9s;
-	DoubleVec cutAcf4s;
-	DoubleVec cutAcf2s;
-	std::vector<DoubleVec> acfTimes;
-	std::vector<DoubleVec> acfs;
+	// ACF statistics (in multiple flavors)
+	DoubleVec cutIAcf9s;
+	DoubleVec cutIAcf4s;
+	DoubleVec cutIAcf2s;
+	std::vector<DoubleVec> iAcfTimes;
+	std::vector<DoubleVec> iAcfs;
+	
+	// Peak-finding statistics
+	DoubleVec cutPeakAmp3s;
+	DoubleVec cutPeakAmp2s;
+	std::vector<DoubleVec> peakTimes;
+	std::vector<DoubleVec> peakValues;
 };
 
 }}		// end lcmc::stats

@@ -1,5 +1,5 @@
 /** Exception definitions related to Not-a-Number
- * @file except/nan.cpp
+ * @file lightcurveMC/except/nan.cpp
  * @author Krzysztof Findeisen
  * @date Created May 2, 2013
  * @date Last modified May 2, 2013

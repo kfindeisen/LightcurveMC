@@ -1,5 +1,5 @@
 /** Exception definitions for injection tests
- * @file except/inject.cpp
+ * @file lightcurveMC/except/inject.cpp
  * @author Krzysztof Findeisen
  * @date Created May 8, 2013
  * @date Last modified May 8, 2013

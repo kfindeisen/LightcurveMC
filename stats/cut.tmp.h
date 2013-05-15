@@ -1,8 +1,8 @@
 /** Functions and classes for reducing vector data to scalars
- * @file cut.tmp.h
+ * @file lightcurveMC/stats/cut.tmp.h
  * @author Krzysztof Findeisen
  * @date Created May 9, 2013
- * @date Last modified May 12, 2013
+ * @date Last modified May 15, 2013
  */
 
 #ifndef LCMCCUTH
@@ -18,12 +18,14 @@ using std::vector;
 
 /** Finds the location on a grid where a predicate is true.
  *
+ * @tparam UnaryPredicate The type of condition to test. Must be a <a href="http://www.sgi.com/tech/stl/Predicate.html">unary predicate</a>.
+ *
  * @param[in] pos The position grid on which to search.
  * @param[in] func The function to test against cut.
  * @param[in] pred The condition that must be satisfied by the return value.
  *
- * @return The value of pos at which pred(func) is first true, or NaN if no 
- *	such value exists.
+ * @return The value pos[i] at which pred(func[i]) is first true, 
+ *	or NaN if pred(x) is false for all x &isin; func.
  *
  * @pre pos.size() == func.size()
  * 

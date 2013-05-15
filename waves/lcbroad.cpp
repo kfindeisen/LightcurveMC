@@ -1,5 +1,5 @@
 /** Defines the BroadPeakWave light curve class.
- * @file lcbroad.cpp
+ * @file lightcurveMC/waves/lcbroad.cpp
  * @author Krzysztof Findeisen
  * @date Created April 24, 2012
  * @date Last modified May 11, 2013

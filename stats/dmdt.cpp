@@ -1,5 +1,5 @@
 /** Functions for analyzing Delta-m Delta-t plots
- * @file dmdt.cpp
+ * @file lightcurveMC/stats/dmdt.cpp
  * @author Krzysztof Findeisen
  * @date Created April 12, 2013
  * @date Last modified May 12, 2013
@@ -145,7 +145,7 @@ void deltaMBinQuantile(const DoubleVec &deltaT, const DoubleVec &deltaM,
 	
 	if (q <= 0 || q >= 1) {
 		throw std::invalid_argument("Quantile must be in (0, 1) (gave " 
-			+ lexical_cast<std::string, double>(q) + ")");
+			+ lexical_cast<std::string>(q) + ")");
 	}
 	if (!kpfutils::isSorted(deltaT.begin(), deltaT.end())) {
 		throw except::NotSorted("deltaT is not sorted in deltaMBinQuantile()");

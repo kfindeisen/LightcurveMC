@@ -1,5 +1,5 @@
 /** Exception definitions for ParamList and related types
- * @file except/paramlist.h
+ * @file lightcurveMC/except/paramlist.h
  * @author Krzysztof Findeisen
  * @date Created April 22, 2013
  * @date Last modified May 7, 2013

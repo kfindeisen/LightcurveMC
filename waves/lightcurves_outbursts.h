@@ -1,5 +1,5 @@
 /** Type definitions for periodically outbursting light curves
- * @file lightcurves_outbursts.h
+ * @file lightcurveMC/waves/lightcurves_outbursts.h
  * @author Krzysztof Findeisen
  * @date Created May 2, 2012
  * @date Last modified March 20, 2013

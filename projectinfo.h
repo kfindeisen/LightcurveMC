@@ -1,5 +1,5 @@
 /** Header for defining overall program properties
- * @file projectinfo.h
+ * @file lightcurveMC/projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
  * @date Last modified May 14, 2013

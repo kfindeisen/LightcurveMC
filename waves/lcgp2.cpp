@@ -1,5 +1,5 @@
 /** Defines the TwoScaleGp light curve class.
- * @file lcgp2.cpp
+ * @file lightcurveMC/waves/lcgp2.cpp
  * @author Krzysztof Findeisen
  * @date Created April 29, 2013
  * @date Last modified May 12, 2013
@@ -57,19 +57,19 @@ TwoScaleGp::TwoScaleGp(const std::vector<double>& times,
 		tau1(tau1), tau2(tau2) {
 	if (sigma1 <= 0.0) {
 		throw except::BadParam("All DampedRandomWalk light curves need positive standard deviations (gave " 
-			+ lexical_cast<string, double>(sigma1) + " for the first component).");
+			+ lexical_cast<string>(sigma1) + " for the first component).");
 	}
 	if (tau1 <= 0.0) {
 		throw except::BadParam("All DampedRandomWalk light curves need positive coherence times (gave " 
-			+ lexical_cast<string, double>(tau1) + " for the first component).");
+			+ lexical_cast<string>(tau1) + " for the first component).");
 	}
 	if (sigma2 <= 0.0) {
 		throw except::BadParam("All DampedRandomWalk light curves need positive standard deviations (gave " 
-			+ lexical_cast<string, double>(sigma2) + " for the first component).");
+			+ lexical_cast<string>(sigma2) + " for the first component).");
 	}
 	if (tau2 <= 0.0) {
 		throw except::BadParam("All DampedRandomWalk light curves need positive coherence times (gave " 
-			+ lexical_cast<string, double>(tau2) + " for the first component).");
+			+ lexical_cast<string>(tau2) + " for the first component).");
 	}
 }
 

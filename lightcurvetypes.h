@@ -1,5 +1,5 @@
 /** Type definitions for lightcurveMC light curves
- * @file lightcurvetypes.h
+ * @file lightcurveMC/lightcurvetypes.h
  * @author Krzysztof Findeisen
  * @date Created February 9, 2012
  * @date Last modified May 11, 2013

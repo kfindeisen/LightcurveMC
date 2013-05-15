@@ -1,5 +1,5 @@
 /** Definitions for non-template types needed by the parser
- * @file cmd/cmd_classes.cpp
+ * @file lightcurveMC/cmd/cmd_classes.cpp
  * @author Krzysztof Findeisen
  * @date Created April 27, 2013
  * @date Last modified May 11, 2013

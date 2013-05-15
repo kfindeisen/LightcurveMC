@@ -1,5 +1,5 @@
 /** Defines the WhiteNoise light curve class.
- * @file lcwhite.cpp
+ * @file lightcurveMC/waves/lcwhite.cpp
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
  * @date Last modified May 12, 2013
@@ -38,7 +38,7 @@ WhiteNoise::WhiteNoise(const std::vector<double>& times, double sigma)
 		: Stochastic(times), sigma(sigma) {
 	if (sigma <= 0.0) {
 		throw except::BadParam("All WhiteNoise light curves need positive standard deviations (gave " 
-			+ lexical_cast<string, double>(sigma) + ").");
+			+ lexical_cast<string>(sigma) + ").");
 	}
 }
 

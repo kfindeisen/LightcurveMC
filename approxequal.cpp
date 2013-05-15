@@ -1,5 +1,5 @@
 /** Predicate for floating-point comparisons
- * @file approxequal.cpp
+ * @file lightcurveMC/approxequal.cpp
  * @author Krzysztof Findeisen
  * @date Created April 30, 2013
  * @date Last modified May 9, 2013
@@ -33,7 +33,7 @@ namespace lcmc { namespace utils {
  */
 ApproxEqual::ApproxEqual(double epsilon) : epsilon(epsilon) {
 	if (epsilon <= 0.0) {
-		throw std::invalid_argument("Cannot do approximate comparison with a nonpositive precision: " + boost::lexical_cast<std::string, double>(epsilon));
+		throw std::invalid_argument("Cannot do approximate comparison with a nonpositive precision: " + boost::lexical_cast<std::string>(epsilon));
 	}
 }
 
@@ -80,7 +80,7 @@ bool ApproxEqual::operator() (double x, double y) const {
 bool isMatrixClose(const gsl_matrix * const a, const gsl_matrix * const b, 
 		double tolerance) {
 	if (tolerance <= 0.0) {
-		throw std::invalid_argument("Cannot do matrix comparison with a nonpositive tolerance: " + boost::lexical_cast<std::string, double>(tolerance));
+		throw std::invalid_argument("Cannot do matrix comparison with a nonpositive tolerance: " + boost::lexical_cast<std::string>(tolerance));
 	}
 
 	// Invalid matrices

@@ -1,5 +1,5 @@
 /** Functions for handling command line objects
- * @file cmd/cmd.h
+ * @file lightcurveMC/cmd/cmd.h
  * @author Krzysztof Findeisen
  * @date Created May 11, 2013
  * @date Last modified May 11, 2013

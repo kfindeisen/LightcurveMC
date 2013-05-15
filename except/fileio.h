@@ -1,5 +1,5 @@
 /** Exception declarations for file operations
- * @file except/fileio.h
+ * @file lightcurveMC/except/fileio.h
  * @author Krzysztof Findeisen
  * @date Created May 8, 2013
  * @date Last modified May 8, 2013

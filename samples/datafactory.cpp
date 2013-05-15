@@ -1,5 +1,5 @@
 /** Defines the factory function for Observations
- * @file datafactory.cpp
+ * @file lightcurveMC/samples/datafactory.cpp
  * @author Krzysztof Findeisen
  * @date Created May 7, 2012
  * @date Last modified May 10, 2013

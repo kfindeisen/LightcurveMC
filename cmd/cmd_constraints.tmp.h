@@ -1,5 +1,5 @@
 /** Classes defining valid input
- * @file cmd/cmd_constraints.tmp.h
+ * @file lightcurveMC/cmd/cmd_constraints.tmp.h
  * @author Krzysztof Findeisen
  * @date Created April 27, 2013
  * @date Last modified May 11, 2013

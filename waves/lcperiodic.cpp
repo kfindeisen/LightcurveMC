@@ -1,5 +1,5 @@
 /** Defines the PeriodicLc base class.
- * @file lcperiodic.cpp
+ * @file lightcurveMC/waves/lcperiodic.cpp
  * @author Krzysztof Findeisen
  * @date Created April 23, 2012
  * @date Last modified May 11, 2013
@@ -40,13 +40,13 @@ PeriodicLc::PeriodicLc(const std::vector<double> &times,
 			double amp, double period, double phase) 
 			: Deterministic(times), amp(amp), period(period), phase0(phase) {
 	if (amp <= 0.0) {
-		throw except::BadParam("All periodic light curves need positive amplitudes (gave " + lexical_cast<string, double>(amp) + ").");
+		throw except::BadParam("All periodic light curves need positive amplitudes (gave " + lexical_cast<string>(amp) + ").");
 	}
 	if (period <= 0.0) {
-		throw except::BadParam("All periodic light curves need positive periods (gave " + lexical_cast<string, double>(period) + ").");
+		throw except::BadParam("All periodic light curves need positive periods (gave " + lexical_cast<string>(period) + ").");
 	}
 	if (phase < 0.0 || phase >= 1.0) {
-		throw except::BadParam("All periodic light curves need initial phases in the interval [0, 1) (gave " + lexical_cast<string, double>(phase) + ").");
+		throw except::BadParam("All periodic light curves need initial phases in the interval [0, 1) (gave " + lexical_cast<string>(phase) + ").");
 	}
 }
 

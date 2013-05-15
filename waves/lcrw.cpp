@@ -1,5 +1,5 @@
 /** Defines the RandomWalk light curve class.
- * @file lcrw.cpp
+ * @file lightcurveMC/waves/lcrw.cpp
  * @author Krzysztof Findeisen
  * @date Created April 29, 2013
  * @date Last modified May 12, 2013
@@ -40,7 +40,7 @@ RandomWalk::RandomWalk(const std::vector<double>& times, double diffus)
 		: Stochastic(times), d(diffus) {
 	if (diffus <= 0.0) {
 		throw except::BadParam("All RandomWalk light curves need positive diffusion coefficients (gave " 
-			+ lexical_cast<string, double>(diffus) + ").");
+			+ lexical_cast<string>(diffus) + ").");
 	}
 }
 

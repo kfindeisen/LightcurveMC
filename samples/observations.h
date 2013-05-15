@@ -1,5 +1,5 @@
 /** Type definitions for lightcurveMC data representations
- * @file observations.h
+ * @file lightcurveMC/samples/observations.h
  * @author Krzysztof Findeisen
  * @date Created May 4, 2012
  * @date Last modified May 9, 2012
@@ -37,10 +37,6 @@ namespace inject {
  * @invariant Observations and all its subclasses should be immutable.
  * @invariant The light curve has a median flux of 1, so that synthetic light 
  *	curve amplitudes can be expressed in units of the source flux.
- * 
- * @todo Consider using Featurizer::LightCurve to streamline implementation
- *
- * @todo Switch to a strategy that relies less on hard-coding
  */
 class Observations {
 public: 

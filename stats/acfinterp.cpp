@@ -1,5 +1,5 @@
 /** Port of Ann Marie's IDL code fragment to a C++ function
- * @file acfinterp.cpp
+ * @file lightcurveMC/stats/acfinterp.cpp
  * @author Ann Marie Cody
  * @author Krzysztof Findeisen
  * @date Created May 6, 2013
@@ -79,20 +79,20 @@ void autoCorr(const DoubleVec &times, const DoubleVec &data,
 	const size_t NOLD = times.size();
 	if (NOLD < 2) {
 		throw except::NotEnoughData("Cannot calculate autocorrelation function with fewer than 2 data points (gave " 
-			+ lexical_cast<std::string,size_t>(NOLD) + ").");
+			+ lexical_cast<std::string>(NOLD) + ").");
 	}
 	if (NOLD != data.size()) {
 		throw std::invalid_argument("Data and time arrays passed to autoCorr() must have the same length (gave " 
-			+ lexical_cast<std::string,size_t>(NOLD) + " and " 
-			+ lexical_cast<std::string,size_t>(data.size()) + ")");
+			+ lexical_cast<std::string>(NOLD) + " and " 
+			+ lexical_cast<std::string>(data.size()) + ")");
 	}
 	if (deltaT <= 0) {
 		throw std::invalid_argument("Need a positive time lag to construct an autocorrelation grid (gave " 
-			+ lexical_cast<std::string,double>(deltaT) + ")");
+			+ lexical_cast<std::string>(deltaT) + ")");
 	}
 	if (nAcf <= 0) {
 		throw std::invalid_argument("Must calculate autocorrelation function at a positive number of points " 
-			+ lexical_cast<std::string,size_t>(nAcf) + ")");
+			+ lexical_cast<std::string>(nAcf) + ")");
 	}
 
 	// In C++11, can directly return an array view of times and data

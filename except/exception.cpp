@@ -1,5 +1,5 @@
 /** Base exception class analogous to std::runtime_error and std::logic_error
- * @file except/exception.cpp
+ * @file lightcurveMC/except/exception.cpp
  * @author Krzysztof Findeisen
  * @date Created April 22, 2013
  * @date Last modified April 22, 2013

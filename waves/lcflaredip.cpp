@@ -1,5 +1,5 @@
 /** Defines the FlareDip light curve class.
- * @file lcFlareDip.cpp
+ * @file lightcurveMC/waves/lcFlareDip.cpp
  * @author Krzysztof Findeisen
  * @date Created August 21, 2012
  * @date Last modified May 11, 2013
@@ -48,15 +48,15 @@ FlareDip::FlareDip(const std::vector<double> &times,
 			: PeriodicLc(times, amp, period, phase), tExp(width), tLin(fade) {
 	if (amp > 1.0) {
 		throw except::BadParam("All SlowDip light curves need amplitudes < 1 (gave " 
-			+ lexical_cast<string, double>(amp) + ").");
+			+ lexical_cast<string>(amp) + ").");
 	}
 	if (fade <= 0.0) {
 		throw except::BadParam("All FlareDip light curves need positive fall times (gave " 
-			+ lexical_cast<string, double>(fade) + ").");
+			+ lexical_cast<string>(fade) + ").");
 	}
 	if (width <= 0.0) {
 		throw except::BadParam("All FlareDip light curves need positive recovery times (gave " 
-			+ lexical_cast<string, double>(width) + ").");
+			+ lexical_cast<string>(width) + ").");
 	}
 }
 

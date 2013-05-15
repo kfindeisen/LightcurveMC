@@ -1,5 +1,5 @@
 /** Test unit for statistics utilities
- * @file unit_stats.cpp
+ * @file lightcurveMC/tests/unit_stats.cpp
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
  * @date Last modified May 5, 2013
@@ -43,6 +43,7 @@
 #include "../lcsio.h"
 #include "../mcio.h"
 #include "../nan.h"
+#include "../stats/peakfind.h"
 #include "test.h"
 #include "../except/undefined.h"
 
@@ -420,7 +421,7 @@ BOOST_AUTO_TEST_CASE(acf_interp) {
 		double offsetIn;
 		{
 			char fileName[80];
-			sprintf(fileName, "acfi_target_in_%i.txt", i);
+			sprintf(fileName, "idl_target_in_%i.txt", i);
 			FILE* hInput = fopen(fileName, "r");
 			if (hInput == NULL) {
 				throw std::runtime_error("Could not open reference file: " 
@@ -434,7 +435,7 @@ BOOST_AUTO_TEST_CASE(acf_interp) {
 		double offsetOut;
 		{
 			char fileName[80];
-			sprintf(fileName, "acfi_target_out_%i.txt", i);
+			sprintf(fileName, "idl_target_acf_%i.txt", i);
 			FILE* hOutput = fopen(fileName, "r");
 			if (hOutput == NULL) {
 				throw std::runtime_error("Could not open reference file: "
@@ -453,15 +454,74 @@ BOOST_AUTO_TEST_CASE(acf_interp) {
 		BOOST_CHECK_NO_THROW(lcmc::stats::interp::autoCorr(times, mags, 
 			deltaT, nAcf, myAcfs));
 		
+		BOOST_REQUIRE_EQUAL(nAcf, myAcfs.size());
+		
+		// Allow for occasional deviations due to roundoff errors
 		unsigned int nBad = 0;
 		for(size_t j = 0; j < nAcf; j++) {
-			/*myTestClose(acfs[j], myAcfs[j], 1e-5);*/
 			if (!isClose(acfs[j], myAcfs[j], 1e-5)) {
 				nBad++;
 			}
 		}
-		BOOST_WARN(nBad > 0 && nBad < nAcf/1000);
-		BOOST_CHECK(nBad < nAcf/1000);
+		BOOST_WARN(nBad == 0 || nBad >= nAcf/1000);
+		BOOST_CHECK(nBad <= nAcf/1000);
+	}	// end loop over examples
+}
+
+/* @fn lcmc::stats::peakFind()
+ *
+ * @test Consistent results with original IDL code
+ */
+/** Tests whether lcmc::stats::peakFind() matches 
+ *	Ann Marie's original program
+ */
+BOOST_AUTO_TEST_CASE(peakfind) {
+	for(size_t i = 0; i <= 13; i++) {
+		vector<double> times, mags;
+		double offsetIn;
+		{
+			char fileName[80];
+			sprintf(fileName, "idl_target_in_%i.txt", i);
+			FILE* hInput = fopen(fileName, "r");
+			if (hInput == NULL) {
+				throw std::runtime_error("Could not open reference file: " 
+					+ std::string(fileName));
+			}
+			readMcLightCurve(hInput, offsetIn, times, mags);
+			fclose(hInput);
+		}
+
+		vector<double> peakTimes, peaks;
+		double offsetOut;
+		{
+			char fileName[80];
+			sprintf(fileName, "idl_target_peak_%i.txt", i);
+			FILE* hOutput = fopen(fileName, "r");
+			if (hOutput == NULL) {
+				throw std::runtime_error("Could not open reference file: "
+					+ std::string(fileName));
+			}
+			readMcLightCurve(hOutput, offsetOut, peakTimes, peaks);
+			fclose(hOutput);
+		}
+		
+		vector<double> myTimes, myPeaks;
+		BOOST_CHECK_NO_THROW(lcmc::stats::peakFind(times, mags, 0.05, 
+			myTimes, myPeaks));
+		
+		BOOST_REQUIRE_EQUAL(myTimes.size(), peakTimes.size());
+		BOOST_REQUIRE_EQUAL(myTimes.size(), myPeaks.size());
+		
+		// Allow for occasional deviations due to roundoff errors
+		unsigned int nBad = 0;
+		for(size_t j = 0; j < myTimes.size(); j++) {
+			if (!isClose(myTimes[j], peakTimes[j], 1e-5) 
+					|| !isClose(myPeaks[j], peaks[j], 1e-5)) {
+				nBad++;
+			}
+		}
+		BOOST_WARN(nBad == 0 || nBad >= peakTimes.size()/1000);
+		BOOST_CHECK(nBad <= peakTimes.size()/1000);
 	}	// end loop over examples
 }
 

@@ -1,5 +1,5 @@
 /** Code for parsing the command line interface
- * @file cmd/cmd.cpp
+ * @file lightcurveMC/cmd/cmd.cpp
  * @author Krzysztof Findeisen
  * @date Created April 12, 2013
  * @date Last modified May 11, 2013

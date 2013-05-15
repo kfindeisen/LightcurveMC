@@ -1,5 +1,5 @@
 /** Helper functions for generating light curves
- * @file generators.h
+ * @file lightcurveMC/waves/generators.h
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
  * @date Last modified May 6, 2013

@@ -1,5 +1,5 @@
 /** Autocorrelation functions using interpolation
- * @file acfinterp.h
+ * @file lightcurveMC/stats/acfinterp.h
  * @author Ann Marie Cody
  * @author Krzysztof Findeisen
  * @date Created May 6, 2013

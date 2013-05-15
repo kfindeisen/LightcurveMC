@@ -1,5 +1,5 @@
 /** Functions for trying out new features
- * @file experimental.h
+ * @file lightcurveMC/stats/experimental.h
  * @author Krzysztof Findeisen
  * @date Created August 3, 2011
  * @date Last modified April 12, 2013

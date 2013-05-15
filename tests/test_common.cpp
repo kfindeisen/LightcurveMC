@@ -1,5 +1,5 @@
 /** Utilities for test suite
- * @file test_common.cpp
+ * @file lightcurveMC/tests/test_common.cpp
  * @author Krzysztof Findeisen
  * @date Created April 28, 2013
  * @date Last modified April 28, 2013

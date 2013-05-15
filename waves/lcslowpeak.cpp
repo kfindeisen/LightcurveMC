@@ -1,5 +1,5 @@
 /** Defines the SlowPeak light curve class.
- * @file lcslowpeak.cpp
+ * @file lightcurveMC/waves/lcslowpeak.cpp
  * @author Krzysztof Findeisen
  * @date Created May 2, 2012
  * @date Last modified May 11, 2013
@@ -48,7 +48,7 @@ SlowPeak::SlowPeak(const std::vector<double> &times,
 		: PeriodicLc(times, amp, period, phase), width(width) {
 	if (width <= 0.0) {
 		throw except::BadParam("All SlowPeak light curves need positive widths (gave " 
-			+ lexical_cast<string, double>(width) + ").");
+			+ lexical_cast<string>(width) + ").");
 	}
 }
 

@@ -1,5 +1,5 @@
 /** Exception definitions for missing data errors
- * @file except/undefined.cpp
+ * @file lightcurveMC/except/undefined.cpp
  * @author Krzysztof Findeisen
  * @date Created May 5, 2013
  * @date Last modified May 7, 2013

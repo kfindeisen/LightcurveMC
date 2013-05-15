@@ -1,5 +1,5 @@
 /** Defines the DampedRandomWalk light curve class.
- * @file lcdrw.cpp
+ * @file lightcurveMC/waves/lcdrw.cpp
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
  * @date Last modified May 12, 2013
@@ -42,11 +42,11 @@ DampedRandomWalk::DampedRandomWalk(const std::vector<double>& times, double diff
 		: Stochastic(times), sigma(sqrt(0.5*diffus*tau)), tau(tau) {
 	if (diffus <= 0.0) {
 		throw except::BadParam("All DampedRandomWalk light curves need positive diffusion coefficients (gave " 
-			+ lexical_cast<string, double>(diffus) + ").");
+			+ lexical_cast<string>(diffus) + ").");
 	}
 	if (tau <= 0.0) {
 		throw except::BadParam("All DampedRandomWalk light curves need positive coherence times (gave " 
-			+ lexical_cast<string, double>(tau) + ").");
+			+ lexical_cast<string>(tau) + ").");
 	}
 }
 

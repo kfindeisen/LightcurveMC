@@ -1,5 +1,5 @@
 /** Temporary implementations of a lag-n autocorrelation function
- * @file acf.cpp
+ * @file lightcurveMC/stats/acf.cpp
  * @author Krzysztof Findeisen
  * @date Created May 7, 2013
  * @date Last modified May 12, 2013

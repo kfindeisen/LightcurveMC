@@ -1,5 +1,5 @@
 /** Exception definitions for invalid data
- * @file except/data.cpp
+ * @file lightcurveMC/except/data.cpp
  * @author Krzysztof Findeisen
  * @date Created May 8, 2013
  * @date Last modified May 11, 2013

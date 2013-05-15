@@ -1,5 +1,5 @@
 /** Utilities for test suite
- * @file test.h
+ * @file lightcurveMC/tests/test.h
  * @author Krzysztof Findeisen
  * @date Created April 28, 2013
  * @date Last modified April 28, 2013

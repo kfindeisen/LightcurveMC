@@ -1,5 +1,5 @@
 /** Defines the SimpleGp light curve class.
- * @file lcgp1.cpp
+ * @file lightcurveMC/waves/lcgp1.cpp
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
  * @date Last modified May 12, 2013
@@ -48,11 +48,11 @@ SimpleGp::SimpleGp(const std::vector<double>& times, double sigma, double tau)
 		: Stochastic(times), sigma(sigma), tau(tau) {
 	if (sigma <= 0.0) {
 		throw except::BadParam("All DampedRandomWalk light curves need positive standard deviations (gave " 
-			+ lexical_cast<string, double>(sigma) + ").");
+			+ lexical_cast<string>(sigma) + ").");
 	}
 	if (tau <= 0.0) {
 		throw except::BadParam("All DampedRandomWalk light curves need positive coherence times (gave " 
-			+ lexical_cast<string, double>(tau) + ").");
+			+ lexical_cast<string>(tau) + ").");
 	}
 }
 

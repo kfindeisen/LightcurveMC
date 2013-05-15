@@ -1,5 +1,5 @@
 /** Functions for handling data containing NaN values
- * @file nanstats.cpp
+ * @file lightcurveMC/nanstats.cpp
  * @author Krzysztof Findeisen
  * @date Created April 11, 2013
  * @date Last modified May 7, 2013
@@ -103,9 +103,9 @@ void removeNans(const vector<double>& badVals, vector<double>& goodVals,
 	if (badVals.size() != sideVals.size()) {
 		try {
 			throw std::invalid_argument("Passed arrays of different lengths into removeNans(): " 
-				+ lexical_cast<std::string, size_t>( badVals.size()) 
+				+ lexical_cast<std::string>( badVals.size()) 
 				+ " for array with NaNs, and " 
-				+ lexical_cast<std::string, size_t>(sideVals.size()) 
+				+ lexical_cast<std::string>(sideVals.size()) 
 				+ " for matching array");
 		} catch (boost::bad_lexical_cast &e) {
 			throw std::invalid_argument("Passed arrays of different lengths into removeNans().");

@@ -1,5 +1,5 @@
 /** Defines the SquareDip light curve class.
- * @file lcSquareDip.cpp
+ * @file lightcurveMC/waves/lcSquareDip.cpp
  * @author Krzysztof Findeisen
  * @date Created August 21, 2012
  * @date Last modified May 11, 2013
@@ -46,11 +46,11 @@ SquareDip::SquareDip(const std::vector<double> &times,
 			: PeriodicLc(times, amp, period, phase), width(width) {
 	if (amp > 1.0) {
 		throw except::BadParam("All SlowDip light curves need amplitudes < 1 (gave " 
-			+ lexical_cast<string, double>(amp) + ").");
+			+ lexical_cast<string>(amp) + ").");
 	}
 	if (width <= 0.0) {
 		throw except::BadParam("All SquareDip light curves need positive widths (gave " 
-			+ lexical_cast<string, double>(width) + ").");
+			+ lexical_cast<string>(width) + ").");
 	}
 }
 

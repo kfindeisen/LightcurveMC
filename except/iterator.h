@@ -1,5 +1,5 @@
 /** Exception definitions for iterator-related errors
- * @file except/iterator.h
+ * @file lightcurveMC/except/iterator.h
  * @author Krzysztof Findeisen
  * @date Created May 2, 2013
  * @date Last modified May 9, 2013

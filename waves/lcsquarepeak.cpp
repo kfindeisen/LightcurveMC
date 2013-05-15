@@ -1,5 +1,5 @@
 /** Defines the SquarePeak light curve class.
- * @file lcsquarepeak.cpp
+ * @file lightcurveMC/waves/lcsquarepeak.cpp
  * @author Krzysztof Findeisen
  * @date Created May 2, 2012
  * @date Last modified May 11, 2013
@@ -42,7 +42,7 @@ SquarePeak::SquarePeak(const std::vector<double> &times,
 			double amp, double period, double phase, double width) : PeriodicLc(times, amp, period, phase), width(width) {
 	if (width <= 0.0) {
 		throw except::BadParam("All SquarePeak light curves need positive widths (gave " 
-		+ lexical_cast<string, double>(width) + ").");
+		+ lexical_cast<string>(width) + ").");
 	}
 }
 

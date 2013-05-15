@@ -1,5 +1,5 @@
 /** Exception definitions for command-line parser
- * @file except/parse.h
+ * @file lightcurveMC/except/parse.h
  * @author Krzysztof Findeisen
  * @date Created May 11, 2013
  * @date Last modified May 11, 2013

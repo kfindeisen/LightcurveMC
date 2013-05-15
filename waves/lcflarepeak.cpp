@@ -1,5 +1,5 @@
 /** Defines the FlarePeak light curve class.
- * @file lcflarepeak.cpp
+ * @file lightcurveMC/waves/lcflarepeak.cpp
  * @author Krzysztof Findeisen
  * @date Created May 2, 2012
  * @date Last modified May 11, 2013
@@ -48,11 +48,11 @@ FlarePeak::FlarePeak(const std::vector<double> &times,
 			: PeriodicLc(times, amp, period, phase), tExp(fade), tLin(rise) {
 	if (rise <= 0.0) {
 		throw except::BadParam("All FlarePeak light curves need positive rise times (gave " 
-			+ lexical_cast<string, double>(rise) + ").");
+			+ lexical_cast<string>(rise) + ").");
 	}
 	if (fade <= 0.0) {
 		throw except::BadParam("All FlarePeak light curves need positive fade times (gave " 
-			+ lexical_cast<string, double>(fade) + ").");
+			+ lexical_cast<string>(fade) + ").");
 	}
 }
 

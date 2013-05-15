@@ -1,5 +1,5 @@
 /** Definitions for functions that handle light curve types
- * @file lightcurveparser.h
+ * @file lightcurveMC/lightcurveparser.h
  * @author Krzysztof Findeisen
  * @date Created April 3, 2012
  * @date Last modified April 12, 2013

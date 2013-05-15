@@ -1,8 +1,8 @@
 /** Definitions for lightcurveMC supporting infrastructure
- * @file statsupport.cpp
+ * @file lightcurveMC/statsupport.cpp
  * @author Krzysztof Findeisen
  * @date Created May 9, 2013
- * @date Last modified May 10, 2013
+ * @date Last modified May 15, 2013
  * 
  * The functions defined here act as an interface between the StatType 
  * parameters and the parser.
@@ -48,13 +48,15 @@ const StatRegistry& getStatRegistry() {
 		registry.clear();
 		
 		// Original waveforms
-		registry.insert(StatEntry(     "C1" , C1         ));
-		registry.insert(StatEntry( "period" , PERIOD     ));
+		registry.insert(StatEntry(      "C1", C1         ));
+		registry.insert(StatEntry("period"  , PERIOD     ));
 		registry.insert(StatEntry("periplot", PERIODOGRAM));
 		registry.insert(StatEntry("dmdtcut" , DMDTCUT    ));
 		registry.insert(StatEntry("dmdtplot", DMDT       ));
-		registry.insert(StatEntry( "acfcut" , ACFCUT     ));
-		registry.insert(StatEntry( "acfplot", ACF        ));
+		registry.insert(StatEntry("iacfcut" , IACFCUT    ));
+		registry.insert(StatEntry("iacfplot", IACF       ));
+		registry.insert(StatEntry("peakcut" , PEAKCUT    ));
+		registry.insert(StatEntry("peakplot", PEAKFIND   ));
 		
 		// No exceptions past this point
 		// To preserve the invariant in the face of exceptions, 
