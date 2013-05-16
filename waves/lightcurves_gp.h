@@ -50,8 +50,6 @@ private:
 
 /** DampedRandomWalk represents variables that vary stochastically within 
  * bounds in magnitude space.
- *
- * @bug Amplitude systematically higher than expected.
  */
 class DampedRandomWalk : public Stochastic {
 public: 

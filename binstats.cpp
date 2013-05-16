@@ -161,10 +161,10 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 		try {
 			double C1 = getC1(mags);
 			C1vals.push_back(C1);
-		} catch (except::NotEnoughData &e) {
+		} catch (const except::NotEnoughData &e) {
 			// The one kind of Undefined we don't want to ignore
 			throw;
-		} catch (except::Undefined &e) {
+		} catch (const except::Undefined &e) {
 			// Don't add a C1; move on
 		}
 	}
@@ -226,10 +226,10 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 						change90, MoreThan(amplitude / 2.0) ));
 				}
 			}
-		} catch (except::NotEnoughData &e) {
+		} catch (const except::NotEnoughData &e) {
 			// The one kind of Undefined we don't want to ignore
 			throw;
-		} catch (except::Undefined &e) {
+		} catch (const except::Undefined &e) {
 			// Don't add any dmdt stats; move on
 		}
 	}
@@ -271,10 +271,10 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 				cutIAcf2s.push_back(cutFunction(offsets, acf, 
 					LessThan(0.5)    ));
 			}
-		} catch (except::NotEnoughData &e) {
+		} catch (const except::NotEnoughData &e) {
 			// The one kind of Undefined we don't want to ignore
 			throw;
-		} catch (except::Undefined &e) {
+		} catch (const except::Undefined &e) {
 			// Don't add any acf stats; move on
 		}
 	}
@@ -314,10 +314,10 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 				cutSAcf2s.push_back(cutFunction(offsets, acf, 
 					LessThan(0.5)    ));
 			}
-		} catch (except::NotEnoughData &e) {
+		} catch (const except::NotEnoughData &e) {
 			// The one kind of Undefined we don't want to ignore
 			throw;
-		} catch (except::Undefined &e) {
+		} catch (const except::Undefined &e) {
 			// Don't add any acf stats; move on
 		}
 	}
@@ -341,10 +341,10 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 				cutPeakAmp3s.push_back(cutTimes[0]);
 				cutPeakAmp2s.push_back(cutTimes[1]);
 			}
-		} catch (except::NotEnoughData &e) {
+		} catch (const except::NotEnoughData &e) {
 			// The one kind of Undefined we don't want to ignore
 			throw;
-		} catch (except::Undefined &e) {
+		} catch (const except::Undefined &e) {
 			// Don't add any acf stats; move on
 		}
 	}
@@ -375,10 +375,10 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 				peakTimes .push_back(cutTimes);
 				peakValues.push_back(magCuts);
 			}
-		} catch (except::NotEnoughData &e) {
+		} catch (const except::NotEnoughData &e) {
 			// The one kind of Undefined we don't want to ignore
 			throw;
-		} catch (except::Undefined &e) {
+		} catch (const except::Undefined &e) {
 			// Don't add any acf stats; move on
 		}
 	}
@@ -746,7 +746,7 @@ void getSummaryStats(const DoubleVec& values, double& mean, double& stddev,
 		//	go later
 		mean   =      utils::    meanNoNan(values);
 		stddev = sqrt(utils::varianceNoNan(values));
-	} catch (except::NotEnoughData &e) {
+	} catch (const except::NotEnoughData &e) {
 		// These should just be warnings that a statistic is undefined
 		fprintf(stderr, "WARNING: %s summary: %s\n", statName.c_str(), e.what());
 	}

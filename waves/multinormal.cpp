@@ -86,7 +86,7 @@ void multiNormal(const vector<double>& indVec, const shared_ptr<gsl_matrix>& cov
 			std::string len2 = lexical_cast<std::string>(covar->size2);
 			throw std::invalid_argument(len1 + "×" + len2 
 				+ " covariance matrix passed to multiNormal().");
-		} catch (boost::bad_lexical_cast &e) {
+		} catch (const boost::bad_lexical_cast &e) {
 			throw std::invalid_argument(
 				"Non-square covariance matrix passed to multiNormal().");
 		}
@@ -98,7 +98,7 @@ void multiNormal(const vector<double>& indVec, const shared_ptr<gsl_matrix>& cov
 			throw std::invalid_argument("Vector of length " + lenV 
 				+ " cannot be multiplied by " 
 				+ lenM + "×" + lenM + " covariance matrix in multiNormal().");
-		} catch (boost::bad_lexical_cast &e) {
+		} catch (const boost::bad_lexical_cast &e) {
 			throw std::invalid_argument(
 				"Length of input vector to multiNormal() does not match dimensions of covariance matrix.");
 		}

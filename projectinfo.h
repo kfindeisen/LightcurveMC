@@ -61,8 +61,10 @@
  *	The use of the keywords NonSpitzerNonVar, NonSpitzerVar, 
  *	SpitzerNonVar, and SpitzerVar is now deprecated.
  * - Changed: improved error recovery and reporting
- * - Fixed: noise will no longer be correlated with white noise, 
- *	random walk, and damped random walk light curves
+ * - Fixed: noise will no longer be correlated with 
+ *	@ref lcmc::models::WhiteNoise "WhiteNoise", 
+ *	@ref lcmc::models::RandomWalk "RandomWalk", and 
+ *	@ref lcmc::models::DampedRandomWalk "DampedRandomWalk" light curves
  *
  * @subsection v2_1_0 2.1.0
  *

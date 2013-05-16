@@ -226,7 +226,7 @@ void parseArguments(int argc, char* argv[],
 		// Light curve list
 		try {
 			parseLcList(argLcList, lcNameList, lcList);
-		} catch (except::NoLightCurves& e) {
+		} catch (const except::NoLightCurves& e) {
 			throw except::NoLightCurves(string(e.what()) 
 				+ " Type " + cmd.getProgramName() 
 				+ " -h for a list of choices.");
@@ -235,7 +235,7 @@ void parseArguments(int argc, char* argv[],
 		// Statistics list
 		try {
 			parseStatList(argStatList, statList);
-		} catch (except::NoStats& e) {
+		} catch (const except::NoStats& e) {
 			throw except::NoStats(string(e.what()) 
 				+ " Type " + cmd.getProgramName() 
 				+ " -h for a list of choices.");
@@ -253,16 +253,16 @@ void parseArguments(int argc, char* argv[],
 			addParam(paramRanges, "d", argDiffus, RangeList::LOGUNIFORM);
 			addParam(paramRanges, "a2", argAmp2, RangeList::LOGUNIFORM);
 			addParam(paramRanges, "p2", argPer2, RangeList::LOGUNIFORM);
-		} catch (utils::except::UnexpectedNan& e) {
+		} catch (const utils::except::UnexpectedNan& e) {
 			throw std::logic_error("BUG: parameter validation doesn't work!\nOriginal error: " + string(e.what()));
-		} catch (models::except::ExtraParam& e) {
+		} catch (const models::except::ExtraParam& e) {
 			throw std::logic_error("BUG: parameter parsing is incorrect!\nOriginal error: " + string(e.what()));
-		} catch (models::except::NegativeRange& e) {
+		} catch (const models::except::NegativeRange& e) {
 			throw std::logic_error("BUG: parameter validation doesn't work!\nOriginal error: " + string(e.what()));
-		} catch (std::invalid_argument& e) {
+		} catch (const std::invalid_argument& e) {
 			throw std::logic_error("BUG: parameter parsing is incorrect!\nOriginal error: " + string(e.what()));
 		}
-	} catch (TCLAP::ArgException& e) {
+	} catch (const TCLAP::ArgException& e) {
 		// Translate to a generic exception to encapsulate our choice of parser
 		throw except::ParseError(e.argId() 
 			+ "\n             " + e.error() + "\n\n" 

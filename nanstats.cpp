@@ -107,7 +107,7 @@ void removeNans(const vector<double>& badVals, vector<double>& goodVals,
 				+ " for array with NaNs, and " 
 				+ lexical_cast<std::string>(sideVals.size()) 
 				+ " for matching array");
-		} catch (boost::bad_lexical_cast &e) {
+		} catch (const boost::bad_lexical_cast &e) {
 			throw std::invalid_argument("Passed arrays of different lengths into removeNans().");
 		}
 	}
@@ -158,7 +158,7 @@ double meanNoNan(const vector<double>& vals) {
 	
 	try {
 		return kpfutils::mean(firstClean, lastClean);
-	} catch (kpfutils::except::NotEnoughData &e) {
+	} catch (const kpfutils::except::NotEnoughData &e) {
 		throw stats::except::NotEnoughData(e.what());
 //		return numeric_limits<double>::quiet_NaN();
 	}
@@ -193,7 +193,7 @@ double varianceNoNan(const vector<double>& vals) {
 		} else {
 			return rawVariance;
 		}
-	} catch (kpfutils::except::NotEnoughData &e) {
+	} catch (const kpfutils::except::NotEnoughData &e) {
 		// Translate to lcmc exception to avoid exposing implementation
 		throw stats::except::NotEnoughData(e.what());
 //		return numeric_limits<double>::quiet_NaN();

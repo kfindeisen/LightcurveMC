@@ -107,7 +107,7 @@ void SimpleGp::solveFluxes(std::vector<double>& fluxes) const {
 	
 		try {
 			utils::multiNormal(temp, corrs, temp);
-		} catch (std::invalid_argument& e) {
+		} catch (const std::invalid_argument& e) {
 			throw std::logic_error("BUG: SimpleGp uses invalid correlation matrix.\nOriginal error: " + std::string(e.what()));
 		}
 		

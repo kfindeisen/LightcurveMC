@@ -52,9 +52,9 @@ Observations::Observations(const std::string& catalogName) : times(), fluxes() {
 	
 	try {
 		readFile(library.at(index));
-	} catch (except::BadFile& e) {
+	} catch (const except::BadFile& e) {
 		throw lcmc::except::FileIo(e.what());
-	} catch (except::BadFormat& e) {
+	} catch (const except::BadFormat& e) {
 		throw lcmc::except::FileIo(e.what());
 	}
 }
@@ -95,7 +95,7 @@ void Observations::readFile(const std::string& fileName) {
 	try {
 		readWgLightCurve(hLightCurve.get(), 0.1, offset, dummyTimes, 
 			dummyFluxes, dummyErrors);
-	} catch (std::runtime_error e) {
+	} catch (const std::runtime_error e) {
 		// Convert to proper exception type
 		// readWgLightCurve doesn't know the filename, so add that in
 		throw except::BadFormat("While reading " + fileName + ": " 

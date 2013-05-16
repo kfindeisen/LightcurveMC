@@ -249,7 +249,7 @@ void testGp(size_t nTest, const std::string& fileName, const TestFactory& factor
 			}
 			fprintf(hDump, "\n");
 		}
-	} catch (std::exception& e) {
+	} catch (const std::exception& e) {
 		fclose(hDump);
 		BOOST_ERROR("Could not finish writing to " << fileName);
 		BOOST_ERROR(e.what());

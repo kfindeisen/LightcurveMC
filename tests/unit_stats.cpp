@@ -399,7 +399,7 @@ BOOST_AUTO_TEST_CASE(acf) {
 				myTestClose(acfs[i], corrs[i], 1e-5);
 			}
 		}
-	} catch (std::exception &e) {
+	} catch (const std::exception &e) {
 		fclose(hTarget);
 		BOOST_ERROR("Could not finish reading from acftarget.txt.");
 		throw;
