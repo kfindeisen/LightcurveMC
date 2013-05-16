@@ -104,6 +104,8 @@ LcBinStats::LcBinStats(const string& modelName, const RangeList& binSpecs, const
 		dmdtMedianTimes(), dmdtMedians(),
 		cutIAcf9s(), cutIAcf4s(), cutIAcf2s(), 
 		iAcfTimes(), iAcfs(), 
+		cutSAcf9s(), cutSAcf4s(), cutSAcf2s(), 
+		sAcfTimes(), sAcfs(), 
 		cutPeakAmp3s(), cutPeakAmp2s(), 
 		peakTimes(), peakValues() {
 	if (stats.size() == 0) {
@@ -142,7 +144,6 @@ LcBinStats::LcBinStats(const string& modelName, const RangeList& binSpecs, const
  */
 void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& fluxes, 
 		const ParamList& trueParams) {
-	using interp::autoCorr;
 	
 	if (times.size() != fluxes.size()) {
 		throw std::invalid_argument("Times and fluxes must have the same length in analyzeLightCurve() (gave " 
@@ -247,7 +248,7 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 			
 			DoubleVec cleanTimes, cleanMags, acf;
 			utils::removeNans(mags, cleanMags, times, cleanTimes);
-			autoCorr(cleanTimes, cleanMags, offStep, offsets.size(), acf);
+			interp::autoCorr(cleanTimes, cleanMags, offStep, offsets.size(), acf);
 			if (hasStat(stats, IACF)) {
 				// Since vector::reserve() has the strong guarantee 
 				// and doesn't change the data in any case, it's 
@@ -268,6 +269,49 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 				cutIAcf4s.push_back(cutFunction(offsets, acf, 
 					LessThan(0.25)   ));
 				cutIAcf2s.push_back(cutFunction(offsets, acf, 
+					LessThan(0.5)    ));
+			}
+		} catch (except::NotEnoughData &e) {
+			// The one kind of Undefined we don't want to ignore
+			throw;
+		} catch (except::Undefined &e) {
+			// Don't add any acf stats; move on
+		}
+	}
+
+	if (hasStat(stats, SACFCUT) || hasStat(stats, SACF)) {
+		try {
+			const static double offStep = 0.1;
+			
+			double maxOffset = kpftimes::deltaT(times);
+			DoubleVec offsets;
+			for (double t = 0.0; t < maxOffset; t += offStep) {
+				offsets.push_back(t);
+			}
+			
+			DoubleVec cleanTimes, cleanMags, acf;
+			utils::removeNans(mags, cleanMags, times, cleanTimes);
+			kpftimes::autoCorr(cleanTimes, cleanMags, offsets, acf);
+			if (hasStat(stats, SACF)) {
+				// Since vector::reserve() has the strong guarantee 
+				// and doesn't change the data in any case, it's 
+				// effectively a function that is guaranteed to not 
+				// change the content of a vector. 
+				// Use it to ensure that either vector is changed 
+				// only if no exception is thrown
+				sAcfTimes.reserve(sAcfTimes.size() + 1);
+				sAcfs    .reserve(sAcfs    .size() + 1);
+				sAcfTimes.push_back(offsets);
+				sAcfs    .push_back(acf);
+			}
+			
+			if (hasStat(stats, SACFCUT)) {
+				// Key cuts
+				cutSAcf9s.push_back(cutFunction(offsets, acf, 
+					LessThan(1.0/9.0)));
+				cutSAcf4s.push_back(cutFunction(offsets, acf, 
+					LessThan(0.25)   ));
+				cutSAcf2s.push_back(cutFunction(offsets, acf, 
 					LessThan(0.5)    ));
 			}
 		} catch (except::NotEnoughData &e) {
@@ -328,8 +372,8 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 				// only if no exception is thrown
 				peakTimes .reserve(peakTimes .size() + 1);
 				peakValues.reserve(peakValues.size() + 1);
-				peakTimes .push_back(magCuts);
-				peakValues.push_back(cutTimes);
+				peakTimes .push_back(cutTimes);
+				peakValues.push_back(magCuts);
 			}
 		} catch (except::NotEnoughData &e) {
 			// The one kind of Undefined we don't want to ignore
@@ -368,6 +412,11 @@ void LcBinStats::clear() {
 	cutIAcf2s.clear();
 	iAcfTimes.clear();
 	iAcfs.clear();
+	cutSAcf9s.clear();
+	cutSAcf4s.clear();
+	cutSAcf2s.clear();
+	sAcfTimes.clear();
+	sAcfs.clear();
 	
 	// Peak-finding statistics
 	cutPeakAmp3s.clear();
@@ -422,6 +471,7 @@ void LcBinStats::printBinStats(FILE* const file) const {
 		printStat(file, dmdtMedianTimes, dmdtMedians, 
 			"run_dmdtmed_" + fileName + ".dat");
 	}
+
 	if (hasStat(stats, IACFCUT)) {
 		printStat(file, cutIAcf9s, "ACF crossing 1/9", "run_acf9_" + fileName + ".dat");
 		printStat(file, cutIAcf4s, "ACF crossing 1/4", "run_acf4_" + fileName + ".dat");
@@ -429,6 +479,15 @@ void LcBinStats::printBinStats(FILE* const file) const {
 	}
 	if (hasStat(stats, IACF)) {
 		printStat(file, iAcfTimes, iAcfs, "run_acf_" + fileName + ".dat");
+	}
+
+	if (hasStat(stats, SACFCUT)) {
+		printStat(file, cutSAcf9s, "ACF crossing 1/9", "run_sacf9_" + fileName + ".dat");
+		printStat(file, cutSAcf4s, "ACF crossing 1/4", "run_sacf4_" + fileName + ".dat");
+		printStat(file, cutSAcf2s, "ACF crossing 1/2", "run_sacf2_" + fileName + ".dat");
+	}
+	if (hasStat(stats, SACF)) {
+		printStat(file, sAcfTimes, sAcfs, "run_sacf_" + fileName + ".dat");
 	}
 
 	if (hasStat(stats, PEAKCUT)) {
@@ -514,6 +573,13 @@ void LcBinStats::printBinHeader(FILE* const file, const RangeList& binSpecs,
 		}
 	}
 	if (hasStat(outputStats, IACFCUT)) {
+		status = sprintf(binLabel, "%s\tACF cut at 1/9±err\tFinite\tACF@1/3 Distribution\tACF cut at 1/4±err\tFinite\tACF@1/4 Distribution\tACF cut at 1/2±err\tFinite\tACF@1/2 Distribution", binLabel);
+		if (status < 0) {
+			throw std::runtime_error("String formatting error in printBinHeader(): " 
+				+ string(strerror(errno)));
+		}
+	}
+	if (hasStat(outputStats, SACFCUT)) {
 		status = sprintf(binLabel, "%s\tACF cut at 1/9±err\tFinite\tACF@1/3 Distribution\tACF cut at 1/4±err\tFinite\tACF@1/4 Distribution\tACF cut at 1/2±err\tFinite\tACF@1/2 Distribution", binLabel);
 		if (status < 0) {
 			throw std::runtime_error("String formatting error in printBinHeader(): " 

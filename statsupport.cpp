@@ -55,6 +55,8 @@ const StatRegistry& getStatRegistry() {
 		registry.insert(StatEntry("dmdtplot", DMDT       ));
 		registry.insert(StatEntry("iacfcut" , IACFCUT    ));
 		registry.insert(StatEntry("iacfplot", IACF       ));
+		registry.insert(StatEntry("sacfcut" , SACFCUT    ));
+		registry.insert(StatEntry("sacfplot", SACF       ));
 		registry.insert(StatEntry("peakcut" , PEAKCUT    ));
 		registry.insert(StatEntry("peakplot", PEAKFIND   ));
 		

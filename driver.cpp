@@ -2,7 +2,7 @@
  * @file lightcurveMC/driver.cpp
  * @author Krzysztof Findeisen
  * @date Created January 22, 2010
- * @date Last modified May 14, 2013
+ * @date Last modified May 16, 2013
  */
 
 #include <memory>
@@ -14,6 +14,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/shared_ptr.hpp>
 #include <gsl/gsl_randist.h>
+#include <tclap/ArgException.h>
 #include "binstats.h"
 #include "except/fileio.h"
 #include "lightcurvetypes.h"
@@ -124,7 +125,7 @@ int main(int argc, char* argv[]) {
 	if (mcDriver.get() == NULL) {
 		throw std::bad_alloc();
 	}
-	gsl_rng_set(mcDriver.get(), 42);
+	gsl_rng_set(mcDriver.get(), 27);
 
 	////////////////////
 	// Parse the input
@@ -148,6 +149,9 @@ int main(int argc, char* argv[]) {
 	double minTStep, maxTStep;
 	size_t nObs = 0;
 	if (!injectMode) {
+		/** @bug Attempts to open a nonexistent timestamp file cause a 
+		 *	segmentation fault instead of a clean exit.
+		 */
 		shared_ptr<FILE> hJulDates(fopen(dateList.c_str(), "r"), &fclose);
 		if(NULL == hJulDates.get()) {
 			throw lcmc::except::FileIo("Could not open timestamp file.");
@@ -275,6 +279,8 @@ int main(int argc, char* argv[]) {
 
 	// End of program; use Pokemon exception handling to 
 	//	handle error messages gracefully
+	} catch(TCLAP::ExitException &e) {
+		return e.getExitStatus();
 	} catch(lcmc::parse::except::ParseError &e) {
 		fprintf(stderr, "PARSE ERROR: %s\n", e.what());
 		return 1;

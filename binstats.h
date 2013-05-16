@@ -51,6 +51,12 @@ enum StatType {
 	/** Represents dumps of interpolated ACF plots
 	 */
 	IACF, 
+	/** Represents cuts through Scargle ACF plots
+	 */
+	SACFCUT, 
+	/** Represents dumps of Scargle ACF plots
+	 */
+	SACF, 
 	/** Represents cuts through peak-find plots
 	 */
 	PEAKCUT, 
@@ -136,6 +142,11 @@ private:
 	DoubleVec cutIAcf2s;
 	std::vector<DoubleVec> iAcfTimes;
 	std::vector<DoubleVec> iAcfs;
+	DoubleVec cutSAcf9s;
+	DoubleVec cutSAcf4s;
+	DoubleVec cutSAcf2s;
+	std::vector<DoubleVec> sAcfTimes;
+	std::vector<DoubleVec> sAcfs;
 	
 	// Peak-finding statistics
 	DoubleVec cutPeakAmp3s;

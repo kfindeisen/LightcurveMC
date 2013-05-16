@@ -120,7 +120,7 @@ void DampedRandomWalk::solveFluxes(std::vector<double>& fluxes) const {
 				double deltaTTau  = (*it - *(it-1))/tau;
 				
 				temp.push_back(oldFlux*exp(-deltaTTau) 
-					+ sigma*sqrt((1.0 - exp(-2.0*deltaTTau))) 
+					+ sigma*sqrt(1.0 - exp(-2.0*deltaTTau)) 
 						* rng->rNorm());
 			}
 		}

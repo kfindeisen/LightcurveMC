@@ -2,7 +2,7 @@
  * @file lightcurveMC/projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified May 14, 2013
+ * @date Last modified May 16, 2013
  */
 
 #ifndef LCMCPROJINFOH
@@ -61,6 +61,8 @@
  *	The use of the keywords NonSpitzerNonVar, NonSpitzerVar, 
  *	SpitzerNonVar, and SpitzerVar is now deprecated.
  * - Changed: improved error recovery and reporting
+ * - Fixed: noise will no longer be correlated with white noise, 
+ *	random walk, and damped random walk light curves
  *
  * @subsection v2_1_0 2.1.0
  *

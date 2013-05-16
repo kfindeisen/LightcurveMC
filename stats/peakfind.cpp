@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <cmath>
 #include <boost/concept_check.hpp>
 #include <boost/lexical_cast.hpp>
 //#include "../nan.h"
