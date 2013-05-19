@@ -1,17 +1,15 @@
 # Compilation make for lightcurveMC/except/*
 # by Krzysztof Findeisen
 # Created May 2, 2013
-# Last modified May 9, 2013
-
-SHELL = /bin/sh
+# Last modified May 18, 2013
 
 include ../makefile.inc
 
 #---------------------------------------
 # Directory contents
-PROJ     = except
+PROJ     := except
 
-SOURCES  = exception.cpp \
+SOURCES  := exception.cpp \
 	data.cpp fileio.cpp inject.cpp iterator.cpp nan.cpp \
 	paramlist.cpp parse.cpp undefined.cpp 
 	

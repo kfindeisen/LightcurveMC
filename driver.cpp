@@ -76,8 +76,6 @@ namespace models {
  * 	needed depend on each individual light curve and are given in the 
  * 	light curve documentation.
  *
- * @todo Write up the parameter list
- *
  * @return A smart pointer to an object of the subclass of ILightCurve 
  *	corresponding to the value of whichLc. The object pointed to by the 
  *	smart pointer has been initialized with the data in lcParams.

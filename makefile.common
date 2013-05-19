@@ -1,7 +1,7 @@
 # Common recipes for lightcurveMC compilation
 # by Krzysztof Findeisen
 # Created April 28, 2013
-# Last modified April 28, 2013
+# Last modified May 18, 2013
 
 #---------------------------------------
 # Actual compilation options
@@ -29,6 +29,7 @@ include $(SOURCES:.cpp=.d)
 clean:
 	-@$(RM) -v *.o *.a *.stackdump *~
 	-@for d in $(DIRS) tests; do if [[ -d $$d ]]; then make -C $$d --no-print-directory clean; fi; done
+	if [[ -d doc ]]; then $(RM) -r doc/*; fi; done
 
 cleandepend: 
 	-@$(RM) -v *.d

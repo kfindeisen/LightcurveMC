@@ -41,8 +41,6 @@ using boost::lexical_cast;
  *	parameters are outside their allowed ranges.
  *
  * @exceptsafe Object construction is atomic.
- *
- * @todo Reimplement as a more generic function?
  */
 TriangleWave::TriangleWave(const std::vector<double> &times, 
 		double amp, double period, double phase) 

@@ -225,6 +225,8 @@ quantile(ConstRandomAccessIterator first, ConstRandomAccessIterator last, double
 		throw except::NotEnoughData("Supplied empty data set to quantile()");
 	}
 	std::vector<Value> sortedVec(vecSize);
+	/** @todo Reimplement using partial sorting
+	 */
 	std::partial_sort_copy(first, last, sortedVec.begin(), sortedVec.end());
 
 	size_t index = 0;

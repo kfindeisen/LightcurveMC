@@ -37,8 +37,6 @@ namespace lcmc { namespace models {
  *	parameters are outside their allowed ranges.
  *
  * @exceptsafe Object construction is atomic.
- *
- * @todo Reimplement as a more generic function?
  */
 SharpPeakWave::SharpPeakWave(const std::vector<double> &times, 
 			double amp, double period, double phase) 

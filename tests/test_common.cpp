@@ -51,6 +51,8 @@ using std::vector;
  * @param[in] x The number to test
  *
  * @return true iff x is one of the NaN values
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 bool testNan(const double x) {
 	return static_cast<bool>(gsl_isnan(x));

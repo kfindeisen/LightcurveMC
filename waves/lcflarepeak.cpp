@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lcflarepeak.cpp
  * @author Krzysztof Findeisen
  * @date Created May 2, 2012
- * @date Last modified May 11, 2013
+ * @date Last modified May 18, 2013
  */
 
 #include <cmath>
@@ -29,8 +29,8 @@ using boost::lexical_cast;
  * @pre amp > 0
  * @pre period > 0
  * @pre phase &isin; [0, 1)
- * @pre fade > 0
- * @pre 0 < width < 1
+ * @pre 0 < fade
+ * @pre 0 < rise < 1
  *
  * @post A light curve is a deterministic function of amp, period, phase, and 
  *	width: knowing these values is sufficient to determine flux(t) for any 
@@ -53,6 +53,10 @@ FlarePeak::FlarePeak(const std::vector<double> &times,
 	if (fade <= 0.0) {
 		throw except::BadParam("All FlarePeak light curves need positive fade times (gave " 
 			+ lexical_cast<string>(fade) + ").");
+	}
+	if (rise > 1.0) {
+		throw except::BadParam("FlarePeaks must have linear rise times less than one period (gave " 
+			+ lexical_cast<string>(rise) + " periods).");
 	}
 }
 

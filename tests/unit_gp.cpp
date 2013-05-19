@@ -347,14 +347,13 @@ void testTwoGp(size_t nTest, const std::vector<double> times, double tau1, doubl
  */
 BOOST_FIXTURE_TEST_SUITE(test_gp, ObsData)
 
-/* @class lcmc::models::WhiteNoise
- *
- * @test A WhiteNoise sampled at the PTF epochs has a distribution 
- *	consistent with a multivariate normal with the expected 
- *	covariance matrix
- */
 /** Tests whether the simulated white noise processes have the correct distribution
  *
+ * @test A @ref lcmc::models::WhiteNoise "WhiteNoise" sampled at the PTF epochs 
+ *	has a distribution consistent with a multivariate normal with the 
+ *	expected covariance matrix
+ *
+ * @see @ref lcmc::models::WhiteNoise "WhiteNoise"
  * @see testWhite()
  */
 BOOST_AUTO_TEST_CASE(white)

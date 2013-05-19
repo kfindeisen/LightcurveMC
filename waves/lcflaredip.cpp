@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lcFlareDip.cpp
  * @author Krzysztof Findeisen
  * @date Created August 21, 2012
- * @date Last modified May 11, 2013
+ * @date Last modified May 18, 2013
  */
 
 #include <cmath>
@@ -29,8 +29,8 @@ using boost::lexical_cast;
  * @pre amp &le; 1
  * @pre period > 0
  * @pre phase &isin; [0, 1)
+ * @pre 0 < width
  * @pre 0 < fade < 1
- * @pre 0 < width < 1
  *
  * @post A light curve is a deterministic function of amp, period, phase,  
  *	fade, and width: knowing these values is sufficient to determine 
@@ -57,6 +57,10 @@ FlareDip::FlareDip(const std::vector<double> &times,
 	if (width <= 0.0) {
 		throw except::BadParam("All FlareDip light curves need positive recovery times (gave " 
 			+ lexical_cast<string>(width) + ").");
+	}
+	if (fade > 1.0) {
+		throw except::BadParam("FlareDips must have linear fall times less than one period (gave " 
+			+ lexical_cast<string>(fade) + " periods).");
 	}
 }
 
