@@ -11,10 +11,10 @@ nice -n 15 ../lightcurveMC -a "0.5 0.5" -p "0.25 400.0" --ntrials 20 --add NonSp
 	flat sine -s peakcut \
 	>> sinetest_peak_snr1e6.log
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 400.0" --ntrials 20 ptfjds.txt \
-	flat sine -s peakcut \
+	sine -s peakcut \
 	>> sinetest_peak_snr1e6.log
 nice -n 15 ../lightcurveMC -a "0.1 0.1" -p "0.25 400.0" --ntrials 20 ptfjds.txt \
-	flat sine -s peakcut \
+	sine -s peakcut \
 	>> sinetest_peak_snr1e6.log
 diff -s sinetarget_peak_snr1e6.log sinetest_peak_snr1e6.log
 # diff returns 0 iff files are equal

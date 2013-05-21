@@ -526,7 +526,8 @@
  * values from each simulation (or NaN where it could not be defined), one 
  * per line, for more in-depth analysis of the results.<br> 
  * These four values are then repeated for the time between local extrema 
- * separated by one half the amplitude.</dd>
+ * separated by one half the amplitude and the time between extrema separated 
+ * by by 80% of the amplitude.</dd>
  * <dt><tt>peakplot</tt></dt><dd>The program prints the name of a file containing 
  * pairs of rows representing the individual peak-finding functions from each 
  * run. The first row in each pair contains the timescales in space-delimited 

@@ -106,7 +106,7 @@ LcBinStats::LcBinStats(const string& modelName, const RangeList& binSpecs, const
 		iAcfTimes(), iAcfs(), 
 		cutSAcf9s(), cutSAcf4s(), cutSAcf2s(), 
 		sAcfTimes(), sAcfs(), 
-		cutPeakAmp3s(), cutPeakAmp2s(), 
+		cutPeakAmp3s(), cutPeakAmp2s(), cutPeakAmp45s(), 
 		peakTimes(), peakValues() {
 	if (stats.size() == 0) {
 		throw std::invalid_argument("LcBinStats won't calculate any statistics");
@@ -332,14 +332,16 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 				DoubleVec magCuts;
 				magCuts.push_back(amplitude / 3.0);
 				magCuts.push_back(amplitude / 2.0);
+				magCuts.push_back(amplitude * 0.8);
 			
 				DoubleVec cleanTimes, cleanMags, cutTimes;
 				utils::removeNans(mags, cleanMags, times, cleanTimes);
 				peakFindTimescales(cleanTimes, cleanMags, magCuts, cutTimes);
 				
 				// Key cuts
-				cutPeakAmp3s.push_back(cutTimes[0]);
-				cutPeakAmp2s.push_back(cutTimes[1]);
+				cutPeakAmp3s .push_back(cutTimes[0]);
+				cutPeakAmp2s .push_back(cutTimes[1]);
+				cutPeakAmp45s.push_back(cutTimes[2]);
 			}
 		} catch (const except::NotEnoughData &e) {
 			// The one kind of Undefined we don't want to ignore
@@ -421,6 +423,7 @@ void LcBinStats::clear() {
 	// Peak-finding statistics
 	cutPeakAmp3s.clear();
 	cutPeakAmp2s.clear();
+	cutPeakAmp45s.clear();
 	peakTimes.clear();
 	peakValues.clear();
 }
@@ -495,6 +498,8 @@ void LcBinStats::printBinStats(FILE* const file) const {
 			"run_cutpeak3_" + fileName + ".dat");
 		printStat(file, cutPeakAmp2s, "Peak timescales crossing 1/2 amp", 
 			"run_cutpeak2_" + fileName + ".dat");
+		printStat(file, cutPeakAmp45s, "Peak timescales crossing 4/5 amp", 
+			"run_cutpeak45_" + fileName + ".dat");
 	}
 	if (hasStat(stats, PEAKFIND)) {
 		printStat(file, peakTimes, peakValues, "run_peaks_" + fileName + ".dat");

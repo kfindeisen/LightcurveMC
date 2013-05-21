@@ -151,6 +151,7 @@ private:
 	// Peak-finding statistics
 	DoubleVec cutPeakAmp3s;
 	DoubleVec cutPeakAmp2s;
+	DoubleVec cutPeakAmp45s;
 	std::vector<DoubleVec> peakTimes;
 	std::vector<DoubleVec> peakValues;
 };
