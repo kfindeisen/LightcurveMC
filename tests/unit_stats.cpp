@@ -41,6 +41,7 @@
 #include "../approx.h"
 #include "../waves/generators.h"
 #include "../lcsio.h"
+#include "../stats/magdist.h"
 #include "../mcio.h"
 #include "../nan.h"
 #include "../stats/peakfind.h"
@@ -524,6 +525,45 @@ BOOST_AUTO_TEST_CASE(peakfind) {
 		BOOST_CHECK(nBad <= peakTimes.size()/1000);
 	}	// end loop over examples
 }
+
+/* @fn lcmc::stats::peakFind()
+ *
+ * @test Monotonic output
+ */
+/* Tests for a bug where lcmc::stats::peakFindTimescales() produces 
+ * non-monototonic output
+ */
+/*BOOST_AUTO_TEST_CASE(peakfind_mono) {
+
+	vector<double> times, mags;
+	double offsetIn;
+	char fileName[80];
+	sprintf(fileName, "peakfind_mono_target.txt");
+	FILE* hInput = fopen(fileName, "r");
+	if (hInput == NULL) {
+		throw std::runtime_error("Could not open reference file: " 
+			+ std::string(fileName));
+	}
+	readMcLightCurve(hInput, offsetIn, times, mags);
+	fclose(hInput);
+
+	const static double minMag = 0.01;
+	vector<double> magCuts, timescales;
+	double amp = stats::getAmplitude(mags);
+	for (double mag = minMag; mag < amp; mag += minMag) {
+		magCuts.push_back(mag);
+	}
+
+	BOOST_CHECK_NO_THROW(lcmc::stats::peakFindTimescales(times, mags, 
+		magCuts, timescales));
+	
+	BOOST_REQUIRE_EQUAL(magCuts.size(), timescales.size());
+		
+	// Monotonic?
+	for(size_t i = 1; i < timescales.size(); i++) {
+		BOOST_CHECK_LE(timescales[i-1], timescales[i]);
+	}
+}*/
 
 BOOST_AUTO_TEST_SUITE_END()
 

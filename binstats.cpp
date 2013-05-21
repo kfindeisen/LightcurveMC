@@ -353,7 +353,7 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 			double amplitude = getAmplitude(mags);
 			
 			if (amplitude > 0) {
-				double minMag = 0.01;
+				const static double minMag = 0.01;
 				
 				DoubleVec magCuts;
 				for (double mag = minMag; mag < amplitude; mag += minMag) {

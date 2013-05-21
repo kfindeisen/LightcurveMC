@@ -568,6 +568,22 @@ LCType		a      	p      	ph     	Noise	Period±err	Period Distribution
 sine          	0.01	4	0	0.05	 4.32±0.160	run_peri_sine_a1.00_p4.00_p0.00_n0.dat
 @endverbatim
  * 
+ * @subsection ex_toomany Unnecessary Parameters
+ *
+ * Unused parameters change the file format but not the statistics: 
+ * 
+ * @par Type: 
+@verbatim
+lightcurveMC myjdlist.txt sine --noise 0.05 \
+	--amp "0.01 1.0" --period "4.0 4.0" --width "0.1 0.1" \
+	--stat period
+@endverbatim
+ * @par Output: 
+@verbatim
+LCType		a      	p      	width	ph     	Noise	Period±err	Period Distribution
+sine          	0.01	4	0.1	0	0.05	 4.32±0.160	run_peri_sine_a1.00_p4.00_p0.00_n0.dat
+@endverbatim
+ * 
  * @subsection ex_params Multiple Light Curves, More Complex Parameters
  *
  * What is the C1 distribution for an asymmetric light curve?
@@ -575,7 +591,7 @@ sine          	0.01	4	0	0.05	 4.32±0.160	run_peri_sine_a1.00_p4.00_p0.00_n0.dat
  * @par Type: 
 @verbatim
 lightcurveMC myjdlist.txt sine magsine flare_dip flare_peak \
-	--amp "1.0 1.0" --period "4.0 4.0" --width 0.3 --width2 0.01 \
+	--amp "1.0 1.0" --period "4.0 4.0" --width "0.3 0.3" --width2 "0.01 0.01" \
 	--stat C1
 @endverbatim
  * @par Output: 
@@ -587,14 +603,20 @@ flare_dip       1       4       0       0.3     0.01    0        0.111±0.053    
 flare_peak      1       4       0       0.3     0.01    0        0.747±0.069    run_c1_flare_peak_a1.00_p4.00_p0.00_w0.30_w0.01_n0.dat
 @endverbatim
  * 
- * @subsection ex_inject Injection Tests
+ * @subsection ex_inject Injection Tests, Multiple Runs
  *
  * At what amplitude can clean statistics still be extracted given realistic noise?
  * 
  * @par Type: 
 @verbatim
 lightcurveMC --add myobslist.txt myjdlist.txt flat broad_peak sharp_peak \
-	--amp "0.01 1.0" --period "4.0 4.0" \
+	--amp "0.01 0.01" --period "4.0 4.0" \
+	--stat C1 --stat period
+lightcurveMC --add myobslist.txt myjdlist.txt flat broad_peak sharp_peak \
+	--amp "0.1 0.1" --period "4.0 4.0" \
+	--stat C1 --stat period
+lightcurveMC --add myobslist.txt myjdlist.txt flat broad_peak sharp_peak \
+	--amp "1.0 1.0" --period "4.0 4.0" \
 	--stat C1 --stat period
 @endverbatim
  * @par Output: 
@@ -608,14 +630,14 @@ lightcurveMC --add myobslist.txt myjdlist.txt flat broad_peak sharp_peak \
  *
  * - Changed: shortened all integration test scripts, cutting the 
  *	testing time by a factor of five without sacrificing accuracy
- * - Added: -\-stat (-s) keyword now allows run time selection of statistics 
+ * - Added: @c -\-stat (@c -s) keyword now allows run time selection of statistics 
  *	to compute for each light curve
  * - Added: support for ACF timescales
  * - Fixed: output files now give more significant digits for the 
  *	simulation parameters, reducing naming conflicts between bins. Light 
- *	curve dump files created with the -\-print keyword now use the same 
+ *	curve dump files created with the @c -\-print keyword now use the same 
  *	naming convention as the statistic output files.
- * - Changed: -\-add keyword can now take arbitrary file names as arguments. 
+ * - Changed: @c -\-add keyword can now take arbitrary file names as arguments. 
  *	The use of the keywords NonSpitzerNonVar, NonSpitzerVar, 
  *	SpitzerNonVar, and SpitzerVar is now deprecated.
  * - Changed: improved error recovery and reporting
@@ -626,7 +648,9 @@ lightcurveMC --add myobslist.txt myjdlist.txt flat broad_peak sharp_peak \
  * - Fixed: makefile generates fewer spurious compilations
  * - Added: installation instructions and user guide
  * - Added: PDF documentation
- * - Fixed: FlarePeak and FlareDip light curves now have correct parameter checking
+ * - Fixed: @ref lcmc::models::FlarePeak "FlarePeak" and 
+ *	@ref lcmc::models::FlareDip "FlareDip" light curves now have correct 
+ *	parameter checking
  *
  * @section v2_1_0 Version 2.1.0
  *
@@ -638,19 +662,21 @@ lightcurveMC --add myobslist.txt myjdlist.txt flat broad_peak sharp_peak \
  * - Added: test cases to @ref lcmc::test::BoostTest::test_stats "test_stats".
  * - Changed: bug that @ref lcmc::models::SimpleGp "SimpleGp" produces 
  *	inconsistent output downgraded to a warning, and moved to 
- *	getHalfMatrix(). See getHalfMatrix() documentation for more details.
+ *	@ref lcmc::utils::getHalfMatrix() "getHalfMatrix()". See 
+ *	@ref lcmc::utils::getHalfMatrix() "getHalfMatrix()" documentation for 
+ *	more details.
  * - Fixed: test output files now distinguish runs with identical light curve 
  *	parameters but different noise levels
- * - Fixed: the -\-add command line argument can no longer be combined with 
- *	either the list of julian dates or with the -\-noise argument
+ * - Fixed: the @c -\-add command line argument can no longer be combined with 
+ *	either the list of julian dates or with the @c -\-noise argument
  * - Added: input validation for all command line arguments
- * - Added: cmdtest.sh, an integration test suite for command line errors
+ * - Added: @c cmdtest.sh, an integration test suite for command line errors
  * - Fixed: @ref lcmc::stats::LcBinStats::printBinStats() "LcBinStats::printBinStats()" 
  *	will now report zero standard deviation, not NaN, for statistics 
  *	that were always calculated to the same value
  * - Added: documentation for test code. Declared a new namespace, 
  *	lcmc::test, containing all test suites.
- * - Fixed: -\-amp parameter for sines now represents the half-amplitude, as 
+ * - Fixed: @c -\-amp parameter for sines now represents the half-amplitude, as 
  *	intended, not the amplitude
  * - Fixed: light curves no longer generate negative fluxes
  * - Added: @ref lcmc::test::BoostTest::test_wave "test_wave", a unit test 
@@ -664,26 +690,27 @@ lightcurveMC --add myobslist.txt myjdlist.txt flat broad_peak sharp_peak \
  * - Changed: speeded up evaluation of @ref lcmc::models::SimpleGp "SimpleGp" 
  *	and @ref lcmc::models::TwoScaleGp "TwoScaleGp" by a factor of five 
  *	in the case that the model parameters are held fixed 
- *	(i.e., -\-amp, -\-period, etc. are given with a range of zero length)
- * - Changed: bug where deltaMBinQuantile() appeared to show the 
- *	&Delta;m median crossing half the amplitude before reaching the 
- *	third-amplitude in Gaussian processes has been explained. 
- *	The behavior is the result of half-amplitude crossings happening 
- *	either in the poorly populated bins where 
+ *	(i.e., @c -\-amp, @c -\-period, etc. are given with a range of zero length)
+ * - Changed: bug where @ref lcmc::stats::deltaMBinQuantile() "deltaMBinQuantile()" 
+ *	appeared to show the &Delta;m median crossing half the amplitude 
+ *	before reaching the third-amplitude in Gaussian processes has been 
+ *	explained. The behavior is the result of half-amplitude crossings 
+ *	happening either in the poorly populated bins where 
  *	&Delta;t &asymp; 0.5&nbsp;day, or not at all, whereas statistical 
  *	fluctuations can cause spurious third-amplitude crossings (with no 
  *	corresponding half-amplitude crossing) in any &Delta;t bin. 
  *	This behavior, while odd, is a problem with long ground-based survey 
  *	cadences rather than with the analysis software, and is no longer 
  *	considered a bug.
- *	The behavior may be reproduced with the files tests/paradox*.*.
+ *	The behavior may be reproduced with the files 
+ *	<tt>tests/paradox*.*</tt>.
  * - Fixed: integration test scripts run more consistently across systems. In 
  *	particular, they are now designed for execution, not sourcing.
  * - Fixed: makefile now finds libraries on tcsh
  * - Changed: removed information about the local GCC configuration from 
- *	makefile.inc.
- * - Changed: incorporated mcio.cpp, lcsio.cpp, and kpffileio.cpp into main 
- *	program rather than as an external dependency.
+ *	@c makefile.inc.
+ * - Changed: incorporated @c mcio.cpp, @c lcsio.cpp, and @c kpffileio.cpp 
+ *	into main program rather than as an external dependency.
  *
  * @section v2_0_0 Version 2.0.0
  *

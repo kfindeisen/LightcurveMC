@@ -177,7 +177,7 @@ variance(ConstInputIterator first, ConstInputIterator last) {
  *	in the interval [0, 1].
  *
  * @exception kpfutils::except::NotEnoughData Thrown if there are not enough 
- *	elements to define a mean.
+ *	elements to define a quantile.
  * 
  * @exceptsafe The range [first, last) is unchanged in the event of an exception.
  *

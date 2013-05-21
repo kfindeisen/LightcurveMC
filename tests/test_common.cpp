@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/test_common.cpp
  * @author Krzysztof Findeisen
  * @date Created April 28, 2013
- * @date Last modified April 28, 2013
+ * @date Last modified May 20, 2013
  */
 
 #include "../warnflags.h"
@@ -30,8 +30,10 @@
 
 #include <algorithm>
 #include <memory>
+#include <stdexcept>
 #include <vector>
 #include <cmath>
+#include <boost/lexical_cast.hpp>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include "test.h"
@@ -44,6 +46,7 @@ namespace lcmc {
  */
 namespace test {
 
+using boost::lexical_cast;
 using std::vector;
 
 /** Wrapper for a trusted Nan-testing function
@@ -65,10 +68,38 @@ bool testNan(const double x) {
  * @param[in] tau The coherence time of the Gaussian process
  *
  * @pre covars->size1 == covars->size2 == times.size()
+ *
+ * @exception Throws std::invalid_argument if lengths do not match
+ *
+ * @exceptsafe Function arguments are unchanged in the event of an exception.
  */
 void initGauss(gsl_matrix* const covars, const vector<double>& times, double tau) {
 	size_t nTimes = times.size();
 	
+	if(covars->size1 != covars->size2) {
+		try {
+			std::string len1 = lexical_cast<std::string>(covars->size1);
+			std::string len2 = lexical_cast<std::string>(covars->size2);
+			throw std::invalid_argument(len1 + "×" + len2 
+				+ " covariance matrix passed to initGauss().");
+		} catch (const boost::bad_lexical_cast &e) {
+			throw std::invalid_argument(
+				"Non-square covariance matrix passed to initGauss().");
+		}
+	}
+	if(nTimes != covars->size1) {
+		try {
+			std::string lenV = lexical_cast<std::string>(nTimes);
+			std::string lenM = lexical_cast<std::string>(covars->size1);
+			throw std::invalid_argument("Vector of length " + lenV 
+				+ " cannot be multiplied by " 
+				+ lenM + "×" + lenM + " covariance matrix in initGauss().");
+		} catch (const boost::bad_lexical_cast &e) {
+			throw std::invalid_argument(
+				"Length of input vector to initGauss() does not match dimensions of covariance matrix.");
+		}
+	}
+
 	for(size_t i = 0; i < nTimes; i++) {
 		for(size_t j = 0; j < nTimes; j++) {
 			double deltaT = (times[i] - times[j]) / tau;
@@ -84,6 +115,8 @@ void initGauss(gsl_matrix* const covars, const vector<double>& times, double tau
  * @param[in] frac The fractional difference allowed between them
  * 
  * @return true iff |val1 - val2|/|val1| and |val1 - val2|/|val2| < frac
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 bool isClose(double val1, double val2, double frac) {
 	using namespace ::boost::test_tools;
@@ -102,6 +135,8 @@ bool isClose(double val1, double val2, double frac) {
  * @param[in] frac The fractional difference allowed between them
  * 
  * @return true iff |val1 - val2|/|val1| and |val1 - val2|/|val2| < frac
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 void myTestClose(double val1, double val2, double frac) {
 	using namespace ::boost::test_tools;
@@ -112,16 +147,23 @@ void myTestClose(double val1, double val2, double frac) {
 	sprintf(buf, "floating point comparison failed: [%.10g != %.10g] (%.10g >= %.10g)", val1, val2, fabs(val1-val2), frac);
 	
 	BOOST_CHECK_MESSAGE(static_cast<bool>(result), buf);
-//	BOOST_CHECK_CLOSE_FRACTION(val1, val2, frac);
 }
 
 TestFactory::~TestFactory() {
 }
 
 /** Initializes the random number generator
+ *
+ * @exception std::bad_alloc Thrown if there is not enough memory to allocate 
+ *	the random number generator.
+ * 
+ * @exceptsafe Object creation is atomic
  */
 TestRandomFactory::TestRandomFactory() 
 		: TestFactory(), rng(gsl_rng_alloc(gsl_rng_mt19937)) {
+	if (rng == NULL) {
+		throw std::bad_alloc();
+	}
 	gsl_rng_set(rng, 5489);
 }
 
@@ -132,6 +174,8 @@ TestRandomFactory::~TestRandomFactory() {
 /** Draws a standard uniform variate.
  *
  * @return a number distributed uniformly over the interval [0, 1)
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 double TestRandomFactory::sample() const {
 	return gsl_rng_uniform(rng);

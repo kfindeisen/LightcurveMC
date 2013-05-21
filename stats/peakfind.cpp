@@ -3,7 +3,7 @@
  * @author Ann Marie Cody
  * @author Krzysztof Findeisen
  * @date Created May 14, 2013
- * @date Last modified May 15, 2013
+ * @date Last modified May 21, 2013
  */
 
 #include <algorithm>
@@ -18,6 +18,7 @@
 //#include "../except/nan.h"
 #include "peakfind.h"
 #include "../except/undefined.h"
+#include "../utils.tmp.h"
 
 namespace lcmc { namespace stats { 
 
@@ -67,7 +68,7 @@ BOOST_CONCEPT_ASSERT((boost::UnaryPredicate<FartherThan, double>));
  *			at each time
  * @param[in] minAmp	The smallest change in the value of data to count
  * @param[out] peakTimes	The times of the endpoints of significant intervals.
- * @param[out] peakHeights		The heights of the endpoints of significant intervals.	
+ * @param[out] peakHeights	The heights of the endpoints of significant intervals.	
  *
  * @pre times contains at least two unique values
  * @pre times is sorted in ascending order
@@ -77,13 +78,23 @@ BOOST_CONCEPT_ASSERT((boost::UnaryPredicate<FartherThan, double>));
  * @pre minAmp > 0
  *
  * @post the data previously in peakTimes and peakData are erased
- * @post peakTimes.size() == peakData.size() <= times.size()
- * @post (peakTimes[i], peakData[i]) are the coordinates of the ith extremum 
- *	of the light curve
+ * @post 1 <= peakTimes.size() == peakData.size() <= times.size()
+ * @post for all i in peakTimes except the first and last elements, 
+ *	(peakTimes[i], peakData[i]) are the coordinates of a local minimum 
+ *	or maximum in (times, data)
+ * @post for all i in peakTimes except the first two and last single elements, 
+ *	if peakTimes[i] is a local minimum in (times, data), then 
+ *	peakTimes[k-1] is a local maximum, and if peakTimes[i] is a local 
+ *	maximum, then peakTimes[i] is a local minimum
+ * @post for all i in peakTimes except the first element, peakHeights[i] 
+ *	differs from peakHeights[i-1] by at least minAmp
+ * @post for all points in (times, data) that are not in (peakTimes, peakHeights), 
+ *	inserting that point anywhere in (peakTimes, peakHeights) would 
+ *	violate one of the above conditions
  * 
  * @exception lcmc::utils::except::UnexpectedNan Thrown if there are any 
  *	NaN values present in times or data.
- * @exception except::NotEnoughData Thrown if times and data do not 
+ * @exception lcmc::stats::except::NotEnoughData Thrown if times and data do not 
  *	have at least two values. 
  * @exception std::invalid_argument Thrown if times and data 
  *	do not have the same length or if minAmp is not positive.
@@ -94,9 +105,6 @@ BOOST_CONCEPT_ASSERT((boost::UnaryPredicate<FartherThan, double>));
  *	an exception.
  *
  * @perform O(N) time, where N = times.size()
- * 
- * @todo Prove loop behavior
- * @todo This function is highly redundant. Simplify!
  */
 void peakFind(const DoubleVec& times, const DoubleVec& data, 
 		double minAmp, DoubleVec& peakTimes, DoubleVec& peakHeights) {
@@ -118,70 +126,66 @@ void peakFind(const DoubleVec& times, const DoubleVec& data,
 	}
 
 	// copy-and-swap
-	DoubleVec tempTimes  (1, times.front());
-	DoubleVec tempHeights(1,  data.front());
+	DoubleVec tempTimes(1, times.front());
+	DoubleVec tempPeaks(1,  data.front());
 
 	DoubleVec::const_iterator first = std::find_if(data.begin(), data.end(), 
 		FartherThan(data.front(), minAmp) );
-	
+
 	if (first != data.end()) {
-		// offset always positive
+		// offset always non-negative
 		DoubleVec::const_iterator::difference_type offset = (first - data.begin());
 		
 		tempTimes  .push_back(times[offset]);
-		tempHeights.push_back( data[offset]);
+		tempPeaks.push_back( data[offset]);
 		
-		double y0 = tempHeights[0];
-		double y1 = tempHeights[1];
-
-		int sign = (y1-y0 > 0 ? 1 : (y1-y0 < 0 ? -1 : 0));
+		// assert: tempPeaks[0] != tempPeaks[1] by construction of 
+		// first, given minAmp > 0
+		int sign = (tempPeaks[1] - tempPeaks[0] > 0 ? 1 : -1);
 		
+		/** @todo Find a more compact way of expressing the loop invariant
+		 */
+		// invariant: sign != 0
+		// invariant: tempTimes.size() >= 2
+		// invariant: tempTimes.size() == tempPeaks.size()
+		// invariant: for all 1 <= k < tempTimes.size()-1, tempTimes[k] is a local 
+		//	minimum or local maximum in (times, data).
+		// invariant: for all 2 <= k < tempTimes.size()-1, if tempTimes[k] is a local 
+		//	minimum in (times, data), then tempTimes[k-1] is a local maximum, and 
+		//	if tempTimes[k] is a local maximum, then tempTimes[k-1] is a local 
+		//	minimum
+		// invariant: for all 1 <= k < tempTimes.size(), tempPeaks[k] differs from 
+		//	tempPeaks[k-1] by at least minAmp
+		// invariant: for all points in (times, data)[0 .. i-1] that are not in 
+		//	(tempTimes, tempPeaks), inserting that point anywhere in 
+		//	(tempTimes, tempPeaks) would violate one of the above conditions
+		// invariant: if tempTimes[back-1] is a local minimum in (times, data), then 
+		//	sign > 0, and if tempTimes[back-1] is a local maximum, then sign < 0. 
+		//	If tempTimes[back-1] is neither a minimum nor a maximum, then 
+		//	if tempTimes[1] > tempTimes[0], then sign > 0, and 
+		//	if tempTimes[1] < tempTimes[0], then sign < 0
+		// invariant: if tempTimes[back-1] is a local minimum in (times, data), then 
+		//	tempPeaks[back] = max data[tempTimes[back-1] .. times[i-1]], and if 
+		//	tempTimes[back-1] is a local maximum, then tempPeaks[back] = 
+		//	min data[tempTimes[back-1] .. times[i-1]]
 		for (size_t i = offset+1; i < data.size(); i++) {
-			if (sign > 0) {
-				// How far up does the trend go?
-				if ((data[i] - y0) > (y1 - y0)) {
-					tempHeights.back() =  data[i];
-					tempTimes  .back() = times[i];
-					y1 = data[i];
-				}
-
-				// Significant downturn?
-				if ((y1 - data[i]) > minAmp) {
-					tempHeights.push_back( data[i]);
-					tempTimes  .push_back(times[i]);
-					y0 = y1;
-					y1 = data[i];
-					sign = -1;
-				}
-
-			} else if (sign < 0) {
-				// How far down does the trend go?
-				if ((y0-data[i]) > (y0-y1)) {
-					tempHeights.back() =  data[i];
-					tempTimes  .back() = times[i];
-					y1 = data[i];
-				}
-
-				// Significant upturn?
-				if ((data[i]-y1) > minAmp) {
-					tempHeights.push_back( data[i]);
-					tempTimes  .push_back(times[i]);
-					y0 = y1;
-					y1 = data[i];
-					sign = 1;
-				}
-
-			} else {
-				/** @todo What is the correct behavior if sign == 0?
-				 */
+			if ( (sign > 0 && data[i] > tempPeaks.back()) || 
+					(sign < 0 && data[i] < tempPeaks.back()) ) {
+				tempPeaks.back() =  data[i];
+				tempTimes.back() = times[i];
+			} else if ( (sign > 0 && (tempPeaks.back()-data[i]) > minAmp) || 
+					(sign < 0 && (data[i]-tempPeaks.back()) > minAmp) ) {
+				tempPeaks.push_back( data[i]);
+				tempTimes.push_back(times[i]);
+				sign = -sign;
 			}
 		}	// end loop over data
 	}	// end if minAmp < amplitude
 
 	// IMPORTANT: no exceptions beyond this point
 	
-	swap(peakTimes  , tempTimes  );
-	swap(peakHeights, tempHeights);
+	swap(peakTimes  , tempTimes);
+	swap(peakHeights, tempPeaks);
 }
 
 /** Calculates the waiting time for variability of a given amplitude as 
@@ -217,8 +221,9 @@ void peakFind(const DoubleVec& times, const DoubleVec& data,
  * @exceptsafe The function parameters are unchanged in the event of 
  *	an exception.
  *
- * @perform O(CN) time, where C = magCuts.size() and N = times.size()
-*/
+ * @internal @perform O(CN) time, where C = magCuts.size() and N = times.size() @endinternal
+ * @perform O(CN log N) time, where C = magCuts.size() and N = times.size()
+ */
 void peakFindTimescales(const DoubleVec& times, const DoubleVec& data, 
 		const DoubleVec& magCuts, DoubleVec& timescales) {
 	using std::swap;
@@ -248,8 +253,17 @@ void peakFindTimescales(const DoubleVec& times, const DoubleVec& data,
 		peakFind(times, data, *mag, peakTimes, peakHeights);
 		
 		if (peakTimes.size() > 1) {
-			tempTimes.push_back( (peakTimes.back() - peakTimes.front()) 
-					/ (peakTimes.size()-1) );
+//			tempTimes.push_back( (times.back() - times.front()) 
+//					/ (peakTimes.size()-1) );
+			/** @todo Reimplement using an iterator adapter
+			 */
+			DoubleVec intervals;
+			for(DoubleVec::const_iterator it = peakTimes.begin()+1; 
+					it != peakTimes.end(); it++) {
+				intervals.push_back(*it - *(it-1));
+			}
+			tempTimes.push_back(kpfutils::quantile(intervals.begin(), 
+					intervals.end(), 0.5));
 		} else {
 			tempTimes.push_back(std::numeric_limits<double>::quiet_NaN());
 		}
