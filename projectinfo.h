@@ -16,7 +16,7 @@
 /** Current version of the program, to make version quoted by program 
  *	consistent with documentation.
  */
-#define VERSION_STRING "2.2.0-devel+build19"
+#define VERSION_STRING "2.2.0-devel+build.19"
 
 /** @mainpage
  *
