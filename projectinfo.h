@@ -2,7 +2,7 @@
  * @file lightcurveMC/projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified May 19, 2013
+ * @date Last modified May 22, 2013
  */
 
 #ifndef LCMCPROJINFOH
@@ -16,7 +16,7 @@
 /** Current version of the program, to make version quoted by program 
  *	consistent with documentation.
  */
-#define VERSION_STRING "2.2.0-devel+build18"
+#define VERSION_STRING "2.2.0-devel+build19"
 
 /** @mainpage
  *
@@ -500,7 +500,9 @@
  * pairs of rows representing the individual interpolated autocorrelation 
  * functions from each run. The first row in each pair contains the time 
  * lags in space-delimited format, while the second row contains the 
- * correlations in space-delimited format.</dd>
+ * correlations in space-delimited format. For brevity, only lags differing by 
+ * at least 5\% are printed, but all lags are used to calculate the statistics 
+ * in @c iacfcut.</dd>
  * <dt><tt>sacfcut</tt></dt><dd>The program prints the average time lag at which 
  * the Scargle ACF @cite ScargleAcf crosses one ninth the measured 
  * light curve amplitude, followed by &plusmn;, followed by the standard 
@@ -516,7 +518,9 @@
  * pairs of rows representing the individual Scargle autocorrelation 
  * functions from each run. The first row in each pair contains the time 
  * lags in space-delimited format, while the second row contains the 
- * correlations in space-delimited format.</dd>
+ * correlations in space-delimited format. For brevity, only lags differing by 
+ * at least 5\% are printed, but all lags are used to calculate the statistics 
+ * in @c sacfcut.</dd>
  * <dt><tt>peakcut</tt></dt><dd>The program prints the average characteristic time 
  * between local minima and maxima separated by at least one third the 
  * measured light curve amplitude, followed by &plusmn;, followed by the 

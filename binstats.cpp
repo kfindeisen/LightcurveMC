@@ -139,6 +139,8 @@ LcBinStats::LcBinStats(const string& modelName, const RangeList& binSpecs, const
  *
  * @exceptsafe The object is in a valid state in the event of an exception.
  *
+ * @todo Break up this function.
+ *
  * @internal @note The implementation *should not* assume that any particular parameter 
  * is defined in trueParams.
  */
@@ -238,7 +240,10 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 	// ACF plots
 	if (hasStat(stats, IACFCUT) || hasStat(stats, IACF)) {
 		try {
+			// Regular grid at which offsets are generated
 			const static double offStep = 0.1;
+			// Minimum difference between two offsets written to a log file
+			const static double storeFactor = 1.05;
 			
 			double maxOffset = kpftimes::deltaT(times);
 			DoubleVec offsets;
@@ -250,16 +255,34 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 			utils::removeNans(mags, cleanMags, times, cleanTimes);
 			interp::autoCorr(cleanTimes, cleanMags, offStep, offsets.size(), acf);
 			if (hasStat(stats, IACF)) {
-				// Since vector::reserve() has the strong guarantee 
-				// and doesn't change the data in any case, it's 
-				// effectively a function that is guaranteed to not 
-				// change the content of a vector. 
-				// Use it to ensure that either vector is changed 
-				// only if no exception is thrown
+				// Record only logarithmically spaced bins, for compactness
+				/** @todo Reimplement using an iterator adapter for faster performance
+				 */
+				DoubleVec logOffs(1, offsets.front());
+				DoubleVec logAcf (1,     acf.front());
+				double lastOffset = offsets.front();
+				for (size_t i = 1; i < offsets.size(); i++) {
+					if (offsets[i] >= storeFactor*lastOffset) {
+						logOffs.push_back(offsets[i]);
+						logAcf .push_back(    acf[i]);
+						
+						lastOffset = offsets[i];
+					}
+					// else skip
+				}
+								
+				// Since vector::reserve() has the strong guarantee and 
+				// doesn't change the data on success, it's effectively a 
+				// function that is guaranteed to never change the content of 
+				// a vector. 
+				// Use it to ensure that either vector is changed only 
+				// if no exception is thrown
 				iAcfTimes.reserve(iAcfTimes.size() + 1);
 				iAcfs    .reserve(iAcfs    .size() + 1);
-				iAcfTimes.push_back(offsets);
-				iAcfs    .push_back(acf);
+//				iAcfTimes.push_back(offsets);
+//				iAcfs    .push_back(acf);
+				iAcfTimes.push_back(logOffs);
+				iAcfs    .push_back(logAcf );
 			}
 			
 			if (hasStat(stats, IACFCUT)) {
@@ -281,7 +304,10 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 
 	if (hasStat(stats, SACFCUT) || hasStat(stats, SACF)) {
 		try {
+			// Regular grid at which offsets are generated
 			const static double offStep = 0.1;
+			// Minimum difference between two offsets written to a log file
+			const static double storeFactor = 1.05;
 			
 			double maxOffset = kpftimes::deltaT(times);
 			DoubleVec offsets;
@@ -293,6 +319,22 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 			utils::removeNans(mags, cleanMags, times, cleanTimes);
 			kpftimes::autoCorr(cleanTimes, cleanMags, offsets, acf);
 			if (hasStat(stats, SACF)) {
+				// Record only logarithmically spaced bins, for compactness
+				/** @todo Reimplement using an iterator adapter for faster performance
+				 */
+				DoubleVec logOffs(1, offsets.front());
+				DoubleVec logAcf (1,     acf.front());
+				double lastOffset = offsets.front();
+				for (size_t i = 1; i < offsets.size(); i++) {
+					if (offsets[i] >= storeFactor*lastOffset) {
+						logOffs.push_back(offsets[i]);
+						logAcf .push_back(    acf[i]);
+						
+						lastOffset = offsets[i];
+					}
+					// else skip
+				}
+								
 				// Since vector::reserve() has the strong guarantee 
 				// and doesn't change the data in any case, it's 
 				// effectively a function that is guaranteed to not 
@@ -301,8 +343,10 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 				// only if no exception is thrown
 				sAcfTimes.reserve(sAcfTimes.size() + 1);
 				sAcfs    .reserve(sAcfs    .size() + 1);
-				sAcfTimes.push_back(offsets);
-				sAcfs    .push_back(acf);
+//				sAcfTimes.push_back(offsets);
+//				sAcfs    .push_back(acf);
+				sAcfTimes.push_back(logOffs);
+				sAcfs    .push_back(logAcf );
 			}
 			
 			if (hasStat(stats, SACFCUT)) {
