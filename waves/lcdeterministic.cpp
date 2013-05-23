@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lcdeterministic.cpp
  * @author Krzysztof Findeisen
  * @date Created March 18, 2013
- * @date Last modified May 11, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <vector>
@@ -17,7 +17,7 @@ namespace lcmc { namespace models {
  * @post getTimes() and getFluxes() return suitable data. getTimes() contains 
  * the same elements as times, possibly reordered.
  *
- * @exception bad_alloc Thrown if there is not enough memory to 
+ * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the object.
  *
  * @exceptsafe Object construction is atomic.
@@ -34,7 +34,7 @@ Deterministic::~Deterministic() {
  *
  * @post timeArray.size() == getFluxes().size()
  *
- * @exception bad_alloc Thrown if there is not enough memory to 
+ * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	return a copy of the times.
  *
  * @exceptsafe Neither the object nor the argument are changed in the 
@@ -67,9 +67,9 @@ void Deterministic::getTimes(std::vector<double>& timeArray) const {
  *	chose the option (mean, median, or mode) most appropriate 
  *	for their light curve shape.
  * 
- * @exception bad_alloc Thrown if there is not enough memory to compute 
+ * @exception std::bad_alloc Thrown if there is not enough memory to compute 
  *	the light curve.
- * @exception logic_error Thrown if a bug was found in the flux calculations.
+ * @exception std::logic_error Thrown if a bug was found in the flux calculations.
  *
  * @exceptsafe Neither the object nor the argument are changed in the 
  *	event of an exception.

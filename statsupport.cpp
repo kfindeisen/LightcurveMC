@@ -2,7 +2,7 @@
  * @file lightcurveMC/statsupport.cpp
  * @author Krzysztof Findeisen
  * @date Created May 9, 2013
- * @date Last modified May 15, 2013
+ * @date Last modified May 22, 2013
  * 
  * The functions defined here act as an interface between the StatType 
  * parameters and the parser.
@@ -112,12 +112,12 @@ const vector<string> statTypes() {
 /** Converts a string to its associated StatType.
  *
  * @param[in] statName A short string describing the type of statistic to calculate.
+ * 
+ * @return The statistic identifier, if one exists.
  *
  * @pre statName is an element of statTypes()
  * 
- * @return The statistic identifier, if one exists.
- * 
- * @exception domain_error Thrown if the statistic name does not have a 
+ * @exception std::domain_error Thrown if the statistic name does not have a 
  *	corresponding type.
  * @exception std::bad_alloc Thrown if not enough memory to match names 
  *	to statistics.

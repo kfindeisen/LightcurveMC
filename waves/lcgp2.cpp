@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lcgp2.cpp
  * @author Krzysztof Findeisen
  * @date Created April 29, 2013
- * @date Last modified May 12, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <algorithm>
@@ -42,10 +42,10 @@ using std::auto_ptr;
  * @post The object represents a correlated Gaussian signal with the 
  *	given amplitudes and correlation times.
  *
- * @exception bad_alloc Thrown if there is not enough memory to 
+ * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the object.
- * @exception except::BadParam Thrown if any of the parameters are 
- *	outside their allowed ranges.
+ * @exception lcmc::models::except::BadParam Thrown if any of the parameters 
+ *	are outside their allowed ranges.
  *
  * @exceptsafe Object construction is atomic.
  *
@@ -97,9 +97,10 @@ TwoScaleGp::TwoScaleGp(const std::vector<double>& times,
  *	  sigma_1^2 &times; exp(-0.5*((getTimes()[i]-getTimes()[j])/tau_1)^2) 
  *	+ sigma_2^2 &times; exp(-0.5*((getTimes()[i]-getTimes()[j])/tau_2)^2) 
  * 
- * @exception bad_alloc Thrown if there is not enough memory to compute 
+ * @exception std::bad_alloc Thrown if there is not enough memory to compute 
  *	the light curve.
- * @exception logic_error Thrown if a bug was found in the flux calculations.
+ * @exception std::logic_error Thrown if a bug was found in the flux 
+ *	calculations.
  *
  * @exceptsafe Neither the object nor the argument are changed in the 
  *	event of an exception.

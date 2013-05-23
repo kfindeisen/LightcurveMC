@@ -2,7 +2,7 @@
  * @file utils.tmp.h
  * @author Krzysztof Findeisen
  * @date Created July 21, 2011
- * @date Last modified May 13, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <algorithm>
@@ -46,6 +46,8 @@ typedef std::vector<double> DoubleVec;
  *
  * @pre [first, last) is a valid range
  * @pre There is at least one element in the range [first, last)
+ *
+ * @perform O(D), where D = std::distance(first, last).
  *
  * @exception kpfutils::except::NotEnoughData Thrown if there are not enough 
  *	elements to define a mean.
@@ -104,6 +106,8 @@ mean(ConstInputIterator first, ConstInputIterator last) {
  *
  * @pre [first, last) is a valid range
  * @pre There are at least two elements in the range [first, last)
+ *
+ * @perform O(D), where D = std::distance(first, last).
  *
  * @exception kpfutils::except::NotEnoughData Thrown if there are not enough 
  *	elements to define a variance.
@@ -172,6 +176,8 @@ variance(ConstInputIterator first, ConstInputIterator last) {
  * @pre No value in [first, last) is NaN
  *
  * @post The return value is not NaN
+ *
+ * @perform O(D log D), where D = std::distance(first, last).
  * 
  * @exception kpfutils::except::InvalidQuantile Thrown if quantile is not 
  *	in the interval [0, 1].
@@ -181,10 +187,6 @@ variance(ConstInputIterator first, ConstInputIterator last) {
  * 
  * @exceptsafe The range [first, last) is unchanged in the event of an exception.
  *
- * @perform O(D log D), where D = std::distance(first, last).
- *
- * @todo Finish designing test cases. Can't use gsl_stats_quantile_from_sorted_data 
- *	as an oracle because it interpolates
  * @test List of ints, length 0. Expected behavior: throw invalid_argument.
  * @test List of ints, length 1, quantile=0.00. Expected behavior: return %list::front()
  * @test List of ints, length 1, quantile=0.42. Expected behavior: return %list::front()
@@ -202,6 +204,8 @@ variance(ConstInputIterator first, ConstInputIterator last) {
  *
  * @bug Behavior inconsistent with Wikipedia's definition of quantile
  *
+ * @todo Finish designing test cases. Can't use gsl_stats_quantile_from_sorted_data 
+ *	as an oracle because it interpolates
  * @todo Apply concept checking to the return type
  */
 template <typename ConstRandomAccessIterator> 				// Iterator to use
@@ -251,6 +255,8 @@ quantile(ConstRandomAccessIterator first, ConstRandomAccessIterator last, double
  *
  * @return True if [first, last) is sorted in ascending order. A range 
  *	containing less than two elements is always sorted.
+ *
+ * @perform O(D), where D = std::distance(first, last).
  *
  * @exceptsafe The range [first, last) is unchanged in the event of 
  *	an exception if ForwardIterator provides at least the basic 

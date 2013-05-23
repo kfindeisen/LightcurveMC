@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lcrw.cpp
  * @author Krzysztof Findeisen
  * @date Created April 29, 2013
- * @date Last modified May 12, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <memory>
@@ -29,10 +29,10 @@ using boost::lexical_cast;
  * @post The object represents a random walk with the given diffusion 
  *	constant.
  *
- * @exception bad_alloc Thrown if there is not enough memory to 
+ * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the object.
- * @exception except::BadParam Thrown if any of the parameters are 
- *	outside their allowed ranges.
+ * @exception lcmc::models::except::BadParam Thrown if any of the 
+ *	parameters are outside their allowed ranges.
  *
  * @exceptsafe Object construction is atomic.
  */
@@ -67,9 +67,10 @@ RandomWalk::RandomWalk(const std::vector<double>& times, double diffus)
  * @post cov(fluxToMag(fluxes[i]), fluxToMag(fluxes[j])) == 
  *	diffus * (min{getTimes()[i], getTimes()[j]} - getTimes()[0])
  * 
- * @exception bad_alloc Thrown if there is not enough memory to compute 
+ * @exception std::bad_alloc Thrown if there is not enough memory to compute 
  *	the light curve.
- * @exception logic_error Thrown if a bug was found in the flux calculations.
+ * @exception std::logic_error Thrown if a bug was found in the flux 
+ *	calculations.
  *
  * @exceptsafe Neither the object nor the argument are changed in the 
  *	event of an exception.

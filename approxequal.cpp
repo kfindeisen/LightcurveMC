@@ -41,6 +41,8 @@ ApproxEqual::ApproxEqual(double epsilon) : epsilon(epsilon) {
  *
  * @param[in] x, y The values to compare
  *
+ * @return true iff |x - y|/|x| and |x - y|/|y| < epsilon
+ *
  * @pre[in] x &ne; 0
  * @pre[in] y &ne; 0
  *
@@ -48,8 +50,6 @@ ApproxEqual::ApproxEqual(double epsilon) : epsilon(epsilon) {
  *
  * @exceptsafe The parameters and object state are unchanged in the event 
  *	of an exception.
- *
- * @return true iff |x - y|/|x| and |x - y|/|y| < epsilon
  */
 bool ApproxEqual::operator() (double x, double y) const {
 	if (x == 0.0 || y == 0.0) {
@@ -66,12 +66,12 @@ bool ApproxEqual::operator() (double x, double y) const {
  * @param[in] b The second matrix to compare
  * @param[in] tolerance The fractional tolerance to which a[i,j] and b[i,j] must match
  *
- * @pre tolerance > 0
- *
  * @return True iff a and b have the same dimensions, and each 
  *	corresponding element is equal to within tolerance
  *
  * @note if either a or b is a null pointer, returns false
+ *
+ * @pre tolerance > 0
  * 
  * @exception std::invalid_argument Thrown if tolerance <= 0
  *

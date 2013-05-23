@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lightcurves_periodic.h
  * @author Krzysztof Findeisen
  * @date Created February 23, 2012
- * @date Last modified May 11, 2013
+ * @date Last modified May 22, 2013
  */
 
 #ifndef LCMCCURVEPERIH
@@ -43,6 +43,8 @@ private:
 	 *	averaging over rapid variability.
 	 * @param[in] amp The light curve amplitude.
 	 * 
+	 * @return The flux emitted by the object at the specified phase.
+	 * 
 	 * @pre phase &isin; [0, 1)
  	 *
 	 * @post the return value is determined entirely by the phase and 
@@ -55,9 +57,8 @@ private:
 	 *	chose the option (mean, median, or mode) most appropriate 
 	 *	for their light curve shape.
 	 * 
-	 * @return The flux emitted by the object at the specified phase.
-	 * 
-	 * @except logic_error Thrown if a bug was found in the flux calculations.
+	 * @exception std::logic_error Thrown if a bug was found in the flux 
+	 *	calculations.
 	 *
 	 * @exceptsafe Neither the object nor the argument are changed in the 
 	 *	event of an exception.

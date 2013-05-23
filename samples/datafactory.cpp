@@ -2,7 +2,7 @@
  * @file lightcurveMC/samples/datafactory.cpp
  * @author Krzysztof Findeisen
  * @date Created May 7, 2012
- * @date Last modified May 10, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <memory>
@@ -18,8 +18,7 @@ using std::string;
 namespace lcmc { namespace inject {
 
 /** dataSampler is a factory method that allocates and initializes an 
- *	Observations object of a particular type. Use of an auto_ptr prevents 
- *	client-side memory management issues.
+ *	Observations object of a particular type.
  *
  * @param[in] whichSample The name of the light curve catalog to read.
  *

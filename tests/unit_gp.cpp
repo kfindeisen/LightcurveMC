@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/unit_gp.cpp
  * @author Krzysztof Findeisen
  * @date Created April 17, 2013
- * @date Last modified April 28, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include "../warnflags.h"
@@ -212,16 +212,16 @@ private:
 /** Workhorse function for generating a Gaussian process and testing whether 
  * it follows the intended distribution.
  *
+ * @param[in] nTest The number of light curve instances to generate
+ * @param[in] fileName The file name to which to print the light curves for inspection
+ * @param[in] factory A factory for generating light curves of a specific 
+ *	type with specific parameters
+ *
  * @warning At present, testGp() cannot verify whether or not the generated 
  * light curves follow the correct distribution. The light curves must be 
  * tested using an external R script.
  *
  * @todo use an interface library to call the R script directly
- *
- * @param[in] nTest The number of light curve instances to generate
- * @param[in] fileName The file name to which to print the light curves for inspection
- * @param[in] factory A factory for generating light curves of a specific 
- *	type with specific parameters
  */
 void testGp(size_t nTest, const std::string& fileName, const TestFactory& factory) {
 	FILE* hDump = fopen(fileName.c_str(), "w");
@@ -265,10 +265,10 @@ void testGp(size_t nTest, const std::string& fileName, const TestFactory& factor
 /** Generates many white noise signals and tests whether they have the 
  * correct distribution.
  *
+ * @see testGp()
+ *
  * @param[in] nTest The number of light curve instances to generate
  * @param[in] times The times at which each light curve should be sampled.
- *
- * @see testGp()
  */
 void testWhite(size_t nTest, const std::vector<double>& times) {
 	char fileName[80];
@@ -280,11 +280,11 @@ void testWhite(size_t nTest, const std::vector<double>& times) {
 /** Generates many damped random walks and tests whether they have the 
  * correct distribution.
  *
+ * @see testGp()
+ *
  * @param[in] nTest The number of light curve instances to generate
  * @param[in] times The times at which each light curve should be sampled.
  * @param[in] tau A damping time of the random walk.
- *
- * @see testGp()
  */
 void testDrw(size_t nTest, const std::vector<double>& times, double tau) {
 	char fileName[80];
@@ -296,11 +296,11 @@ void testDrw(size_t nTest, const std::vector<double>& times, double tau) {
 /** Generates many random walks and tests whether they have the 
  * correct distribution.
  *
+ * @see testGp()
+ *
  * @param[in] nTest The number of light curve instances to generate
  * @param[in] times The times at which each light curve should be sampled.
  * @param[in] diffus The diffusion constant of the random walk.
- *
- * @see testGp()
  */
 void testRw(size_t nTest, const std::vector<double>& times, double diffus) {
 	char fileName[80];
@@ -312,11 +312,11 @@ void testRw(size_t nTest, const std::vector<double>& times, double diffus) {
 /** Generates many standard Gaussian processes and tests whether they have 
  * the correct distribution.
  *
+ * @see testGp()
+ *
  * @param[in] nTest The number of light curve instances to generate
  * @param[in] times The times at which each light curve should be sampled.
  * @param[in] tau A coherence time of the Gaussian process.
- *
- * @see testGp()
  */
 void testStandardGp(size_t nTest, const std::vector<double> times, double tau) {
 	char fileName[80];
@@ -328,11 +328,11 @@ void testStandardGp(size_t nTest, const std::vector<double> times, double tau) {
 /** Generates many two-timescale Gaussian processes and tests whether 
  * they have the correct distribution.
  *
+ * @see testGp()
+ *
  * @param[in] nTest The number of light curve instances to generate
  * @param[in] times The times at which each light curve should be sampled.
  * @param[in] tau1, tau2 the coherence times of the components
- *
- * @see testGp()
  */
 void testTwoGp(size_t nTest, const std::vector<double> times, double tau1, double tau2) {
 	char fileName[80];
@@ -349,12 +349,12 @@ BOOST_FIXTURE_TEST_SUITE(test_gp, ObsData)
 
 /** Tests whether the simulated white noise processes have the correct distribution
  *
+ * @see @ref lcmc::models::WhiteNoise "WhiteNoise"
+ * @see testWhite()
+ *
  * @test A @ref lcmc::models::WhiteNoise "WhiteNoise" sampled at the PTF epochs 
  *	has a distribution consistent with a multivariate normal with the 
  *	expected covariance matrix
- *
- * @see @ref lcmc::models::WhiteNoise "WhiteNoise"
- * @see testWhite()
  */
 BOOST_AUTO_TEST_CASE(white)
 {

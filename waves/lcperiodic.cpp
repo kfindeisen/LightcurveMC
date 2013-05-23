@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lcperiodic.cpp
  * @author Krzysztof Findeisen
  * @date Created April 23, 2012
- * @date Last modified May 11, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <cmath>
@@ -29,7 +29,7 @@ using boost::lexical_cast;
  *	and phase: knowing them is sufficient to determine flux(t) for any 
  *	value of t.
  *
- * @exception bad_alloc Thrown if there is not enough memory to 
+ * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the object.
  * @exception lcmc::models::except::BadParam Thrown if any of the 
  *	parameters are outside their allowed ranges.
@@ -54,10 +54,15 @@ PeriodicLc::~PeriodicLc() {
 }
 
 /** Samples the light curve at the specified time.
+ *
+ * @note This method is final. Subclasses should override fluxPhase() 
+ * 	instead.
  * 
  * @param[in] time The time at which an observation is taken. 
  *	Observations are assumed to be instantaneous, with no averaging over 
  *	rapid variability.
+ * 
+ * @return The flux emitted by the object at the specified time.
  *
  * @post the return value is determined entirely by the time and 
  *	the parameters passed to the constructor
@@ -69,15 +74,11 @@ PeriodicLc::~PeriodicLc() {
  *	chose the option (mean, median, or mode) most appropriate 
  *	for their light curve shape.
  * 
- * @return The flux emitted by the object at the specified time.
- * 
- * @exception logic_error Thrown if a bug was found in the flux calculations.
+ * @exception std::logic_error Thrown if a bug was found in the flux 
+ *	calculations.
  *
  * @exceptsafe Neither the object nor the argument are changed in the 
  *	event of an exception.
- *
- * @note This method is final. Subclasses should override fluxPhase() 
- * 	instead.
  */
 double PeriodicLc::flux(double time) const {
 	double phase = phase0 + time / period;

@@ -2,7 +2,7 @@
  * @file lightcurveMC/stats/dmdt.cpp
  * @author Krzysztof Findeisen
  * @date Created April 12, 2013
- * @date Last modified May 12, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <algorithm>
@@ -126,6 +126,8 @@ void hiAmpBinFrac(const DoubleVec &deltaT, const DoubleVec &deltaM,
  *	qth quantile of deltaM where deltaT &isin; 
  *	[binEdges[i], binEdges[i+1])
  *
+ * @perform O(N log (N/M)), where N = deltaT.size() and M = binEdges.size()
+ *
  * @exception std::bad_alloc Thrown if there is not enough memory to store 
  *	the bin fractions.
  * @exception std::invalid_argument Thrown if the quantile is not in (0, 1)
@@ -134,8 +136,6 @@ void hiAmpBinFrac(const DoubleVec &deltaT, const DoubleVec &deltaM,
  *
  * @exceptsafe The function arguments are unchanged in the event 
  *	of an exception.
- *
- * @perform O(N log (N/M)), where N = deltaT.size() and M = binEdges.size()
  *
  * @todo Prove performance
  */

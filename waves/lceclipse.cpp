@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lceclipse.cpp
  * @author Krzysztof Findeisen
  * @date Created April 24, 2012
- * @date Last modified May 11, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <cmath>
@@ -30,7 +30,7 @@ using boost::lexical_cast;
  *	amplitude, period, and initial phase. The light curve shows two 
  *	minima of different depths per cycle.
  *
- * @exception bad_alloc Thrown if there is not enough memory to 
+ * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the object.
  * @exception lcmc::models::except::BadParam Thrown if any of the 
  *	parameters are outside their allowed ranges.
@@ -51,6 +51,8 @@ EclipseWave::EclipseWave(const std::vector<double> &times,
  *	taken. Observations are assumed to be instantaneous, with no 
  *	averaging over rapid variability.
  * 
+ * @return The flux emitted by the object at the specified phase.
+ * 
  * @pre phase &isin; [0, 1)
  *
  * @post the return value is determined entirely by the phase and 
@@ -61,9 +63,8 @@ EclipseWave::EclipseWave(const std::vector<double> &times,
  * @post 0 &le; return value &le; 1
  * @post the mode of the flux is one, when averaged over many times.
  * 
- * @return The flux emitted by the object at the specified phase.
- * 
- * @exception logic_error Thrown if a bug was found in the flux calculations.
+ * @exception std::logic_error Thrown if a bug was found in the flux 
+ *	calculations.
  *
  * @exceptsafe Neither the object nor the argument are changed in the 
  *	event of an exception.

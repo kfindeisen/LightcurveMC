@@ -2,7 +2,7 @@
  * @file lightcurveMC/driver.cpp
  * @author Krzysztof Findeisen
  * @date Created January 22, 2010
- * @date Last modified May 16, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <memory>
@@ -81,14 +81,14 @@ namespace models {
  *	smart pointer has been initialized with the data in lcParams.
  *
  * @pre No element of times is NaN
-  *
- * @exception bad_alloc Thrown if there is not enough memory to 
+ *
+ * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the object.
- * @exception invalid_argument Thrown if whichLc is invalid.
- * @exception except::MissingParam Thrown if a required parameter is 
- *	missing from lcParams.
- * @exception except::BadParam Thrown if any of the light curve 
- *	parameters are outside their allowed ranges.
+ * @exception std::invalid_argument Thrown if whichLc is invalid.
+ * @exception lcmc::models::except::MissingParam Thrown if a required 
+ *	parameter is missing from lcParams.
+ * @exception lcmc::models::except::BadParam Thrown if any of the light 
+ *	curve parameters are outside their allowed ranges.
  *
  * @exceptsafe Function arguments are unchanged in the event of an exception.
  */

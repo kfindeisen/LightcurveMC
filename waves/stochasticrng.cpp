@@ -56,8 +56,6 @@ const StochasticRng& StochasticRng::operator=(const StochasticRng& other) {
 }
 
 /** Draws a standard uniform random variate.
- */
-/** Draws a standard uniform random variate.
  *
  * @return A number distributed uniformly over [0, 1), drawn independently 
  *	of any other calls to rUnif() or rNorm().

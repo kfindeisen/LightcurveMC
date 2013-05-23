@@ -2,7 +2,7 @@
  * @file lightcurveMC/cmd/cmd_load.cpp
  * @author Krzysztof Findeisen
  * @date Created May 11, 2013
- * @date Last modified May 11, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <stdexcept>
@@ -59,10 +59,10 @@ using namespace TCLAP;
  * @post If paramValue was specified on the command line, the corresponding 
  *	parameter range is added to range. Otherwise, range is unchanged.
  *
- * @exception utils::except::UnexpectedNan Thrown if either min or max is NaN
- * @exception except::ExtraParam Thrown if a value for the parameter is 
+ * @exception lcmc::utils::except::UnexpectedNan Thrown if either min or max is NaN
+ * @exception lcmc::stats::except::ExtraParam Thrown if a value for the parameter is 
  *	already in the list
- * @exception except::NegativeRange Thrown if max > min
+ * @exception lcmc::stats::except::NegativeRange Thrown if max > min
  * @exception std::invalid_argument Thrown if distrib is not a valid value.
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 

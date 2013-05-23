@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lcwhite.cpp
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
- * @date Last modified May 12, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <memory>
@@ -27,10 +27,10 @@ using boost::lexical_cast;
  * @post The object represents an uncorrelated Gaussian signal with the 
  *	given amplitude.
  *
- * @exception bad_alloc Thrown if there is not enough memory to 
+ * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the object.
- * @exception except::BadParam Thrown if any of the parameters are 
- *	outside their allowed ranges.
+ * @exception lcmc::models::except::BadParam Thrown if any of the parameters 
+ *	are outside their allowed ranges.
  *
  * @exceptsafe Object construction is atomic.
  */
@@ -64,9 +64,10 @@ WhiteNoise::WhiteNoise(const std::vector<double>& times, double sigma)
  * @post cov(fluxToMag(fluxes[i]), fluxToMag(fluxes[j])) == 0 
  *	if getTimes()[i] &ne; getTimes()[j]
  * 
- * @exception bad_alloc Thrown if there is not enough memory to compute 
+ * @exception std::bad_alloc Thrown if there is not enough memory to compute 
  *	the light curve.
- * @exception logic_error Thrown if a bug was found in the flux calculations.
+ * @exception std::logic_error Thrown if a bug was found in the flux 
+ *	calculations.
  *
  * @exceptsafe Neither the object nor the argument are changed in the 
  *	event of an exception.

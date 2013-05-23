@@ -2,7 +2,7 @@
  * @file lcsio.cpp
  * @author Krzysztof Findeisen
  * @date Created February 6, 2011
- * @date Last modified May 4, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <algorithm>
@@ -39,7 +39,7 @@ bool isNewLine(char x) {
  *	by hInput is assumed to be formatted as a list of strings, one per 
  *	line. If the file does not match this format the function throws 
  *	std::runtime_error.
- *@param[out] fileList a list of strings that stores the filenames in 
+ * @param[out] fileList a list of strings that stores the filenames in 
  *	hInput. The list may be empty.
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to store 
@@ -637,7 +637,7 @@ void printRmsT(FILE* hOutput, const DoubleVec &times, const DoubleVec &rmsVals)
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	reprocess the vectors
  *
- * @exception The function arguments are unchanged in the event of an exception.
+ * @exceptsafe The function arguments are unchanged in the event of an exception.
  */
 void filterLightCurve(double date1, double date2, DoubleVec &times, 
 		DoubleVec &arr1, DoubleVec &arr2) {

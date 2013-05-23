@@ -2,7 +2,7 @@
  * @file lightcurveMC/stats/acf.cpp
  * @author Krzysztof Findeisen
  * @date Created May 7, 2013
- * @date Last modified May 12, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <stdexcept>
@@ -32,6 +32,9 @@ namespace lcmc { namespace stats {
  *
  * @post @f$ acfs[k] = \sum_{i = k}^{n-1} x_i x_{i-k} @f$, where @f$ x_i @f$ denotes data[i]
  *
+ * @perform O(n^2) worst-case time
+ * @perfmore O(n log n) best-case time
+ *
  * @exception std::invalid_argument Thrown if n < 2
  * @exception std::runtime_error Thrown if the internal calculations produce an error.
  * @exception std::bad_alloc Thrown if there is not enough memory to compute 
@@ -39,9 +42,6 @@ namespace lcmc { namespace stats {
  *
  * @exceptsafe The function parameters are unchanged in the event of 
  *	an exception.
- *
- * @perform O(n^2) worst-case time
- * @perfmore O(n log n) best-case time
  */
 void autoCorrelation_sp(const double data[], double acfs[], size_t n) {
 	using boost::shared_ptr;
@@ -144,6 +144,9 @@ void autoCorrelation_sp(const double data[], double acfs[], size_t n) {
  * 	{\sum_{i = k}^{n-1} (x_{i} - \hat\mu) (x_{i} - \hat\mu)} @f]
  *	where @f$ x_i @f$ denotes data[i] and @f$ \hat\mu @f$ is the sample mean of data.
  *
+ * @perform O(n^2) worst-case time
+ * @perfmore O(n log n) best-case time
+ *
  * @exception std::invalid_argument Thrown if n < 2
  * @exception std::runtime_error Thrown if the internal calculations produce an error.
  * @exception std::bad_alloc Thrown if there is not enough memory to compute 
@@ -151,9 +154,6 @@ void autoCorrelation_sp(const double data[], double acfs[], size_t n) {
  *
  * @exceptsafe The function parameters are unchanged in the event of 
  *	an exception.
- *
- * @perform O(n^2) worst-case time
- * @perfmore O(n log n) best-case time
  */
 void autoCorrelation_stat(const double data[], double acfs[], size_t n) {
 	if (n < 2) {

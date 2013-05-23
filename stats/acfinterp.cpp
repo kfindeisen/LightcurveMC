@@ -3,7 +3,7 @@
  * @author Ann Marie Cody
  * @author Krzysztof Findeisen
  * @date Created May 6, 2013
- * @date Last modified May 12, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <string>
@@ -54,11 +54,14 @@ using boost::shared_ptr;
  * @post acf[i] is an estimator of the autocorrelation function evaluated 
  *	at &Delta;t = i*deltaT, for all i
  * @post acf[i] == 0 if i*deltaT > max(times) - min(times)
+ *
+ * @perform O(F^2) worst-case time, where F == ceil((max(times)-min(times))/deltaT)
+ * @perfmore O(F log F) best-case time
  * 
  * @exception lcmc::utils::except::UnexpectedNan Thrown if there are any 
  *	NaN values present in times or data.
- * @exception except::NotEnoughData Thrown if times and data do not 
- *	have at least two values. 
+ * @exception lcmc::stats::except::NotEnoughData Thrown if times and data do 
+ *	not have at least two values. 
  * @exception std::invalid_argument Thrown if times and data 
  *	do not have the same length or if deltaT or nAcf are not positive.
  * @exception std::runtime_error Thrown if the internal calculations produce an error.
@@ -67,9 +70,6 @@ using boost::shared_ptr;
  *
  * @exceptsafe The function parameters are unchanged in the event of 
  *	an exception.
- *
- * @perform O(F^2) worst-case time, where F == ceil((max(times)-min(times))/deltaT)
- * @perfmore O(F log F) best-case time
  * 
  * @todo Break up this function
  */

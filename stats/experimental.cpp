@@ -2,7 +2,7 @@
  * @file lightcurveMC/stats/experimental.cpp
  * @author Krzysztof Findeisen
  * @date Created August 3, 2011
- * @date Last modified May 12, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <algorithm>
@@ -40,6 +40,8 @@ using boost::lexical_cast;
  * @post timeSteps is sorted in ascending order
  * @post if N == times.size(), timeSteps.size() == rmsValues.size() == N-1
  *
+ * @perform O(N^2) time, where N = times.size()
+ *
  * @exception std::bad_alloc Thrown if there is not enough memory to do the 
  *	calculations.
  * @exception std::invalid_argument Thrown if times is insufficiently long 
@@ -48,9 +50,6 @@ using boost::lexical_cast;
  *
  * @exceptsafe The function arguments are unchanged in the event 
  *	of an exception.
- *
- * @perform O(times.size()^2) time
- *
  */
 void rmsVsTRooted(const DoubleVec &times, const DoubleVec &fluxes, 
 		DoubleVec &timeSteps, DoubleVec & rmsValues) {
@@ -108,6 +107,8 @@ void rmsVsTRooted(const DoubleVec &times, const DoubleVec &fluxes,
  *
  * @post intervals is sorted in ascending order
  * @post if N == length(times), length(intervals) == length(rmsValues) == @f$ \binom{N}{2} @f$
+ *
+ * @perform O(N^3) time, where N = times.size()
  * 
  * @exception std::bad_alloc Thrown if there is not enough memory to do the 
  *	calculations.
@@ -117,10 +118,8 @@ void rmsVsTRooted(const DoubleVec &times, const DoubleVec &fluxes,
  * 
  * @exceptsafe The function arguments are unchanged in the event 
  *	of an exception.
- *
- * @perform O(times.size()^3) time
  * 
- * @todo Reduce to O(times.size()^2) time through dynamic programming
+ * @todo Reduce to O(N^2) time through dynamic programming
  */
 void rmsVsTAllPairs(const DoubleVec &times, const DoubleVec &fluxes, 
 		DoubleVec &timeSteps, DoubleVec & rmsValues) {

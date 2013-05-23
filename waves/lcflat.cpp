@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lcflat.cpp
  * @author Krzysztof Findeisen
  * @date Created May 2, 2012
- * @date Last modified May 11, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include "null.h"
@@ -44,10 +44,10 @@ FlatWave::FlatWave(const std::vector<double> &times) : Deterministic(times) {
  * @param[in] time The time at which an observation is taken. 
  *	Observations are assumed to be instantaneous, with no averaging over 
  *	rapid variability.
- *
- * @post flux(t) == 1.0 for all t.
  * 
  * @return The flux of the object.
+ *
+ * @post flux(t) == 1.0 for all t.
  *
  * @exceptsafe Does not throw exceptions.
  */

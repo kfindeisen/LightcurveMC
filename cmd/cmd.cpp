@@ -2,7 +2,7 @@
  * @file lightcurveMC/cmd/cmd.cpp
  * @author Krzysztof Findeisen
  * @date Created April 12, 2013
- * @date Last modified May 11, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <stdexcept>
@@ -82,13 +82,13 @@ using models::RangeList;
  *
  * @todo Break up this function.
  * 
- * @todo Current implementation vulnerable to mismatches in which 
+ * @todo Current command-line format vulnerable to mismatches in which 
  *	argument is being referred to. Rewrite!
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	represent the command line arguments.
  * @exception std::logic_error Thrown if a bug is detected in the code.
- * @exception except::ParseError Thrown if the output cannot be parsed.
+ * @exception lcmc::except::ParseError Thrown if the output cannot be parsed.
  *
  * @exceptsafe All arguments are left in valid states in the event 
  *	of an exception.

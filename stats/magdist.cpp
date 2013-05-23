@@ -2,7 +2,7 @@
  * @file lightcurveMC/stats/magdist.cpp
  * @author Krzysztof Findeisen
  * @date Created April 12, 2011
- * @date Last modified May 12, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <algorithm>
@@ -22,10 +22,10 @@ typedef std::vector<double> DoubleVec;
 
 /** Calculates the modified C1 statistic. 
  * 
- * The statistic is identical to that presented in Grankin (2007), except that 
- * the minimum and maximum magnitude have been replaced with the 5th and 95th 
- * percentile, respectively. This change makes the C1 statistic much less 
- * sensitive to outliers.
+ * The statistic is identical to that presented in @cite RotorCtts, 
+ * except that the minimum and maximum magnitude have been replaced with the 
+ * 5th and 95th percentile, respectively. This change makes the C1 statistic 
+ * much less sensitive to outliers.
  * 
  * @param[in] mags A vector of magnitudes from which to calculate C1.
  *
@@ -91,7 +91,6 @@ double getC1(const DoubleVec& mags) {
  * @return The amplitude.
  *
  * @pre mags contains at least two finite values
- *
  * @pre mags may contain NaNs
  *
  * @exception std::bad_alloc Thrown if not enough memory to calculate amplitude

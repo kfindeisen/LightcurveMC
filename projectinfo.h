@@ -16,7 +16,7 @@
 /** Current version of the program, to make version quoted by program 
  *	consistent with documentation.
  */
-#define VERSION_STRING "2.2.0-devel+build.19"
+#define VERSION_STRING "2.2.0-devel+build.20"
 
 /** @mainpage
  *
@@ -35,8 +35,14 @@
  * - Support for a user-selected amount of Gaussian measurement error
  * - Support for signal injection tests using a randomized sample of base 
  * 	light curves
- * - Support for calculation of C1, periods, &Delta;m&Delta;t timescales, and 
- *	ACF timescales
+ * - Support for calculation of C1, periods, &Delta;m&Delta;t timescales, 
+ *	ACF timescales, and peak-finding.
+ *
+ * @section about About
+ *
+ * Lightcurve MC was primarily written by Krzysztof Findeisen. Please contact 
+ * him at krzys, astro caltech edu for questions or feedback. The peak-finding 
+ * code was adapted from work by Ann-Marie Cody.
  * 
  * @page install Installation
  *
@@ -98,7 +104,11 @@
  * space-delimited text files containing a light curve in the format 
  * (JD mag magerr). The program will carry out a signal injection analysis, 
  * adding each simulated light curve to the data from a randomly selected 
- * file in the catalog.</dd>
+ * file in the catalog.<br>
+ * The keywords NonSpitzerNonVar, NonSpitzerVar, SpitzerNonVar, and SpitzerVar 
+ * may be used as aliases for @c nonspitzernonvar.cat, @c nonspitzervar.cat, 
+ * @c spitzernonvar.cat, or @c spitzervar.cat, respectively, but this 
+ * functionality is deprecated and will be removed in the next major version.</dd>
  * <dt><tt>&lt;jdlist&gt;</tt></dt><dd>Gives the name of a file containing a 
  * list of Julian dates, one per line. The program will carry out a pure 
  * simulation analysis, generating light curves sampled at the times listed 
@@ -651,7 +661,11 @@ lightcurveMC --add myobslist.txt myjdlist.txt flat broad_peak sharp_peak \
  *	@ref lcmc::models::RandomWalk "RandomWalk", and 
  *	@ref lcmc::models::DampedRandomWalk "DampedRandomWalk" light curves
  * - Fixed: makefile generates fewer spurious compilations
- * - Added: installation instructions and user guide
+ * - Added: installation instructions and user guide. The 
+ *	@ref use "\"User's Guide\"" @htmlonly page, @endhtmlonly 
+ *	@latexonly chapter, @endlatexonly not including the "Examples" 
+ *	section, will be henceforth considered the public API for the 
+ *	purposes of <a href="http://semver.org/">semantic versioning</a>.
  * - Added: PDF documentation
  * - Fixed: @ref lcmc::models::FlarePeak "FlarePeak" and 
  *	@ref lcmc::models::FlareDip "FlareDip" light curves now have correct 
@@ -739,7 +753,7 @@ lightcurveMC --add myobslist.txt myjdlist.txt flat broad_peak sharp_peak \
  * - Added: support for &Delta;m&Delta;t timescales
  * - Deleted: ILightCurve::modelParams()
  * - Changed: from now on, version numbers will conform to the 
- *	Semantic Versioning specification
+ *	<a href="http://semver.org/">Semantic Versioning specification</a>.
  *
  * @section v1_4_1 Version 1.4.1
  *

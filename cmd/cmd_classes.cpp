@@ -2,7 +2,7 @@
  * @file lightcurveMC/cmd/cmd_classes.cpp
  * @author Krzysztof Findeisen
  * @date Created April 27, 2013
- * @date Last modified May 11, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <istream>
@@ -47,11 +47,11 @@ using namespace std;
  *
  * @exception std::ios_base::failure Thrown if the input cannot be read and 
  *	str.exceptions() is set to throw exceptions.
- *
- * @todo Add support for reading a single number
  * 
  * @exceptsafe Function arguments remain in a valid state in the event of 
  *	an exception.
+ *
+ * @todo Add support for reading a single number
  */
 // Must be declared in the global namespace to be identified by TCLAP
 istream& operator>> (istream& str, pair<double, double>& val) {
@@ -78,8 +78,8 @@ using namespace std;
  *
  * @exception std::bad_alloc Thrown if there is not enough room to store 
  *	the allowed values.
- * @exception ios::failure Thrown if could not construct the documentation 
- *	for this constraint.
+ * @exception std::ios_base::failure Thrown if could not construct the 
+ *	documentation for this constraint.
  *
  * @exceptsafe Object construction is atomic.
  */

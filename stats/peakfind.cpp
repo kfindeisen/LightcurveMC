@@ -3,7 +3,7 @@
  * @author Ann Marie Cody
  * @author Krzysztof Findeisen
  * @date Created May 14, 2013
- * @date Last modified May 21, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <algorithm>
@@ -91,6 +91,8 @@ BOOST_CONCEPT_ASSERT((boost::UnaryPredicate<FartherThan, double>));
  * @post for all points in (times, data) that are not in (peakTimes, peakHeights), 
  *	inserting that point anywhere in (peakTimes, peakHeights) would 
  *	violate one of the above conditions
+ *
+ * @perform O(N) time, where N = times.size()
  * 
  * @exception lcmc::utils::except::UnexpectedNan Thrown if there are any 
  *	NaN values present in times or data.
@@ -103,8 +105,6 @@ BOOST_CONCEPT_ASSERT((boost::UnaryPredicate<FartherThan, double>));
  *
  * @exceptsafe The function parameters are unchanged in the event of 
  *	an exception.
- *
- * @perform O(N) time, where N = times.size()
  */
 void peakFind(const DoubleVec& times, const DoubleVec& data, 
 		double minAmp, DoubleVec& peakTimes, DoubleVec& peakHeights) {
@@ -208,11 +208,13 @@ void peakFind(const DoubleVec& times, const DoubleVec& data,
  * @post timescales.size() == magCuts.size()
  * @post timescales[i] is the waiting time for variability greater 
  *	than magCuts[i], for all i
+ *
+ * @perform O(CN log N) time, where C = magCuts.size() and N = times.size()
  * 
  * @exception lcmc::utils::except::UnexpectedNan Thrown if there are any 
  *	NaN values present in times or data.
- * @exception except::NotEnoughData Thrown if times and data do not 
- *	have at least two values. 
+ * @exception lcmc::stats::except::NotEnoughData Thrown if times and data 
+ *	do not have at least two values. 
  * @exception std::invalid_argument Thrown if times and data 
  *	do not have the same length or if minAmp contains negative values.
  * @exception std::bad_alloc Thrown if there is not enough memory to compute 
@@ -220,9 +222,6 @@ void peakFind(const DoubleVec& times, const DoubleVec& data,
  *
  * @exceptsafe The function parameters are unchanged in the event of 
  *	an exception.
- *
- * @internal @perform O(CN) time, where C = magCuts.size() and N = times.size() @endinternal
- * @perform O(CN log N) time, where C = magCuts.size() and N = times.size()
  */
 void peakFindTimescales(const DoubleVec& times, const DoubleVec& data, 
 		const DoubleVec& magCuts, DoubleVec& timescales) {

@@ -2,7 +2,7 @@
  * @file lightcurveMC/paramlist.cpp
  * @author Krzysztof Findeisen
  * @date Created March 19, 2012
- * @date Last modified May 7, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <map>
@@ -94,9 +94,9 @@ ParamList& ParamList::operator=(const ParamList& other) {
  *
  * @post get(name) returns value
  *
- * @exception utils::except::UnexpectedNan Thrown if the value is NaN
- * @exception except::ExtraParam Thrown if a value for the parameter is 
- *	already in the list
+ * @exception lcmc::utils::except::UnexpectedNan Thrown if the value is NaN
+ * @exception lcmc::models::except::ExtraParam Thrown if a value for the 
+ *	parameter is already in the list
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	add an element to the list.
@@ -142,8 +142,8 @@ void ParamList::add(ParamType name, double value) {
  *
  * @post return value is not NaN
  *
- * @exception except::MissingParam Thrown if the desired parameter is not in the 
- *	ParamList.
+ * @exception lcmc::models::except::MissingParam Thrown if the desired 
+ *	parameter is not in the ParamList.
  * 
  * @exceptsafe The parameter list is unchanged in the event of an exception.
  */
@@ -240,10 +240,11 @@ RangeList& RangeList::operator=(const RangeList& other) {
  * @post getMin(name) returns min
  * @post getMax(name) returns max
  *  
- * @exception utils::except::UnexpectedNan Thrown if either min or max is NaN
- * @exception except::ExtraParam Thrown if a value for the parameter is 
- *	already in the list
- * @exception except::NegativeRange Thrown if max > min
+ * @exception lcmc::utils::except::UnexpectedNan Thrown if either min or max 
+ *	is NaN
+ * @exception lcmc::models::except::ExtraParam Thrown if a value for the 
+ *	parameter is already in the list
+ * @exception lcmc::models::except::NegativeRange Thrown if max > min
  * @exception std::invalid_argument Thrown if distrib is not a valid value.
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
@@ -290,10 +291,11 @@ void RangeList::add(ParamType name, double min, double max, RangeType distrib) {
  * @post getMin(name) returns range.first
  * @post getMax(name) returns range.second
  *
- * @exception utils::except::UnexpectedNan Thrown if either min or max is NaN
- * @exception except::ExtraParam Thrown if a value for the parameter is 
- *	already in the list
- * @exception except::NegativeRange Thrown if max > min
+ * @exception lcmc::utils::except::UnexpectedNan Thrown if either min or max 
+ *	is NaN
+ * @exception lcmc::models::except::ExtraParam Thrown if a value for the 
+ *	parameter is already in the list
+ * @exception lcmc::models::except::NegativeRange Thrown if max > min
  * @exception std::invalid_argument Thrown if distrib is not a valid value.
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
@@ -322,8 +324,8 @@ void RangeList::clear() {
  *
  * @post return value is not NaN
  *
- * @exception except::MissingParam Thrown if the desired parameter is not in the 
- *	RangeList.
+ * @exception lcmc::models::except::MissingParam Thrown if the desired 
+ *	parameter is not in the RangeList.
  * 
  * @exceptsafe The range list is unchanged in the event of an exception.
  */
@@ -351,8 +353,8 @@ double RangeList::getMin(ParamType param) const {
  *
  * @post return value is not NaN
  *
- * @exception except::MissingParam Thrown if the desired parameter is not in the 
- *	RangeList.
+ * @exception lcmc::models::except::MissingParam Thrown if the desired 
+ *	parameter is not in the RangeList.
  * 
  * @exceptsafe The range list is unchanged in the event of an exception.
  */
@@ -378,8 +380,8 @@ double RangeList::getMax(ParamType param) const {
  *
  * @return The distribution type of the desired parameter.
  *
- * @exception except::MissingParam Thrown if the desired parameter is not in the 
- *	RangeList.
+ * @exception lcmc::models::except::MissingParam Thrown if the desired 
+ *	parameter is not in the RangeList.
  * 
  * @exceptsafe The range list is unchanged in the event of an exception.
  */
@@ -427,7 +429,7 @@ RangeList::const_iterator RangeList::end() const {
  *
  * @return True iff x is a valid enum, false otherwise.
  *
- * @except Does not throw exceptions.
+ * @exceptsafe Does not throw exceptions.
  */
 bool RangeList::checkRangeType(RangeList::RangeType x) {
 	switch(x) {
@@ -453,8 +455,9 @@ bool RangeList::checkRangeType(RangeList::RangeType x) {
  *
  * @pre neither min nor max is NaN
  *
- * @exception utils::except::UnexpectedNan Thrown if either min or max is NaN
- * @exception except::NegativeRange Thrown if max > min
+ * @exception lcmc::utils::except::UnexpectedNan Thrown if either min or max 
+ *	is NaN
+ * @exception lcmc::models::except::NegativeRange Thrown if max > min
  * @exception std::invalid_argument Thrown if distrib is not a valid value.
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
@@ -601,7 +604,7 @@ bool RangeList::const_iterator::operator!=(const const_iterator& other) const {
  * range information may be recovered using the RangeList::getMin(), 
  * RangeList::getMax(), and RangeList::getType() methods.
  *
- * @exception utils::except::BadIterator Thrown if the iterator does 
+ * @exception lcmc::utils::except::BadIterator Thrown if the iterator does 
  *	not point to a valid element of a RangeList.
  *
  * @exceptsafe Neither the iterator nor any RangeList it points to are 
@@ -630,7 +633,7 @@ const ParamType& RangeList::const_iterator::operator*() const {
  * range information may be recovered using the RangeList::getMin(), 
  * RangeList::getMax(), and RangeList::getType() methods.
  *
- * @exception utils::except::BadIterator Thrown if the iterator does 
+ * @exception lcmc::utils::except::BadIterator Thrown if the iterator does 
  *	not point to a valid element of a RangeList.
  *
  * @exceptsafe Neither the iterator nor any RangeList it points to are 
@@ -648,11 +651,11 @@ const ParamType* RangeList::const_iterator::operator->() const {
 
 /** Implements std::BidirectionalIterator::++ (prefix)
  *
- * @post The iterator is advanced by one space.
- *
  * @return The new position of the iterator.
  *
- * @exception utils::except::BadIterator Thrown if the iterator 
+ * @post The iterator is advanced by one space.
+ *
+ * @exception lcmc::utils::except::BadIterator Thrown if the iterator 
  *	points past the last element of a RangeList.
  *
  * @exceptsafe Neither the iterator nor the RangeList it points to are 
@@ -669,11 +672,11 @@ RangeList::const_iterator& RangeList::const_iterator::operator++() {
 
 /** Implements std::BidirectionalIterator::++ (postfix)
  *
- * @post The iterator is advanced by one space.
- *
  * @return The old position of the iterator.
  *
- * @exception utils::except::BadIterator Thrown if the iterator 
+ * @post The iterator is advanced by one space.
+ *
+ * @exception lcmc::utils::except::BadIterator Thrown if the iterator 
  *	points past the last element of a RangeList.
  *
  * @exceptsafe Neither the iterator nor the RangeList it points to are 
@@ -691,11 +694,11 @@ RangeList::const_iterator RangeList::const_iterator::operator++(int) {
 
 /** Implements std::BidirectionalIterator::-\- (prefix)
  *
- * @post The iterator is regressed by one space.
- *
  * @return The new position of the iterator.
  *
- * @exception utils::except::BadIterator Thrown if the iterator 
+ * @post The iterator is regressed by one space.
+ *
+ * @exception lcmc::utils::except::BadIterator Thrown if the iterator 
  *	points to the first element of a RangeList.
  *
  * @exceptsafe Neither the iterator nor the RangeList it points to are 
@@ -712,11 +715,11 @@ RangeList::const_iterator& RangeList::const_iterator::operator--() {
 
 /** Implements std::BidirectionalIterator::-\- (postfix)
  *
- * @post The iterator is regressed by one space.
- *
  * @return The old position of the iterator.
  *
- * @exception utils::except::BadIterator Thrown if the iterator 
+ * @post The iterator is regressed by one space.
+ *
+ * @exception lcmc::utils::except::BadIterator Thrown if the iterator 
  *	points to the first element of a RangeList.
  *
  * @exceptsafe Neither the iterator nor the RangeList it points to are 

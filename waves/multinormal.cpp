@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/multinormal.cpp
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
- * @date Last modified May 9, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <algorithm>
@@ -184,8 +184,6 @@ void multiNormal(const vector<double>& indVec, const shared_ptr<gsl_matrix>& cov
  * @post return value is a newly allocated matrix with the property that 
  *	multiplying it by its own transpose restores A
  *
- * @todo Find a faster implementation
- *
  * @warning Returns different results on KPF-Hewlett4 and on cowling, 
  *	particularly for matrices with lots of zero elements. The root cause 
  *	is that a call to gsl_eigen_symmv() returns eigenvalues in a different 
@@ -200,6 +198,8 @@ void multiNormal(const vector<double>& indVec, const shared_ptr<gsl_matrix>& cov
  *	symmetric, or positive semi-definite.
  *
  * @exceptsafe The parameters are unchanged in the event of an exception.
+ *
+ * @todo Find a faster implementation
  */
 shared_ptr<gsl_matrix> getHalfMatrix(const shared_ptr<gsl_matrix>& a) {
 	// Eigendecomposition: covar = eigenVecs * diag(eigenVals) * transpose(eigenVecs)

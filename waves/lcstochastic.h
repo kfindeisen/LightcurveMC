@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lcstochastic.h
  * @author Krzysztof Findeisen
  * @date Created May 12, 2013
- * @date Last modified May 12, 2013
+ * @date Last modified May 22, 2013
  */
 
 #ifndef LCMCCURVESTOCHH
@@ -98,9 +98,6 @@ private:
 	 * number generator, and its values are stored in fluxes.
 	 *
 	 * @param[out] fluxes A write-only reference to Stochastic::fluxes.
-	 *
-	 * @invariant solveFluxes() will be called at most once for any 
-	 *	instance of Stochastic
 	 * 
 	 * @post getFluxes() will now return the correct light curve.
 	 * 
@@ -115,10 +112,13 @@ private:
 	 *	Subclasses of Stochastic may chose the option 
 	 *	(mean, median, or mode) most appropriate for their light 
 	 *	curve shape.
+	 *
+	 * @invariant solveFluxes() will be called at most once for any 
+	 *	instance of Stochastic
 	 * 
-	 * @except bad_alloc Thrown if there is not enough memory to compute 
+	 * @exception std::bad_alloc Thrown if there is not enough memory to compute 
 	 *	the light curve.
-	 * @except logic_error Thrown if a bug was found in the flux calculations.
+	 * @exception std::logic_error Thrown if a bug was found in the flux calculations.
 	 *
 	 * @exceptsafe Neither the object nor the argument are changed in the 
 	 *	event of an exception.

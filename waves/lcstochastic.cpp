@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lcstochastic.cpp
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
- * @date Last modified May 12, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <algorithm>
@@ -27,7 +27,7 @@ using std::auto_ptr;
  *
  * @post Calls to Stochastic::rng() will not throw exceptions.
  *
- * @exception bad_alloc Thrown if there is not enough memory to 
+ * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the object.
  *
  * @exceptsafe Object construction is atomic.
@@ -51,7 +51,7 @@ Stochastic::~Stochastic() {
  *
  * @post timeArray.size() == getFluxes().size()
  *
- * @exception bad_alloc Thrown if there is not enough memory to 
+ * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	return a copy of the times.
  *
  * @exceptsafe Neither the object nor the argument are changed in the 
@@ -83,9 +83,9 @@ void Stochastic::getTimes(std::vector<double>& timeArray) const {
  *	(mean, median, or mode) most appropriate for their light 
  *	curve shape.
  * 
- * @exception bad_alloc Thrown if there is not enough memory to compute 
+ * @exception std::bad_alloc Thrown if there is not enough memory to compute 
  *	the light curve.
- * @exception logic_error Thrown if a bug was found in the flux calculations.
+ * @exception std::logic_error Thrown if a bug was found in the flux calculations.
  *
  * @exceptsafe Neither the object nor the argument are changed in the 
  *	event of an exception.
@@ -120,7 +120,7 @@ size_t Stochastic::size() const {
 	
 /** Defines the random number state of the first Stochastic object.
  *
- * @exception bad_alloc Thrown if there is not enough memory to 
+ * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	allocate the random number generator.
  *
  * @exceptsafe The program state is unchanged in the event of an exception. 

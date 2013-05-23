@@ -2,7 +2,7 @@
  * @file lightcurveMC/binstats.cpp
  * @author Krzysztof Findeisen
  * @date Created June 6, 2011
- * @date Last modified May 15, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include <algorithm>
@@ -691,11 +691,11 @@ bool LcBinStats::hasStat(const std::vector<StatType>& orders, StatType x) {
  *	this string is the name of the light curve library to which signals 
  *	are added.
  *
+ * @return The string with which to label this test in a log file.
+ *
  * @exception std::runtime_error Thrown if the name could not be constructed.
  *
  * @exceptsafe The program state is unchanged in the event of an exception.
- *
- * @return The string with which to label this test in a log file.
  */
 string LcBinStats::makeBinName(const string& lcName, const RangeList& binSpecs, 
 		const string& noise) {
@@ -733,13 +733,13 @@ string LcBinStats::makeBinName(const string& lcName, const RangeList& binSpecs,
  *	mean-square noise level. If instead signal injection is being used, 
  *	this string is the name of the light curve library to which signals 
  *	are added.
+ * 
+ * @return The string to use as the base for naming files associated with this 
+ *	simulation run.
  *
  * @exception std::runtime_error Thrown if the name could not be constructed.
  *
  * @exceptsafe The program state is unchanged in the event of an exception.
- * 
- * @return The string to use as the base for naming files associated with this 
- *	simulation run.
  */
 string LcBinStats::makeFileName(const string& lcName, const RangeList& binSpecs, 
 		const string& noise) {

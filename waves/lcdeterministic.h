@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lcdeterministic.h
  * @author Krzysztof Findeisen
  * @date Created May 12, 2013
- * @date Last modified May 12, 2013
+ * @date Last modified May 22, 2013
  */
 
 #ifndef LCMCCURVEDETERMH
@@ -48,6 +48,8 @@ private:
 	 *	Observations are assumed to be instantaneous, with no averaging over 
 	 *	rapid variability.
 	 *
+	 * @return The flux emitted by the object at the specified time.
+	 *
  	 * @post the return value is determined entirely by the time and 
  	 *	the parameters passed to the constructor
  	 *
@@ -57,10 +59,8 @@ private:
 	 *	averaged over many times. Subclasses of Deterministic may 
 	 *	chose the option (mean, median, or mode) most appropriate 
 	 *	for their light curve shape.
-	 *
-	 * @return The flux emitted by the object at the specified time.
 	 * 
-	 * @except logic_error Thrown if a bug was found in the flux calculations.
+	 * @exception std::logic_error Thrown if a bug was found in the flux calculations.
 	 *
 	 * @exceptsafe Neither the object nor the argument are changed in the 
 	 *	event of an exception.

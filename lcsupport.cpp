@@ -2,7 +2,7 @@
  * @file lightcurveMC/lcsupport.cpp
  * @author Krzysztof Findeisen
  * @date Created April 20, 2012
- * @date Last modified May 10, 2013
+ * @date Last modified May 22, 2013
  * 
  * The functions defined here act as an interface between the LightCurve class 
  * heirarchy and the main program.
@@ -73,13 +73,13 @@ const std::vector<string> lightCurveTypes() {
 /** Converts a string to its associated LightCurveType.
  *
  * @param[in] lcName A short string describing the type of light curve to generate.
+ * 
+ * @return The light curve identifier, if one exists.
  *
  * @pre lcName is an element of lightCurveTypes()
  * 
- * @return The light curve identifier, if one exists.
- * 
- * @exception domain_error Thrown if the light curve name is does not have a 
- *	corresponding type.
+ * @exception std::domain_error Thrown if the light curve name is does not 
+ *	have a corresponding type.
  * @exception std::bad_alloc Thrown if not enough memory to match names 
  *	to light curves.
  *
