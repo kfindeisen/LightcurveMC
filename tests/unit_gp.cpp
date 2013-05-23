@@ -31,8 +31,14 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <cerrno>
 #include <cstdio>
+#include <cstring>
+#include <boost/lexical_cast.hpp>
+#include <boost/shared_ptr.hpp>
 #include "test.h"
+#include "../except/data.h"
+#include "../except/fileio.h"
 #include "../fluxmag.h"
 #include "../lightcurvetypes.h"
 #include "../mcio.h"
@@ -40,21 +46,34 @@
 
 namespace lcmc { namespace test {
 
+using boost::lexical_cast;
+using boost::shared_ptr;
+
 /** Data common to the test cases.
  *
  * At present, the only data is the simulation parameters.
  */
 class ObsData {
 public: 
+	/** Defines the data for each test case.
+	 *
+	 * @pre A text file called @c ptfjds.txt exists in the 
+	 *	working directory and contains a list of Julian dates.
+	 *
+	 * @exception lcmc::except::FileIo Thrown if @c ptfjds.txt could not 
+	 *	be opened or has the wrong format.
+	 * @exception std::bad_alloc Thrown if there is not enough memory to 
+	 *	store the times.
+	 *
+	 * @exceptsafe Object construction is atomic.
+	 */
 	ObsData() : times() {
 		double minTStep, maxTStep;
-		FILE* hJulDates = fopen("ptfjds.txt", "r");
-		if (hJulDates == NULL) {
-			throw std::runtime_error("Could not open ptfjds.txt.");
+		shared_ptr<FILE> hJulDates(fopen("ptfjds.txt", "r"), &fclose);
+		if (hJulDates.get() == NULL) {
+			throw except::FileIo("Could not open ptfjds.txt.");
 		}
-		readTimeStamps(hJulDates, times, minTStep, maxTStep);
-		fclose(hJulDates);
-		hJulDates = NULL;
+		readTimeStamps(hJulDates.get(), times, minTStep, maxTStep);
 	}
 	
 	~ObsData() {
@@ -77,6 +96,11 @@ public:
 	 *
 	 * @param[in] times the times at which the light curve is sampled
 	 * @param[in] sigma the RMS amplitude of the white noise
+	 *
+	 * @exception std::bad_alloc Thrown if there is not enough memory to 
+	 *	store the times.
+	 *
+	 * @exceptsafe Object construction is atomic.
 	 */
 	explicit TestWhiteNoiseFactory(const std::vector<double> times, double sigma) 
 			: TestFactory(), times(times), sigma(sigma) {
@@ -84,6 +108,17 @@ public:
 	
 	/** Generates a new realization of a white noise process having the 
 	 * properties given to the constructor
+	 *
+	 * @return A pointer to a newly constructed 
+	 *	@ref lcmc::models::WhiteNoise "WhiteNoise".
+	 *
+	 * @exception std::bad_alloc Thrown if there is not enough memory to 
+	 *	construct a new object.
+	 * @exception lcmc::models::except::BadParam Thrown if an illegal 
+	 *	value of sigma was passed to the factory constructor.
+	 *
+	 * @exceptsafe Object construction is atomic. The factory is unchanged 
+	 *	in the event of an exception.
 	 */
 	std::auto_ptr<lcmc::models::ILightCurve> make() const {
 		return std::auto_ptr<lcmc::models::ILightCurve>(
@@ -104,6 +139,11 @@ public:
 	 * @param[in] times the times at which the light curve is sampled
 	 * @param[in] diffus the diffusion constant for the random walk
 	 * @param[in] tau the damping time for the random walk
+	 *
+	 * @exception std::bad_alloc Thrown if there is not enough memory to 
+	 *	store the times.
+	 *
+	 * @exceptsafe Object construction is atomic.
 	 */
 	explicit TestDrwFactory(const std::vector<double> times, double diffus, double tau) 
 			: TestFactory(), times(times), diffus(diffus), tau(tau) {
@@ -111,6 +151,17 @@ public:
 	
 	/** Generates a new realization of a damped random walk having the 
 	 * properties given to the constructor
+	 *
+	 * @return A pointer to a newly constructed 
+	 *	@ref lcmc::models::DampedRandomWalk "DampedRandomWalk".
+	 *
+	 * @exception std::bad_alloc Thrown if there is not enough memory to 
+	 *	construct a new object.
+	 * @exception lcmc::models::except::BadParam Thrown if an illegal 
+	 *	value of diffus or tau was passed to the factory constructor.
+	 *
+	 * @exceptsafe Object construction is atomic. The factory is unchanged 
+	 *	in the event of an exception.
 	 */
 	std::auto_ptr<lcmc::models::ILightCurve> make() const {
 		return std::auto_ptr<lcmc::models::ILightCurve>(
@@ -131,6 +182,11 @@ public:
 	 *
 	 * @param[in] times the times at which the light curve is sampled
 	 * @param[in] diffus the diffusion constant for the random walk
+	 *
+	 * @exception std::bad_alloc Thrown if there is not enough memory to 
+	 *	store the times.
+	 *
+	 * @exceptsafe Object construction is atomic.
 	 */
 	explicit TestRwFactory(const std::vector<double> times, double diffus) 
 			: TestFactory(), times(times), diffus(diffus) {
@@ -138,6 +194,17 @@ public:
 	
 	/** Generates a new realization of a damped random walk having the 
 	 * properties given to the constructor
+	 *
+	 * @return A pointer to a newly constructed 
+	 *	@ref lcmc::models::RandomWalk "RandomWalk".
+	 *
+	 * @exception std::bad_alloc Thrown if there is not enough memory to 
+	 *	construct a new object.
+	 * @exception lcmc::models::except::BadParam Thrown if an illegal 
+	 *	value of diffus was passed to the factory constructor.
+	 *
+	 * @exceptsafe Object construction is atomic. The factory is unchanged 
+	 *	in the event of an exception.
 	 */
 	std::auto_ptr<lcmc::models::ILightCurve> make() const {
 		return std::auto_ptr<lcmc::models::ILightCurve>(
@@ -158,6 +225,11 @@ public:
 	 * @param[in] times the times at which the light curve is sampled
 	 * @param[in] sigma the RMS amplitude of the Gaussian process
 	 * @param[in] tau the coherence time for the Gaussian process
+	 *
+	 * @exception std::bad_alloc Thrown if there is not enough memory to 
+	 *	store the times.
+	 *
+	 * @exceptsafe Object construction is atomic.
 	 */
 	explicit TestGpFactory(const std::vector<double> times, double sigma, double tau) 
 			: TestFactory(), times(times), sigma(sigma), tau(tau) {
@@ -165,6 +237,17 @@ public:
 	
 	/** Generates a new realization of a standard Gaussian process having the 
 	 * properties given to the constructor
+	 *
+	 * @return A pointer to a newly constructed 
+	 *	@ref lcmc::models::SimpleGp "SimpleGp".
+	 *
+	 * @exception std::bad_alloc Thrown if there is not enough memory to 
+	 *	construct a new object.
+	 * @exception lcmc::models::except::BadParam Thrown if an illegal 
+	 *	value of sigma or tau was passed to the factory constructor.
+	 *
+	 * @exceptsafe Object construction is atomic. The factory is unchanged 
+	 *	in the event of an exception.
 	 */
 	std::auto_ptr<lcmc::models::ILightCurve> make() const {
 		return std::auto_ptr<lcmc::models::ILightCurve>(
@@ -187,6 +270,11 @@ public:
 	 * @param[in] times the times at which the light curve is sampled
 	 * @param[in] sigma1, sigma2 the RMS amplitudes of the Gaussian components
 	 * @param[in] tau1, tau2 the coherence times for the Gaussian components
+	 *
+	 * @exception std::bad_alloc Thrown if there is not enough memory to 
+	 *	store the times.
+	 *
+	 * @exceptsafe Object construction is atomic.
 	 */
 	explicit TestTwoGpFactory(const std::vector<double> times, 
 			double sigma1, double tau1, double sigma2, double tau2) 
@@ -196,6 +284,18 @@ public:
 	
 	/** Generates a new realization of a two-timescale Gaussian process 
 	 * having the properties given to the constructor
+	 *
+	 * @return A pointer to a newly constructed 
+	 *	@ref lcmc::models::TwoScaleGp "TwoScaleGp".
+	 *
+	 * @exception std::bad_alloc Thrown if there is not enough memory to 
+	 *	construct a new object.
+	 * @exception lcmc::models::except::BadParam Thrown if an illegal 
+	 *	value of sigma1, sigma2, tau1, or tau2 was passed to the 
+	 *	factory constructor.
+	 *
+	 * @exceptsafe Object construction is atomic. The factory is unchanged 
+	 *	in the event of an exception.
 	 */
 	std::auto_ptr<lcmc::models::ILightCurve> make() const {
 		return std::auto_ptr<lcmc::models::ILightCurve>(
@@ -217,6 +317,11 @@ private:
  * @param[in] factory A factory for generating light curves of a specific 
  *	type with specific parameters
  *
+ * @exception lcmc::models::except::BadParam Thrown if the factory generates 
+ *	invalid light curves.
+ *
+ * @exceptsafe Function arguments are in a valid state in the event of an exception.
+ *
  * @warning At present, testGp() cannot verify whether or not the generated 
  * light curves follow the correct distribution. The light curves must be 
  * tested using an external R script.
@@ -224,9 +329,9 @@ private:
  * @todo use an interface library to call the R script directly
  */
 void testGp(size_t nTest, const std::string& fileName, const TestFactory& factory) {
-	FILE* hDump = fopen(fileName.c_str(), "w");
-	if (hDump == NULL) {
-		throw std::runtime_error("Could not open output file.");
+	shared_ptr<FILE> hDump(fopen(fileName.c_str(), "w"), &fclose);
+	if (hDump.get() == NULL) {
+		BOOST_FAIL("Could not open output file " + fileName);
 	}
 
 	try {
@@ -242,22 +347,25 @@ void testGp(size_t nTest, const std::string& fileName, const TestFactory& factor
 			for(std::vector<double>::const_iterator it = mags.begin(); 
 					it != mags.end(); it++) {
 				if (it == mags.begin()) {
-					fprintf(hDump, "%0.5f", *it);
+					if (fprintf(hDump.get(), "%0.5f", *it) < 0) {
+						throw except::FileIo(strerror(errno));
+					}
 				} else {
-					fprintf(hDump, ", %0.5f", *it);
+					if (fprintf(hDump.get(), ", %0.5f", *it) < 0) {
+						throw except::FileIo(strerror(errno));
+					}
 				}
 			}
-			fprintf(hDump, "\n");
+			fprintf(hDump.get(), "\n");
 		}
-	} catch (const std::exception& e) {
-		fclose(hDump);
-		BOOST_ERROR("Could not finish writing to " << fileName);
-		BOOST_ERROR(e.what());
+	} catch (const models::except::BadParam& e) {
 		throw;
+	} catch (const std::exception& e) {
+		BOOST_MESSAGE("Could not finish writing to " + fileName);
+		BOOST_FAIL(e.what());
 	}
 	
-	fclose(hDump);
-	BOOST_TEST_MESSAGE("Test output successfully written to " << fileName);
+	BOOST_TEST_MESSAGE("Test output successfully written to " + fileName);
 	BOOST_TEST_MESSAGE("Please verify this output using external tools");
 	BOOST_CHECK(true);
 }
@@ -269,11 +377,16 @@ void testGp(size_t nTest, const std::string& fileName, const TestFactory& factor
  *
  * @param[in] nTest The number of light curve instances to generate
  * @param[in] times The times at which each light curve should be sampled.
+ *
+ * @exceptsafe Does not throw exceptions
  */
 void testWhite(size_t nTest, const std::vector<double>& times) {
 	char fileName[80];
-	sprintf(fileName, "run_white_%i.dat", nTest);
-	
+	int status = sprintf(fileName, "run_white_%i.dat", nTest);
+	if (status < 0) {
+		strcpy(fileName, "run_white.dat");
+	}
+
 	testGp(nTest, fileName, TestWhiteNoiseFactory(times, 1.0));
 }
 
@@ -285,10 +398,15 @@ void testWhite(size_t nTest, const std::vector<double>& times) {
  * @param[in] nTest The number of light curve instances to generate
  * @param[in] times The times at which each light curve should be sampled.
  * @param[in] tau A damping time of the random walk.
+ *
+ * @exceptsafe Does not throw exceptions
  */
 void testDrw(size_t nTest, const std::vector<double>& times, double tau) {
 	char fileName[80];
-	sprintf(fileName, "run_drw_%i_%.1f.dat", nTest, tau);
+	int status = sprintf(fileName, "run_drw_%i_%.1f.dat", nTest, tau);
+	if (status < 0) {
+		strcpy(fileName, "run_drw.dat");
+	}
 	
 	testGp(nTest, fileName, TestDrwFactory(times, 2.0/tau, tau));
 }
@@ -301,10 +419,15 @@ void testDrw(size_t nTest, const std::vector<double>& times, double tau) {
  * @param[in] nTest The number of light curve instances to generate
  * @param[in] times The times at which each light curve should be sampled.
  * @param[in] diffus The diffusion constant of the random walk.
+ *
+ * @exceptsafe Does not throw exceptions
  */
 void testRw(size_t nTest, const std::vector<double>& times, double diffus) {
 	char fileName[80];
-	sprintf(fileName, "run_rw_%i_%.3f.dat", nTest, diffus);
+	int status = sprintf(fileName, "run_rw_%i_%.3f.dat", nTest, diffus);
+	if (status < 0) {
+		strcpy(fileName, "run_rw.dat");
+	}
 	
 	testGp(nTest, fileName, TestRwFactory(times, diffus));
 }
@@ -317,10 +440,15 @@ void testRw(size_t nTest, const std::vector<double>& times, double diffus) {
  * @param[in] nTest The number of light curve instances to generate
  * @param[in] times The times at which each light curve should be sampled.
  * @param[in] tau A coherence time of the Gaussian process.
+ *
+ * @exceptsafe Does not throw exceptions
  */
 void testStandardGp(size_t nTest, const std::vector<double> times, double tau) {
 	char fileName[80];
-	sprintf(fileName, "run_gp1_%i_%.1f.dat", nTest, tau);
+	int status = sprintf(fileName, "run_gp1_%i_%.1f.dat", nTest, tau);
+	if (status < 0) {
+		strcpy(fileName, "run_gp1.dat");
+	}
 	
 	testGp(nTest, fileName, TestGpFactory(times, 1.0, tau));
 }
@@ -333,10 +461,15 @@ void testStandardGp(size_t nTest, const std::vector<double> times, double tau) {
  * @param[in] nTest The number of light curve instances to generate
  * @param[in] times The times at which each light curve should be sampled.
  * @param[in] tau1, tau2 the coherence times of the components
+ *
+ * @exceptsafe Does not throw exceptions
  */
 void testTwoGp(size_t nTest, const std::vector<double> times, double tau1, double tau2) {
 	char fileName[80];
-	sprintf(fileName, "run_gp2_%i_%.1f_%.1f.dat", nTest, tau1, tau2);
+	int status = sprintf(fileName, "run_gp2_%i_%.1f_%.1f.dat", nTest, tau1, tau2);
+	if (status < 0) {
+		strcpy(fileName, "run_gp2.dat");
+	}
 	
 	testGp(nTest, fileName, TestTwoGpFactory(times, 1.0, tau1, 1./3., tau2));
 }
@@ -355,22 +488,25 @@ BOOST_FIXTURE_TEST_SUITE(test_gp, ObsData)
  * @test A @ref lcmc::models::WhiteNoise "WhiteNoise" sampled at the PTF epochs 
  *	has a distribution consistent with a multivariate normal with the 
  *	expected covariance matrix
+ *
+ * @exceptsafe Does not throw exceptions
  */
 BOOST_AUTO_TEST_CASE(white)
 {
 	testWhite(TEST_COUNT, times);
 }
 
-/* @class lcmc::models::DampedRandomWalk
+/** Tests whether the simulated damped random walks have the correct distribution
+ *
+ * @see @ref lcmc::models::DampedRandomWalk "DampedRandomWalk"
+ * @see testDrw()
  *
  * @test A DampedRandomWalk sampled at the PTF epochs and 
  *	&tau; &isin; {2 days, 20 days, 200 days} has a distribution 
  *	consistent with a multivariate normal with the expected 
  *	covariance matrix
- */
-/** Tests whether the simulated damped random walks have the correct distribution
  *
- * @see testDrw()
+ * @exceptsafe Does not throw exceptions
  */
 BOOST_AUTO_TEST_CASE(drw)
 {
@@ -379,16 +515,17 @@ BOOST_AUTO_TEST_CASE(drw)
 	testDrw(TEST_COUNT, times, 200.0);
 }
 
-/* @class lcmc::models::RandomWalk
+/** Tests whether the simulated random walks have the correct distribution
+ *
+ * @see @ref lcmc::models::RandomWalk "RandomWalk"
+ * @see testRw()
  *
  * @test A RandomWalk sampled at the PTF epochs and 
  *	D &isin; {0.001 day^-1, 0.01 day^-1, and 0.1 day^-1} has a distribution 
  *	consistent with a multivariate normal with the expected 
  *	covariance matrix
- */
-/** Tests whether the simulated random walks have the correct distribution
  *
- * @see testRw()
+ * @exceptsafe Does not throw exceptions
  */
 BOOST_AUTO_TEST_CASE(rw)
 {
@@ -397,16 +534,17 @@ BOOST_AUTO_TEST_CASE(rw)
 	testRw(TEST_COUNT, times, 0.1  );
 }
 
-/* @class lcmc::models::SimpleGp
+/** Tests whether the simulated Gaussian processes have the correct distribution
+ *
+ * @see @ref lcmc::models::SimpleGp "SimpleGp"
+ * @see testStandardGp()
  *
  * @test A SimpleGp sampled at the PTF epochs and 
  *	&tau; &isin; {2 days, 20 days, 200 days} has a distribution 
  *	consistent with a multivariate normal with the expected 
  *	covariance matrix
- */
-/** Tests whether the simulated Gaussian processes have the correct distribution
  *
- * @see testStandardGp()
+ * @exceptsafe Does not throw exceptions
  */
 BOOST_AUTO_TEST_CASE(gp1)
 {
@@ -415,17 +553,18 @@ BOOST_AUTO_TEST_CASE(gp1)
 	testStandardGp(TEST_COUNT, times, 200.0);
 }
 
-/* @class lcmc::models::TwoScaleGp
+/** Tests whether the simulated Gaussian processes have the correct distribution
+ *
+ * @see @ref lcmc::models::TwoScaleGp "TwoScaleGp"
+ * @see testTwoGp()
  *
  * @test A TwoScaleGp sampled at the PTF epochs and 
  *	&tau;_1 &isin; {2 days, 20 days, 200 days} and 
  *	&tau;_2 &isin; {1/10, 1/3, 1, 3, 10} &tau;_1 has a distribution 
  *	consistent with a multivariate normal with the expected 
  *	covariance matrix
- */
-/** Tests whether the simulated Gaussian processes have the correct distribution
  *
- * @see testTwoGp()
+ * @exceptsafe Does not throw exceptions
  */
 BOOST_AUTO_TEST_CASE(gp2)
 {

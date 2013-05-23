@@ -47,6 +47,13 @@ namespace lcmc { namespace test {
  */
 class ParamData {
 public: 
+	/** Constructs parameter lists for each test case.
+	 *
+	 * @exception std::bad_alloc Thrown if there is not enough memory 
+	 *	for the parameter lists.
+	 * 
+	 * @exceptsafe Object construction is atomic.
+	 */
 	ParamData() : emptyParamList(), dummyParamList(), 
 			emptyRangeList(), dummyRangeList() {
 		dummyParamList.add("d",   1.0);
@@ -79,6 +86,8 @@ public:
  * @param[in] x The list to compare to dummyParamList
  *
  * @post Runs BOOST_CHECK repeatedly to test the list contents.
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 void matchDummyPos(const ParamList& x) {
 	BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(x.get("a"),  1e10));
@@ -92,6 +101,8 @@ void matchDummyPos(const ParamList& x) {
  * @param[in] x The list to compare to dummyParamList
  *
  * @post Runs BOOST_CHECK repeatedly to test the list contents.
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 void matchDummy(const ParamList& x) {
 	matchDummyPos(x);
@@ -105,6 +116,8 @@ void matchDummy(const ParamList& x) {
  * @param[in] x The list to compare to dummyRangeList
  *
  * @post Runs BOOST_CHECK repeatedly to test the list contents.
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 void matchDummy(const RangeList& x) {
 	RangeList::const_iterator it = x.begin();
@@ -135,6 +148,8 @@ void matchDummy(const RangeList& x) {
  * @param[in] x The list to compare to dummyRangeList
  *
  * @post Runs BOOST_CHECK repeatedly to test the list contents.
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 void matchDummyPos(const RangeList& x) {
 	BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(x.getMin("a"),  3.5));
@@ -156,46 +171,58 @@ void matchDummyPos(const RangeList& x) {
 BOOST_FIXTURE_TEST_SUITE(test_paramlist, ParamData)
 
 /** Tests ParamList construction and copying
+ *
+ * @see @ref lcmc::models::ParamList "ParamList"
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 BOOST_AUTO_TEST_CASE(make) {
 	// Before we use it, verify that matchDummy() works!
-	BOOST_CHECK_NO_THROW(matchDummy(dummyParamList));
+	BOOST_REQUIRE_NO_THROW(matchDummy(dummyParamList));
 
 	//is default-constructed list empty?
 	// how to test?
 
 	//is a copy (constructed or assigned) identical?
-	ParamList copyList1(dummyParamList);
-	BOOST_CHECK_NO_THROW(matchDummy(copyList1));
-	
-	ParamList copyList2;
-	BOOST_CHECK_NO_THROW(copyList2.add("b", 27.340));
-	BOOST_CHECK_NO_THROW(copyList2.add("e",  8.22 ));
-	BOOST_CHECK_NO_THROW(copyList2 = dummyParamList);
-	BOOST_CHECK_NO_THROW(matchDummy(copyList2));
-	
-	//is a copy (constructed or assigned) independent?
-	BOOST_CHECK_NO_THROW(copyList1.add("e", 3.14159));
-	BOOST_CHECK_NO_THROW(dummyParamList.add("f", 3.14159));
-	BOOST_CHECK_NO_THROW(copyList2.add("g", 2.71828));
-	BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(copyList1.get("e"), 3.14159));
-	BOOST_CHECK_THROW(copyList1.get("f"), MissingParam);
-	BOOST_CHECK_THROW(copyList1.get("g"), MissingParam);
-	
-	BOOST_CHECK_THROW(dummyParamList.get("e"), MissingParam);
-	BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(dummyParamList.get("f"), 3.14159));
-	BOOST_CHECK_THROW(dummyParamList.get("g"), MissingParam);
-	
-	BOOST_CHECK_THROW(copyList2.get("e"), MissingParam);
-	BOOST_CHECK_THROW(copyList2.get("f"), MissingParam);
-	BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(copyList2.get("g"), 2.71828));
+	try {
+		ParamList copyList1(dummyParamList);
+		BOOST_CHECK_NO_THROW(matchDummy(copyList1));
+		
+		ParamList copyList2;
+		BOOST_CHECK_NO_THROW(copyList2.add("b", 27.340));
+		BOOST_CHECK_NO_THROW(copyList2.add("e",  8.22 ));
+		BOOST_CHECK_NO_THROW(copyList2 = dummyParamList);
+		BOOST_CHECK_NO_THROW(matchDummy(copyList2));
+		
+		//is a copy (constructed or assigned) independent?
+		BOOST_CHECK_NO_THROW(copyList1.add("e", 3.14159));
+		BOOST_CHECK_NO_THROW(dummyParamList.add("f", 3.14159));
+		BOOST_CHECK_NO_THROW(copyList2.add("g", 2.71828));
+		BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(copyList1.get("e"), 3.14159));
+		BOOST_CHECK_THROW(copyList1.get("f"), MissingParam);
+		BOOST_CHECK_THROW(copyList1.get("g"), MissingParam);
+		
+		BOOST_CHECK_THROW(dummyParamList.get("e"), MissingParam);
+		BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(dummyParamList.get("f"), 3.14159));
+		BOOST_CHECK_THROW(dummyParamList.get("g"), MissingParam);
+		
+		BOOST_CHECK_THROW(copyList2.get("e"), MissingParam);
+		BOOST_CHECK_THROW(copyList2.get("f"), MissingParam);
+		BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(copyList2.get("g"), 2.71828));
+	} catch (const std::bad_alloc& e) {
+		BOOST_FAIL("Out of memory.");
+	}
 }
 
 /** Tests ParamList modification
+ *
+ * @see @ref lcmc::models::ParamList "ParamList"
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 BOOST_AUTO_TEST_CASE(add) {
 	// Verify that dummyParamList has been reset
-	BOOST_CHECK_NO_THROW(matchDummy(dummyParamList));
+	BOOST_REQUIRE_NO_THROW(matchDummy(dummyParamList));
 	
 	// Adding a parameter works whether or not the list was 
 	//	previously empty
@@ -229,10 +256,14 @@ BOOST_AUTO_TEST_SUITE_END()
 BOOST_FIXTURE_TEST_SUITE(test_rangelist, ParamData)
 
 /** Tests RangeList construction
+ *
+ * @see @ref lcmc::models::RangeList "RangeList"
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 BOOST_AUTO_TEST_CASE(make) {
 	// Before we use it, verify that matchDummy() works!
-	BOOST_CHECK_NO_THROW(matchDummy(dummyRangeList));
+	BOOST_REQUIRE_NO_THROW(matchDummy(dummyRangeList));
 
 	//is default-constructed list empty?
 	BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(std::distance(emptyRangeList.begin(), 
@@ -244,42 +275,50 @@ BOOST_AUTO_TEST_CASE(make) {
 			dummyRangeList.end()) > 0));
 	BOOST_CHECK_NO_THROW(BOOST_CHECK(dummyRangeList.begin() != dummyRangeList.end()));
 	
-	//is a copy (constructed or assigned) identical?
-	RangeList copyList1(dummyRangeList);
-	BOOST_CHECK_NO_THROW(matchDummy(copyList1));
-	
-	RangeList copyList2;
-	BOOST_CHECK_NO_THROW(copyList2.add("b", 27.340, 30.42));
-	BOOST_CHECK_NO_THROW(copyList2.add("e",  8.22,  10.0));
-	BOOST_CHECK_NO_THROW(copyList2 = dummyRangeList);
-	BOOST_CHECK_NO_THROW(matchDummy(copyList2));
-	
-	//is a copy (constructed or assigned) independent?
-	BOOST_CHECK_NO_THROW(BOOST_CHECK(dummyRangeList.begin() != copyList1.begin()));
-	BOOST_CHECK_NO_THROW(BOOST_CHECK(dummyRangeList.end() != copyList1.end()));
-
-	BOOST_CHECK_NO_THROW(copyList1.add("e", 1.61803, 3.14159));
-	BOOST_CHECK_NO_THROW(dummyRangeList.add("f", 1.61803, 3.14159));
-	BOOST_CHECK_NO_THROW(copyList2.add("g", 1.0, 2.71828));
-
-	BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(copyList1.getMin("e"), 1.61803));
-	BOOST_CHECK_THROW(copyList1.getMin("f"), MissingParam);
-	BOOST_CHECK_THROW(copyList1.getMin("g"), MissingParam);
-	
-	BOOST_CHECK_THROW(dummyRangeList.getMax("e"), MissingParam);
-	BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(dummyRangeList.getMax("f"), 3.14159));
-	BOOST_CHECK_THROW(dummyRangeList.getMax("g"), MissingParam);
-	
-	BOOST_CHECK_THROW(copyList2.getType("e"), MissingParam);
-	BOOST_CHECK_THROW(copyList2.getType("f"), MissingParam);
-	BOOST_CHECK_NO_THROW(BOOST_CHECK(copyList2.getType("g") == RangeList::UNIFORM));
+	try {
+		//is a copy (constructed or assigned) identical?
+		RangeList copyList1(dummyRangeList);
+		BOOST_CHECK_NO_THROW(matchDummy(copyList1));
+		
+		RangeList copyList2;
+		BOOST_CHECK_NO_THROW(copyList2.add("b", 27.340, 30.42));
+		BOOST_CHECK_NO_THROW(copyList2.add("e",  8.22,  10.0));
+		BOOST_CHECK_NO_THROW(copyList2 = dummyRangeList);
+		BOOST_CHECK_NO_THROW(matchDummy(copyList2));
+		
+		//is a copy (constructed or assigned) independent?
+		BOOST_CHECK_NO_THROW(BOOST_CHECK(dummyRangeList.begin() != copyList1.begin()));
+		BOOST_CHECK_NO_THROW(BOOST_CHECK(dummyRangeList.end() != copyList1.end()));
+		
+		BOOST_CHECK_NO_THROW(copyList1.add("e", 1.61803, 3.14159));
+		BOOST_CHECK_NO_THROW(dummyRangeList.add("f", 1.61803, 3.14159));
+		BOOST_CHECK_NO_THROW(copyList2.add("g", 1.0, 2.71828));
+		
+		BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(copyList1.getMin("e"), 1.61803));
+		BOOST_CHECK_THROW(copyList1.getMin("f"), MissingParam);
+		BOOST_CHECK_THROW(copyList1.getMin("g"), MissingParam);
+		
+		BOOST_CHECK_THROW(dummyRangeList.getMax("e"), MissingParam);
+		BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(dummyRangeList.getMax("f"), 3.14159));
+		BOOST_CHECK_THROW(dummyRangeList.getMax("g"), MissingParam);
+		
+		BOOST_CHECK_THROW(copyList2.getType("e"), MissingParam);
+		BOOST_CHECK_THROW(copyList2.getType("f"), MissingParam);
+		BOOST_CHECK_NO_THROW(BOOST_CHECK(copyList2.getType("g") == RangeList::UNIFORM));
+	} catch (const std::bad_alloc& e) {
+		BOOST_FAIL("Out of memory.");
+	}
 }
 
 /** Tests RangeList modification
+ *
+ * @see @ref lcmc::models::RangeList "RangeList"
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 BOOST_AUTO_TEST_CASE(add) {
 	// Verify that dummyRangeList has been reset
-	BOOST_CHECK_NO_THROW(matchDummy(dummyRangeList));
+	BOOST_REQUIRE_NO_THROW(matchDummy(dummyRangeList));
 	
 	// Adding a parameter works whether or not the list was 
 	//	previously empty
@@ -315,10 +354,14 @@ BOOST_AUTO_TEST_CASE(add) {
 }
 
 /** Tests RangeList modification
+ *
+ * @see @ref lcmc::models::RangeList "RangeList"
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 BOOST_AUTO_TEST_CASE(remove) {
 	// Verify that dummyRangeList has been reset
-	BOOST_CHECK_NO_THROW(matchDummy(dummyRangeList));
+	BOOST_REQUIRE_NO_THROW(matchDummy(dummyRangeList));
 	
 	// List is non-empty
 	BOOST_CHECK_NO_THROW(BOOST_CHECK(std::distance(dummyRangeList.begin(), 
@@ -333,6 +376,10 @@ BOOST_AUTO_TEST_CASE(remove) {
 }
 
 /** Tests RangeList iterator
+ *
+ * @see @ref lcmc::models::RangeList::const_iterator "RangeList::const_iterator"
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 BOOST_AUTO_TEST_CASE(iterator) {
 	const static size_t CHAR_OFFSET = 0x41;

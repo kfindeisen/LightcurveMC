@@ -176,6 +176,8 @@ TestRandomFactory::~TestRandomFactory() {
  * @return a number distributed uniformly over the interval [0, 1)
  *
  * @exceptsafe Does not throw exceptions.
+ *
+ * @todo Should sample() really be const?
  */
 double TestRandomFactory::sample() const {
 	return gsl_rng_uniform(rng);

@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/unit_dmdt.cpp
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified May 9, 2013
+ * @date Last modified May 22, 2013
  */
 
 #include "../warnflags.h"
@@ -61,8 +61,18 @@ namespace lcmc { namespace test {
  */
 class SimData {
 public: 
+	/** Sets up the data for a test case.
+	 *
+	 * @exception std::bad_alloc Thrown if there is not enough memory to 
+	 *	construct the object.
+	 *
+	 * @exceptsafe Object construction is atomic.
+	 */
 	SimData() : amplitude(3.290), deltaM(), deltaT(), binEdges(), 
 			randomizer(gsl_rng_alloc(gsl_rng_mt19937), &gsl_rng_free) {
+		if (randomizer.get() == NULL) {
+			throw std::bad_alloc();
+		}
 		gsl_rng_set(randomizer.get(), 42);
 		
 		// Preliminary data set
@@ -82,26 +92,36 @@ public:
 	/** Randomly places points according to the distribution for a 
 	 *	&Delta;m&Delta;t plot representing a Gaussian process 
 	 *	with standard deviation 1 and timescale 1
+	 *
+	 * @exception std::bad_alloc Thrown if there is not enough memory for 
+	 *	the new &Delta;m&Delta;t plot
+	 *
+	 * @exceptsafe The object is unchanged in the event of an exception
 	 */
 	void makeDmdt() {
-		deltaM.clear();
-		deltaT.clear();
+		using std::swap;
+		
+		vector<double> tempMags, tempTimes;
 
 		for(size_t i = 0; i < TEST_LEN; i++) {
 			double time = pow(10.0, 
 					gsl_ran_flat(randomizer.get(), MINTIME, MAXTIME));
-			deltaT.push_back(time);
+			tempTimes.push_back(time);
 		}
 		
 		// Analysis code assumes dmdt plots sorted by time
-		std::sort(deltaT.begin(), deltaT.end());
-		for(vector<double>::const_iterator it = deltaT.begin(); it != deltaT.end(); 
+		std::sort(tempTimes.begin(), tempTimes.end());
+		for(vector<double>::const_iterator it = tempTimes.begin(); it != tempTimes.end(); 
 				it++) {
 			double sigma = sqrt(2.0*(1.0 - exp(-0.5*(*it)*(*it))));
-			// not sure why stdlib::abs(long) takes priority over cmath::abs(double)
+			// not sure why stdlib::abs(long) takes priority over 
+			// cmath::abs(double) when passed a double argument...
 			double mag   = fabs(gsl_ran_gaussian(randomizer.get(), sigma));
-			deltaM.push_back(mag);
+			tempMags.push_back(mag);
 		}
+		
+		swap(this->deltaT, tempTimes);
+		swap(this->deltaM, tempMags );
 	}
 	
 	/** Number of points with which to sample a &Delta;m&Delta;t plot.
@@ -154,8 +174,12 @@ private:
  */
 BOOST_FIXTURE_TEST_SUITE(test_dmdt, SimData)
 
-/* @fn lcmc::stats::deltaMBinQuantile()
- *
+/** Tests whether cutting the quantiles at a particular amplitude in order to 
+ * identify a timescale converges to analytical expressions in the limit of 
+ * overwhelming data.
+ * 
+ * @see @ref lcmc::stats::deltaMBinQuantile() "deltaMBinQuantile()"
+ * 
  * @test For an N-fold sampling of a standard Gaussian process, the 
  *	probability that cutFunction(50th percentile, 1/3 amplitude) is NaN 
  *	converges to 1 as N grows large
@@ -168,10 +192,8 @@ BOOST_FIXTURE_TEST_SUITE(test_dmdt, SimData)
  * @test For an N-fold sampling of a standard Gaussian process, 
  *	cutFunction(90th percentile, 1/2 amplitude) converges to 1.178&tau; 
  *	as N grows large
- */
-/** Tests whether cutting the quantiles at a particular amplitude in order to 
- * identify a timescale converges to analytical expressions in the limit of 
- * overwhelming data.
+ *
+ * @exceptsafe Does not throw exceptions.
  */
 BOOST_AUTO_TEST_CASE(quantileCuts)
 {
@@ -183,34 +205,45 @@ BOOST_AUTO_TEST_CASE(quantileCuts)
 
 	for(size_t i = 0; i < TEST_COUNT; i++) {
 		vector<double> change50, change90;
-		makeDmdt();
+		BOOST_REQUIRE_NO_THROW(makeDmdt());
 		
-		deltaMBinQuantile(deltaT, deltaM, binEdges, change50, 0.50);
-		deltaMBinQuantile(deltaT, deltaM, binEdges, change90, 0.90);
+		BOOST_REQUIRE_NO_THROW(deltaMBinQuantile(deltaT, deltaM, binEdges, 
+				change50, 0.50));
+		BOOST_REQUIRE_NO_THROW(deltaMBinQuantile(deltaT, deltaM, binEdges, 
+				change90, 0.90));
 		
-		cut50Amp3s.push_back(cutFunction(binEdges, change50, MoreThan(amplitude / 3.0) ));
-		cut50Amp2s.push_back(cutFunction(binEdges, change50, MoreThan(amplitude / 2.0) ));
+		// Only exceptions that will get thrown here are out-of-memory
+		BOOST_REQUIRE_NO_THROW(cut50Amp3s.push_back(
+				cutFunction(binEdges, change50, MoreThan(amplitude / 3.0) )) );
+		BOOST_REQUIRE_NO_THROW(cut50Amp2s.push_back(
+				cutFunction(binEdges, change50, MoreThan(amplitude / 2.0) )) );
 	
-		cut90Amp3s.push_back(cutFunction(binEdges, change90, MoreThan(amplitude / 3.0) ));
-		cut90Amp2s.push_back(cutFunction(binEdges, change90, MoreThan(amplitude / 2.0) ));
+		BOOST_REQUIRE_NO_THROW(cut90Amp3s.push_back(
+				cutFunction(binEdges, change90, MoreThan(amplitude / 3.0) )) );
+		BOOST_REQUIRE_NO_THROW(cut90Amp2s.push_back(
+				cutFunction(binEdges, change90, MoreThan(amplitude / 2.0) )) );
 	}
 	
 	double mean50Amp3s, error50Amp3s;
-	lcmc::stats::getSummaryStats(cut50Amp3s, mean50Amp3s, error50Amp3s, "Median @ 1/3 Amp");
+	BOOST_REQUIRE_NO_THROW(lcmc::stats::getSummaryStats(cut50Amp3s, mean50Amp3s, 
+			error50Amp3s, "Median @ 1/3 Amp"));
 	BOOST_CHECK(testNan(mean50Amp3s));
 	
 	double mean50Amp2s, error50Amp2s;
-	lcmc::stats::getSummaryStats(cut50Amp2s, mean50Amp2s, error50Amp2s, "Median @ 1/3 Amp");
+	BOOST_REQUIRE_NO_THROW(lcmc::stats::getSummaryStats(cut50Amp2s, mean50Amp2s, 
+			error50Amp2s, "Median @ 1/3 Amp"));
 	BOOST_CHECK(testNan(mean50Amp2s));
 	
 	double mean90Amp3s, error90Amp3s;
-	lcmc::stats::getSummaryStats(cut90Amp3s, mean90Amp3s, error90Amp3s, "90% @ 1/3 Amp");
+	BOOST_REQUIRE_NO_THROW(lcmc::stats::getSummaryStats(cut90Amp3s, mean90Amp3s, 
+			error90Amp3s, "90% @ 1/3 Amp"));
 	myTestClose(mean90Amp3s, 0.709, 
 				testNan(error90Amp3s) || error90Amp3s < BINWIDTH ? 
 				BINWIDTH : 2.0*error90Amp3s);
 
 	double mean90Amp2s, error90Amp2s;
-	lcmc::stats::getSummaryStats(cut90Amp2s, mean90Amp2s, error90Amp2s, "90% @ 1/3 Amp");
+	BOOST_REQUIRE_NO_THROW(lcmc::stats::getSummaryStats(cut90Amp2s, mean90Amp2s, 
+			error90Amp2s, "90% @ 1/3 Amp"));
 	myTestClose(mean90Amp2s, 1.178, 
 			testNan(error90Amp2s) || error90Amp2s < BINWIDTH ? 
 			BINWIDTH : 2.0*error90Amp2s);
