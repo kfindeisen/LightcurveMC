@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/unit_dmdt.cpp
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified May 22, 2013
+ * @date Last modified May 23, 2013
  */
 
 #include "../warnflags.h"
@@ -140,14 +140,14 @@ public:
 	 *
 	 * @see TEST_LEN
 	 */
-	const static double BINWIDTH   = 0.01;		// Factor of 1.004
+	const static double BINWIDTH;
 
 	/** log10(&Delta;t) at the short-timescale end of the plot
 	 */
-	const static double MINTIME = -0.5;
+	const static double MINTIME;
 	/** log10(&Delta;t) at the long-timescale end of the plot
 	 */
-	const static double MAXTIME =  0.5;
+	const static double MAXTIME;
 	
 	/** 5%-95% amplitude of the hypothetical light curve
 	 */
@@ -168,6 +168,9 @@ private:
 	// For generating random data
 	boost::shared_ptr<gsl_rng> randomizer;
 };
+const double SimData::BINWIDTH = 0.01;		// Factor of 1.004
+const double SimData::MINTIME  = -0.5;
+const double SimData::MAXTIME  =  0.5;
 
 /** Test cases for testing &Delta;m&Delta;t-based timescales
  * @class BoostTest::test_dmdt

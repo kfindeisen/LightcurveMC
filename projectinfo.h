@@ -16,7 +16,7 @@
 /** Current version of the program, to make version quoted by program 
  *	consistent with documentation.
  */
-#define VERSION_STRING "2.2.0-devel+build.21"
+#define VERSION_STRING "2.2.0-devel+build.22"
 
 /** @mainpage
  *
@@ -686,6 +686,7 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    run_c1_
  * - Fixed: @ref lcmc::models::FlarePeak "FlarePeak" and 
  *	@ref lcmc::models::FlareDip "FlareDip" light curves now have correct 
  *	parameter checking
+ * - Fixed: removed code from @c unit_dmdt.cpp that did not conform to ISO C++
  *
  * @section v2_1_0 Version 2.1.0
  *
