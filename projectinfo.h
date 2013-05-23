@@ -2,7 +2,7 @@
  * @file lightcurveMC/projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified May 22, 2013
+ * @date Last modified May 23, 2013
  */
 
 #ifndef LCMCPROJINFOH
@@ -16,7 +16,7 @@
 /** Current version of the program, to make version quoted by program 
  *	consistent with documentation.
  */
-#define VERSION_STRING "2.2.0-devel+build.20"
+#define VERSION_STRING "2.2.0-devel+build.21"
 
 /** @mainpage
  *
@@ -137,7 +137,9 @@
  *	curves, of the modified C1 statistic @cite RotorCtts</dd>
  *	<dt><tt>period</tt></dt><dd>Calculates the mean and scatter, across multiple 
  *	light curves, of the period of the highest peak in a Lomb-Scargle 
- *	periodogram @cite LSPeriodogram</dd>
+ *	periodogram @cite LSPeriodogram. Only periods with FAP < 1% are 
+ *	counted. For computational efficiency, the FAP is determined with 
+ *	respect to a null hypothesis of Gaussian white noise.</dd>
  *	<dt><tt>periplot</tt></dt><dd>Creates a file containing all the Lomb-Scargle 
  *	periodograms generated in a particular run</dd>
  *	<dt><tt>dmdtcut</tt></dt><dd>Calculates the mean and scatter, across multiple 
@@ -165,7 +167,7 @@
  *	<dt><tt>peakplot</tt></dt><dd>Creates a file containing all the plots of time 
  *	separation vs. threshold magnitude for identifying a peak.</dd>
  *	</dl>
- * If no -\-stat arguments are given, the default behavior is to run all tests.
+ * If no @c -\-stat arguments are given, the default behavior is to run all tests.
  * </dd>
  * </dl>
  * 
@@ -470,9 +472,11 @@
  * line, for more in-depth analysis of the results.</dd>
  * <dt><tt>period</tt></dt><dd>The program prints the average period calculated from 
  * the simulation runs, followed by &plusmn;, followed by the standard deviation 
- * of the periods. The program then prints the name of a file containing 
- * the individual periods from each simulation, one per line, for more 
- * in-depth analysis of the results.</dd>
+ * of the periods. The program then prints the fraction of simulations in 
+ * which a significant (FAP < 1% relative to Gaussian white noise) period was 
+ * found, followed by the name of a file containing the individual periods 
+ * from each simulation, one per line, for more in-depth analysis of the 
+ * results.</dd>
  * <dt><tt>periplot</tt></dt><dd>The program prints the name of a file containing 
  * pairs of rows representing the individual periodograms from each run. 
  * The first row in each pair contains the frequencies in space-
@@ -559,7 +563,7 @@
 @verbatim
 lightcurveMC myjdlist.txt sine \
 	--amp "1.0 1.0" --period "4.0 4.0" \
-	--stat pgram
+	--stat periplot
 @endverbatim
  * @par Output: 
 @verbatim
@@ -579,8 +583,8 @@ lightcurveMC myjdlist.txt sine --noise 0.05 \
 @endverbatim
  * @par Output: 
 @verbatim
-LCType		a      	p      	ph     	Noise	Period±err	Period Distribution
-sine          	0.01	4	0	0.05	 4.32±0.160	run_peri_sine_a1.00_p4.00_p0.00_n0.dat
+LCType          a       p       ph      Noise   Period±err      Finite  Period Distribution
+sine            0.01    4       0       0.05      4.01± 0.19         1  run_peri_sine_a0.01_p4.00_p0.00_n0.05.dat
 @endverbatim
  * 
  * @subsection ex_toomany Unnecessary Parameters
@@ -595,8 +599,8 @@ lightcurveMC myjdlist.txt sine --noise 0.05 \
 @endverbatim
  * @par Output: 
 @verbatim
-LCType		a      	p      	width	ph     	Noise	Period±err	Period Distribution
-sine          	0.01	4	0.1	0	0.05	 4.32±0.160	run_peri_sine_a1.00_p4.00_p0.00_n0.dat
+LCType          a       p       ph      width   Noise   Period±err      Finite  Period Distribution
+sine            0.01    4       0       0.1     0.05      4.01± 0.19         1  run_peri_sine_a0.01_p4.00_p0.00_w0.10_n0.05.dat
 @endverbatim
  * 
  * @subsection ex_params Multiple Light Curves, More Complex Parameters
@@ -606,7 +610,8 @@ sine          	0.01	4	0.1	0	0.05	 4.32±0.160	run_peri_sine_a1.00_p4.00_p0.00_n0.
  * @par Type: 
 @verbatim
 lightcurveMC myjdlist.txt sine magsine flare_dip flare_peak \
-	--amp "1.0 1.0" --period "4.0 4.0" --width "0.3 0.3" --width2 "0.01 0.01" \
+	--amp "1.0 1.0" --period "4.0 4.0" \
+	--width "0.3 0.3" --width2 "0.01 0.01" \
 	--stat C1
 @endverbatim
  * @par Output: 
@@ -624,19 +629,30 @@ flare_peak      1       4       0       0.3     0.01    0        0.747±0.069    
  * 
  * @par Type: 
 @verbatim
-lightcurveMC --add myobslist.txt myjdlist.txt flat broad_peak sharp_peak \
+lightcurveMC --add myobslist.txt flat broad_peak sharp_peak \
 	--amp "0.01 0.01" --period "4.0 4.0" \
 	--stat C1 --stat period
-lightcurveMC --add myobslist.txt myjdlist.txt flat broad_peak sharp_peak \
+lightcurveMC --add myobslist.txt flat broad_peak sharp_peak \
 	--amp "0.1 0.1" --period "4.0 4.0" \
 	--stat C1 --stat period
-lightcurveMC --add myobslist.txt myjdlist.txt flat broad_peak sharp_peak \
+lightcurveMC --add myobslist.txt flat broad_peak sharp_peak \
 	--amp "1.0 1.0" --period "4.0 4.0" \
 	--stat C1 --stat period
 @endverbatim
  * @par Output: 
 @verbatim
-
+LCType          a       p       ph      Noise   Grankin C1±err  C1 Distribution Period±err      Finite  Period Distribution
+flat            0.01    4       0       myobslist.txt     0.401±7.5e-10  run_c1_flat_a0.01_p4.00_p0.00_nmyobslist.txt.dat    nan±  nan         0  run_peri_flat_a0.01_p4.00_p0.00_nmyobslist.txt.dat
+broad_peak      0.01    4       0       myobslist.txt     0.402±0.0026   run_c1_broad_peak_a0.01_p4.00_p0.00_nmyobslist.txt.dat      nan±  nan         0  run_peri_broad_peak_a0.01_p4.00_p0.00_nmyobslist.txt.dat
+sharp_peak      0.01    4       0       myobslist.txt     0.402±0.0031   run_c1_sharp_peak_a0.01_p4.00_p0.00_nmyobslist.txt.dat      nan±  nan         0  run_peri_sharp_peak_a0.01_p4.00_p0.00_nmyobslist.txt.dat
+LCType          a       p       ph      Noise   Grankin C1±err  C1 Distribution Period±err      Finite  Period Distribution
+flat            0.1     4       0       myobslist.txt     0.401±7.5e-10  run_c1_flat_a0.10_p4.00_p0.00_nmyobslist.txt.dat    nan±  nan         0  run_peri_flat_a0.10_p4.00_p0.00_nmyobslist.txt.dat
+broad_peak      0.1     4       0       myobslist.txt     0.426±0.024    run_c1_broad_peak_a0.10_p4.00_p0.00_nmyobslist.txt.dat      nan±  nan         0  run_peri_broad_peak_a0.10_p4.00_p0.00_nmyobslist.txt.dat
+sharp_peak      0.1     4       0       myobslist.txt     0.414±0.022    run_c1_sharp_peak_a0.10_p4.00_p0.00_nmyobslist.txt.dat      nan±  nan         0  run_peri_sharp_peak_a0.10_p4.00_p0.00_nmyobslist.txt.dat
+LCType          a       p       ph      Noise   Grankin C1±err  C1 Distribution Period±err      Finite  Period Distribution
+flat            1       4       0       myobslist.txt     0.401±7.5e-10  run_c1_flat_a1.00_p4.00_p0.00_nmyobslist.txt.dat    nan±  nan         0  run_peri_flat_a1.00_p4.00_p0.00_nmyobslist.txt.dat
+broad_peak      1       4       0       myobslist.txt     0.635±0.059    run_c1_broad_peak_a1.00_p4.00_p0.00_nmyobslist.txt.dat      nan±  nan         0  run_peri_broad_peak_a1.00_p4.00_p0.00_nmyobslist.txt.dat
+sharp_peak      1       4       0       myobslist.txt      0.67±0.074    run_c1_sharp_peak_a1.00_p4.00_p0.00_nmyobslist.txt.dat      nan±  nan         0  run_peri_sharp_peak_a1.00_p4.00_p0.00_nmyobslist.txt.dat
 @endverbatim
  * 
  * @page changelog Version History

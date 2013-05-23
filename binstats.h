@@ -2,7 +2,7 @@
  * @file lightcurveMC/binstats.h
  * @author Krzysztof Findeisen
  * @date Reconstructed June 23, 2011
- * @date Last modified May 15, 2013
+ * @date Last modified May 23, 2013
  */
 
 #ifndef BINSTATSH
@@ -71,7 +71,7 @@ enum StatType {
  *
  * The following statistics are supported:
  * - C1
- * - Period [disabled]
+ * - Period
  * - &Delta;m-&Delta;t-based timescales
  * - ACF-based timescales
  *
@@ -83,7 +83,7 @@ public:
 	/** Creates a new stat counter
 	 */
 	explicit LcBinStats(const std::string& modelName, const RangeList& binSpecs, 
-			const std::string& noise, std::vector<StatType> toCalc);
+			const std::string& noise, const std::vector<StatType>& toCalc);
 
 	/** Calculates statistics from the light curve and records them in lcBinStats.
 	 */
@@ -126,7 +126,9 @@ private:
 	
 	DoubleVec C1vals;
 	
-//	DoubleVec periods;
+	DoubleVec periods;
+	std::vector<DoubleVec> periFreqs;
+	std::vector<DoubleVec> periPowers;
 
 	// Delta-m Delta-t statistics
 	DoubleVec cutDmdt50Amp3s;

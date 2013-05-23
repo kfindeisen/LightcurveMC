@@ -2,13 +2,14 @@
  * @file lightcurveMC/binstats.cpp
  * @author Krzysztof Findeisen
  * @date Created June 6, 2011
- * @date Last modified May 22, 2013
+ * @date Last modified May 23, 2013
  */
 
 #include <algorithm>
 #include <limits>
 #include <stdexcept>
 #include <string>
+#include <vector>
 #include <cerrno>
 #include <cmath>
 #include <cstdio>
@@ -95,11 +96,12 @@ void printStat(FILE* const file, const std::vector<DoubleVec>& timeArchive,
  * @exceptsafe Object creation is atomic.
  */
 LcBinStats::LcBinStats(const string& modelName, const RangeList& binSpecs, const string& noise, 
-		std::vector<StatType> toCalc) 
+		const std::vector<StatType>& toCalc) 
 		: binName(makeBinName(modelName, binSpecs, noise)), 
 		fileName(makeFileName(modelName, binSpecs, noise)), 
 		stats(toCalc), 
-		C1vals()/*, periods()*/, 
+		C1vals(), 
+		periods(), periFreqs(), periPowers(), 
 		cutDmdt50Amp3s(), cutDmdt50Amp2s(), cutDmdt90Amp3s(), cutDmdt90Amp2s(), 
 		dmdtMedianTimes(), dmdtMedians(),
 		cutIAcf9s(), cutIAcf4s(), cutIAcf2s(), 
@@ -108,7 +110,7 @@ LcBinStats::LcBinStats(const string& modelName, const RangeList& binSpecs, const
 		sAcfTimes(), sAcfs(), 
 		cutPeakAmp3s(), cutPeakAmp2s(), cutPeakAmp45s(), 
 		peakTimes(), peakValues() {
-	if (stats.size() == 0) {
+	if (toCalc.size() == 0) {
 		throw std::invalid_argument("LcBinStats won't calculate any statistics");
 	}
 }
@@ -156,12 +158,15 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 	DoubleVec mags;
 	utils::fluxToMag(fluxes, mags);
 
+	DoubleVec cleanTimes, cleanMags;
+	utils::removeNans(mags, cleanMags, times, cleanTimes);
+
 	////////////////////////////////////////
 	// Calculate c1
 	
 	if (hasStat(stats, C1)) {
 		try {
-			double C1 = getC1(mags);
+			double C1 = getC1(cleanMags);
 			C1vals.push_back(C1);
 		} catch (const except::NotEnoughData &e) {
 			// The one kind of Undefined we don't want to ignore
@@ -174,17 +179,76 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 	////////////////////////////////////////
 	// Periodogram analysis
 	if (hasStat(stats, PERIOD) || hasStat(stats, PERIODOGRAM)) {
+	
+		try {
+			double freqMin = 1.0/kpftimes::deltaT(times);
+			double freqMax = kpftimes::pseudoNyquistFreq(times);
+			if (freqMin < 0.005) {
+				freqMin = 0.005;
+			}
+			
+			DoubleVec freq;
+			kpftimes::freqGen(times, freq, freqMin, freqMax);
+			
+			// False alarm probability
+			static double cacheFreqMin = -1.0, cacheFreqMax = -1.0;
+			static double threshold;
+			if (cacheFreqMax < 0.0 
+					|| cacheFreqMin != freqMin 
+					|| cacheFreqMax != freqMax) {
+				threshold = kpftimes::lsThreshold(cleanTimes, freq, 
+						0.01, 1000);
+				cacheFreqMin = freqMin;
+				cacheFreqMax = freqMax;
+			}
+			
+			// Periodogram
+			DoubleVec power;
+			kpftimes::lombScargle(cleanTimes, cleanMags, freq, power);
+			
+			if (hasStat(stats, PERIODOGRAM)) {
+				// Since vector::reserve() has the strong guarantee 
+				// and doesn't change the data in any case, it's 
+				// effectively a function that is guaranteed to not 
+				// change the content of a vector. 
+				// Use it to ensure that either vector is changed 
+				// only if no exception is thrown
+				periFreqs .reserve(periFreqs .size() + 1);
+				periPowers.reserve(periPowers.size() + 1);
+				periFreqs .push_back(freq);
+				periPowers.push_back(power);
+			}
+			
+			if (hasStat(stats, PERIOD)) {	
+				// Find the highest peak in the periodogram
+				DoubleVec::const_iterator iMax = max_element(power.begin(), power.end());
+				if(iMax == power.end()) {
+					throw std::logic_error("No power spectrum recorded!");
+				}
+				if (*iMax < threshold) {
+					throw except::Undefined("No significant period.");
+				}
+				// Need an index on freqGrid as well
+				DoubleVec::const_iterator fMax = freq.begin() + (iMax - power.begin());
+				
+				periods.push_back(1.0 / *fMax);
+			}
+		} catch (const std::invalid_argument& e) {
+			throw except::NotEnoughData(e.what());
+		} catch (const except::Undefined &e) {
+			// Don't add any periodogram stats; move on
+		}
 	}
 	
 	////////////////////////////////////////
 	// Delta-m Delta-t plots
 	if (hasStat(stats, DMDTCUT) || hasStat(stats, DMDT)) {
 		try {
-			double amplitude = getAmplitude(mags);
+			double amplitude = getAmplitude(cleanMags);
 			
 			if (amplitude > 0) {
 				double minBin = -1.97;
-				double maxBin = log10(kpftimes:: deltaT(times));
+				double maxBin = log10(kpftimes::deltaT(times));
 				
 				DoubleVec binEdges;
 				for (double bin = minBin; bin < maxBin; bin += 0.15) {
@@ -193,8 +257,7 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 				// Get the bin containing maxBin as well
 				binEdges.push_back(pow(10.0,maxBin));
 				
-				DoubleVec cleanTimes, cleanMags, deltaT, deltaM;
-				utils::removeNans(mags, cleanMags, times, cleanTimes);
+				DoubleVec deltaT, deltaM;
 				kpftimes::dmdt(cleanTimes, cleanMags, deltaT, deltaM);
 				
 				DoubleVec change50;
@@ -251,8 +314,7 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 				offsets.push_back(t);
 			}
 			
-			DoubleVec cleanTimes, cleanMags, acf;
-			utils::removeNans(mags, cleanMags, times, cleanTimes);
+			DoubleVec acf;
 			interp::autoCorr(cleanTimes, cleanMags, offStep, offsets.size(), acf);
 			if (hasStat(stats, IACF)) {
 				// Record only logarithmically spaced bins, for compactness
@@ -315,8 +377,7 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 				offsets.push_back(t);
 			}
 			
-			DoubleVec cleanTimes, cleanMags, acf;
-			utils::removeNans(mags, cleanMags, times, cleanTimes);
+			DoubleVec acf;
 			kpftimes::autoCorr(cleanTimes, cleanMags, offsets, acf);
 			if (hasStat(stats, SACF)) {
 				// Record only logarithmically spaced bins, for compactness
@@ -370,7 +431,7 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 	// Peak-finding plots
 	if (hasStat(stats, PEAKCUT)) {
 		try {
-			double amplitude = getAmplitude(mags);
+			double amplitude = getAmplitude(cleanMags);
 			
 			if (amplitude > 0) {
 				DoubleVec magCuts;
@@ -378,8 +439,7 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 				magCuts.push_back(amplitude / 2.0);
 				magCuts.push_back(amplitude * 0.8);
 			
-				DoubleVec cleanTimes, cleanMags, cutTimes;
-				utils::removeNans(mags, cleanMags, times, cleanTimes);
+				DoubleVec cutTimes;
 				peakFindTimescales(cleanTimes, cleanMags, magCuts, cutTimes);
 				
 				// Key cuts
@@ -396,7 +456,7 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 	}
 	if (hasStat(stats, PEAKFIND)) {
 		try {
-			double amplitude = getAmplitude(mags);
+			double amplitude = getAmplitude(cleanMags);
 			
 			if (amplitude > 0) {
 				const static double minMag = 0.01;
@@ -406,8 +466,7 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 					magCuts.push_back(mag);
 				}
 				
-				DoubleVec cleanTimes, cleanMags, cutTimes;
-				utils::removeNans(mags, cleanMags, times, cleanTimes);
+				DoubleVec cutTimes;
 				peakFindTimescales(cleanTimes, cleanMags, magCuts, cutTimes);
 				
 				// Since vector::reserve() has the strong guarantee 
@@ -444,7 +503,9 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 void LcBinStats::clear() {
 	C1vals.clear();
 
-//	periods.clear();
+	periods.clear();
+	periFreqs.clear();
+	periPowers.clear();
 
 	cutDmdt50Amp3s.clear();
 	cutDmdt50Amp2s.clear();
@@ -501,8 +562,11 @@ void LcBinStats::printBinStats(FILE* const file) const {
 		printStatAlwaysDefined(file, C1vals, "C1", "run_c1_" + fileName + ".dat");
 	}
 	if (hasStat(stats, PERIOD)) {
+		printStat(file, periods, "Period", "run_peri_" + fileName + ".dat");
 	}
 	if (hasStat(stats, PERIODOGRAM)) {
+		printStat(file, periFreqs, periPowers, 
+			"run_pgram_" + fileName + ".dat");
 	}
 	if (hasStat(stats, DMDTCUT)) {
 		printStat(file, cutDmdt50Amp3s, "50th percentile crossing 1/3 amp", 
@@ -604,8 +668,18 @@ void LcBinStats::printBinHeader(FILE* const file, const RangeList& binSpecs,
 		}
 	}
 	if (hasStat(outputStats, PERIOD)) {
+		status = sprintf(binLabel, "%s\tPeriod±err\tFinite\tPeriod Distribution", binLabel);
+		if (status < 0) {
+			throw std::runtime_error("String formatting error in printBinHeader(): " 
+				+ string(strerror(errno)));
+		}
 	}
 	if (hasStat(outputStats, PERIODOGRAM)) {
+		status = sprintf(binLabel, "%s\tPeriodograms", binLabel);
+		if (status < 0) {
+			throw std::runtime_error("String formatting error in printBinHeader(): " 
+				+ string(strerror(errno)));
+		}
 	}
 	if (hasStat(outputStats, DMDTCUT)) {
 		status = sprintf(binLabel, "%s\t50%% cut at 1/3±err\tFinite\t50%%@1/3 Distribution\t50%% cut at 1/2±err\tFinite\t50%%@1/2 Distribution\t90%% cut at 1/3±err\tFinite\t90%%@1/3 Distribution\t90%% cut at 1/2±err\tFinite\t90%%@1/2 Distribution", binLabel);
