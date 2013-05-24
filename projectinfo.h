@@ -2,7 +2,7 @@
  * @file lightcurveMC/projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified May 23, 2013
+ * @date Last modified May 24, 2013
  */
 
 #ifndef LCMCPROJINFOH
@@ -16,7 +16,7 @@
 /** Current version of the program, to make version quoted by program 
  *	consistent with documentation.
  */
-#define VERSION_STRING "2.2.0-devel+build.22"
+#define VERSION_STRING "2.2.0-devel+build.23"
 
 /** @mainpage
  *
@@ -78,8 +78,8 @@
  *
  * @section install_make Build Commands
  *
- * Running <tt>make</tt>, with no arguments, will build lightcurveMC in the 
- * lightcurveMC root directory. Running <tt>make unittest</tt> will build the 
+ * Running <tt>make</tt>, with no arguments, will build @c lightcurveMC in the 
+ * Lightcurve MC root directory. Running <tt>make unittest</tt> will build the 
  * unit test suite at @c tests/test. Running <tt>make autotest</tt> will 
  * build both lightcurveMC and the test suite, if neccessary, before 
  * executing @c tests/autotest.sh. Finally, running <tt>make doc</tt> will 

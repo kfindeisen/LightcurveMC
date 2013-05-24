@@ -2,7 +2,7 @@
  * @file lightcurveMC/binstats.cpp
  * @author Krzysztof Findeisen
  * @date Created June 6, 2011
- * @date Last modified May 23, 2013
+ * @date Last modified May 24, 2013
  */
 
 #include <algorithm>
@@ -108,7 +108,7 @@ LcBinStats::LcBinStats(const string& modelName, const RangeList& binSpecs, const
 		iAcfTimes(), iAcfs(), 
 		cutSAcf9s(), cutSAcf4s(), cutSAcf2s(), 
 		sAcfTimes(), sAcfs(), 
-		cutPeakAmp3s(), cutPeakAmp2s(), cutPeakAmp45s(), 
+		cutPeakAmp3s(), cutPeakAmp2s(), cutPeakMax08s(), 
 		peakTimes(), peakValues() {
 	if (toCalc.size() == 0) {
 		throw std::invalid_argument("LcBinStats won't calculate any statistics");
@@ -437,7 +437,6 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 				DoubleVec magCuts;
 				magCuts.push_back(amplitude / 3.0);
 				magCuts.push_back(amplitude / 2.0);
-				magCuts.push_back(amplitude * 0.8);
 			
 				DoubleVec cutTimes;
 				peakFindTimescales(cleanTimes, cleanMags, magCuts, cutTimes);
@@ -445,7 +444,6 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 				// Key cuts
 				cutPeakAmp3s .push_back(cutTimes[0]);
 				cutPeakAmp2s .push_back(cutTimes[1]);
-				cutPeakAmp45s.push_back(cutTimes[2]);
 			}
 		} catch (const except::NotEnoughData &e) {
 			// The one kind of Undefined we don't want to ignore
@@ -454,7 +452,7 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 			// Don't add any acf stats; move on
 		}
 	}
-	if (hasStat(stats, PEAKFIND)) {
+	if (hasStat(stats, PEAKFIND) || hasStat(stats, PEAKCUT)) {
 		try {
 			double amplitude = getAmplitude(cleanMags);
 			
@@ -469,16 +467,33 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 				DoubleVec cutTimes;
 				peakFindTimescales(cleanTimes, cleanMags, magCuts, cutTimes);
 				
-				// Since vector::reserve() has the strong guarantee 
-				// and doesn't change the data in any case, it's 
-				// effectively a function that is guaranteed to not 
-				// change the content of a vector. 
-				// Use it to ensure that either vector is changed 
-				// only if no exception is thrown
-				peakTimes .reserve(peakTimes .size() + 1);
-				peakValues.reserve(peakValues.size() + 1);
-				peakTimes .push_back(cutTimes);
-				peakValues.push_back(magCuts);
+				if (hasStat(stats, PEAKFIND)) {
+					// Since vector::reserve() has the strong guarantee 
+					// and doesn't change the data in any case, it's 
+					// effectively a function that is guaranteed to not 
+					// change the content of a vector. 
+					// Use it to ensure that either vector is changed 
+					// only if no exception is thrown
+					peakTimes .reserve(peakTimes .size() + 1);
+					peakValues.reserve(peakValues.size() + 1);
+					peakTimes .push_back(cutTimes);
+					peakValues.push_back(magCuts);
+				}
+				
+				if (hasStat(stats, PEAKCUT)) {
+					// 80% of the highest mag with a defined timescale
+					double mag08 = 0.8 * 
+						cutFunctionReverse(magCuts, cutTimes, 
+							utils::NotNan());
+					
+					// can't use cutFunction() because cutTimes may 
+					//	have NaNs
+					DoubleVec singleTime;
+					peakFindTimescales(cleanTimes, cleanMags, 
+						vector<double>(1, mag08), singleTime);
+					// singleTime.size() == 1 guaranteed
+					cutPeakMax08s.push_back(singleTime.front());
+				}
 			}
 		} catch (const except::NotEnoughData &e) {
 			// The one kind of Undefined we don't want to ignore
@@ -528,7 +543,7 @@ void LcBinStats::clear() {
 	// Peak-finding statistics
 	cutPeakAmp3s.clear();
 	cutPeakAmp2s.clear();
-	cutPeakAmp45s.clear();
+	cutPeakMax08s.clear();
 	peakTimes.clear();
 	peakValues.clear();
 }
@@ -602,11 +617,11 @@ void LcBinStats::printBinStats(FILE* const file) const {
 	}
 
 	if (hasStat(stats, PEAKCUT)) {
-		printStat(file, cutPeakAmp3s, "Peak timescales crossing 1/3 amp", 
+		printStat(file, cutPeakAmp3s, "Timescales for peaks > 1/3 amp", 
 			"run_cutpeak3_" + fileName + ".dat");
-		printStat(file, cutPeakAmp2s, "Peak timescales crossing 1/2 amp", 
+		printStat(file, cutPeakAmp2s, "Timescales for peaks > 1/3 amp", 
 			"run_cutpeak2_" + fileName + ".dat");
-		printStat(file, cutPeakAmp45s, "Peak timescales crossing 4/5 amp", 
+		printStat(file, cutPeakMax08s, "Timescales for peaks > 80% max", 
 			"run_cutpeak45_" + fileName + ".dat");
 	}
 	if (hasStat(stats, PEAKFIND)) {
@@ -717,7 +732,7 @@ void LcBinStats::printBinHeader(FILE* const file, const RangeList& binSpecs,
 		}
 	}
 	if (hasStat(outputStats, PEAKCUT)) {
-		status = sprintf(binLabel, "%s\tPeakFind cut at 1/3±err\tFinite\tPeakFind@1/3 Distribution\tPeakFind at 1/2±err\tFinite\tPeakFind@1/2 Distribution", binLabel);
+		status = sprintf(binLabel, "%s\tPeakFind cut at 1/3±err\tFinite\tPeakFind@1/3 Distribution\tPeakFind at 1/2±err\tFinite\tPeakFind@1/2 Distribution\tPeakFind at 80%%±err\tFinite\tPeakFind@80%% Distribution", binLabel);
 		if (status < 0) {
 			throw std::runtime_error("String formatting error in printBinHeader(): " 
 				+ string(strerror(errno)));

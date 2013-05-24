@@ -2,7 +2,7 @@
  * @file lightcurveMC/binstats.h
  * @author Krzysztof Findeisen
  * @date Reconstructed June 23, 2011
- * @date Last modified May 23, 2013
+ * @date Last modified May 24, 2013
  */
 
 #ifndef BINSTATSH
@@ -153,7 +153,7 @@ private:
 	// Peak-finding statistics
 	DoubleVec cutPeakAmp3s;
 	DoubleVec cutPeakAmp2s;
-	DoubleVec cutPeakAmp45s;
+	DoubleVec cutPeakMax08s;
 	std::vector<DoubleVec> peakTimes;
 	std::vector<DoubleVec> peakValues;
 };

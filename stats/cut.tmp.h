@@ -16,7 +16,7 @@ namespace lcmc { namespace stats {
 
 using std::vector;
 
-/** Finds the location on a grid where a predicate is true.
+/** Finds the first location on a grid where a predicate is true.
  *
  * @tparam UnaryPredicate The type of condition to test. Must be a <a href="http://www.sgi.com/tech/stl/Predicate.html">unary predicate</a>.
  *
@@ -44,6 +44,40 @@ cutFunction(const vector<double>& pos, const vector<double>& func, UnaryPredicat
 
 	if (whereCut != func.end()) {
 		return *(pos.begin() + (whereCut-func.begin()));
+	} else {
+		return std::numeric_limits<double>::quiet_NaN();
+	}
+}
+
+/** Finds the last location on a grid where a predicate is true.
+ *
+ * @tparam UnaryPredicate The type of condition to test. Must be a <a href="http://www.sgi.com/tech/stl/Predicate.html">unary predicate</a>.
+ *
+ * @param[in] pos The position grid on which to search.
+ * @param[in] func The function to test against cut.
+ * @param[in] pred The condition that must be satisfied by the return value.
+ *
+ * @return The value pos[i] at which pred(func[i]) is last true, 
+ *	or NaN if pred(x) is false for all x &isin; func.
+ *
+ * @pre pos.size() == func.size()
+ * 
+ * @pre pos does not contain NaNs
+ * @pre func may contain NaNs
+ *
+ * @exceptsafe If pred throws exceptions, then cutFunctionReverse() has the 
+ *	same exception guarantee as pred. Otherwise, does not throw exceptions.
+ */
+template <class UnaryPredicate> 
+BOOST_CONCEPT_REQUIRES(
+	((boost::UnaryPredicate<UnaryPredicate, double>)),	// Predicate semantics
+	(double)) 						// return type
+cutFunctionReverse(const vector<double>& pos, const vector<double>& func, UnaryPredicate pred) {
+	vector<double>::const_reverse_iterator whereCut = 
+			std::find_if(func.rbegin(), func.rend(), pred);
+
+	if (whereCut != func.rend()) {
+		return *(pos.rbegin() + (whereCut-func.rbegin()));
 	} else {
 		return std::numeric_limits<double>::quiet_NaN();
 	}
