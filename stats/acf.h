@@ -10,12 +10,12 @@
 
 namespace lcmc { namespace stats { 
 
-/** This function computes the lag-n autocorrelation of the dataset data, 
+/** This function computes the lag-@p n autocorrelation of the dataset @p data, 
  *	using the signal-processing convention.
  */
 void autoCorrelation_sp(const double data[], double acfs[], size_t n);
 
-/** This function computes the lag-n autocorrelation of the dataset data, 
+/** This function computes the lag-@p n autocorrelation of the dataset @p data, 
  * 	using the statistical analysis convention.
  */
 void autoCorrelation_stat(const double data[], double acfs[], size_t n);

@@ -20,16 +20,16 @@ using std::string;
  */
 class NotEnoughData : public std::invalid_argument {
 public:
-	/** Constructs a LengthMismatch object.
+	/** Constructs a NotEnoughData object.
 	 */
 	explicit NotEnoughData(const string& what_arg);
 };
 
-/** This exception is thrown if a quantile is not defined for that parameter.
+/** This exception is thrown if a nonsense quantile is requested
  */
 class InvalidQuantile : public std::domain_error {
 public:
-	/** Constructs a LengthMismatch object.
+	/** Constructs an InvalidQuantile object.
 	 */
 	explicit InvalidQuantile(const string& what_arg);
 };

@@ -2,7 +2,7 @@
  * @file lightcurveMC/cmd/cmd_constraints.tmp.h
  * @author Krzysztof Findeisen
  * @date Created April 27, 2013
- * @date Last modified May 11, 2013
+ * @date Last modified May 25, 2013
  */
 
 #ifndef LCMCCMDCONSTH
@@ -12,6 +12,7 @@
 #include <typeinfo>
 #include <utility>
 #include <vector>
+#include <boost/concept_check.hpp>
 
 #include "../warnflags.h"
 
@@ -39,10 +40,12 @@ using namespace std;
 
 /** Constraint representing numbers that must be greater than zero
  *
- * @tparam T A type comparable to zero.
+ * @tparam Numeric A type comparable to zero.
  */
-template<class T>
-class PositiveNumber : public TCLAP::Constraint<T> {
+template<class Numeric>
+class PositiveNumber : public TCLAP::Constraint<Numeric> {
+	BOOST_CONCEPT_ASSERT((boost::LessThanComparable<Numeric>));	// Supports inequalities
+	BOOST_CONCEPT_ASSERT((boost::Convertible<Numeric, double>));	// Numeric type
 public:
 	/** Returns a long description used when a value fails the constraint
 	 *
@@ -51,7 +54,7 @@ public:
 	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string description() const {
-		return string("positive ") + typeid(T).name();
+		return string("positive ") + typeid(Numeric).name();
 	}
 
 	/** Returns a short description used in the interface documentation
@@ -61,18 +64,18 @@ public:
 	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string shortID() const {
-		return string("positive ") + typeid(T).name();
+		return string("positive ") + typeid(Numeric).name();
 	}
 
 	/** Returns true iff a value is positive.
 	 *
 	 * @param[in] value The number that must be greater than zero.
 	 *
-	 * @return True if value > 0, false otherwise
+	 * @return True if @p value > 0, false otherwise
 	 *
 	 * @exceptsafe Does not throw exceptions.
 	 */
-	virtual bool check(const T& value) const {
+	virtual bool check(const Numeric& value) const {
 		return (value > 0);
 	}
 
@@ -110,7 +113,7 @@ public:
 	 *
 	 * @param[in] value The number that must be greater than zero.
 	 *
-	 * @return True if value > 0, false otherwise
+	 * @return True if @p value > 0, false otherwise
 	 *
 	 * @exceptsafe Does not throw exceptions.
 	 */
@@ -152,7 +155,7 @@ public:
 	 *
 	 * @param[in] value The number that must be greater than zero.
 	 *
-	 * @return True if value > 0, false otherwise
+	 * @return True if @p value > 0, false otherwise
 	 *
 	 * @exceptsafe Does not throw exceptions.
 	 */
@@ -208,10 +211,12 @@ public:
 
 /** Constraint representing numbers that must not be less than zero
  *
- * @tparam T A type comparable to zero.
+ * @tparam Numeric A type comparable to zero.
  */
-template<class T>
-class NonNegativeNumber : public TCLAP::Constraint<T> {
+template<class Numeric>
+class NonNegativeNumber : public TCLAP::Constraint<Numeric> {
+	BOOST_CONCEPT_ASSERT((boost::LessThanComparable<Numeric>));	// Supports inequalities
+	BOOST_CONCEPT_ASSERT((boost::Convertible<Numeric, double>));	// Numeric type
 public:
 	/** Returns a long description used when a value fails the constraint
 	 *
@@ -220,7 +225,7 @@ public:
 	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string description() const {
-		return string("non-negative ") + typeid(T).name();
+		return string("non-negative ") + typeid(Numeric).name();
 	}
 
 	/** Returns a short description used in the interface documentation
@@ -230,7 +235,7 @@ public:
 	 * @exceptsafe Does not throw exceptions.
 	 */
 	virtual string shortID() const {
-		return string("non-negative ") + typeid(T).name();
+		return string("non-negative ") + typeid(Numeric).name();
 	}
 
 	/** Returns true iff a value is nonnegative.
@@ -238,11 +243,11 @@ public:
 	 * @param[in] value The number that must be greater than or equal 
 	 *	to zero.
 	 *
-	 * @return True if value >= 0, false otherwise
+	 * @return True if @p value &ge; 0, false otherwise
 	 *
 	 * @exceptsafe Does not throw exceptions.
 	 */
-	virtual bool check(const T& value) const {
+	virtual bool check(const Numeric& value) const {
 		return (value >= 0);
 	}
 
@@ -281,7 +286,7 @@ public:
 	 * @param[in] value The number that must be greater than or equal 
 	 *	to zero.
 	 *
-	 * @return True if value >= 0, false otherwise
+	 * @return True if @p value &ge; 0, false otherwise
 	 *
 	 * @exceptsafe Does not throw exceptions.
 	 */
@@ -324,7 +329,7 @@ public:
 	 * @param[in] value The number that must be greater than or equal 
 	 *	to zero.
 	 *
-	 * @return True if value >= 0, false otherwise
+	 * @return True if @p value &ge; 0, false otherwise
 	 *
 	 * @exceptsafe Does not throw exceptions.
 	 */
@@ -369,7 +374,7 @@ public:
 	 * @param[in] value The interval that must be greater than or equal 
 	 *	to zero.
 	 *
-	 * @return True if the interval is valid and both ends are >= 0, 
+	 * @return True if the interval is valid and both ends are &ge; 0, 
 	 *	false otherwise
 	 *
 	 * @exceptsafe Does not throw exceptions.
@@ -400,7 +405,7 @@ public:
         virtual ~UnitSubrange();
 };
 
-/** Synonym for TCLAP::ValuesConstraint that takes up less space in the 
+/** Synonym for @c TCLAP::ValuesConstraint that takes up less space in the 
  * documentation. Especially well-suited for very long lists of allowed 
  * values.
  */

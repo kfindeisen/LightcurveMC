@@ -47,6 +47,7 @@ using stats::StatType;
 using namespace TCLAP;
 
 /** Adds a parameter to a light curve specification if the appropriate 
+ * command line argument was used
  */
 void addParam(RangeList& range, const ParamType& paramName, 
 		ValueArg< std::pair<double, double> >& paramValue, 

@@ -21,8 +21,8 @@ using std::string;
  *	returned by what().
  * @param[in] fileName The name of the file that triggered the exception.
  *
- * @post this->what() == what_arg.c_str()
- * @post this->getFile() == fileName
+ * @post this->what() = @p what_arg.c_str()
+ * @post this->getFile() = @p fileName
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the exception.
@@ -52,8 +52,8 @@ const string BadFile::getFile() const {
  *	returned by what().
  * @param[in] line The input line that could not be parsed.
  *
- * @post this->what() == what_arg.c_str()
- * @post this->getLine() == line
+ * @post this->what() = @p what_arg.c_str()
+ * @post this->getLine() = @p line
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the exception.
@@ -83,8 +83,8 @@ const string BadFormat::getLine() const {
  *	returned by what().
  * @param[in] fileName The name of the missing catalog file.
  *
- * @post this->what() == what_arg.c_str()
- * @post this->getFile() == fileName
+ * @post this->what() = @p what_arg.c_str()
+ * @post this->getFile() = @p fileName
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the exception.

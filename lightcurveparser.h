@@ -15,15 +15,15 @@
 namespace lcmc { 
 
 /** This namespace identifies data types and functions that handle 
- * model selection for lightcurveMC.
+ * model selection for Lightcurve MC.
  */
 namespace parse {
 
-/** Returns a list of all lightCurve names recognized on the command line. 
+/** Returns a list of all light curve names recognized on the command line. 
  */
 const std::vector<std::string> lightCurveTypes();
 
-/** Converts a string to its associated LightCurveType.
+/** Converts a string to its associated @ref models::LightCurveType "LightCurveType".
  */
 const models::LightCurveType parseLightCurve(const std::string& lcName);
 

@@ -40,19 +40,19 @@ typedef std::vector<double> DoubleVec;
  * @param[in] last Input iterator marking the position after the last 
  *	element in the container.
  *
- * @return The arithmetic mean of the elements between first, inclusive, and 
- *	last, exclusive. The return type is that of the elements pointed to by the first and 
- *	last iterators.
+ * @return The arithmetic mean of the elements between @p first, inclusive, and 
+ *	@p last, exclusive. The return type is that of the elements pointed to by 
+ *	the @p first and @p last iterators.
  *
- * @pre [first, last) is a valid range
- * @pre There is at least one element in the range [first, last)
+ * @pre [@p first, @p last) is a valid range
+ * @pre There is at least one element in the range [@p first, @p last)
  *
- * @perform O(D), where D = std::distance(first, last).
+ * @perform O(D), where D = std::distance(@p first, @p last).
  *
  * @exception kpfutils::except::NotEnoughData Thrown if there are not enough 
  *	elements to define a mean.
  * 
- * @exceptsafe The range [first, last) is unchanged in the event of an exception.
+ * @exceptsafe The range [@p first, @p last) is unchanged in the event of an exception.
  *
  * @test List of ints, length 0. Expected behavior: throw invalid_argument.
  * @test List of ints, length 1. Expected behavior: return list[0]
@@ -97,22 +97,22 @@ mean(ConstInputIterator first, ConstInputIterator last) {
  * 
  * @tparam ConstInputIterator The iterator type for the container over which the 
  *	variance is to be calculated. Must be <a href="http://www.boost.org/doc/libs/release/libs/iterator/doc/ReadableIterator.html">readable</a> and support <a href="http://www.boost.org/doc/libs/release/libs/iterator/doc/ForwardTraversal.html">forward traversal</a>.
- * @param[in] first Input iterator marking the first element in the container.
- * @param[in] last Input iterator marking the position after the last element in the container.
+ * @param[in] @p first Input iterator marking the first element in the container.
+ * @param[in] @p last Input iterator marking the position after the last element in the container.
  *
- * @return The (unbiased) sample variance of the elements between first, 
- *	inclusive, and last, exclusive. The return type is that of the 
- *	elements pointed to by the first and last iterators.
+ * @return The (unbiased) sample variance of the elements between @p first, 
+ *	inclusive, and @p last, exclusive. The return type is that of the 
+ *	elements pointed to by the @p first and @p last iterators.
  *
- * @pre [first, last) is a valid range
- * @pre There are at least two elements in the range [first, last)
+ * @pre [@p first, @p last) is a valid range
+ * @pre There are at least two elements in the range [@p first, @p last)
  *
- * @perform O(D), where D = std::distance(first, last).
+ * @perform O(D), where D = std::distance(@p first, @p last).
  *
  * @exception kpfutils::except::NotEnoughData Thrown if there are not enough 
  *	elements to define a variance.
  * 
- * @exceptsafe The range [first, last) is unchanged in the event of an exception.
+ * @exceptsafe The range [@p first, @p last) is unchanged in the event of an exception.
  *
  * @test List of ints, length 0. Expected behavior: throw invalid_argument.
  * @test List of ints, length 1. Expected behavior: throw invalid_argument.
@@ -167,25 +167,25 @@ variance(ConstInputIterator first, ConstInputIterator last) {
  *	element in the container.
  * @param[in] quantile The percentile to recover.
  *
- * @return The largest value whose quantile is less than or equal to the 
- *	parameter "quantile".
+ * @return The largest value whose quantile is less than or equal to 
+ *	@p quantile.
  *
- * @pre [first, last) is a valid range
- * @pre There are at least two elements in the range [first, last)
- * @pre 0 <= quantile <= 1
- * @pre No value in [first, last) is NaN
+ * @pre [@p first, @p last) is a valid range
+ * @pre There are at least two elements in the range [@p first, @p last)
+ * @pre 0 <= @p quantile <= 1
+ * @pre No value in [@p first, @p last) is NaN
  *
  * @post The return value is not NaN
  *
- * @perform O(D log D), where D = std::distance(first, last).
+ * @perform O(D log D), where D = std::distance(@p first, @p last).
  * 
- * @exception kpfutils::except::InvalidQuantile Thrown if quantile is not 
+ * @exception kpfutils::except::InvalidQuantile Thrown if @p quantile is not 
  *	in the interval [0, 1].
  *
  * @exception kpfutils::except::NotEnoughData Thrown if there are not enough 
  *	elements to define a quantile.
  * 
- * @exceptsafe The range [first, last) is unchanged in the event of an exception.
+ * @exceptsafe The range [@p first, @p last) is unchanged in the event of an exception.
  *
  * @test List of ints, length 0. Expected behavior: throw invalid_argument.
  * @test List of ints, length 1, quantile=0.00. Expected behavior: return %list::front()
@@ -245,20 +245,20 @@ quantile(ConstRandomAccessIterator first, ConstRandomAccessIterator last, double
 
 /** Tests whether a range is sorted.
  *
- * This function emulates std::is_sorted() for platforms without access 
+ * This function emulates <tt>std::is_sorted()</tt> for platforms without access 
  * to either a C++11-compliant compiler or Boost 1.50 or later.
  *
  * @tparam ForwardIteratorIterator The iterator type for the container to be tested. 
  * Must be a <a href="http://www.boost.org/doc/libs/release/doc/html/ForwardIterator.html">forward iterator</a>.
  * @param[in] first,last Forward iterators to the range to test. The range 
- *	is all elements in the interval [first, last).
+ *	is all elements in the interval [@p first, @p last).
  *
- * @return True if [first, last) is sorted in ascending order. A range 
+ * @return True if [@p first, @p last) is sorted in ascending order. A range 
  *	containing less than two elements is always sorted.
  *
- * @perform O(D), where D = std::distance(first, last).
+ * @perform O(D), where D = std::distance(@p first, @p last).
  *
- * @exceptsafe The range [first, last) is unchanged in the event of 
+ * @exceptsafe The range [@p first, @p last) is unchanged in the event of 
  *	an exception if ForwardIterator provides at least the basic 
  *	guarantee. Does not throw exceptions unless ForwardIterator throws.
  */

@@ -23,8 +23,8 @@ using std::string;
  *	returned by what().
  * @param[in] param The parameter that could not be found in RangeList.
  *
- * @post this->what() == what_arg.c_str()
- * @post this->getParam() == param
+ * @post this->what() = @p what_arg.c_str()
+ * @post this->getParam() = @p param
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the exception.
@@ -55,8 +55,8 @@ const ParamType MissingParam::getParam() const {
  *	returned by what().
  * @param[in] param The parameter that was duplicated.
  *
- * @post this->what() == what_arg.c_str()
- * @post this->getParam() == param
+ * @post this->what() = @p what_arg.c_str()
+ * @post this->getParam() = @p param
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the exception.
@@ -88,9 +88,9 @@ const ParamType ExtraParam::getParam() const {
  * @param[in] min The minimum value of the range that triggered the exception.
  * @param[in] max The maximum value of the range that triggered the exception.
  *
- * @post this->what() == what_arg.c_str()
- * @post this->getMin() == min
- * @post this->getMax() == max
+ * @post this->what() = @p what_arg.c_str()
+ * @post this->getMin() = @p min
+ * @post this->getMax() = @p max
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the exception.
@@ -105,13 +105,13 @@ NegativeRange::NegativeRange(const string& what_arg, double min, double max)
  *
  * @param[in] what_arg A string with the same content as the value 
  *	returned by what().
- * @param[in] range A pair containing, in the first and second fields, 
+ * @param[in] range A pair containing, in the @p first and @p second fields, 
  *	the minimum and maximum values of the parameter that triggered 
  *	the exception
  *
- * @post this->what() == what_arg.c_str()
- * @post this->getMin() == range.first
- * @post this->getMax() == range.second
+ * @post this->what() = @p what_arg.c_str()
+ * @post this->getMin() = @p range.first
+ * @post this->getMax() = @p range.second
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the exception.

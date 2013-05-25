@@ -2,7 +2,7 @@
  * @file lightcurveMC/projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified May 24, 2013
+ * @date Last modified May 25, 2013
  */
 
 #ifndef LCMCPROJINFOH
@@ -11,12 +11,12 @@
 /** Brief description of the program, to make blurb quoted by program 
  *	consistent with documentation.
  */
-#define PROG_SUMMARY "LightcurveMC carries out Monte Carlo simulations of a statistical light curve analysis given a particular observing cadence. It takes as its primary argument a list of time stamps, and returns a table of light curve statistics and their variance from run to run. Additional files may contain the statistics themselves."
+#define PROG_SUMMARY "Lightcurve MC carries out Monte Carlo simulations of a statistical light curve analysis given a particular observing cadence. It takes as its primary argument a list of time stamps, and returns a table of light curve statistics and their variance from run to run. Additional files may contain the statistics themselves."
 
 /** Current version of the program, to make version quoted by program 
  *	consistent with documentation.
  */
-#define VERSION_STRING "2.2.0-devel+build.23"
+#define VERSION_STRING "2.2.0"
 
 /** @mainpage
  *
@@ -81,7 +81,7 @@
  * Running <tt>make</tt>, with no arguments, will build @c lightcurveMC in the 
  * Lightcurve MC root directory. Running <tt>make unittest</tt> will build the 
  * unit test suite at @c tests/test. Running <tt>make autotest</tt> will 
- * build both lightcurveMC and the test suite, if neccessary, before 
+ * build both Lightcurve MC and the test suite, if neccessary, before 
  * executing @c tests/autotest.sh. Finally, running <tt>make doc</tt> will 
  * generate this documentation at @c doc/html/index.html and 
  * (if you have LaTeX installed) @c doc/latex/refman.pdf, and running 
@@ -92,11 +92,11 @@
  * 
  * @section cmd Command-Line Options
  * 
- * lightcurveMC accepts the following arguments: 
+ * Lightcurve MC accepts the following arguments: 
  *
  * @subsection args_basic Simulation Type
  * 
- * LightcurveMC must take exactly one of the following options: 
+ * Lightcurve MC must take exactly one of the following options: 
  * <dl>
  * <dt><tt>-\-add &lt;catalog&gt;</tt></dt><dd>Gives the name of a file 
  * containing a list of file names (paths may be absolute or relative to the 
@@ -448,9 +448,11 @@
  *
  * @section output Output Format
  *
- * Lightcurve MC generates a tab-delimited row for each valid keyword in 
- * &lt;light curve list&gt;. If the program output is redirected to a file, 
- * the results of multiple runs may be concatenated to create a table of results.
+ * Lightcurve MC generates a tab- and &plusmn;-delimited row for each valid 
+ * keyword in &lt;light curve list&gt;. If the program output is redirected to 
+ * a file, the results of multiple runs may be concatenated to create a table 
+ * of results. This table may be read by any CSV reader by telling it to treat 
+ * both tabs and &plusmn; as delimiters.
  *
  * The first entry in the row is the light curve keyword. The next entries 
  * are the light curve parameters. While the order is guaranteed to be 
@@ -657,77 +659,84 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    run_c1_
  * 
  * @page changelog Version History
  *
- * @section v2_2_0 Version 2.2.0-devel
+ * @section v2_2_0 Version 2.2.0
  *
- * - Changed: shortened all integration test scripts, cutting the 
+ * @subsection v2_2_0_diff Changes 
+ * 
+ * - @c unit_dmdt.cpp now conforms to ISO C++
+ * - Added test cases to @ref lcmc::test::BoostTest::test_stats "test_stats".
+ * - Shortened all integration test scripts, cutting the 
  *	testing time by a factor of five without sacrificing accuracy
- * - Added: @c -\-stat (@c -s) keyword now allows run time selection of statistics 
- *	to compute for each light curve
- * - Added: support for ACF timescales
- * - Fixed: output files now give more significant digits for the 
- *	simulation parameters, reducing naming conflicts between bins. Light 
- *	curve dump files created with the @c -\-print keyword now use the same 
- *	naming convention as the statistic output files.
- * - Changed: @c -\-add keyword can now take arbitrary file names as arguments. 
- *	The use of the keywords NonSpitzerNonVar, NonSpitzerVar, 
- *	SpitzerNonVar, and SpitzerVar is now deprecated.
- * - Changed: improved error recovery and reporting
- * - Fixed: noise will no longer be correlated with 
- *	@ref lcmc::models::WhiteNoise "WhiteNoise", 
- *	@ref lcmc::models::RandomWalk "RandomWalk", and 
- *	@ref lcmc::models::DampedRandomWalk "DampedRandomWalk" light curves
- * - Fixed: makefile generates fewer spurious compilations
- * - Added: installation instructions and user guide. The 
+ * - Improved error recovery and reporting
+ * - Make generates fewer spurious compilations
+ * - Added installation instructions and user guide. The 
  *	@ref use "\"User's Guide\"" @htmlonly page, @endhtmlonly 
  *	@latexonly chapter, @endlatexonly not including the "Examples" 
  *	section, will be henceforth considered the public API for the 
  *	purposes of <a href="http://semver.org/">semantic versioning</a>.
- * - Added: PDF documentation
- * - Fixed: @ref lcmc::models::FlarePeak "FlarePeak" and 
+ * - Corrected and standardized documentation
+ * - Added PDF documentation in @c doc/latex/refman.pdf.
+ * 
+ * @subsection v2_2_0_new New Features 
+ * 
+ * - @c -\-add keyword can now take arbitrary file names as arguments. 
+ *	The use of the keywords @c NonSpitzerNonVar, @c NonSpitzerVar, 
+ *	@c SpitzerNonVar, and @c SpitzerVar is now deprecated.
+ * - @c -\-stat (@c -s) keyword now allows run time selection of statistics 
+ *	to compute for each light curve
+ * - Support for ACF timescales and peak-finding timescales
+ * 
+ * @subsection v2_2_0_fix Bug Fixes 
+ * 
+ * - Output files now give more significant digits for the 
+ *	simulation parameters, reducing naming conflicts between bins. Light 
+ *	curve dump files created with the @c -\-print keyword now use the same 
+ *	naming convention as the statistic output files.
+ * - Noise will no longer be correlated with 
+ *	@ref lcmc::models::WhiteNoise "WhiteNoise", 
+ *	@ref lcmc::models::RandomWalk "RandomWalk", and 
+ *	@ref lcmc::models::DampedRandomWalk "DampedRandomWalk" light curves
+ * - @ref lcmc::models::FlarePeak "FlarePeak" and 
  *	@ref lcmc::models::FlareDip "FlareDip" light curves now have correct 
  *	parameter checking
- * - Fixed: removed code from @c unit_dmdt.cpp that did not conform to ISO C++
+ * - @ref lcmc::utils::ApproxEqual "ApproxEqual" now tests the correct condition
  *
  * @section v2_1_0 Version 2.1.0
  *
- * - Fixed: tests in @ref lcmc::test::BoostTest::test_gp "test_gp" now report 
- *	success on completion
- * - Fixed: @ref lcmc::stats::LcBinStats::analyzeLightCurve() 
- *	"LcBinStats::analyzeLightCurve()" now propagates exception 
- *	types correctly
- * - Added: test cases to @ref lcmc::test::BoostTest::test_stats "test_stats".
- * - Changed: bug that @ref lcmc::models::SimpleGp "SimpleGp" produces 
+ * @subsection v2_1_0_diff Changes 
+ * 
+ * - Added documentation for test code. Declared a new namespace, 
+ *	lcmc::test, containing all test suites.
+ * - Added test cases to @ref lcmc::test::BoostTest::test_stats "test_stats".
+ * - Added @ref lcmc::test::BoostTest::test_wave "test_wave", a unit test 
+ *	suite for the older periodic light curves
+ * - Added @c cmdtest.sh, an integration test suite for command line errors
+ * - @c makefile now handles include dependencies in subdirectories correctly
+ * - Removed information about the local GCC configuration from 
+ *	@c makefile.inc.
+ * - Incorporated @c mcio.cpp, @c lcsio.cpp, and @c kpffileio.cpp 
+ *	into main program rather than as an external dependency.
+ * - Sped up evaluation of @ref lcmc::models::SimpleGp "SimpleGp" 
+ *	and @ref lcmc::models::TwoScaleGp "TwoScaleGp" by a factor of five 
+ *	in the case that the model parameters are held fixed 
+ *	(i.e., @c -\-amp, @c -\-period, etc. are given with a range of zero length)
+ * 
+ * @subsection v2_1_0_new New Features 
+ * 
+ * - Input validation for all command line arguments
+ * - @ref lcmc::models::RandomWalk "RandomWalk" and 
+ *	@ref lcmc::models::TwoScaleGp "TwoScaleGp". Added corresponding test 
+ *	cases to @ref lcmc::test::BoostTest::test_gp "test_gp".
+ * - Support for command-line arguments "amp2" and "period2".
+ * 
+ * @subsection v2_1_0_fix Bug Fixes 
+ * 
+ * - Bug that @ref lcmc::models::SimpleGp "SimpleGp" produces 
  *	inconsistent output downgraded to a warning, and moved to 
  *	@ref lcmc::utils::getHalfMatrix() "getHalfMatrix()". See 
  *	@ref lcmc::utils::getHalfMatrix() "getHalfMatrix()" documentation for 
  *	more details.
- * - Fixed: test output files now distinguish runs with identical light curve 
- *	parameters but different noise levels
- * - Fixed: the @c -\-add command line argument can no longer be combined with 
- *	either the list of julian dates or with the @c -\-noise argument
- * - Added: input validation for all command line arguments
- * - Added: @c cmdtest.sh, an integration test suite for command line errors
- * - Fixed: @ref lcmc::stats::LcBinStats::printBinStats() "LcBinStats::printBinStats()" 
- *	will now report zero standard deviation, not NaN, for statistics 
- *	that were always calculated to the same value
- * - Added: documentation for test code. Declared a new namespace, 
- *	lcmc::test, containing all test suites.
- * - Fixed: @c -\-amp parameter for sines now represents the half-amplitude, as 
- *	intended, not the amplitude
- * - Fixed: light curves no longer generate negative fluxes
- * - Added: @ref lcmc::test::BoostTest::test_wave "test_wave", a unit test 
- *	suite for the older periodic light curves
- * - Fixed: makefile now handles include dependencies in 
- *	subdirectories correctly
- * - Added: implemented @ref lcmc::models::RandomWalk "RandomWalk" and 
- *	@ref lcmc::models::TwoScaleGp "TwoScaleGp". Added corresponding test 
- *	cases to @ref lcmc::test::BoostTest::test_gp "test_gp".
- * - Added: support for command-line arguments "amp2" and "period2".
- * - Changed: speeded up evaluation of @ref lcmc::models::SimpleGp "SimpleGp" 
- *	and @ref lcmc::models::TwoScaleGp "TwoScaleGp" by a factor of five 
- *	in the case that the model parameters are held fixed 
- *	(i.e., @c -\-amp, @c -\-period, etc. are given with a range of zero length)
- * - Changed: bug where @ref lcmc::stats::deltaMBinQuantile() "deltaMBinQuantile()" 
+ * - Bug where @ref lcmc::stats::deltaMBinQuantile() "deltaMBinQuantile()" 
  *	appeared to show the &Delta;m median crossing half the amplitude 
  *	before reaching the third-amplitude in Gaussian processes has been 
  *	explained. The behavior is the result of half-amplitude crossings 
@@ -740,48 +749,73 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    run_c1_
  *	considered a bug.
  *	The behavior may be reproduced with the files 
  *	<tt>tests/paradox*.*</tt>.
- * - Fixed: integration test scripts run more consistently across systems. In 
+ * - Tests in @ref lcmc::test::BoostTest::test_gp "test_gp" now report 
+ *	success on completion
+ * - @ref lcmc::stats::LcBinStats::analyzeLightCurve() 
+ *	"LcBinStats::analyzeLightCurve()" now propagates exception 
+ *	types correctly
+ * - Test output files now distinguish runs with identical light curve 
+ *	parameters but different noise levels
+ * - The @c -\-add command line argument can no longer be combined with 
+ *	either the list of julian dates or with the @c -\-noise argument
+ * - @ref lcmc::stats::LcBinStats::printBinStats() "LcBinStats::printBinStats()" 
+ *	will now report zero standard deviation, not NaN, for statistics 
+ *	that were always calculated to the same value
+ * - The @c -\-amp parameter for sines now represents the half-amplitude, as 
+ *	intended, not the amplitude
+ * - Light curves no longer generate negative fluxes
+ * - Integration test scripts run more consistently across systems. In 
  *	particular, they are now designed for execution, not sourcing.
- * - Fixed: makefile now finds libraries on tcsh
- * - Changed: removed information about the local GCC configuration from 
- *	@c makefile.inc.
- * - Changed: incorporated @c mcio.cpp, @c lcsio.cpp, and @c kpffileio.cpp 
- *	into main program rather than as an external dependency.
+ * - makefile now finds libraries on C-shell
  *
  * @section v2_0_0 Version 2.0.0
  *
- * - Changed: replaced period-amplitude command-line interface with one that 
- *	allows the user to specify an arbitrary set of parameters, but at the 
- *	cost of evaluating only a single bin per run
- * - Changed: redid the entire way information is passed to 
+ * @subsection v2_0_0_diff Changes 
+ * 
+ * - Redid the entire way information is passed to 
  *	@ref lcmc::models::ILightCurve "ILightCurve" subclasses, 
  *	in particular rewriting the interface of the 
  *	@ref lcmc::models::ParamList "ParamList" class 
  *	from scratch and moving it outside the 
  *	@ref lcmc::models::ILightCurve "ILightCurve" class.
- * - Changed: redid @ref lcmc::models::ILightCurve "ILightCurve" 
+ * - Redid @ref lcmc::models::ILightCurve "ILightCurve" 
  *	interface to add support for stochastic light curves.
- * - Added: implemented @ref lcmc::models::WhiteNoise "WhiteNoise", 
+ * - Deleted ILightCurve::modelParams()
+ * - Cleaned up documentation.
+ * - From now on, version numbers will conform to the 
+ *	<a href="http://semver.org/">Semantic Versioning specification</a>.
+ * 
+ * @subsection v2_0_0_new New Features 
+ * 
+ * - Replaced period-amplitude command-line interface with one that 
+ *	allows the user to specify an arbitrary set of parameters, but at the 
+ *	cost of evaluating only a single bin per run
+ * - Implemented @ref lcmc::models::WhiteNoise "WhiteNoise", 
  *	@ref lcmc::models::DampedRandomWalk "DampedRandomWalk", and
  *	@ref lcmc::models::SimpleGp "SimpleGp".
- * - Changed: cleaned up documentation.
+ * - Support for &Delta;m&Delta;t timescales
+ * 
+ * @subsection v2_0_0_fix Bug Fixes 
+ * 
  * - Fixed: C1 will now be calculated correctly in magnitude space for light 
  *	curves where the measured (noisy) flux is negative.
- * - Added: support for &Delta;m&Delta;t timescales
- * - Deleted: ILightCurve::modelParams()
- * - Changed: from now on, version numbers will conform to the 
- *	<a href="http://semver.org/">Semantic Versioning specification</a>.
  *
  * @section v1_4_1 Version 1.4.1
  *
- * - Added: signal injection capability (NonSpitzerNonVar only)
+ * @subsection v1_4_1_new New Features 
+ * 
+ * - Signal injection capability
  *
  * @section v1_4 Version 1.4
  *
- * - Changed: Added @ref lcmc::models::ILightCurve "LightCurve" heirarchy
+ * @subsection v1_4_diff Changes 
+ * 
+ * - Added @ref lcmc::models::ILightCurve "LightCurve" heirarchy
  *
  * @section v1_3 Version 1.3
  *
+ * @subsection v1_3_diff Changes 
+ * 
  * - Started formal version documentation
  * 
  */

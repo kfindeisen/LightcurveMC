@@ -2,7 +2,7 @@
  * @file lightcurveMC/nanstats.cpp
  * @author Krzysztof Findeisen
  * @date Created April 11, 2013
- * @date Last modified May 7, 2013
+ * @date Last modified May 25, 2013
  */
 
 #include <limits>
@@ -19,11 +19,11 @@ using std::vector;
 using std::numeric_limits;
 using boost::lexical_cast;
 
-/** isNan tests whether a floating-point number is undefined
+/** isNan() tests whether a floating-point number is undefined
  *
  * @param[in] x The number to test
  * 
- * @return true if and only if x equals signaling or quiet not-a-number
+ * @return true if and only if @p x equals signaling or quiet not-a-number
  *
  * @exceptsafe Does not throw exceptions.
  */
@@ -31,12 +31,12 @@ bool isNan(const double x) {
 	return (x != x);
 }
 
-/** isNanOrInf tests whether a floating-point number is non-finite
+/** isNanOrInf() tests whether a floating-point number is non-finite
  *
  * @param[in] x The number to test
  * 
- * @return true if and only if x equals signaling or quiet not-a-number, 
- *	or x is infinite
+ * @return true if and only if @p x equals signaling or quiet not-a-number, 
+ *	or @p x is infinite
  *
  * @exceptsafe Does not throw exceptions.
  */
@@ -45,14 +45,15 @@ bool isNanOrInf(const double x) {
 			  || (x == -numeric_limits<double>::infinity()) );
 }
 
-/** lessFinite allows floating-point numbers to be ordered consistently in the 
+/** lessFinite() allows floating-point numbers to be ordered consistently in the 
  *	presence of NaNs.
  *
  * @param[in] x First value to compare
  * @param[in] y Second value to compare
  *
- * @return If neither x nor y is NaN, returns (x < y). Otherwise, assumes 
- *	NaN is larger than any finite values, but less than positive infinity.
+ * @return If neither @p x nor @p y is NaN, returns (<tt>x < y</tt>). 
+ *	Otherwise, assumes NaN is larger than any finite values, but less 
+ *	than positive infinity.
  *
  * @exceptsafe Does not throw exceptions.
  */
@@ -68,29 +69,29 @@ bool lessFinite(double x, double y) {
 	}
 }
 
-/** Removes nans from a pair of vectors.
+/** Removes NaNs from a pair of vectors.
  *
  * @param[in] badVals A vector of values that may contain NaNs.
- * @param[out] goodVals A vector containing all elements in badVals that are 
+ * @param[out] goodVals A vector containing all elements in @p badVals that are 
  *	not NaNs.
  * @param[in] sideVals A vector of other measurements that correspond to the 
- *	values in badVals.
- * @param[out] matchVals A vector containing those elements in sideVals whose 
- *	counterparts in badVals are not NaNs.
+ *	values in @p badVals.
+ * @param[out] matchVals A vector containing those elements in @p sideVals whose 
+ *	counterparts in @p badVals are not NaNs.
  *
- * @pre badVals.size() == sideVals.size()
- * @pre goodVals, badVals, sideVals, and matchVals are all distinct objects
+ * @pre @p badVals.size() = @p sideVals.size()
+ * @pre @p goodVals, @p badVals, @p sideVals, and @p matchVals are all distinct objects
  *
- * @post goodVals.size() == matchVals.size()
+ * @post @p goodVals.size() = @p matchVals.size()
  *
- * @post goodVals.size() <= badVals.size()
- * @post sideVals.size() <= matchVals.size()
+ * @post @p goodVals.size() &le; @p badVals.size()
+ * @post @p sideVals.size() &le; @p matchVals.size()
  *
- * @post The elements in goodVals are in the same order as in badVals
- * @post The elements in matchVals are in the same order as in sideVals
+ * @post The elements in @p goodVals are in the same order as in @p badVals
+ * @post The elements in @p matchVals are in the same order as in @p sideVals
  *
- * @exception std::invalid_argument Thrown if badVals.size() != sideVals.size()
- * @exception std::bad_alloc Thrown if could not allocate sideVals or matchVals
+ * @exception std::invalid_argument Thrown if @p badVals.size() &ne; @p sideVals.size()
+ * @exception std::bad_alloc Thrown if could not allocate @p sideVals or @p matchVals
  *
  * @exceptsafe None of the arguments are changed in the event of an exception.
  */
@@ -139,12 +140,12 @@ void removeNans(const vector<double>& badVals, vector<double>& goodVals,
  *
  * @param[in] vals The values whose mean to take. May include NaNs.
  *
- * @return The mean of the non-NaN elements of vals.
+ * @return The mean of the non-NaN elements of @p vals.
  *
  * @exception lcmc::stats::NotEnoughData Thrown if all the elements of 
- *	vals are NaNs.
+ *	@p vals are NaNs.
  *
- * @exceptsafe vals is unchanged in the event of an exception.
+ * @exceptsafe @p vals is unchanged in the event of an exception.
  */
 double meanNoNan(const vector<double>& vals) {
 	using namespace boost;
@@ -168,12 +169,12 @@ double meanNoNan(const vector<double>& vals) {
  *
  * @param[in] vals The values whose variance to take. May include NaNs.
  *
- * @return The variance of the non-NaN elements of vals.
+ * @return The variance of the non-NaN elements of @p vals.
  *
  * @exception lcmc::stats::NotEnoughData Thrown if all or all but one of 
- *	the elements of vals are NaNs.
+ *	the elements of @p vals are NaNs.
  *
- * @exceptsafe vals is unchanged in the event of an exception.
+ * @exceptsafe @p vals is unchanged in the event of an exception.
  */
 double varianceNoNan(const vector<double>& vals) {
 	using namespace boost;

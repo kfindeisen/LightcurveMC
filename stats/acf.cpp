@@ -18,24 +18,25 @@
 
 namespace lcmc { namespace stats { 
 
-/** This function computes the lag-n autocorrelation of the dataset data, 
+/** This function computes the lag-@p n autocorrelation of the dataset @p data, 
  *	using the signal-processing convention.
  *
  * The interface is deliberately written in C style, for ease of 
  *	swapping out with an eventual GSL function.
  *
  * @param[in] data, n The dataset to autocorrelate.
- * @param[out] acfs An array of length n that will contain the lag-0 
- *	through lag-(n-1) offsets
+ * @param[out] acfs An array of length @p n that will contain the lag-0 
+ *	through lag-(@p n-1) offsets
  *
- * @pre n >= 2
+ * @pre @p n &ge; 2
  *
- * @post @f$ acfs[k] = \sum_{i = k}^{n-1} x_i x_{i-k} @f$, where @f$ x_i @f$ denotes data[i]
+ * @post @f$ a_k = \sum_{i = k}^{n-1} x_i x_{i-k} @f$, where @f$ a_k @f$ 
+ *	denotes @p acf[k] and @f$ x_i @f$ denotes @p data[i]
  *
- * @perform O(n^2) worst-case time
- * @perfmore O(n log n) best-case time
+ * @perform O(<tt>n</tt><sup>2</sup>) worst-case time
+ * @perfmore O(<tt>n</tt> log <tt>n</tt>) best-case time
  *
- * @exception std::invalid_argument Thrown if n < 2
+ * @exception std::invalid_argument Thrown if @p n < 2
  * @exception std::runtime_error Thrown if the internal calculations produce an error.
  * @exception std::bad_alloc Thrown if there is not enough memory to compute 
  *	the autocorrelation function
@@ -128,26 +129,26 @@ void autoCorrelation_sp(const double data[], double acfs[], size_t n) {
 	}
 }
 
-/** This function computes the lag-n autocorrelation of the dataset data, 
+/** This function computes the lag-@p n autocorrelation of the dataset @p data, 
  * 	using the statistical analysis convention.
  *
  * The interface is deliberately written in C style, for ease of 
  *	swapping out with an eventual GSL function.
  *
  * @param[in] data, n The dataset to autocorrelate.
- * @param[out] acfs An array of length n that will contain the lag-0 
- *	through lag-(n-1) offsets
+ * @param[out] acfs An array of length @p n that will contain the lag-0 
+ *	through lag-(@p n-1) offsets
  *
- * @pre n >= 2
+ * @pre @p n &ge; 2
  *
- * @post @f[ acfs[k] = \frac{\sum_{i = k}^{n-1} (x_{i} - \hat\mu) (x_{i-k} - \hat\mu)}
+ * @post @f[ a_k = \frac{\sum_{i = k}^{n-1} (x_{i} - \hat\mu) (x_{i-k} - \hat\mu)}
  * 	{\sum_{i = k}^{n-1} (x_{i} - \hat\mu) (x_{i} - \hat\mu)} @f]
- *	where @f$ x_i @f$ denotes data[i] and @f$ \hat\mu @f$ is the sample mean of data.
+ *	where where @f$ a_k @f$ denotes @p acf[k], @f$ x_i @f$ denotes @p data[i], and @f$ \hat\mu @f$ is the sample mean of @p data.
  *
- * @perform O(n^2) worst-case time
- * @perfmore O(n log n) best-case time
+ * @perform O(<tt>n</tt><sup>2</sup>) worst-case time
+ * @perfmore O(<tt>n</tt> log <tt>n</tt>) best-case time
  *
- * @exception std::invalid_argument Thrown if n < 2
+ * @exception std::invalid_argument Thrown if @p n < 2
  * @exception std::runtime_error Thrown if the internal calculations produce an error.
  * @exception std::bad_alloc Thrown if there is not enough memory to compute 
  *	the autocorrelation function

@@ -51,7 +51,7 @@ public:
 	 */
 	ParamList();
 	
-	/** Initializes a parameter list with the same parameters and values as other
+	/** Initializes a parameter list with the same parameters and values as @p other
 	 */
 	ParamList(const ParamList& other);
 	
@@ -104,7 +104,7 @@ public:
 	 */
 	RangeList();
 	
-	/** Initializes a range list with the same parameters and ranges as other
+	/** Initializes a range list with the same parameters and ranges as @p other
 	 */
 	RangeList(const RangeList& other);
 	
@@ -118,8 +118,8 @@ public:
 	
 	/** Adds a new allowed range for a parameter
 	 */
-	void add(ParamType name, double min, double max, RangeType distrib=UNIFORM);
-	void add(ParamType name, std::pair<double,double> range, RangeType distrib=UNIFORM);
+	void add(ParamType name, double min, double max, RangeType distrib);
+	void add(ParamType name, std::pair<double,double> range, RangeType distrib);
 	
 	/** Removes all parameters from the list
 	 */
@@ -195,15 +195,12 @@ private:
  * The RangeList::const_iterator allows callers to access the entire RangeList 
  * while hiding the implementation of the class.
  *
- * Similar to a std::BidirectionalIterator, but does not model it 
+ * Similar to a @c std::BidirectionalIterator, but does not model it 
  * because it is not default-constructible.
  *
  * @note The name const_iterator does not follow the conventions of the rest 
  * of this program. This is to accommodate libraries that assume the 
  * standard C++ conventions for an iterable container.
- *
- * @invariant RangeList::const_iterator points to an element in a RangeList, 
- *	or to the position immediately after the last element.
  */
 class RangeList::const_iterator 
 		: public std::iterator<std::bidirectional_iterator_tag, 
@@ -224,31 +221,31 @@ public:
 	 */
 	const_iterator& operator=(const const_iterator& other);
 	
-	/** Implements std::BidirectionalIterator::==
+	/** Implements <tt>std::BidirectionalIterator::==</tt>
 	 */
 	bool operator==(const const_iterator& other) const;
-	/** Implements std::BidirectionalIterator::!=
+	/** Implements <tt>std::BidirectionalIterator::!=</tt>
 	 */
 	bool operator!=(const const_iterator& other) const;
 
-	/** Implements std::BidirectionalIterator::*
+	/** Implements <tt>std::BidirectionalIterator::*</tt>
 	 */
 	const ParamType& operator*() const;
 
-	/** Implements std::BidirectionalIterator::->
+	/** Implements <tt>std::BidirectionalIterator::-></tt>
 	 */
 	const ParamType* operator->() const;
 
-	/** Implements std::BidirectionalIterator::++ (prefix)
+	/** Implements <tt>std::BidirectionalIterator::++</tt> (prefix)
 	 */
 	const_iterator& operator++();
-	/** Implements std::BidirectionalIterator::++ (postfix)
+	/** Implements <tt>std::BidirectionalIterator::++</tt> (postfix)
 	 */
 	const_iterator operator++(int);
-	/** Implements std::BidirectionalIterator::-\- (prefix)
+	/** Implements <tt>std::BidirectionalIterator::-\-</tt> (prefix)
 	 */
 	const_iterator& operator--();
-	/** Implements std::BidirectionalIterator::-\- (postfix)
+	/** Implements <tt>std::BidirectionalIterator::-\-</tt> (postfix)
 	 */
 	const_iterator operator--(int);
 private:

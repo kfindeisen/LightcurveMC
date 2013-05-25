@@ -15,8 +15,8 @@ namespace lcmc { namespace stats {
 
 typedef std::vector<double> DoubleVec;
 
-/** The interp namespace is intended to allow other ACF algorithms to be 
- *	swapped with a simple using declaration.
+/** The @ref lcmc::stats::interp "interp" namespace is intended to allow other ACF algorithms to be 
+ *	swapped with a simple @c using declaration.
  */
 namespace interp {
 

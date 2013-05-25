@@ -18,8 +18,7 @@ using std::string;
 
 namespace stats { namespace except {
 
-/** This exception is thrown if a statistic cannot be calculated from the 
- *	available data.
+/** This exception is thrown if a function argument is not sorted.
  */
 class NotSorted : public std::invalid_argument {
 public:

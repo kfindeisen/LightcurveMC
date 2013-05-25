@@ -1,4 +1,4 @@
-# Compilation make for lightcurveMC
+# Compilation make for Lightcurve MC
 # by Krzysztof Findeisen
 # Created March 24, 2010
 # Last modified May 18, 2013

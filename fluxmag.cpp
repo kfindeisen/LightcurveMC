@@ -43,10 +43,12 @@ double magToFlux(double mag) {
  * 
  * @param[in] fluxes A vector of fluxes to convert.
  * @param[out] mags The corresponding magnitudes, assuming a flux of 1 unit 
- *	corresponds to a magnitude of 0. Returns NaN wherever flux is negative.
+ *	corresponds to a magnitude of 0. Returns NaN wherever @p flux is negative.
  *
- * @post mags.size() == fluxes.size()
- * @post for all i in mags, mags[i] = fluxToMag(fluxes[i])
+ * @pre @p mags may refer to the same vector as @p fluxes
+ *
+ * @post @p mags.size() = @p fluxes.size()
+ * @post for all i in @p mags, @p mags[i] = @p fluxToMag(fluxes[i])
  *
  * @exception std::bad_alloc Thrown if there is not enough room 
  *	to store the magnitudes
@@ -70,9 +72,11 @@ void fluxToMag(const vector<double>& fluxes, vector<double>& mags) {
  * @param[in] mags A vector of magnitudes to convert.
  * @param[out] fluxes The corresponding fluxes, assuming a flux of 1 unit at 
  *	0th magnitude.
+ *
+ * @pre @p fluxes may refer to the same vector as @p mags
  * 
- * @post fluxes.size() == mags.size()
- * @post for all i in mags, fluxes[i] = magToFlux(mags[i])
+ * @post @p fluxes.size() = @p mags.size()
+ * @post for all i in @p mags, @p fluxes[i] = @p magToFlux(mags[i])
  *
  * @exception std::bad_alloc Thrown if there is not enough room 
  *	to store the fluxes

@@ -22,7 +22,7 @@ using boost::lexical_cast;
  * @param[in] times The times at which the light curve will be sampled.
  * @param[in] sigma The root-mean-square amplitude of the white noise
  *
- * @pre sigma > 0
+ * @pre @p sigma > 0
  *
  * @post The object represents an uncorrelated Gaussian signal with the 
  *	given amplitude.
@@ -51,17 +51,17 @@ WhiteNoise::WhiteNoise(const std::vector<double>& times, double sigma)
  * 
  * @post getFluxes() will now return the correct light curve.
  * 
- * @post fluxes.size() == getTimes().size()
- * @post if getTimes()[i] == getTimes()[j] for i &ne; j, then 
- *	fluxes[i] == fluxes[j]
+ * @post @p fluxes.size() = getTimes().size()
+ * @post if getTimes()[i] = getTimes()[j] for i &ne; j, then 
+ *	@p fluxes[i] = @p fluxes[j]
  * 
- * @post No element of fluxes is NaN
- * @post All elements in fluxes are non-negative
+ * @post No element of @p fluxes is NaN
+ * @post All elements in @p fluxes are non-negative
  * @post The median of the flux is one, when averaged over many elements and 
  *	many light curve instances.
  *
- * @post fluxToMag(fluxes) has a mean of zero and a standard deviation of sigma
- * @post cov(fluxToMag(fluxes[i]), fluxToMag(fluxes[j])) == 0 
+ * @post fluxToMag(@p fluxes) has a mean of zero and a standard deviation of sigma
+ * @post cov(fluxToMag(fluxes[i]), fluxToMag(fluxes[j])) = 0 
  *	if getTimes()[i] &ne; getTimes()[j]
  * 
  * @exception std::bad_alloc Thrown if there is not enough memory to compute 

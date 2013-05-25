@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/test_common.cpp
  * @author Krzysztof Findeisen
  * @date Created April 28, 2013
- * @date Last modified May 20, 2013
+ * @date Last modified May 24, 2013
  */
 
 #include "../warnflags.h"
@@ -53,7 +53,7 @@ using std::vector;
  *
  * @param[in] x The number to test
  *
- * @return true iff x is one of the NaN values
+ * @return true iff @p x is one of the NaN values
  *
  * @exceptsafe Does not throw exceptions.
  */
@@ -61,60 +61,221 @@ bool testNan(const double x) {
 	return static_cast<bool>(gsl_isnan(x));
 }
 
-/** Constructs a covariance matrix for a standard Gaussian process
+/** Constructs a covariance matrix for a white Gaussian process
  *
- * @param[in] covars A pointer to the matrix to initialize
  * @param[in] times The observation times at which the Gaussian process is sampled
- * @param[in] tau The coherence time of the Gaussian process
  *
- * @pre covars->size1 == covars->size2 == times.size()
+ * @return A pointer to a newly allocated covariance matrix.
  *
- * @exception Throws std::invalid_argument if lengths do not match
+ * @pre @p times.size() > 0
+ *
+ * @post return->size1 = return->size2 = @p times.size()
+ * @post return[i, j] = \f$\delta(t_i, t_j)\f$, where \f$t_i\f$ = @p times[i]
+ *
+ * @exception std::invalid_argument Thrown if @p times is empty.
  *
  * @exceptsafe Function arguments are unchanged in the event of an exception.
  */
-void initGauss(gsl_matrix* const covars, const vector<double>& times, double tau) {
+shared_ptr<gsl_matrix> initGaussWn(const vector<double>& times) {
 	size_t nTimes = times.size();
 	
-	if(covars->size1 != covars->size2) {
-		try {
-			std::string len1 = lexical_cast<std::string>(covars->size1);
-			std::string len2 = lexical_cast<std::string>(covars->size2);
-			throw std::invalid_argument(len1 + "×" + len2 
-				+ " covariance matrix passed to initGauss().");
-		} catch (const boost::bad_lexical_cast &e) {
-			throw std::invalid_argument(
-				"Non-square covariance matrix passed to initGauss().");
+	if (nTimes == 0) {
+		throw std::invalid_argument("Empty times vector passed to initGaussWn().");
+	}
+
+	shared_ptr<gsl_matrix> covars(gsl_matrix_calloc(nTimes, nTimes), &gsl_matrix_free);
+
+	for(size_t i = 0; i < nTimes; i++) {
+		for(size_t j = 0; j < nTimes; j++) {
+			// ALlow for times[i] == times[j] when i != j
+			gsl_matrix_set(covars.get(), i, j, 
+				2.0*(times[i] == times[j] ? 1 : 0));
 		}
 	}
-	if(nTimes != covars->size1) {
-		try {
-			std::string lenV = lexical_cast<std::string>(nTimes);
-			std::string lenM = lexical_cast<std::string>(covars->size1);
-			throw std::invalid_argument("Vector of length " + lenV 
-				+ " cannot be multiplied by " 
-				+ lenM + "×" + lenM + " covariance matrix in initGauss().");
-		} catch (const boost::bad_lexical_cast &e) {
-			throw std::invalid_argument(
-				"Length of input vector to initGauss() does not match dimensions of covariance matrix.");
-		}
+	
+	return covars;
+}
+
+/** Constructs a covariance matrix for a squared exponential Gaussian process
+ *
+ * @param[in] times The observation times at which the Gaussian process is sampled
+ * @param[in] tau The coherence time of the Gaussian process
+ *
+ * @return A pointer to a newly allocated covariance matrix.
+ *
+ * @pre @p times.size() > 0
+ *
+ * @post return->size1 = return->size2 = @p times.size()
+ * @post return[i, j] = \f$e^{-(t_i - t_j)^2/2\tau^2}\f$, 
+ *	where \f$t_i\f$ = @p times[i]
+ *
+ * @exception std::invalid_argument Thrown if @p times is empty.
+ *
+ * @exceptsafe Function arguments are unchanged in the event of an exception.
+ */
+shared_ptr<gsl_matrix> initGaussSe(const vector<double>& times, double tau) {
+	size_t nTimes = times.size();
+	
+	if (nTimes == 0) {
+		throw std::invalid_argument("Empty times vector passed to initGaussSe().");
 	}
+
+	shared_ptr<gsl_matrix> covars(gsl_matrix_alloc(nTimes, nTimes), &gsl_matrix_free);
 
 	for(size_t i = 0; i < nTimes; i++) {
 		for(size_t j = 0; j < nTimes; j++) {
 			double deltaT = (times[i] - times[j]) / tau;
-			gsl_matrix_set(covars, i, j, 
+			gsl_matrix_set(covars.get(), i, j, 
 					2.0*exp(-0.5*deltaT*deltaT));
 		}
 	}
+	
+	return covars;
 }
+
+/** Constructs a covariance matrix for an exponential Gaussian process
+ *
+ * @param[in] times The observation times at which the Gaussian process is sampled
+ * @param[in] tau The coherence time of the Gaussian process
+ *
+ * @return A pointer to a newly allocated covariance matrix.
+ *
+ * @pre @p times.size() > 0
+ *
+ * @post return->size1 = return->size2 = @p times.size()
+ * @post return[i, j] = \f$e^{-|t_i - t_j|/\tau}\f$, where \f$t_i\f$ = @p times[i]
+ *
+ * @exception std::invalid_argument Thrown if @p times is empty.
+ *
+ * @exceptsafe Function arguments are unchanged in the event of an exception.
+ */
+shared_ptr<gsl_matrix> initGaussDrw(const vector<double>& times, double tau) {
+	size_t nTimes = times.size();
+	
+	if (nTimes == 0) {
+		throw std::invalid_argument("Empty times vector passed to initGaussDrw().");
+	}
+
+	shared_ptr<gsl_matrix> covars(gsl_matrix_alloc(nTimes, nTimes), &gsl_matrix_free);
+
+	for(size_t i = 0; i < nTimes; i++) {
+		for(size_t j = 0; j < nTimes; j++) {
+			double deltaT = (times[i] - times[j]) / tau;
+			gsl_matrix_set(covars.get(), i, j, 
+					2.0*exp(-fabs(deltaT)) );
+		}
+	}
+	
+	return covars;
+}
+
+/** Constructs a covariance matrix for a Matérn Gaussian process
+ *
+ * @param[in] times The observation times at which the Gaussian process is sampled
+ * @param[in] tau The coherence time of the Gaussian process
+ * @param[in] nu The order of the Bessel function
+ *
+ * @return A pointer to a newly allocated covariance matrix.
+ *
+ * @pre @p times.size() > 0
+ * @pre @p nu > 0
+ *
+ * @post return->size1 = return->size2 = @p times.size()
+ * @post return[i, j] = \f$\frac{2^{1-\nu}}{\Gamma(\nu)} 
+ \left(\frac{\sqrt{2\nu}|t_i - t_j|}{\tau}\right)^\nu 
+ K_\nu\left(\frac{\sqrt{2\nu}|t_i - t_j|}{\tau}\right)\f$, 
+ * 	where \f$t_i\f$ = @p times[i]
+ *
+ * @exception std::invalid_argument Thrown if @p times is empty.
+ *
+ * @exceptsafe Function arguments are unchanged in the event of an exception.
+ */
+shared_ptr<gsl_matrix> initGaussMat(const vector<double>& times, double tau, double nu);
+
+/** Constructs a covariance matrix for a periodic Gaussian process
+ *
+ * @param[in] times The observation times at which the Gaussian process is sampled
+ * @param[in] tau The coherence time of the Gaussian process
+ * @param[in] period The period of the Gaussian process
+ *
+ * @return A pointer to a newly allocated covariance matrix.
+ *
+ * @pre @p times.size() > 0
+ *
+ * @post return->size1 = return->size2 = @p times.size()
+ * @post return[i, j] = \f$e^{-2\sin^2(2\pi \frac{t_i - t_j}{P})/\tau^2}\f$, 
+ *	where \f$t_i\f$ = @p times[i]
+ *
+ * @exception std::invalid_argument Thrown if @p times is empty.
+ *
+ * @exceptsafe Function arguments are unchanged in the event of an exception.
+ */
+shared_ptr<gsl_matrix> initGaussP(const vector<double>& times, double tau, double period) {
+	size_t nTimes = times.size();
+	
+	if (nTimes == 0) {
+		throw std::invalid_argument("Empty times vector passed to initGaussP().");
+	}
+
+	shared_ptr<gsl_matrix> covars(gsl_matrix_alloc(nTimes, nTimes), &gsl_matrix_free);
+
+	for(size_t i = 0; i < nTimes; i++) {
+		for(size_t j = 0; j < nTimes; j++) {
+			double deltaT = (times[i] - times[j]) / period;
+			double sine   = sin(2.0*M_PI * deltaT) / tau;
+			gsl_matrix_set(covars.get(), i, j, 
+					2.0*exp(-2.0 * sine*sine) );
+		}
+	}
+	
+	return covars;
+}
+
+/** Constructs a covariance matrix for a rational Gaussian process
+ *
+ * @param[in] times The observation times at which the Gaussian process is sampled
+ * @param[in] tau The coherence time of the Gaussian process
+ * @param[in] alpha The exponent of the process.
+ *
+ * @return A pointer to a newly allocated covariance matrix.
+ *
+ * @pre @p times.size() > 0
+ *
+ * @post return->size1 = return->size2 = @p times.size()
+ * @post return[i, j] = \f$1/(1 + (t_i - t_j)^2/\tau^2)^\alpha\f$, 
+ *	where \f$t_i\f$ = @p times[i]
+ *
+ * @exception std::invalid_argument Thrown if @p times is empty.
+ *
+ * @exceptsafe Function arguments are unchanged in the event of an exception.
+ */
+shared_ptr<gsl_matrix> initGaussR(const vector<double>& times, double tau, double alpha) {
+	size_t nTimes = times.size();
+	
+	if (nTimes == 0) {
+		throw std::invalid_argument("Empty times vector passed to initGaussR().");
+	}
+
+	shared_ptr<gsl_matrix> covars(gsl_matrix_alloc(nTimes, nTimes), &gsl_matrix_free);
+
+	for(size_t i = 0; i < nTimes; i++) {
+		for(size_t j = 0; j < nTimes; j++) {
+			double deltaT = (times[i] - times[j]) / tau;
+			gsl_matrix_set(covars.get(), i, j, 
+					2.0 / pow(1 + deltaT*deltaT, alpha) );
+		}
+	}
+	
+	return covars;
+}
+
 
 /** This function is a wrapper for a trusted approximate comparison method.
  * 
  * @param[in] val1, val2 The values to compare
  * @param[in] frac The fractional difference allowed between them
  * 
- * @return true iff |val1 - val2|/|val1| and |val1 - val2|/|val2| < frac
+ * @return true iff |val1 - val2|/|val1| and |val1 - val2|/|val2| < @p frac
  *
  * @exceptsafe Does not throw exceptions.
  */
@@ -134,7 +295,7 @@ bool isClose(double val1, double val2, double frac) {
  * @param[in] val1, val2 The values to compare
  * @param[in] frac The fractional difference allowed between them
  * 
- * @return true iff |val1 - val2|/|val1| and |val1 - val2|/|val2| < frac
+ * @return true iff |@p val1 - @p val2|/|@p val1| and |@p val1 - @p val2|/|@p val2| < @p frac
  *
  * @exceptsafe Does not throw exceptions.
  */
@@ -176,8 +337,6 @@ TestRandomFactory::~TestRandomFactory() {
  * @return a number distributed uniformly over the interval [0, 1)
  *
  * @exceptsafe Does not throw exceptions.
- *
- * @todo Should sample() really be const?
  */
 double TestRandomFactory::sample() const {
 	return gsl_rng_uniform(rng);

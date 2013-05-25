@@ -31,15 +31,17 @@ typedef std::vector<double> DoubleVec;
  *
  * @return The C1 statistic.
  *
- * @pre mags contains at least three finite values
- * @pre mags contains at least two distinct finite values
+ * @pre @p mags contains at least three finite values
+ * @pre @p mags contains at least two distinct finite values
  *
- * @pre mags may contain NaNs
+ * @pre @p mags may contain NaNs
+ *
+ * @perform O(N log N) time, where N = @p mags.size()
  *
  * @exception std::bad_alloc Thrown if not enough memory to calculate C1
  * @exception lcmc::stats::except::Undefined Thrown if C1 is undefined 
- *	because mags has no variability
- * @exception lcmc::stats::except::NotEnoughData Thrown if mags does not 
+ *	because @p mags has no variability
+ * @exception lcmc::stats::except::NotEnoughData Thrown if @p mags does not 
  *	have enough values to calculate C1
  *
  * @exceptsafe Program state is unchanged in the event of an exception.
@@ -90,11 +92,13 @@ double getC1(const DoubleVec& mags) {
  *
  * @return The amplitude.
  *
- * @pre mags contains at least two finite values
- * @pre mags may contain NaNs
+ * @pre @p mags contains at least two finite values
+ * @pre @p mags may contain NaNs
+ *
+ * @perform O(N log N) time, where N = @p mags.size()
  *
  * @exception std::bad_alloc Thrown if not enough memory to calculate amplitude
- * @exception lcmc::stats::except::NotEnoughData Thrown if mags does not 
+ * @exception lcmc::stats::except::NotEnoughData Thrown if @p mags does not 
  *	have enough values to calculate an amplitude
  *
  * @exceptsafe Program state is unchanged in the event of an exception.

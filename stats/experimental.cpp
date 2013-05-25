@@ -28,25 +28,25 @@ using boost::lexical_cast;
  * @param[out] timeSteps	A list of the lengths of all subintervals
  * @param[out] rmsValues	A list of the RMS over each subinterval
  *
- * @pre times.size() >= 2
- * @pre fluxes.size() == times.size()
- * @pre times is sorted in ascending order
- * @pre fluxes[i] is the flux of the source at times[i], for all i
+ * @pre @p times.size() &ge; 2
+ * @pre @p fluxes.size() = @p times.size()
+ * @pre @p times is sorted in ascending order
+ * @pre @p fluxes[i] is the flux of the source at @p times[i], for all i
  *
- * @pre times does not contain NaNs
- * @pre fluxes does not contain NaNs
- * @pre timeSteps does not contain NaNs
+ * @pre @p times does not contain NaNs
+ * @pre @p fluxes does not contain NaNs
+ * @pre @p timeSteps does not contain NaNs
  *
- * @post timeSteps is sorted in ascending order
- * @post if N == times.size(), timeSteps.size() == rmsValues.size() == N-1
+ * @post @p timeSteps is sorted in ascending order
+ * @post if N = @p times.size(), @p timeSteps.size() = @p rmsValues.size() = N-1
  *
- * @perform O(N^2) time, where N = times.size()
+ * @perform O(N<sup>2</sup>) time, where N = @p times.size()
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to do the 
  *	calculations.
- * @exception std::invalid_argument Thrown if times is insufficiently long 
- *	or if fluxes has a different length from times
- * @exception lcmc::stats::except::NotSorted Thrown if times is unsorted.
+ * @exception std::invalid_argument Thrown if @p times is insufficiently long 
+ *	or if @p fluxes has a different length from @p times
+ * @exception lcmc::stats::except::NotSorted Thrown if @p times is unsorted.
  *
  * @exceptsafe The function arguments are unchanged in the event 
  *	of an exception.
@@ -96,30 +96,30 @@ void rmsVsTRooted(const DoubleVec &times, const DoubleVec &fluxes,
  * @param[out] timeSteps	A list of the lengths of all subintervals
  * @param[out] rmsValues	A list of the RMS over each subinterval
  *
- * @pre times contains at least two unique values
- * @pre times is sorted in ascending order
- * @pre fluxes is of the same length as times
- * @pre fluxes[i] is the flux of the source at times[i], for all i
+ * @pre @p times contains at least two unique values
+ * @pre @p times is sorted in ascending order
+ * @pre @p fluxes is of the same length as times
+ * @pre @p fluxes[i] is the flux of the source at @p times[i], for all i
  *
- * @pre times does not contain NaNs
- * @pre fluxes does not contain NaNs
- * @pre intervals does not contain NaNs
+ * @pre @p times does not contain NaNs
+ * @pre @p fluxes does not contain NaNs
+ * @pre @p timeSteps does not contain NaNs
  *
- * @post intervals is sorted in ascending order
- * @post if N == length(times), length(intervals) == length(rmsValues) == @f$ \binom{N}{2} @f$
+ * @post @p timeSteps is sorted in ascending order
+ * @post if N = @p times.size(), @p timeSteps.size() = @p rmsValues.size() = @f$ \binom{N}{2} @f$
  *
- * @perform O(N^3) time, where N = times.size()
+ * @perform O(N<sup>3</sup>) time, where N = times.size()
  * 
  * @exception std::bad_alloc Thrown if there is not enough memory to do the 
  *	calculations.
- * @exception std::invalid_argument Thrown if times is insufficiently long 
- *	or if fluxes has a different length from times
- * @exception lcmc::stats::except::NotSorted Thrown if times is unsorted.
+ * @exception std::invalid_argument Thrown if @p times is insufficiently long 
+ *	or if @p fluxes has a different length from @p times
+ * @exception lcmc::stats::except::NotSorted Thrown if @p times is unsorted.
  * 
  * @exceptsafe The function arguments are unchanged in the event 
  *	of an exception.
  * 
- * @todo Reduce to O(N^2) time through dynamic programming
+ * @todo Reduce to O(N<sup>2</sup>) time through dynamic programming
  */
 void rmsVsTAllPairs(const DoubleVec &times, const DoubleVec &fluxes, 
 		DoubleVec &timeSteps, DoubleVec & rmsValues) {

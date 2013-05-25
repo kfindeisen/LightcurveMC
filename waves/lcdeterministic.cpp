@@ -15,7 +15,7 @@ namespace lcmc { namespace models {
  * @param[in] times The times at which the light curve will be sampled.
  *
  * @post getTimes() and getFluxes() return suitable data. getTimes() contains 
- * the same elements as times, possibly reordered.
+ * the same elements as @p times, possibly reordered.
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the object.
@@ -32,7 +32,11 @@ Deterministic::~Deterministic() {
  *
  * @param[out] timeArray A vector containing the desired times.
  *
- * @post timeArray.size() == getFluxes().size()
+ * @post Any data previously in @p timeArray is erased
+ * @post @p timeArray.size() = size()
+ * @post @p timeArray contains the times with which the light curve was initialized
+ *
+ * @post No element of @p timeArray is NaN
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	return a copy of the times.
@@ -54,14 +58,15 @@ void Deterministic::getTimes(std::vector<double>& timeArray) const {
  *
  * @param[out] fluxArray A vector containing the desired fluxes.
  *
- * @post fluxArray.size() == getTimes().size()
- * @post if getTimes()[i] == getTimes()[j] for i &ne; j, then 
- *	getFluxes()[i] == getFluxes()[j]
- * @post fluxArray[i] is determined entirely by getTimes[i] and the 
+ * @post Any data previously in @p fluxArray is erased
+ * @post @p fluxArray.size() = size()
+ * @post if getTimes()[i] = getTimes()[j] for i &ne; j, then 
+ *	getFluxes()[i] = getFluxes()[j]
+ * @post @p fluxArray[i] is determined entirely by getTimes()[i] and the 
  *	parameters passed to the constructor
  * 
- * @post No element of fluxArray is NaN
- * @post All elements in fluxArray are non-negative
+ * @post No element of @p fluxArray is NaN
+ * @post All elements in @p fluxArray are non-negative
  * @post Either the mean, median, or mode of the flux is one, when 
  *	averaged over many elements. Subclasses of Deterministic may 
  *	chose the option (mean, median, or mode) most appropriate 
@@ -99,7 +104,7 @@ void Deterministic::getFluxes(std::vector<double>& fluxArray) const {
  *
  * @return The number of data points represented by the light curve.
  *
- * @post return value == getTimes().size() == getFluxes.size()
+ * @post return value = getTimes().%size() = getFluxes().%size()
  *
  * @exceptsafe Does not throw exceptions.
  */

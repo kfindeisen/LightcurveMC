@@ -45,7 +45,7 @@ private:
 	 * 
 	 * @return The flux emitted by the object at the specified phase.
 	 * 
-	 * @pre phase &isin; [0, 1)
+	 * @pre @p phase &isin; [0, 1)
  	 *
 	 * @post the return value is determined entirely by the phase and 
 	 *	the parameters passed to the constructor
@@ -71,7 +71,7 @@ private:
 /** SineWave describes sinusoidal variables in flux space. The light curve can 
  * be described entirely by its amplitude, period, and phase offset.
  *
- * @invariant Zero is the mean flux returned by SineWave.
+ * @invariant One is the mean flux returned by SineWave.
  */
 class SineWave : public PeriodicLc {
 public: 
@@ -91,7 +91,7 @@ private:
  * maxima. The light curve can be described entirely by its amplitude, period, 
  * and phase offset.
  *
- * @invariant Zero is the mean flux returned by TriangleWave.
+ * @invariant One is the mean flux returned by TriangleWave.
  */
 class TriangleWave : public PeriodicLc {
 public: 
@@ -111,7 +111,7 @@ private:
  * and maxima. The light curve can be described entirely by its amplitude, 
  * period, and phase offset.
  *
- * @invariant Zero is the mean flux returned by EllipseWave.
+ * @invariant One is the mean flux returned by EllipseWave.
  */
 class EllipseWave : public PeriodicLc {
 public: 
@@ -128,9 +128,10 @@ private:
 };
 
 /** EclipseWave describes variables with pairs of periodic dimmings. The 
- * dimming events are rectangular, take 5% of the cycle each, and one is 70% 
- * the depth of the other. The light curve can be described entirely by its 
- * amplitude, period, and phase offset.
+ * dimming events are rectangular, and take 5% of the cycle each. The 
+ * secondary dimming is 70% the depth of the primary dimming. The light curve 
+ * can be described entirely by its (primary) amplitude, period, and 
+ * phase offset.
  *
  * @invariant One is the maximum flux returned by EclipseWave.
  */
@@ -152,7 +153,7 @@ private:
  * The light curve can be described entirely by its amplitude, period, and 
  * phase offset.
  *
- * @invariant Zero is the minimum flux returned by BroadPeakWave.
+ * @invariant One is the minimum flux returned by BroadPeakWave.
  */
 class BroadPeakWave : public PeriodicLc {
 public: 
@@ -172,7 +173,7 @@ private:
  * The light curve can be described entirely by its amplitude, period, and 
  * phase offset.
  *
- * @invariant Zero is the minimum flux returned by SharpPeakWave.
+ * @invariant One is the minimum flux returned by SharpPeakWave.
  */
 class SharpPeakWave : public PeriodicLc {
 public: 
@@ -191,7 +192,7 @@ private:
 /** MagSineWave describes sinusoidal variables in magnitude space. The light 
  * curve can be described entirely by its amplitude, period, and phase offset.
  *
- * @invariant Zero is the minimum flux returned by SineWave.
+ * @invariant One is the median flux returned by MagSineWave.
  */
 class MagSineWave : public PeriodicLc {
 public: 

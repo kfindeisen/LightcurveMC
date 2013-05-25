@@ -7,14 +7,9 @@
 
 #include <cmath>
 #include <boost/lexical_cast.hpp>
+#include <gsl/gsl_math.h>
 #include "../except/data.h"
 #include "lightcurves_periodic.h"
-
-/** Define Pi for convenience
- */
-#ifndef M_PI
-#define M_PI 3.1415927
-#endif
 
 namespace lcmc { namespace models {
 
@@ -27,10 +22,10 @@ using boost::lexical_cast;
  * @param[in] period The period of the light curve
  * @param[in] phase The phase of the light curve at time 0
  *
- * @pre amp > 0
- * @pre amp &le; 1
- * @pre period > 0
- * @pre phase &isin; [0, 1)
+ * @pre @p amp > 0
+ * @pre @p amp &le; 1
+ * @pre @p period > 0
+ * @pre @p phase &isin; [0, 1)
  *
  * @post The object represents a sinusoidal signal with the given 
  *	amplitude, period, and initial phase.
@@ -57,7 +52,7 @@ SineWave::SineWave(const std::vector<double> &times, double amp, double period, 
  * 
  * @return The flux emitted by the object at the specified phase.
  * 
- * @pre phase &isin; [0, 1)
+ * @pre @p phase &isin; [0, 1)
  *
  * @post the return value is determined entirely by the phase and 
  *	the parameters passed to the constructor

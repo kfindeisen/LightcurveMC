@@ -18,14 +18,14 @@ namespace lcmc { namespace models {
 
 using std::auto_ptr;
 
-/** Initializes the light curve to represent a particular function flux(time).
+/** Initializes the light curve to represent an instance of a stochastic time series.
  *
  * @param[in] times The times at which the light curve will be sampled.
  *
  * @post getTimes() and getFluxes() return suitable data. getTimes() contains 
- * the same elements as times, possibly reordered.
+ * the same elements as @p times, possibly reordered.
  *
- * @post Calls to Stochastic::rng() will not throw exceptions.
+ * @internal @post Calls to Stochastic::rng() will not throw exceptions. @endinternal
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the object.
@@ -49,10 +49,15 @@ Stochastic::~Stochastic() {
  *
  * @param[out] timeArray A vector containing the desired times.
  *
- * @post timeArray.size() == getFluxes().size()
+ * @post Any data previously in @p timeArray is erased
+ * @post @p timeArray.size() = size()
+ * @post @p timeArray contains the times with which the light curve was initialized
+ * @post @p timeArray is sorted in ascending order
  *
+ * @post No element of @p timeArray is NaN
+ * 
  * @exception std::bad_alloc Thrown if there is not enough memory to 
- *	return a copy of the times.
+ *	return a copy of @p times.
  *
  * @exceptsafe Neither the object nor the argument are changed in the 
  *	event of an exception.
@@ -71,15 +76,16 @@ void Stochastic::getTimes(std::vector<double>& timeArray) const {
  *
  * @param[out] fluxArray A vector containing the desired fluxes.
  *
- * @post fluxArray.size() == getTimes().size()
- * @post if getTimes()[i] == getTimes()[j] for i &ne; j, then 
- *	getFluxes()[i] == getFluxes()[j]
+ * @post Any data previously in @p fluxArray is erased
+ * @post @p fluxArray.size() = size()
+ * @post if getTimes()[i] = getTimes()[j] for i &ne; j, then 
+ *	getFluxes()[i] = getFluxes()[j]
  * 
- * @post No element of fluxArray is NaN
- * @post All elements in fluxArray are non-negative
+ * @post No element of @p fluxArray is NaN
+ * @post All elements in @p fluxArray are non-negative
  * @post Either the mean, median, or mode of the flux is one, when 
  *	averaged over many elements and many light curve instances. 
- *	Subclasses of ILightCurve may chose the option 
+ *	Subclasses of Stochastic may chose the option 
  *	(mean, median, or mode) most appropriate for their light 
  *	curve shape.
  * 
@@ -110,7 +116,7 @@ void Stochastic::getFluxes(std::vector<double>& fluxArray) const {
  *
  * @return The number of data points represented by the light curve.
  *
- * @post return value == getTimes().size() == getFluxes.size()
+ * @post return value = getTimes().%size() = getFluxes().%size()
  *
  * @exceptsafe Does not throw exceptions.
  */
@@ -161,7 +167,7 @@ auto_ptr<StochasticRng> Stochastic::checkout() const {
  * @param[in] newState A temporary copy of the internal random 
  *	number generator
  *
- * @post The internal generator is in the same state as newState
+ * @post The internal generator is in the same state as @p newState
  *
  * @exceptsafe Does not throw exceptions.
  */

@@ -2,7 +2,7 @@
  * @file lightcurveMC/approxequal.cpp
  * @author Krzysztof Findeisen
  * @date Created April 30, 2013
- * @date Last modified May 9, 2013
+ * @date Last modified May 24, 2013
  */
 
 #include <stdexcept>
@@ -20,20 +20,18 @@ namespace lcmc { namespace utils {
  * @param[in] epsilon The maximum fractional difference between two 
  *	values that are considered equal
  *
- * @pre[in] epsilon > 0
+ * @pre[in] @p epsilon > 0
  * 
  * @post ApproxEqual will accept a pair of values as equal 
- *	iff |val1 - val2|/|val1| and |val1 - val2|/|val2| < epsilon
+ *	iff |val1 - val2|/|val1| and |val1 - val2|/|val2| < @p epsilon
  * 
- * @exception std::invalid_argument Thrown if epsilon <= 0
+ * @exception std::invalid_argument Thrown if @p epsilon &le; 0
  *
  * @exceptsafe Object creation is atomic.
- *
- * @todo Verify that the postcondition is met
  */
 ApproxEqual::ApproxEqual(double epsilon) : epsilon(epsilon) {
 	if (epsilon <= 0.0) {
-		throw std::invalid_argument("Cannot do approximate comparison with a nonpositive precision: " + boost::lexical_cast<std::string>(epsilon));
+		throw std::invalid_argument("Cannot do approximate comparison with a nonpositive precision: gave " + boost::lexical_cast<std::string>(epsilon));
 	}
 }
 
@@ -41,12 +39,12 @@ ApproxEqual::ApproxEqual(double epsilon) : epsilon(epsilon) {
  *
  * @param[in] x, y The values to compare
  *
- * @return true iff |x - y|/|x| and |x - y|/|y| < epsilon
+ * @return true iff |@p x - @p y|/|@p x| and |@p x - @p y|/|@p y| < @p epsilon
  *
- * @pre[in] x &ne; 0
- * @pre[in] y &ne; 0
+ * @pre @p x &ne; 0
+ * @pre @p y &ne; 0
  *
- * @exception std::invalid_argument Thrown if x == 0 or y == 0
+ * @exception std::invalid_argument Thrown if @p x = 0 or @p y = 0
  *
  * @exceptsafe The parameters and object state are unchanged in the event 
  *	of an exception.
@@ -55,25 +53,29 @@ bool ApproxEqual::operator() (double x, double y) const {
 	if (x == 0.0 || y == 0.0) {
 		throw std::invalid_argument("Cannot do approximate comparison to zero.");
 	}
-	// assert: gsl_fcmp() will not invoke the error handler for 
-	//	the allowed arguments
-	return (gsl_fcmp(x, y, epsilon) == 0);
+	
+	// gsl_fcmp does not have the desired behavior (for starters, it does 
+	//	an OR test, not an AND test), so just implement the 
+	//	definition directly
+	double diff = fabs(x - y);
+	return (diff < epsilon * fabs(x) && diff < epsilon * fabs(y));
 }
 
 /** Tests whether two matrices have approximately equal elements
  *
  * @param[in] a The first matrix to compare
  * @param[in] b The second matrix to compare
- * @param[in] tolerance The fractional tolerance to which a[i,j] and b[i,j] must match
+ * @param[in] tolerance The fractional tolerance to which <tt>a[i,j]</tt> 
+ *	and <tt>b[i,j]</tt> must match
  *
- * @return True iff a and b have the same dimensions, and each 
+ * @return True iff @p a and @p b have the same dimensions, and each 
  *	corresponding element is equal to within tolerance
  *
- * @note if either a or b is a null pointer, returns false
+ * @note if either @p a or @p b is a null pointer, returns false
  *
- * @pre tolerance > 0
+ * @pre @p tolerance > 0
  * 
- * @exception std::invalid_argument Thrown if tolerance <= 0
+ * @exception std::invalid_argument Thrown if @p tolerance &le; 0
  *
  * @exceptsafe The parameters are unchanged in the event of an exception.
  */

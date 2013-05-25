@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/unit_waves.cpp
  * @author Krzysztof Findeisen
  * @date Created April 28, 2013
- * @date Last modified May 22, 2013
+ * @date Last modified May 24, 2013
  */
 
 #include "../warnflags.h"
@@ -35,56 +35,13 @@
 #include <gsl/gsl_math.h>
 #include "test.h"
 #include "../except/data.h"
-#include "../except/fileio.h"
 #include "../fluxmag.h"
 #include "../lightcurvetypes.h"
-#include "../mcio.h"
 #include "../waves/lightcurves_periodic.h"
 
 namespace lcmc { namespace test {
 
 using boost::shared_ptr;
-
-/** Data common to the test cases.
- *
- * At present, the only data is the simulation parameters.
- *
- * @todo Merge WaveData and ObsData
- */
-class WaveData {
-public: 
-	/** Defines the data for each test case.
-	 *
-	 * @pre A text file called @c ptfjds.txt exists in the 
-	 *	working directory and contains a list of Julian dates.
-	 *
-	 * @exception lcmc::except::FileIo Thrown if @c ptfjds.txt could not 
-	 *	be opened or has the wrong format.
-	 * @exception std::bad_alloc Thrown if there is not enough memory to 
-	 *	store the times.
-	 *
-	 * @exceptsafe Object construction is atomic.
-	 */
-	WaveData() : times() {
-		double minTStep, maxTStep;
-		shared_ptr<FILE> hJulDates(fopen("ptfjds.txt", "r"), &fclose);
-		if (hJulDates.get() == NULL) {
-			throw except::FileIo("Could not open ptfjds.txt.");
-		}
-		readTimeStamps(hJulDates.get(), times, minTStep, maxTStep);
-	}
-	
-	~WaveData() {
-	}
-
-	/** Number of light curves to generate
-	 */
-	const static size_t TEST_COUNT = 100;
-
-	/** Stores the the times at which the light curve is sampled
-	 */
-	std::vector<double> times;
-};
 
 /** Factory class for generating lots of identical sine waves
  */
@@ -96,7 +53,7 @@ public:
 	 * @param[in] amp,period the light curve parameters to use
 	 *
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
-	 *	store the times.
+	 *	store @p times.
 	 *
 	 * @exceptsafe Object construction is atomic.
 	 */
@@ -114,7 +71,7 @@ public:
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
 	 *	construct a new object.
 	 * @exception lcmc::models::except::BadParam Thrown if an illegal 
-	 *	value of amp or period was passed to the factory constructor.
+	 *	value of @p amp or @p period was passed to the factory constructor.
 	 *
 	 * @exceptsafe Object construction is atomic. The factory is unchanged 
 	 *	in the event of an exception.
@@ -144,7 +101,7 @@ public:
 	 * @param[in] amp,period the light curve parameters to use
 	 *
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
-	 *	store the times.
+	 *	store @p times.
 	 *
 	 * @exceptsafe Object construction is atomic.
 	 */
@@ -163,7 +120,7 @@ public:
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
 	 *	construct a new object.
 	 * @exception lcmc::models::except::BadParam Thrown if an illegal 
-	 *	value of amp or period was passed to the factory constructor.
+	 *	value of @p amp or @p period was passed to the factory constructor.
 	 *
 	 * @exceptsafe Object construction is atomic. The factory is unchanged 
 	 *	in the event of an exception.
@@ -193,7 +150,7 @@ public:
 	 * @param[in] amp,period the light curve parameters to use
 	 *
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
-	 *	store the times.
+	 *	store @p times.
 	 *
 	 * @exceptsafe Object construction is atomic.
 	 */
@@ -211,7 +168,7 @@ public:
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
 	 *	construct a new object.
 	 * @exception lcmc::models::except::BadParam Thrown if an illegal 
-	 *	value of amp or period was passed to the factory constructor.
+	 *	value of @p amp or @p period was passed to the factory constructor.
 	 *
 	 * @exceptsafe Object construction is atomic. The factory is unchanged 
 	 *	in the event of an exception.
@@ -241,7 +198,7 @@ public:
 	 * @param[in] amp,period the light curve parameters to use
 	 *
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
-	 *	store the times.
+	 *	store @p times.
 	 *
 	 * @exceptsafe Object construction is atomic.
 	 */
@@ -259,7 +216,7 @@ public:
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
 	 *	construct a new object.
 	 * @exception lcmc::models::except::BadParam Thrown if an illegal 
-	 *	value of amp or period was passed to the factory constructor.
+	 *	value of @p amp or @p period was passed to the factory constructor.
 	 *
 	 * @exceptsafe Object construction is atomic. The factory is unchanged 
 	 *	in the event of an exception.
@@ -289,7 +246,7 @@ public:
 	 * @param[in] amp,period the light curve parameters to use
 	 *
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
-	 *	store the times.
+	 *	store @p times.
 	 *
 	 * @exceptsafe Object construction is atomic.
 	 */
@@ -307,7 +264,7 @@ public:
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
 	 *	construct a new object.
 	 * @exception lcmc::models::except::BadParam Thrown if an illegal 
-	 *	value of amp or period was passed to the factory constructor.
+	 *	value of @p amp or @p period was passed to the factory constructor.
 	 *
 	 * @exceptsafe Object construction is atomic. The factory is unchanged 
 	 *	in the event of an exception.
@@ -337,7 +294,7 @@ public:
 	 * @param[in] amp,period the light curve parameters to use
 	 *
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
-	 *	store the times.
+	 *	store @p times.
 	 *
 	 * @exceptsafe Object construction is atomic.
 	 */
@@ -355,7 +312,7 @@ public:
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
 	 *	construct a new object.
 	 * @exception lcmc::models::except::BadParam Thrown if an illegal 
-	 *	value of amp or period was passed to the factory constructor.
+	 *	value of @p amp or @p period was passed to the factory constructor.
 	 *
 	 * @exceptsafe Object construction is atomic. The factory is unchanged 
 	 *	in the event of an exception.
@@ -432,7 +389,7 @@ void testPeriodic(size_t nTest, const TestFactory& factory) {
  * correct properties
  * @class BoostTest::test_wave
  */
-BOOST_FIXTURE_TEST_SUITE(test_wave, WaveData)
+BOOST_FIXTURE_TEST_SUITE(test_wave, ObsData)
 
 /** Tests whether the simulated damped random walks have the correct distribution
  *
@@ -461,19 +418,19 @@ BOOST_AUTO_TEST_CASE(sine)
 {
 	for(float amp = 0.05; amp < 1.0; amp *= 10.0) {
 		for (float period = 0.2; period < 100.0; period *= 10.0) {
-			testPeriodic(TEST_COUNT, TestSineFactory(times, amp, period));
+			testPeriodic(DET_TEST_COUNT, TestSineFactory(times, amp, period));
 		}
 	}
-	BOOST_CHECK_THROW(testPeriodic(TEST_COUNT, TestSineFactory(times,-2.0, 0.2)), 
+	BOOST_CHECK_THROW(testPeriodic(DET_TEST_COUNT, TestSineFactory(times,-2.0, 0.2)), 
 			models::except::BadParam);
-	BOOST_CHECK_THROW(testPeriodic(TEST_COUNT, TestSineFactory(times, 0.0, 0.2)), 
+	BOOST_CHECK_THROW(testPeriodic(DET_TEST_COUNT, TestSineFactory(times, 0.0, 0.2)), 
 			models::except::BadParam);
-	testPeriodic(TEST_COUNT, TestSineFactory(times, 1.0, 0.2));
-	BOOST_CHECK_THROW(testPeriodic(TEST_COUNT, TestSineFactory(times, 1.1, 0.2)), 
+	testPeriodic(DET_TEST_COUNT, TestSineFactory(times, 1.0, 0.2));
+	BOOST_CHECK_THROW(testPeriodic(DET_TEST_COUNT, TestSineFactory(times, 1.1, 0.2)), 
 			models::except::BadParam);
-	BOOST_CHECK_THROW(testPeriodic(TEST_COUNT, TestSineFactory(times, 0.05, 0.0)), 
+	BOOST_CHECK_THROW(testPeriodic(DET_TEST_COUNT, TestSineFactory(times, 0.05, 0.0)), 
 			models::except::BadParam);
-	BOOST_CHECK_THROW(testPeriodic(TEST_COUNT, TestSineFactory(times, 0.05,-1.0)), 
+	BOOST_CHECK_THROW(testPeriodic(DET_TEST_COUNT, TestSineFactory(times, 0.05,-1.0)), 
 			models::except::BadParam);
 }
 

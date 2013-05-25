@@ -43,7 +43,7 @@ using namespace lcmc::utils::except;
 
 namespace lcmc { namespace test {
 
-/** Common data for ParamList tests
+/** Common data for @ref lcmc::models::ParamList "ParamList" tests
  */
 class ParamData {
 public: 
@@ -61,29 +61,29 @@ public:
 		dummyParamList.add("c",   0.0);
 		dummyParamList.add("a",  1e10);
 
-		dummyRangeList.add("d",  0.0,  1.0);
+		dummyRangeList.add("d",  0.0,  1.0, RangeList::UNIFORM);
 		dummyRangeList.add("a",  3.5,  4.2, RangeList::UNIFORM);
 		dummyRangeList.add("c", -8.0, -7.3, RangeList::LOGUNIFORM);
 	}
 
-	/** Empty ParamList object.
+	/** Empty @ref lcmc::models::ParamList "ParamList" object.
 	 */	
 	ParamList emptyParamList;
-	/** Non-empty ParamList object.
+	/** Non-empty @ref lcmc::models::ParamList "ParamList" object.
 	 */	
 	ParamList dummyParamList;
-	/** Empty RangeList object.
+	/** Empty @ref lcmc::models::RangeList "RangeList" object.
 	 */	
 	RangeList emptyRangeList;
-	/** Non-empty RangeList object.
+	/** Non-empty @ref lcmc::models::RangeList "RangeList" object.
 	 */	
 	RangeList dummyRangeList;
 };
 
-/** Verifies that a list contains all the elements of dummyParamList. Does not 
+/** Verifies that a list contains all the elements of @ref ParamData::dummyParamList "dummyParamList". Does not 
  *	rule out that the list contains more elements.
  *
- * @param[in] x The list to compare to dummyParamList
+ * @param[in] x The list to compare to @ref ParamData::dummyParamList "dummyParamList"
  *
  * @post Runs BOOST_CHECK repeatedly to test the list contents.
  *
@@ -96,9 +96,9 @@ void matchDummyPos(const ParamList& x) {
 	BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(x.get("d"),   1.0));
 }
 
-/** Verifies that a list is identical to the dummyParamList
+/** Verifies that a list is identical to the @ref ParamData::dummyParamList "dummyParamList"
  *
- * @param[in] x The list to compare to dummyParamList
+ * @param[in] x The list to compare to @ref ParamData::dummyParamList "dummyParamList"
  *
  * @post Runs BOOST_CHECK repeatedly to test the list contents.
  *
@@ -111,9 +111,9 @@ void matchDummy(const ParamList& x) {
 	BOOST_CHECK_THROW(x.get("g"), MissingParam);
 }
 
-/** Verifies that a list is identical to the dummyRangeList
+/** Verifies that a list is identical to the @ref ParamData::dummyRangeList "dummyRangeList"
  *
- * @param[in] x The list to compare to dummyRangeList
+ * @param[in] x The list to compare to @ref ParamData::dummyRangeList "dummyRangeList"
  *
  * @post Runs BOOST_CHECK repeatedly to test the list contents.
  *
@@ -142,10 +142,10 @@ void matchDummy(const RangeList& x) {
 	BOOST_CHECK_NO_THROW(BOOST_CHECK(it == x.end()));
 }
 
-/** Verifies that a list is identical to the dummyRangeList.  Does not 
+/** Verifies that a list is identical to the @ref ParamData::dummyRangeList "dummyRangeList".  Does not 
  *	rule out that the list contains more elements.
  *
- * @param[in] x The list to compare to dummyRangeList
+ * @param[in] x The list to compare to @ref ParamData::dummyRangeList "dummyRangeList"
  *
  * @post Runs BOOST_CHECK repeatedly to test the list contents.
  *
@@ -165,12 +165,12 @@ void matchDummyPos(const RangeList& x) {
 	BOOST_CHECK_NO_THROW(BOOST_CHECK(x.getType("d") == RangeList::UNIFORM));
 }
 
-/** Test cases for the ParamList class
+/** Test cases for the @ref lcmc::models::ParamList "ParamList" class
  * @class BoostTest::test_paramlist
  */
 BOOST_FIXTURE_TEST_SUITE(test_paramlist, ParamData)
 
-/** Tests ParamList construction and copying
+/** Tests @ref lcmc::models::ParamList "ParamList" construction and copying
  *
  * @see @ref lcmc::models::ParamList "ParamList"
  *
@@ -214,7 +214,7 @@ BOOST_AUTO_TEST_CASE(make) {
 	}
 }
 
-/** Tests ParamList modification
+/** Tests @ref lcmc::models::ParamList "ParamList" modification
  *
  * @see @ref lcmc::models::ParamList "ParamList"
  *
@@ -250,12 +250,12 @@ BOOST_AUTO_TEST_CASE(add) {
 
 BOOST_AUTO_TEST_SUITE_END()
 
-/** Test cases for the RangeList class
+/** Test cases for the @ref lcmc::models::RangeList "RangeList" class
  * @class BoostTest::test_rangelist
  */
 BOOST_FIXTURE_TEST_SUITE(test_rangelist, ParamData)
 
-/** Tests RangeList construction
+/** Tests @ref lcmc::models::RangeList "RangeList" construction
  *
  * @see @ref lcmc::models::RangeList "RangeList"
  *
@@ -281,8 +281,8 @@ BOOST_AUTO_TEST_CASE(make) {
 		BOOST_CHECK_NO_THROW(matchDummy(copyList1));
 		
 		RangeList copyList2;
-		BOOST_CHECK_NO_THROW(copyList2.add("b", 27.340, 30.42));
-		BOOST_CHECK_NO_THROW(copyList2.add("e",  8.22,  10.0));
+		BOOST_CHECK_NO_THROW(copyList2.add("b", 27.340, 30.42, RangeList::UNIFORM));
+		BOOST_CHECK_NO_THROW(copyList2.add("e",  8.22,  10.0 , RangeList::UNIFORM));
 		BOOST_CHECK_NO_THROW(copyList2 = dummyRangeList);
 		BOOST_CHECK_NO_THROW(matchDummy(copyList2));
 		
@@ -290,9 +290,9 @@ BOOST_AUTO_TEST_CASE(make) {
 		BOOST_CHECK_NO_THROW(BOOST_CHECK(dummyRangeList.begin() != copyList1.begin()));
 		BOOST_CHECK_NO_THROW(BOOST_CHECK(dummyRangeList.end() != copyList1.end()));
 		
-		BOOST_CHECK_NO_THROW(copyList1.add("e", 1.61803, 3.14159));
-		BOOST_CHECK_NO_THROW(dummyRangeList.add("f", 1.61803, 3.14159));
-		BOOST_CHECK_NO_THROW(copyList2.add("g", 1.0, 2.71828));
+		BOOST_CHECK_NO_THROW(copyList1.add("e", 1.61803, 3.14159, RangeList::UNIFORM));
+		BOOST_CHECK_NO_THROW(dummyRangeList.add("f", 1.61803, 3.14159, RangeList::UNIFORM));
+		BOOST_CHECK_NO_THROW(copyList2.add("g", 1.0, 2.71828, RangeList::UNIFORM));
 		
 		BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(copyList1.getMin("e"), 1.61803));
 		BOOST_CHECK_THROW(copyList1.getMin("f"), MissingParam);
@@ -310,7 +310,7 @@ BOOST_AUTO_TEST_CASE(make) {
 	}
 }
 
-/** Tests RangeList modification
+/** Tests @ref lcmc::models::RangeList "RangeList" modification
  *
  * @see @ref lcmc::models::RangeList "RangeList"
  *
@@ -322,9 +322,9 @@ BOOST_AUTO_TEST_CASE(add) {
 	
 	// Adding a parameter works whether or not the list was 
 	//	previously empty
-	BOOST_CHECK_NO_THROW(emptyRangeList.add("f", std::pair<double, double>(1.1489, 2.0) ));
+	BOOST_CHECK_NO_THROW(emptyRangeList.add("f", std::pair<double, double>(1.1489, 2.0), RangeList::UNIFORM ));
 	BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(emptyRangeList.getMin("f"), 1.1489));
-	BOOST_CHECK_NO_THROW(dummyRangeList.add("f", 1.1489, 2.0));
+	BOOST_CHECK_NO_THROW(dummyRangeList.add("f", 1.1489, 2.0, RangeList::UNIFORM));
 	BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(dummyRangeList.getMin("f"), 1.1489));
 
 	//adding corrupted data returns errors
@@ -345,15 +345,15 @@ BOOST_AUTO_TEST_CASE(add) {
 	BOOST_CHECK_THROW(dummyRangeList.getMin("g"), MissingParam);
 	
 	//adding a duplicate parameter returns an error
-	BOOST_CHECK_THROW(dummyRangeList.add("c", 1e-3, 0.01), ExtraParam);
-	BOOST_CHECK_THROW(dummyRangeList.add("c", std::pair<double, double>(1e-3, 0.01)), ExtraParam);
+	BOOST_CHECK_THROW(dummyRangeList.add("c", 1e-3, 0.01, RangeList::UNIFORM), ExtraParam);
+	BOOST_CHECK_THROW(dummyRangeList.add("c", std::pair<double, double>(1e-3, 0.01), RangeList::UNIFORM), ExtraParam);
 	// atomic?
 	BOOST_CHECK_NO_THROW(matchDummyPos(dummyRangeList));
 	BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(dummyRangeList.getMin("f"), 1.1489));
 	BOOST_CHECK_THROW(dummyRangeList.getMin("g"), MissingParam);
 }
 
-/** Tests RangeList modification
+/** Tests @ref lcmc::models::RangeList "RangeList" modification
  *
  * @see @ref lcmc::models::RangeList "RangeList"
  *
@@ -375,7 +375,7 @@ BOOST_AUTO_TEST_CASE(remove) {
 	BOOST_CHECK_NO_THROW(BOOST_CHECK(dummyRangeList.begin() == dummyRangeList.end()));
 }
 
-/** Tests RangeList iterator
+/** Tests @ref lcmc::models::RangeList "RangeList" iterator
  *
  * @see @ref lcmc::models::RangeList::const_iterator "RangeList::const_iterator"
  *
@@ -392,7 +392,7 @@ BOOST_AUTO_TEST_CASE(iterator) {
 	for(size_t i = 0; i < I_END; i++) {
 		BOOST_CHECK_NO_THROW(emptyRangeList.add(
 				std::string(1, static_cast<char>(CHAR_OFFSET+i)), 
-				static_cast<double>(i), 3.0*static_cast<double>(i)));
+				static_cast<double>(i), 3.0*static_cast<double>(i), RangeList::UNIFORM));
 		BOOST_CHECK_NO_THROW(BOOST_CHECK_EQUAL(std::distance(emptyRangeList.begin(), emptyRangeList.end()), 
 			static_cast<ptrdiff_t>(i+1)));
 	}

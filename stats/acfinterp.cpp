@@ -37,33 +37,33 @@ using boost::shared_ptr;
  *			at each time
  * @param[in] deltaT, nAcf The spacing and number of grid points over which 
  *			the ACF should be calculated. The grid will run from 
- *			lags of 0 to (nAcf-1)*deltaT.
+ *			lags of 0 to (<tt>nAcf</tt>-1)*<tt>deltaT</tt>.
  * @param[out] acf	The value of the autocorrelation function at each 
  *			offset.
  *
- * @pre times contains at least two unique values
- * @pre times is sorted in ascending order
- * @pre data.size() == times.size()
- * @pre data[i] is the measurement taken at times[i], for all i
- * @pre neither times nor data contains NaNs
- * @pre deltaT > 0.0
- * @pre nAcf > 0
+ * @pre @p times contains at least two unique values
+ * @pre @p times is sorted in ascending order
+ * @pre @p data.size() = @p times.size()
+ * @pre @p data[i] is the measurement taken at @p times[i], for all i
+ * @pre neither @p times nor @p data contains NaNs
+ * @pre @p deltaT > 0.0
+ * @pre @p nAcf > 0
  *
- * @post the data previously in acf are erased
- * @post acf.size() == nAcf
- * @post acf[i] is an estimator of the autocorrelation function evaluated 
- *	at &Delta;t = i*deltaT, for all i
- * @post acf[i] == 0 if i*deltaT > max(times) - min(times)
+ * @post the data previously in @p acf are erased
+ * @post @p acf.size() = @p nAcf
+ * @post @p acf[i] is an estimator of the autocorrelation function evaluated 
+ *	at &Delta;t = i*<tt>deltaT</tt>, for all i
+ * @post @p acf[i] = 0 if i*<tt>deltaT</tt> > max(@p times) - min(@p times)
  *
- * @perform O(F^2) worst-case time, where F == ceil((max(times)-min(times))/deltaT)
+ * @perform O(F<sup>2</sup>) worst-case time, where F = ceil((max(@p times)-min(@p times))/<tt>deltaT</tt>)
  * @perfmore O(F log F) best-case time
  * 
  * @exception lcmc::utils::except::UnexpectedNan Thrown if there are any 
- *	NaN values present in times or data.
- * @exception lcmc::stats::except::NotEnoughData Thrown if times and data do 
+ *	NaN values present in @p times or @p data.
+ * @exception lcmc::stats::except::NotEnoughData Thrown if @p times and @p data do 
  *	not have at least two values. 
- * @exception std::invalid_argument Thrown if times and data 
- *	do not have the same length or if deltaT or nAcf are not positive.
+ * @exception std::invalid_argument Thrown if @p times and @p data 
+ *	do not have the same length or if @p deltaT or @p nAcf are not positive.
  * @exception std::runtime_error Thrown if the internal calculations produce an error.
  * @exception std::bad_alloc Thrown if there is not enough memory to compute 
  *	the autocorrelation function

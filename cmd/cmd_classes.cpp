@@ -43,10 +43,10 @@ using namespace std;
  * @param[in] str The stream to read from.
  * @param[out] val The pair in which to store the values.
  *
- * @return A reference to str.
+ * @return A reference to @p str.
  *
  * @exception std::ios_base::failure Thrown if the input cannot be read and 
- *	str.exceptions() is set to throw exceptions.
+ *	@p str.exceptions() is set to throw exceptions.
  * 
  * @exceptsafe Function arguments remain in a valid state in the event of 
  *	an exception.
@@ -74,7 +74,7 @@ using namespace std;
  * @param[in] allowed The allowed values
  *
  * @post This constraint will accept a value if and only if it 
- *	compares equal to one of the elements of allowed.
+ *	compares equal to one of the elements of @p allowed.
  *
  * @exception std::bad_alloc Thrown if there is not enough room to store 
  *	the allowed values.

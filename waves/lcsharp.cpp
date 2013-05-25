@@ -6,13 +6,8 @@
  */
 
 #include <cmath>
+#include <gsl/gsl_math.h>
 #include "lightcurves_periodic.h"
-
-/** Define Pi for convenience
- */
-#ifndef M_PI
-#define M_PI 3.1415927
-#endif
 
 namespace lcmc { namespace models {
 
@@ -24,9 +19,9 @@ namespace lcmc { namespace models {
  * @param[in] period The period of the light curve
  * @param[in] phase The phase of the light curve at time 0
  *
- * @pre amp > 0
- * @pre period > 0
- * @pre phase &isin; [0, 1)
+ * @pre @p amp > 0
+ * @pre @p period > 0
+ * @pre @p phase &isin; [0, 1)
  *
  * @post The object represents a peaked periodic signal with the 
  *	given amplitude, period, and initial phase.
@@ -51,7 +46,7 @@ SharpPeakWave::SharpPeakWave(const std::vector<double> &times,
  * 
  * @return The flux emitted by the object at the specified phase.
  * 
- * @pre phase &isin; [0, 1)
+ * @pre @p phase &isin; [0, 1)
  *
  * @post the return value is determined entirely by the phase and 
  *	the parameters passed to the constructor

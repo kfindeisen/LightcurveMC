@@ -41,7 +41,7 @@ using stats::LcBinStats;
 ////////////////////////////////////////
 // Forward declarations needed only by the main program
 
-/** This namespace identifies all code specific to lightcurveMC.
+/** This namespace identifies all code specific to Lightcurve MC.
  */
 namespace lcmc { 
 
@@ -66,9 +66,9 @@ namespace models {
 // Full spec given with the declaration because lcregistry.cpp is deliberately 
 //	hidden in the documentation
 // 
-/** lcFactory is a factory method that allocates and initializes a ILightCurve 
- *	object given its specification. Use of an auto_ptr prevents 
- *	client-side memory management issues.
+/** lcFactory() is a factory method that allocates and initializes a 
+ *	@ref lcmc::models::ILightCurve "ILightCurve" object given its 
+ * 	specification.
  *
  * @param[in] whichLc The type of light curve to be created.
  * @param[in] times The times at which the light curve will be sampled.
@@ -76,17 +76,18 @@ namespace models {
  * 	needed depend on each individual light curve and are given in the 
  * 	light curve documentation.
  *
- * @return A smart pointer to an object of the subclass of ILightCurve 
- *	corresponding to the value of whichLc. The object pointed to by the 
- *	smart pointer has been initialized with the data in lcParams.
+ * @return A smart pointer to an object of the subclass of 
+ *	@ref lcmc::models::ILightCurve "ILightCurve" corresponding to the 
+ *	value of @p whichLc. The object pointed to by the smart pointer has 
+ *	been initialized with the data in @p lcParams.
  *
- * @pre No element of times is NaN
+ * @pre No element of @p times is NaN
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the object.
- * @exception std::invalid_argument Thrown if whichLc is invalid.
+ * @exception std::invalid_argument Thrown if @p whichLc is invalid.
  * @exception lcmc::models::except::MissingParam Thrown if a required 
- *	parameter is missing from lcParams.
+ *	parameter is missing from @p lcParams.
  * @exception lcmc::models::except::BadParam Thrown if any of the light 
  *	curve parameters are outside their allowed ranges.
  *
@@ -208,7 +209,7 @@ int main(int argc, char* argv[]) {
 					// lc[j] already contains the "noise", 
 					// so just add the "real" simulated  
 					// signal
-					/** @bug Either new ILightCurve implementation or its driver code much too slow when -\-add keyword is used
+					/** @bug Either new ILightCurve implementation or its driver code much too slow when @c -\-add keyword is used
 					 */
 					vector<double> temp;
 					lcInstance->getFluxes(temp);
@@ -310,9 +311,11 @@ namespace lcmc {
  * @return A ParamList giving a value for each parameter
  *
  * @post X is a parameter in the return value if and only if X is a parameter 
- *	in limits
+ *	in @c limits
  * @post for any X in the return value, 
- *	limits.getMin(X) <= return.get(X) <= limits.getMax(X) 
+ *	@p limits.@ref lcmc::models::RangeList::getMin() "getMin"(X) 
+ *	&le; @p return.@ref lcmc::models::ParamList::get() "get"(X) 
+ *	&le; @p limits.@ref lcmc::models::RangeList::getMax() "getMax"(X) 
  *
  * @post No element of the return value is NaN.
  *

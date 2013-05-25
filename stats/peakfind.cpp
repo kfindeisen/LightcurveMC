@@ -3,7 +3,7 @@
  * @author Ann Marie Cody
  * @author Krzysztof Findeisen
  * @date Created May 14, 2013
- * @date Last modified May 22, 2013
+ * @date Last modified May 24, 2013
  */
 
 #include <algorithm>
@@ -14,6 +14,7 @@
 #include <cmath>
 #include <boost/concept_check.hpp>
 #include <boost/lexical_cast.hpp>
+#include <gsl/gsl_math.h>
 //#include "../nan.h"
 //#include "../except/nan.h"
 #include "peakfind.h"
@@ -46,7 +47,7 @@ public:
 	 *
 	 * @param[in] x The value to compare to base
 	 *
-	 * @return True if abs(x-base) >= threshold, false otherwise.
+	 * @return True if |<tt>x</tt>-<tt>base</tt>| &ge; @p threshold, false otherwise.
 	 *
 	 * @exceptsafe Does not throw exceptions.
 	 */
@@ -70,35 +71,35 @@ BOOST_CONCEPT_ASSERT((boost::UnaryPredicate<FartherThan, double>));
  * @param[out] peakTimes	The times of the endpoints of significant intervals.
  * @param[out] peakHeights	The heights of the endpoints of significant intervals.	
  *
- * @pre times contains at least two unique values
- * @pre times is sorted in ascending order
- * @pre data.size() == times.size()
- * @pre data[i] is the measurement taken at times[i], for all i
- * @pre neither times nor data contains NaNs
- * @pre minAmp > 0
+ * @pre @p times contains at least two unique values
+ * @pre @p times is sorted in ascending order
+ * @pre @p data.size() = @p times.size()
+ * @pre @p data[i] is the measurement taken at @p times[i], for all i
+ * @pre neither @p times nor @p data contains NaNs
+ * @pre @p minAmp > 0
  *
- * @post the data previously in peakTimes and peakData are erased
- * @post 1 <= peakTimes.size() == peakData.size() <= times.size()
- * @post for all i in peakTimes except the first and last elements, 
- *	(peakTimes[i], peakData[i]) are the coordinates of a local minimum 
- *	or maximum in (times, data)
- * @post for all i in peakTimes except the first two and last single elements, 
- *	if peakTimes[i] is a local minimum in (times, data), then 
- *	peakTimes[k-1] is a local maximum, and if peakTimes[i] is a local 
- *	maximum, then peakTimes[i] is a local minimum
- * @post for all i in peakTimes except the first element, peakHeights[i] 
- *	differs from peakHeights[i-1] by at least minAmp
- * @post for all points in (times, data) that are not in (peakTimes, peakHeights), 
- *	inserting that point anywhere in (peakTimes, peakHeights) would 
+ * @post the data previously in @p peakTimes and @p peakData are erased
+ * @post 1 &le; @p peakTimes.size() = @p peakData.size() &le; @p times.size()
+ * @post for all i in @p peakTimes except the first and last elements, 
+ *	(@p peakTimes[i], @p peakData[i]) are the coordinates of a local minimum 
+ *	or maximum in (@p times, @p data)
+ * @post for all i in @p peakTimes except the first two and last single elements, 
+ *	if @p peakTimes[i] is a local minimum in (@p times, @p data), then 
+ *	@p peakTimes[k-1] is a local maximum, and if @p peakTimes[i] is a local 
+ *	maximum, then @p peakTimes[i] is a local minimum
+ * @post for all i in @p peakTimes except the first element, @p peakHeights[i] 
+ *	differs from @p peakHeights[i-1] by at least @p minAmp
+ * @post for all points in (times, data) that are not in (@p peakTimes, @p peakHeights), 
+ *	inserting that point anywhere in (@p peakTimes, @p peakHeights) would 
  *	violate one of the above conditions
  *
- * @perform O(N) time, where N = times.size()
+ * @perform O(N) time, where N = @p times.size()
  * 
  * @exception lcmc::utils::except::UnexpectedNan Thrown if there are any 
- *	NaN values present in times or data.
- * @exception lcmc::stats::except::NotEnoughData Thrown if times and data do not 
+ *	NaN values present in @p times or @p data.
+ * @exception lcmc::stats::except::NotEnoughData Thrown if @p times and @p data do not 
  *	have at least two values. 
- * @exception std::invalid_argument Thrown if times and data 
+ * @exception std::invalid_argument Thrown if @p times and @p data 
  *	do not have the same length or if minAmp is not positive.
  * @exception std::bad_alloc Thrown if there is not enough memory to find 
  *	the peaks
@@ -141,10 +142,8 @@ void peakFind(const DoubleVec& times, const DoubleVec& data,
 		
 		// assert: tempPeaks[0] != tempPeaks[1] by construction of 
 		// first, given minAmp > 0
-		int sign = (tempPeaks[1] - tempPeaks[0] > 0 ? 1 : -1);
+		int sign = GSL_SIGN(tempPeaks[1] - tempPeaks[0]);
 		
-		/** @todo Find a more compact way of expressing the loop invariant
-		 */
 		// invariant: sign != 0
 		// invariant: tempTimes.size() >= 2
 		// invariant: tempTimes.size() == tempPeaks.size()
@@ -197,26 +196,26 @@ void peakFind(const DoubleVec& times, const DoubleVec& data,
  * @param[in] magCuts	The variability amplitudes at which to characterize the timescale
  * @param[out] timescales	The waiting times
  *
- * @pre times contains at least two unique values
- * @pre times is sorted in ascending order
- * @pre data.size() == times.size()
- * @pre data[i] is the measurement taken at times[i], for all i
- * @pre neither times nor data contains NaNs
- * @pre magCuts[i] > 0, for all i
+ * @pre @p times contains at least two unique values
+ * @pre @p times is sorted in ascending order
+ * @pre @p data.size() = @p times.size()
+ * @pre @p data[i] is the measurement taken at @p times[i], for all i
+ * @pre neither @p times nor @p data contains NaNs
+ * @pre @p magCuts[i] > 0, for all i
  *
- * @post the data previously in timescales is erased
- * @post timescales.size() == magCuts.size()
- * @post timescales[i] is the waiting time for variability greater 
- *	than magCuts[i], for all i
+ * @post the data previously in @p timescales is erased
+ * @post @p timescales.size() = @p magCuts.size()
+ * @post @p timescales[i] is the waiting time for variability greater 
+ *	than @p magCuts[i], for all i
  *
- * @perform O(CN log N) time, where C = magCuts.size() and N = times.size()
+ * @perform O(CN log N) time, where C = @p magCuts.size() and N = @p times.size()
  * 
  * @exception lcmc::utils::except::UnexpectedNan Thrown if there are any 
- *	NaN values present in times or data.
- * @exception lcmc::stats::except::NotEnoughData Thrown if times and data 
+ *	NaN values present in @p times or @p data.
+ * @exception lcmc::stats::except::NotEnoughData Thrown if @p times and @p data 
  *	do not have at least two values. 
- * @exception std::invalid_argument Thrown if times and data 
- *	do not have the same length or if minAmp contains negative values.
+ * @exception std::invalid_argument Thrown if @p times and @p data 
+ *	do not have the same length or if @p minAmp contains negative values.
  * @exception std::bad_alloc Thrown if there is not enough memory to compute 
  *	the timescales
  *

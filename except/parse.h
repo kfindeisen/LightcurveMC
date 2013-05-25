@@ -25,7 +25,7 @@ public:
 	explicit ParseError(const string& what_arg);
 };
 
-/** This exception is thrown if lightcurveMC is called with no valid light 
+/** This exception is thrown if Lightcurve MC is called with no valid light 
  *	curves to simulate.
  */
 class NoLightCurves : public ParseError {
@@ -35,7 +35,7 @@ public:
 	explicit NoLightCurves(const string& what_arg);
 };
 
-/** This exception is thrown if lightcurveMC is called with no valid 
+/** This exception is thrown if Lightcurve MC is called with no valid 
  *	statistics to calculate.
  */
 class NoStats : public ParseError {

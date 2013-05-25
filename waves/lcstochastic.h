@@ -101,12 +101,12 @@ private:
 	 * 
 	 * @post getFluxes() will now return the correct light curve.
 	 * 
-	 * @post fluxes.size() == getTimes().size()
-	 * @post if getTimes()[i] == getTimes()[j] for i &ne; j, then 
-	 *	fluxes[i] == fluxes[j]
+	 * @post @p fluxes.size() = getTimes().size()
+	 * @post if getTimes()[i] = getTimes()[j] for i &ne; j, then 
+	 *	@p fluxes[i] = @p fluxes[j]
 	 * 
-	 * @post No element of fluxes is NaN
-	 * @post All elements in fluxes are non-negative
+	 * @post No element of @p fluxes is NaN
+	 * @post All elements in @p fluxes are non-negative
 	 * @post Either the mean, median, or mode of the flux is one, when 
 	 *	averaged over many elements and many light curve instances. 
 	 *	Subclasses of Stochastic may chose the option 

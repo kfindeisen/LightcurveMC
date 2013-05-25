@@ -51,19 +51,21 @@ using namespace TCLAP;
 /** Adds a parameter to a light curve specification if the appropriate 
  * command line argument was used
  *
- * @param[in] range the RangeList to update
+ * @param[in] range the @ref models::RangeList "RangeList" to update
  * @param[in] paramName the name of the parameter
  * @param[in] paramValue the command-line argument to translate into a range
- * @param[in] distrib the distribution values assume within the range
+ * @param[in] distrib the distribution values follow within the range
  *
- * @post If paramValue was specified on the command line, the corresponding 
- *	parameter range is added to range. Otherwise, range is unchanged.
+ * @post If @p paramValue was specified on the command line, the corresponding 
+ *	parameter range is added to @p range. Otherwise, @p range is unchanged.
  *
- * @exception lcmc::utils::except::UnexpectedNan Thrown if either min or max is NaN
+ * @exception lcmc::utils::except::UnexpectedNan Thrown if either element of 
+ *	@p paramValue is NaN
  * @exception lcmc::stats::except::ExtraParam Thrown if a value for the parameter is 
  *	already in the list
- * @exception lcmc::stats::except::NegativeRange Thrown if max > min
- * @exception std::invalid_argument Thrown if distrib is not a valid value.
+ * @exception lcmc::stats::except::NegativeRange Thrown if 
+ *	@p paramValue.second > @p paramValue.first
+ * @exception std::invalid_argument Thrown if @p distrib is not a valid value.
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	add an element to the list.
@@ -85,8 +87,8 @@ void addParam(RangeList& range, const ParamType& paramName,
  * @param[out] lcNameList a vector of the valid light curve names
  * @param[out] lcList a vector of light curve types
  *
- * @post lcNameList.size() <= argList.getValue().size()
- * @post lcList == std::for_each(lcNameList, &lcmc::parse::parseLightCurve)
+ * @post @p lcNameList.size() &le; <tt>argList.getValue().size()</tt>
+ * @post @p lcList = @p std::for_each(@p lcNameList, &@ref lcmc::parse::parseLightCurve() "parseLightCurve")
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	represent the light curve list.
@@ -140,7 +142,7 @@ void parseLcList(UnlabeledMultiArg<string>& argList,
  * @param[in] argList a multi-value argument containing the statistic names
  * @param[out] statList a vector of statistic types
  *
- * @post statList.size() <= argList.getValue().size()
+ * @post @p statList.size() &le; <tt>argList.getValue().size()</tt>
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	represent the statistic list.

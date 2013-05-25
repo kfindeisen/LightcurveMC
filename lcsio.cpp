@@ -19,7 +19,7 @@ using namespace std;
  *
  * @param[in] x The character to test
  *
- * @return True if x represents a newline on Windows, Unix, or MacOS.
+ * @return True if @p x represents a newline on Windows, Unix, or MacOS.
  *
  * @exceptsafe Does not throw exceptions.
  */
@@ -36,11 +36,10 @@ bool isNewLine(char x) {
 /** Reads a file containing a list of file names
  * 
  * @param[in] hInput an open file handle to be read. The file represented 
- *	by hInput is assumed to be formatted as a list of strings, one per 
- *	line. If the file does not match this format the function throws 
- *	std::runtime_error.
+ *	by @p hInput is assumed to be formatted as a list of strings, one per 
+ *	line.
  * @param[out] fileList a list of strings that stores the filenames in 
- *	hInput. The list may be empty.
+ *	@p hInput. The list may be empty.
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to store 
  *	the file list.
@@ -82,12 +81,11 @@ void readFileNames(FILE* hInput, vector<string> &fileList) {
  *	with the first column a floating point Julian date, the second 
  *	a floating point magnitude, and the third a floating point 
  *	magnitude error. The file may also contain comment lines 
- *	preceded by '#'. If the file does not match this format the 
- *	function throws std::runtime_error. The data are returned 
+ *	preceded by '#'. The data are returned 
  *	sorted by increasing Julian date.
  * @param[in] errMax the maximum magnitude error to tolerate in a data 
- *	point. Any points with an error exceeding errMax are ignored.
- * @param[out] offset a Julian date to be added to all values in timeVec. This 
+ *	point. Any points with an error exceeding @p errMax are ignored.
+ * @param[out] offset a Julian date to be added to all values in @p timeVec. This 
  *		lets subsequent functions work with smaller numbers.
  * @param[out] timeVec a [not yet sorted] vector containing the times of each 
  *		observation, minus offset
@@ -189,13 +187,11 @@ void readWgLightCurve(FILE* hInput, double errMax, double &offset, DoubleVec &ti
  *	the first column a running index, the second a floating point 
  *	Julian date, the third a floating point magnitude, the fourth 
  *	a floating point magnitude error, and the fifth a limit. The 
- *	file may also contain comment lines preceded by '#'. If the 
- *	file does not match this format the function throws 
- *	std::runtime_error. The data are returned sorted by 
+ *	file may also contain comment lines preceded by '#'. The data are returned sorted by 
  *	increasing Julian date.
  * @param[in] errMax the maximum magnitude error to tolerate in a data point. Any 
- *	points with an error exceeding errMax are ignored.
- * @param[out] offset a Julian date to be added to all values in timeVec. This lets 
+ *	points with an error exceeding @p errMax are ignored.
+ * @param[out] offset a Julian date to be added to all values in @p timeVec. This lets 
  *	subsequent functions work with smaller numbers.
  * @param[out] timeVec a [not yet sorted] vector containing the times of each 
  *	observation, minus offset

@@ -22,12 +22,12 @@ namespace lcmc { namespace inject {
  *
  * @param[in] whichSample The name of the light curve catalog to read.
  *
- * @deprecated If whichSample takes the special keywords NonSpitzerNonVar, 
- *	NonSpitzerVar, SpitzerNonVar, or SpitzerVar, a file named 
- *	nonspitzernonvar.cat, nonspitzervar.cat, spitzernonvar.cat, or 
- *	spitzervar.cat will be used, respectively. These special cases are 
+ * @deprecated If @p whichSample takes the special keywords @c NonSpitzerNonVar, 
+ *	@c NonSpitzerVar, @c SpitzerNonVar, or @c SpitzerVar, a file named 
+ *	@c nonspitzernonvar.cat, @c nonspitzervar.cat, @c spitzernonvar.cat, or 
+ *	@c spitzervar.cat will be used, respectively. These special cases are 
  *	offered for backward-compatibility with shell scripts that used 
- *	previous versions of lightcurveMC.
+ *	previous versions of Lightcurve MC.
  *
  * @return A smart pointer to an Observations object generated from the 
  *	given catalog.

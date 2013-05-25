@@ -21,9 +21,9 @@ using boost::lexical_cast;
  * @param[in] period The period of the light curve
  * @param[in] phase The phase of the light curve at time 0
  *
- * @pre amp > 0
- * @pre period > 0
- * @pre phase &isin; [0, 1)
+ * @pre @p amp > 0
+ * @pre @p period > 0
+ * @pre @p phase &isin; [0, 1)
  *
  * @post A light curve is a deterministic function of the amplitude, period, 
  *	and phase: knowing them is sufficient to determine flux(t) for any 

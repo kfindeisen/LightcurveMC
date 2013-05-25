@@ -151,6 +151,8 @@ void Observations::readFile(const std::string& fileName) {
  *	the catalog.
  *
  * @exceptsafe The arguments are unchanged in the event of an exception.
+ *
+ * @bug Returns file paths relative to working directory, not relative to catalog.
  */
 const std::vector<std::string> Observations::getLcLibrary(const std::string& catalogName) {
 
@@ -187,11 +189,11 @@ const std::vector<std::string> Observations::getLcLibrary(const std::string& cat
 	return fileList;
 }
 
-/** Returns the timestamps associated with this simulation.
+/** Returns the timestamps associated with this source.
  *
  * @param[in] timeArray the array that will contain the timestamps
  * 
- * @post timeArray does not contain NaNs
+ * @post @p timeArray does not contain NaNs
  *
  * @exceptsafe Does not throw exceptions.
  */
@@ -199,11 +201,11 @@ void Observations::getTimes(std::vector<double> &timeArray) const {
 	timeArray = this->times;
 }
 
-/** Returns the flux measurements associated with this simulation.
+/** Returns the flux measurements associated with this source.
  *
  * @param[in] fluxArray the array that will contain the measurements
  * 
- * @post fluxArray does not contain NaNs
+ * @post @p fluxArray does not contain NaNs
  *
  * @exceptsafe Does not throw exceptions.
  */

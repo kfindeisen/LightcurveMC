@@ -38,8 +38,8 @@ namespace TCLAP {
 template<class T, class U> 
 struct ArgTraits<std::pair<T, U> > {
 	/** Specifies the way that values gets assigned to this type during 
-	 *	parsing. The two supported types are StringLike and 
-	 *	ValueLike. 
+	 *	parsing. The two supported types are @c StringLike and 
+	 *	@c ValueLike. 
 	 */
 	typedef ValueLike ValueCategory;
 };

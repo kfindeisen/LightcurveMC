@@ -16,7 +16,7 @@ namespace lcmc { namespace models {
  * measurement error. It is provided as a convenient control case for 
  * comparisons to light curves with nonzero amplitudes.
  *
- * @invariant The flux is always zero.
+ * @invariant The flux is always one.
  */
 class FlatWave : public Deterministic {
 public: 

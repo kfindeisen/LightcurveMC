@@ -22,11 +22,11 @@ using boost::lexical_cast;
  *
  * @param[in] times The times at which the light curve will be sampled.
  * @param[in] diffus The diffusion constant of the damped random walk, in 
- *	units of flux^2/time
+ *	units of mag<sup>2</sup>/time
  * @param[in] tau The damping time of the damped random walk.
  *
- * @pre diffus > 0
- * @pre tau > 0
+ * @pre @p diffus > 0
+ * @pre @p tau > 0
  *
  * @post The object represents a damped random walk with the given diffusion 
  *	constant and correlation time.
@@ -59,19 +59,19 @@ DampedRandomWalk::DampedRandomWalk(const std::vector<double>& times, double diff
  * 
  * @post getFluxes() will now return the correct light curve.
  * 
- * @post fluxes.size() == getTimes().size()
- * @post if getTimes()[i] == getTimes()[j] for i &ne; j, then 
- *	fluxes[i] == fluxes[j]
+ * @post @p fluxes.size() = getTimes().size()
+ * @post if getTimes()[i] = getTimes()[j] for i &ne; j, then 
+ *	@p fluxes[i] = @p fluxes[j]
  * 
- * @post No element of fluxes is NaN
- * @post All elements in fluxes are non-negative
+ * @post No element of @p fluxes is NaN
+ * @post All elements in @p fluxes are non-negative
  * @post The median of the flux is one, when averaged over many elements and 
  *	many light curve instances.
  *
- * @post fluxToMag(fluxes) has a mean of zero and a standard deviation of 
- *	sqrt(0.5*diffus/tau)
- * @post cov(fluxToMag(fluxes[i]), fluxToMag(fluxes[j])) == 
- *	0.5*diffus/tau &times; exp(|getTimes()[i]-getTimes()[j]|/tau) 
+ * @post fluxToMag(@p fluxes) has a mean of zero and a standard deviation of 
+ *	sqrt(0.5*@p diffus/@p tau)
+ * @post cov(fluxToMag(@p fluxes[i]), fluxToMag(@p fluxes[j])) = 
+ *	0.5*<tt>diffus</tt>/<tt>tau</tt> &times; exp(|getTimes()[i]-getTimes()[j]|/tau) 
  * 
  * @exception std::bad_alloc Thrown if there is not enough memory to compute 
  *	the light curve.

@@ -1,4 +1,4 @@
-/** Definitions for lightcurveMC type manipulation functions
+/** Definitions for Lightcurve MC type manipulation functions
  * @file lightcurveMC/lcregistry.cpp
  * @author Krzysztof Findeisen
  * @date Created April 25, 2012
@@ -124,7 +124,7 @@ std::auto_ptr<ILightCurve> lcFactory(LightCurveType whichLc, const std::vector<d
 	using std::auto_ptr;
 
 	/** @todo Look into using argument forwarding to make calls like 
-	 *	lcFactory(Sine, amp, per, phase)
+	 *	<tt>lcFactory(Sine, amp, per, phase)</tt>
 	 */
 
 	// once the LightCurve is constructed, constructing auto_ptr 

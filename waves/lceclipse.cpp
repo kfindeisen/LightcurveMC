@@ -17,14 +17,14 @@ using boost::lexical_cast;
 /** Initializes the light curve to represent a periodic function flux(time).
  *
  * @param[in] times The times at which the light curve will be sampled.
- * @param[in] amp The amplitude of the light curve
- * @param[in] period The period of the light curve
- * @param[in] phase The phase of the light curve at time 0
+ * @param[in] amp The amplitude of the primary eclipse.
+ * @param[in] period The period of the light curve.
+ * @param[in] phase The phase of the light curve at time 0.
  *
- * @pre amp > 0
- * @pre amp &le; 1
- * @pre period > 0
- * @pre phase &isin; [0, 1)
+ * @pre @p amp > 0
+ * @pre @p amp &le; 1
+ * @pre @p period > 0
+ * @pre @p phase &isin; [0, 1)
  *
  * @post The object represents a periodic signal with the given 
  *	amplitude, period, and initial phase. The light curve shows two 
@@ -53,7 +53,7 @@ EclipseWave::EclipseWave(const std::vector<double> &times,
  * 
  * @return The flux emitted by the object at the specified phase.
  * 
- * @pre phase &isin; [0, 1)
+ * @pre @p phase &isin; [0, 1)
  *
  * @post the return value is determined entirely by the phase and 
  *	the parameters passed to the constructor

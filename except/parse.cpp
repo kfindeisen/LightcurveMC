@@ -19,7 +19,7 @@ using std::string;
  * @param[in] what_arg A string with the same content as the value 
  *	returned by what().
  *
- * @post this->what() == what_arg.c_str()
+ * @post this->what() = @p what_arg.c_str()
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the exception.
@@ -34,7 +34,7 @@ ParseError::ParseError(const string& what_arg) : CheckedException(what_arg) {
  * @param[in] what_arg A string with the same content as the value 
  *	returned by what().
  *
- * @post this->what() == what_arg.c_str()
+ * @post this->what() = @p what_arg.c_str()
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the exception.
@@ -49,7 +49,7 @@ NoLightCurves::NoLightCurves(const string& what_arg) : ParseError(what_arg) {
  * @param[in] what_arg A string with the same content as the value 
  *	returned by what().
  *
- * @post this->what() == what_arg.c_str()
+ * @post this->what() = @p what_arg.c_str()
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the exception.

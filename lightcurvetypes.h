@@ -1,10 +1,10 @@
-/** Type definitions for lightcurveMC light curves
+/** Type definitions for Lightcurve MC light curves
  * @file lightcurveMC/lightcurvetypes.h
  * @author Krzysztof Findeisen
  * @date Created February 9, 2012
  * @date Last modified May 22, 2013
  * 
- * These types represent the interface lightcurveMC uses to handle light 
+ * These types represent the interface Lightcurve MC uses to handle light 
  * curves in an abstract fashion. Do not add anything to this header unless 
  * (nearly) the entire program needs it.
  */
@@ -22,7 +22,7 @@ namespace lcmc {
  */
 namespace models {
 
-/** LightCurveType specifies which LightCurve should be created for a 
+/** LightCurveType specifies which @ref ILightCurve "LightCurve" should be created for a 
  * 	particular simulation. Each allowed value corresponds to exactly one 
  *	light curve model.
  *
@@ -32,7 +32,6 @@ namespace models {
  * Actual LightCurveType constants are only visible to those functions that 
  *	need them.
  */
-//enum LightCurveType;
 class LightCurveType {
 public: 
 	/** Initializes the object to a particular enumerated constant. Client 
@@ -47,12 +46,12 @@ public:
 	explicit LightCurveType(unsigned int id) : id(id) {
 	}
 
-	/** Tests whether two LightCurveTypes represent the same %LightCurve.
+	/** Tests whether two @ref LightCurveType "LightCurveTypes" represent the same light curve.
 	 *
 	 * @param[in] other The LightCurveType to compare this to.
 	 *
-	 * @return True if and only if the two LightCurveTypes correspond to 
-	 *	the same constant.
+	 * @return True if and only if the two @ref LightCurveType "LightCurveTypes" correspond to 
+	 *	the same light curve.
 	 *
 	 * @exceptsafe Does not throw exceptions.
 	 */
@@ -60,12 +59,12 @@ public:
 		return (this->id == other.id);
 	}
 
-	/** Tests whether two LightCurveTypes represent different LightCurves.
+	/** Tests whether two @ref LightCurveType "LightCurveTypes" represent different LightCurves.
 	 *
 	 * @param[in] other The LightCurveType to compare this to.
 	 *
-	 * @return True if and only if the two LightCurveTypes correspond to 
-	 *	different constants.
+	 * @return True if and only if the two @ref LightCurveType "LightCurveTypes" correspond to 
+	 *	different light curves.
 	 *
 	 * @exceptsafe Does not throw exceptions.
 	 */
@@ -79,10 +78,10 @@ private:
 /** ILightCurve is the interface class for all light curve models. Each class 
  * implementing ILightCurve represents a particular kind of light curve, and 
  * each ILightCurve object represents a single realization of that type of 
- * light curve. No application using the LightCurves should need more than 
+ * light curve. No application using the light curves should need more than 
  * the interface provided by ILightCurve.
  * 
- * A LightCurve object represents a simulated set of observations, with fluxes 
+ * An ILightCurve object represents a simulated set of observations, with fluxes 
  * determined by the model parameters and times determined by the desired 
  * cadence of the mock data set.
  * 
@@ -96,9 +95,11 @@ public:
 	 *
 	 * @param[out] timeArray A vector containing the desired times.
 	 *
-	 * @post timeArray.size() == getFluxes().size()
+	 * @post Any data previously in @p timeArray is erased
+	 * @post @p timeArray.size() = size()
+	 * @post @p timeArray contains the times with which the light curve was initialized
 	 * 
-	 * @post No element of timeArray is NaN
+	 * @post No element of @p timeArray is NaN
 	 *
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
 	 *	return a copy of the times.
@@ -112,12 +113,13 @@ public:
 	 *
 	 * @param[out] fluxArray A vector containing the desired fluxes.
 	 *
-	 * @post fluxArray.size() == getTimes().size()
-	 * @post if getTimes()[i] == getTimes()[j] for i &ne; j, then 
-	 *	getFluxes()[i] == getFluxes()[j]
+	 * @post Any data previously in @p fluxArray is erased
+	 * @post @p fluxArray.size() = size()
+	 * @post if getTimes()[i] = getTimes()[j] for i &ne; j, then 
+	 *	getFluxes()[i] = getFluxes()[j]
 	 * 
-	 * @post No element of fluxArray is NaN
-	 * @post All elements in fluxArray are non-negative
+	 * @post No element of @p fluxArray is NaN
+	 * @post All elements in @p fluxArray are non-negative
 	 * @post Either the mean, median, or mode of the flux is one, when 
 	 *	averaged over many elements and many light curve instances. 
 	 *	Subclasses of ILightCurve may chose the option 
@@ -138,7 +140,7 @@ public:
 	 *
 	 * @return The number of data points represented by the ILightCurve.
 	 *
-	 * @post return value == getTimes().size() == getFluxes.size()
+	 * @post return value = getTimes().%size() = getFluxes().%size()
 	 *
 	 * @exceptsafe Does not throw exceptions.
 	 */

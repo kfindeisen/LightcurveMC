@@ -74,6 +74,7 @@ enum StatType {
  * - Period
  * - &Delta;m-&Delta;t-based timescales
  * - ACF-based timescales
+ * - peak-finding timescales
  *
  * @todo May be good idea to redesign in terms of strategy pattern, to allow 
  * for more flexibility in which tests get run.

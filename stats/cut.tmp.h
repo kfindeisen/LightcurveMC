@@ -24,16 +24,18 @@ using std::vector;
  * @param[in] func The function to test against cut.
  * @param[in] pred The condition that must be satisfied by the return value.
  *
- * @return The value pos[i] at which pred(func[i]) is first true, 
- *	or NaN if pred(x) is false for all x &isin; func.
+ * @return The value @p pos[i] at which @p pred(func[i]) is first true, 
+ *	or NaN if @p pred(x) is false for all x &isin; @p func.
  *
- * @pre pos.size() == func.size()
+ * @pre @p pos.size() = @p func.size()
  * 
- * @pre pos does not contain NaNs
- * @pre func may contain NaNs
+ * @pre @p pos does not contain NaNs
+ * @pre @p func may contain NaNs
  *
- * @exceptsafe If pred throws exceptions, then cutFunction() has the same 
- *	exception guarantee as pred. Otherwise, does not throw exceptions.
+ * @perform O(N) time, where N = @p func.size()
+ *
+ * @exceptsafe If @p pred throws exceptions, then cutFunction() has the same 
+ *	exception guarantee as @p pred. Otherwise, does not throw exceptions.
  */
 template <class UnaryPredicate> 
 BOOST_CONCEPT_REQUIRES(
@@ -57,16 +59,18 @@ cutFunction(const vector<double>& pos, const vector<double>& func, UnaryPredicat
  * @param[in] func The function to test against cut.
  * @param[in] pred The condition that must be satisfied by the return value.
  *
- * @return The value pos[i] at which pred(func[i]) is last true, 
- *	or NaN if pred(x) is false for all x &isin; func.
+ * @return The value @p pos[i] at which @p pred(func[i]) is last true, 
+ *	or NaN if @p pred(x) is false for all x &isin; @p func.
  *
- * @pre pos.size() == func.size()
+ * @pre @p pos.size() = @p func.size()
  * 
- * @pre pos does not contain NaNs
- * @pre func may contain NaNs
+ * @pre @p pos does not contain NaNs
+ * @pre @p func may contain NaNs
  *
- * @exceptsafe If pred throws exceptions, then cutFunctionReverse() has the 
- *	same exception guarantee as pred. Otherwise, does not throw exceptions.
+ * @perform O(N) time, where N = @p func.size()
+ *
+ * @exceptsafe If @p pred throws exceptions, then cutFunctionReverse() has the 
+ *	same exception guarantee as @p pred. Otherwise, does not throw exceptions.
  */
 template <class UnaryPredicate> 
 BOOST_CONCEPT_REQUIRES(
@@ -98,9 +102,9 @@ public:
 	
 	/** Unary comparison of x
 	 *
-	 * @param[in] x The value to compare to threshold
+	 * @param[in] x The value to compare to @p threshold
 	 *
-	 * @return True if x > threshold, false otherwise.
+	 * @return True if @p x > @p threshold, false otherwise.
 	 *
 	 * @exceptsafe Does not throw exceptions.
 	 */
@@ -128,9 +132,9 @@ public:
 	
 	/** Unary comparison of x
 	 *
-	 * @param[in] x The value to compare to threshold
+	 * @param[in] x The value to compare to @p threshold
 	 *
-	 * @return True if x < threshold, false otherwise.
+	 * @return True if @p x < @p threshold, false otherwise.
 	 *
 	 * @exceptsafe Does not throw exceptions.
 	 */

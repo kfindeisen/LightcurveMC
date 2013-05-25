@@ -87,11 +87,11 @@ void printStat(FILE* const file, const std::vector<DoubleVec>& timeArchive,
  *	are added.
  * @param[in] toCalc A list of statistics whose values will be calculated.
  *
- * @pre toCalc is not empty
+ * @pre @p toCalc is not empty
  *
  * @exception std::bad_alloc Thrown if not enough memory to construct LcBinStats
  * @exception std::runtime_error Thrown if bin name could not be constructed.
- * @exception std::invalid_argument Thrown if toCalc is empty
+ * @exception std::invalid_argument Thrown if @p toCalc is empty
  *
  * @exceptsafe Object creation is atomic.
  */
@@ -128,16 +128,16 @@ LcBinStats::LcBinStats(const string& modelName, const RangeList& binSpecs, const
  * @param[in] fluxes A Monte Carlo realization of a light curve sampled over times.
  * @param[in] trueParams The parameters used to calculate fluxes.
  *
- * @pre times.size() == fluxes.size()
- * @pre No element of times is NaN
- * @pre Fluxes may contain NaNs
+ * @pre @p times.size() = @p fluxes.size()
+ * @pre No element of @p times is NaN
+ * @pre @p fluxes may contain NaNs
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	store more statistics.
- * @exception std::invalid_argument Thrown if times and fluxes do not 
+ * @exception std::invalid_argument Thrown if @p times and @p fluxes do not 
  *	have matching lengths.
- * @exception lcmc::stats::except::NotEnoughData Thrown if times and fluxes 
- *	are too short to calculate the desired statistics.
+ * @exception lcmc::stats::except::NotEnoughData Thrown if @p times 
+ *	and @p fluxes are too short to calculate the desired statistics.
  *
  * @exceptsafe The object is in a valid state in the event of an exception.
  *
@@ -558,7 +558,7 @@ void LcBinStats::clear() {
  * @param[in] file An open file handle representing the text file to write to.
  *
  * @exception std::runtime_error Thrown if there are difficulties writing 
- *	to file
+ *	to @p file
  * @exception lcmc::except::FileIo Thrown if there are difficulties writing 
  *	to an auxiliary file
  *
@@ -758,7 +758,7 @@ void LcBinStats::printBinHeader(FILE* const file, const RangeList& binSpecs,
  * @param[in] orders A list of statistics to calculate.
  * @param[in] x The statistic to look up
  *
- * @return True if this object needs to calculate x, false otherwise.
+ * @return True if this object needs to calculate @p x, false otherwise.
  *
  * @exceptsafe Does not throw exceptions.
  */
@@ -865,9 +865,10 @@ string LcBinStats::makeFileName(const string& lcName, const RangeList& binSpecs,
  * @param[out] stddev The standard deviation of the statistics.
  * @param[in] statName The name of the statistic, for error messages.
  *
- * @post mean and stddev ignore any NaNs present in values.
- * @post If there are no non-NaN elements in values, mean equals NaN
- * @post If there are less than two non-NaN elements in values, stddev equals NaN
+ * @post @p mean and @p stddev ignore any NaNs present in @p values.
+ * @post If there are no non-NaN elements in @p values, @p mean equals NaN
+ * @post If there are less than two non-NaN elements in @p values, 
+ *	@p stddev equals NaN
  *
  * @exceptsafe Does not throw exceptions.
  */
@@ -898,9 +899,11 @@ void getSummaryStats(const DoubleVec& values, double& mean, double& stddev,
  * @param[out] goodFrac The fraction of measurements that are finite values.
  * @param[in] statName The name of the statistic, for error messages.
  *
- * @post mean and stddev ignore and NaNs present in values.
- * @post If there are no non-NaN elements in values, mean equals NaN
- * @post If there are less than two non-NaN elements in values, stddev equals NaN
+ * @post @p mean and @p stddev ignore any NaNs present in @p values.
+ * @post If there are no non-NaN elements in @p values, @p mean equals NaN
+ * @post If there are less than two non-NaN elements in @p values, 
+ *	@p stddev equals NaN
+ * @post If there are no elements in @p values, @p goodFrac equals 0
  *
  * @exceptsafe Does not throw exceptions.
  */
@@ -935,9 +938,9 @@ void getSummaryStats(const DoubleVec& values, double& mean, double& stddev,
  *	being for this particular statistic.
  *
  * @exception std::runtime_error Thrown if there are difficulties writing 
- *	to file
+ *	to @p file
  * @exception lcmc::except::FileIo Thrown if there are difficulties writing 
- *	to distribFile
+ *	to @p distribFile
  *
  * @exceptsafe The program is in a consistent state in the event 
  *	of an exception.
@@ -991,9 +994,9 @@ void printStat(FILE* const file, const DoubleVec& archive,
  *	being for this particular statistic.
  *
  * @exception std::runtime_error Thrown if there are difficulties writing 
- *	to file
+ *	to @p file
  * @exception lcmc::except::FileIo Thrown if there are difficulties writing 
- *	to distribFile
+ *	to @p distribFile
  *
  * @exceptsafe The program is in a consistent state in the event 
  *	of an exception.
@@ -1041,9 +1044,9 @@ void printStatAlwaysDefined(FILE* const file, const DoubleVec& archive,
  *	being for this particular statistic.
  *
  * @exception std::runtime_error Thrown if there are difficulties writing 
- *	to file
+ *	to @p file
  * @exception lcmc::except::FileIo Thrown if there are difficulties writing 
- *	to distribFile
+ *	to @p distribFile
  *
  * @exceptsafe The program is in a consistent state in the event 
  *	of an exception.

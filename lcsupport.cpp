@@ -1,4 +1,4 @@
-/** Definitions for lightcurveMC supporting infrastructure
+/** Definitions for Lightcurve MC supporting infrastructure
  * @file lightcurveMC/lcsupport.cpp
  * @author Krzysztof Findeisen
  * @date Created April 20, 2012
@@ -39,9 +39,9 @@ namespace parse {
 using models::LightCurveRegistry;
 using models::getLightCurveRegistry;
 
-/** Returns a list of all lightCurve names recognized on the command line. 
+/** Returns a list of all light curve names recognized on the command line. 
  * 
- * @return A list of string identifiers, one for each allowed LightCurveType 
+ * @return A list of string identifiers, one for each allowed @ref models::LightCurveType "LightCurveType" 
  *	value. The order of the strings may be whatever is most convenient for 
  *	enumerating the types of light curves.
  *
@@ -70,22 +70,23 @@ const std::vector<string> lightCurveTypes() {
 	return lcList;
 }
 
-/** Converts a string to its associated LightCurveType.
+/** Converts a string to its associated @ref models::LightCurveType "LightCurveType".
  *
  * @param[in] lcName A short string describing the type of light curve to generate.
  * 
  * @return The light curve identifier, if one exists.
  *
- * @pre lcName is an element of lightCurveTypes()
+ * @pre @p lcName is an element of 
+ *	@ref lcmc::parse::lightCurveTypes() "lightCurveTypes()"
  * 
- * @exception std::domain_error Thrown if the light curve name is does not 
+ * @exception std::domain_error Thrown if the light curve name does not 
  *	have a corresponding type.
  * @exception std::bad_alloc Thrown if not enough memory to match names 
  *	to light curves.
  *
  * @exceptsafe The arguments are unchanged in the event of an exception.
  *
- * @todo Is there a way to handle bad_alloc internally? Letting it get 
+ * @todo Is there a way to handle @p bad_alloc internally? Letting it get 
  *	thrown exposes the internal implementation.
  */
 const models::LightCurveType parseLightCurve(const string& lcName) {

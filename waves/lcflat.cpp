@@ -47,7 +47,7 @@ FlatWave::FlatWave(const std::vector<double> &times) : Deterministic(times) {
  * 
  * @return The flux of the object.
  *
- * @post flux(t) == 1.0 for all t.
+ * @post flux(t) = 1.0 for all t.
  *
  * @exceptsafe Does not throw exceptions.
  */

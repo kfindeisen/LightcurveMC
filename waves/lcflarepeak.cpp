@@ -26,14 +26,14 @@ using boost::lexical_cast;
  * @param[in] fade The exponential decay time of the flare-like peak, 
  *	in units of the period.
  *
- * @pre amp > 0
- * @pre period > 0
- * @pre phase &isin; [0, 1)
- * @pre 0 < fade
- * @pre 0 < rise < 1
+ * @pre @p amp > 0
+ * @pre @p period > 0
+ * @pre @p phase &isin; [0, 1)
+ * @pre 0 < @p fade
+ * @pre 0 < @p rise < 1
  *
- * @post A light curve is a deterministic function of amp, period, phase, and 
- *	width: knowing these values is sufficient to determine flux(t) for any 
+ * @post A light curve is a deterministic function of @p amp, @p period, @p phase, @p rise, and 
+ *	@p fade: knowing these values is sufficient to determine flux(t) for any 
  *	value of t.
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
@@ -68,7 +68,7 @@ FlarePeak::FlarePeak(const std::vector<double> &times,
  * 
  * @return The flux emitted by the object at the specified phase.
  * 
- * @pre phase &isin; [0, 1)
+ * @pre @p phase &isin; [0, 1)
  *
  * @post the return value is determined entirely by the phase and 
  *	the parameters passed to the constructor

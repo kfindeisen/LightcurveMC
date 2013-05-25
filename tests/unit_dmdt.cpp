@@ -136,7 +136,7 @@ public:
 	const static size_t TEST_COUNT =   100;
 	/** Width of each &Delta;t bin in logarithmic space
 	 *
-	 * The current value isa factor of 1.004 difference in &Delta;t
+	 * The current value is a factor of 1.004 difference in &Delta;t
 	 *
 	 * @see TEST_LEN
 	 */
@@ -160,7 +160,7 @@ public:
 	 */
 	vector<double> deltaT;
 
-	/** Tracks the edged of the &Delta;t bins.
+	/** Tracks the edges of the &Delta;t bins.
 	 */
 	vector<double> binEdges;
 	

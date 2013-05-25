@@ -27,11 +27,11 @@ using boost::lexical_cast;
 using boost::shared_ptr;
 
 /** Given a matrix A, returns a matrix B with the property 
- *	A = B * transpose(B)
+ *	@f$ A = B B^\intercal @f$
  */
 shared_ptr<gsl_matrix> getHalfMatrix(const shared_ptr<gsl_matrix>& a);
 
-/** Replaces one matrix with another, without leaking memory.
+/** Replaces one matrix with the value of another.
  */
 void matrixCopy(shared_ptr<gsl_matrix>& target, const shared_ptr<gsl_matrix>& newData);
 
@@ -50,11 +50,11 @@ bool matrixEqual(const gsl_matrix* const a, const gsl_matrix* const b);
  * @param[out] corrVec A vector of correlated Gaussian random numbers with 
  *	mean zero and covariance matrix covar.
  *
- * @pre indVec.size() == covar.size1 == covar.size2
- * @pre covar is symmetric and positive semidefinite
- * @pre corrVec may refer to the same vector as indVec
+ * @pre @p indVec.size() = @p covar->size1 = @p covar->size2
+ * @pre @p covar is symmetric and positive semidefinite
+ * @pre @p corrVec may refer to the same vector as @p indVec
  *
- * @post corrVec.size() == indVec.size()
+ * @post @p corrVec.size() = @p indVec.size()
  *
  * @exception std::bad_alloc Thrown if there was not enough memory to 
  *	compute the transformation
@@ -124,7 +124,6 @@ void multiNormal(const vector<double>& indVec, const shared_ptr<gsl_matrix>& cov
 		// assert: covar is non-empty and owns gsl_matrix_free()
 
 		// Last operation in this block that is allowed to throw
-		//getHalfMatrix(covar, prefixCache);
 		prefixCache = getHalfMatrix(covar);
 		
 		// assert: prefixCache is non-empty and owns gsl_matrix_free
@@ -174,15 +173,15 @@ void multiNormal(const vector<double>& indVec, const shared_ptr<gsl_matrix>& cov
 }
 
 /** Given a matrix A, returns a matrix B with the property 
- *	A = B * transpose(B)
+ *	@f$ A = B B^\intercal @f$
  *
  * @param[in] a The matrix to decompose
  *
  * @return a pointer containing the newly allocated matrix B
  *
- * @pre a is a square, symmetric, positive semi-definite matrix
+ * @pre @p a is a square, symmetric, positive semi-definite matrix
  * @post return value is a newly allocated matrix with the property that 
- *	multiplying it by its own transpose restores A
+ *	multiplying it by its own transpose restores @p a
  *
  * @warning Returns different results on KPF-Hewlett4 and on cowling, 
  *	particularly for matrices with lots of zero elements. The root cause 
@@ -252,17 +251,17 @@ shared_ptr<gsl_matrix> getHalfMatrix(const shared_ptr<gsl_matrix>& a) {
 	return eigenVecs;
 }
 
-/** Replaces one matrix with another, without leaking memory.
+/** Replaces one matrix with the value of another.
  *
- * Unlike gsl_matrix_memcpy, allows matrices to have different sizes.
+ * Unlike gsl_matrix_memcpy(), allows matrices to have different sizes.
  *
  * @param[in,out] target The matrix pointer to be updated with a 
  *	copy of newData
  * @param[in] newData The data to copy to target.
  *
- * @post target points to a newly allocated matrix with the same dimensions 
- *	and data as newData
- * @post any data previously occupying target is cleaned up
+ * @post @p target points to a newly allocated matrix with the same dimensions 
+ *	and data as @p newData
+ * @post any data previously occupying @p target is cleaned up
  *
  * @exception std::bad_alloc Thrown if the matrix could not be copied.
  *
@@ -298,10 +297,10 @@ void matrixCopy(shared_ptr<gsl_matrix>& target, const shared_ptr<gsl_matrix>& ne
  * @param[in] a The first matrix to compare
  * @param[in] b The second matrix to compare
  *
- * @return True iff a and b have the same dimensions, and each 
+ * @return True iff @p a and @p b have the same dimensions, and each 
  *	corresponding element is equal.
  *
- * @note if either a or b is a null pointer, returns false
+ * @note if either @p a or @p b is a null pointer, returns false
  *
  * @exceptsafe Does not throw exceptions
  */

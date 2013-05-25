@@ -19,11 +19,11 @@ namespace utils {
 
 using std::vector;
 
-/** isNan tests whether a floating-point number is undefined
+/** isNan() tests whether a floating-point number is undefined
  */
 bool isNan(double x);
 
-/** isNanOrInf tests whether a floating-point number is non-finite
+/** isNanOrInf() tests whether a floating-point number is non-finite
  */
 bool isNanOrInf(double x);
 
@@ -35,7 +35,7 @@ public:
 	 *
 	 * @param[in] x
 	 *
-	 * @return x == NaN
+	 * @return @p x &ne; NaN
 	 *
 	 * @exceptsafe Does not throw exceptions.
 	 */
@@ -44,7 +44,7 @@ public:
 	}
 };
 
-/** lessFinite allows floating-point numbers to be ordered consistently in the 
+/** lessFinite() allows floating-point numbers to be ordered consistently in the 
  *	presence of NaNs.
  */
 bool lessFinite(double x, double y);

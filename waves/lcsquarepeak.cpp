@@ -21,14 +21,14 @@ using boost::lexical_cast;
  * @param[in] phase The phase of the light curve at time 0
  * @param[in] width The width of the peak, in units of the period.
  *
- * @pre amp > 0
- * @pre period > 0
- * @pre phase &isin; [0, 1)
- * @pre width > 0
- * @pre width < 1
+ * @pre @p amp > 0
+ * @pre @p period > 0
+ * @pre @p phase &isin; [0, 1)
+ * @pre @p width > 0
+ * @pre @p width < 1
  *
- * @post A light curve is a deterministic function of amp, period, phase, and 
- *	width: knowing these values is sufficient to determine flux(t) for any 
+ * @post A light curve is a deterministic function of @p amp, @p period, @p phase, and 
+ *	@p width: knowing these values is sufficient to determine flux(t) for any 
  *	value of t.
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
@@ -54,7 +54,7 @@ SquarePeak::SquarePeak(const std::vector<double> &times,
  * 
  * @return The flux emitted by the object at the specified phase.
  * 
- * @pre phase &isin; [0, 1)
+ * @pre @p phase &isin; [0, 1)
  *
  * @post the return value is determined entirely by the phase and 
  *	the parameters passed to the constructor

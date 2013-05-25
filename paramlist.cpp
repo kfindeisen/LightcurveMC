@@ -2,7 +2,7 @@
  * @file lightcurveMC/paramlist.cpp
  * @author Krzysztof Findeisen
  * @date Created March 19, 2012
- * @date Last modified May 22, 2013
+ * @date Last modified May 24, 2013
  */
 
 #include <map>
@@ -32,7 +32,7 @@ using boost::lexical_cast;
 ParamList::ParamList() : lookup(new MapType()) {
 }
 
-/** Initializes a parameter list with the same parameters and values as other
+/** Initializes a parameter list with the same parameters and values as @p other
  * 
  * @param[in] other The parameter list to copy
  *
@@ -62,8 +62,6 @@ ParamList::~ParamList() {
  *	construct the list.
  * 
  * @exceptsafe Neither list is changed in the event of an exception.
- *
- * @todo Find a way to test the atomicity of this operation
  */
 ParamList& ParamList::operator=(const ParamList& other) {
 	// swap() lookup only works properly with unqualified names. See 
@@ -76,9 +74,7 @@ ParamList& ParamList::operator=(const ParamList& other) {
 	MapType temp = *(other.lookup);
 	
 	// IMPORTANT: No exceptions thrown past this point
-	// swap<map> is guaranteed not to throw for equal allocators
-	//	Since both this->lookup and other.lookup use the default 
-	//	allocator, this condition is satisfied
+
 	swap(*(this->lookup), temp);
 	
 	return *this;
@@ -89,12 +85,12 @@ ParamList& ParamList::operator=(const ParamList& other) {
  * @param[in] name The parameter to add.
  * @param[in] value The value of the parameter.
  *
- * @pre name is not already represented in the ParamList
- * @pre value is not NaN
+ * @pre @p name is not already represented in the ParamList
+ * @pre @p value is not NaN
  *
- * @post get(name) returns value
+ * @post @ref get() "get"(@p name) returns value
  *
- * @exception lcmc::utils::except::UnexpectedNan Thrown if the value is NaN
+ * @exception lcmc::utils::except::UnexpectedNan Thrown if @p value is NaN
  * @exception lcmc::models::except::ExtraParam Thrown if a value for the 
  *	parameter is already in the list
  *
@@ -174,7 +170,7 @@ double ParamList::get(ParamType param) const {
 RangeList::RangeList() : lookup(new MapType()) {
 }
 
-/** Initializes a range list with the same parameters and ranges as other
+/** Initializes a range list with the same parameters and ranges as @p other
  * 
  * @param[in] other The range list to copy
  *
@@ -204,8 +200,6 @@ RangeList::~RangeList() {
  *	construct the list.
  * 
  * @exceptsafe Neither list is changed in the event of an exception.
- *
- * @todo Find a way to test the atomicity of this operation
  */
 RangeList& RangeList::operator=(const RangeList& other) {
 	// swap() lookup only works properly with unqualified names. See 
@@ -218,9 +212,7 @@ RangeList& RangeList::operator=(const RangeList& other) {
 	MapType temp = *(other.lookup);
 	
 	// IMPORTANT: No exceptions thrown past this point
-	// swap<map> is guaranteed not to throw for equal allocators
-	//	Since both this->lookup and other.lookup use the default 
-	//	allocator, this condition is satisfied
+
 	swap(*(this->lookup), temp);
 	
 	return *this;
@@ -233,19 +225,19 @@ RangeList& RangeList::operator=(const RangeList& other) {
  * @param[in] max The maximum value of the parameter.
  * @param[in] distrib The distribution from which the parameter will be drawn.
  *
- * @pre name is not already represented in the RangeList
- * @pre min <= max
- * @pre neither min nor max is NaN
+ * @pre @p name is not already represented in the RangeList
+ * @pre @p min &le; @p max
+ * @pre neither @p min nor @p max is NaN
  *
- * @post getMin(name) returns min
- * @post getMax(name) returns max
+ * @post @ref getMin() "getMin"(@p name) returns @p min
+ * @post @ref getMax() "getMax"(@p name) returns @p max
  *  
- * @exception lcmc::utils::except::UnexpectedNan Thrown if either min or max 
+ * @exception lcmc::utils::except::UnexpectedNan Thrown if either @p min or @p max 
  *	is NaN
  * @exception lcmc::models::except::ExtraParam Thrown if a value for the 
  *	parameter is already in the list
- * @exception lcmc::models::except::NegativeRange Thrown if max > min
- * @exception std::invalid_argument Thrown if distrib is not a valid value.
+ * @exception lcmc::models::except::NegativeRange Thrown if @p max > @p min
+ * @exception std::invalid_argument Thrown if @p distrib is not a valid value.
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	add an element to the list.
@@ -284,19 +276,19 @@ void RangeList::add(ParamType name, double min, double max, RangeType distrib) {
  *	parameter in the first and second fields, respectively.
  * @param[in] distrib The distribution from which the parameter will be drawn.
  *
- * @pre name is not already represented in the RangeList
- * @pre range.first <= range.second
- * @pre neither element of range is NaN
+ * @pre @p name is not already represented in the RangeList
+ * @pre @p range.first &le; @p range.second
+ * @pre neither element of @p range is NaN
  *
- * @post getMin(name) returns range.first
- * @post getMax(name) returns range.second
+ * @post @ref getMin() "getMin"(@p name) returns @p range.first
+ * @post @ref getMax() "getMax"(@p name) returns @p range.second
  *
- * @exception lcmc::utils::except::UnexpectedNan Thrown if either min or max 
+ * @exception lcmc::utils::except::UnexpectedNan Thrown if either @p min or @p max 
  *	is NaN
  * @exception lcmc::models::except::ExtraParam Thrown if a value for the 
  *	parameter is already in the list
- * @exception lcmc::models::except::NegativeRange Thrown if max > min
- * @exception std::invalid_argument Thrown if distrib is not a valid value.
+ * @exception lcmc::models::except::NegativeRange Thrown if @p max > @p min
+ * @exception std::invalid_argument Thrown if @p distrib is not a valid value.
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	add an element to the list.
@@ -310,7 +302,7 @@ void RangeList::add(ParamType name, std::pair<double,double> range, RangeType di
 
 /** Removes all parameters from the list
  *
- * @exceptsafe Never throws exceptions.
+ * @exceptsafe Does not throw exceptions.
  */
 void RangeList::clear() {
 	lookup->clear();
@@ -427,7 +419,7 @@ RangeList::const_iterator RangeList::end() const {
  *
  * @param[in] x The value to test
  *
- * @return True iff x is a valid enum, false otherwise.
+ * @return True iff @p x is a valid enum, false otherwise.
  *
  * @exceptsafe Does not throw exceptions.
  */
@@ -448,17 +440,17 @@ bool RangeList::checkRangeType(RangeList::RangeType x) {
  *
  * @param[in] min The smallest value the parameter can take.
  * @param[in] max The largest value the parameter can take.
- * @param[in] distrib The distribution over [min, max] from which the 
+ * @param[in] distrib The distribution over [@p min, @p max] from which the 
  *	parameter can be drawn.
  *
- * @pre min <= max
+ * @pre @p min &le; @p max
  *
- * @pre neither min nor max is NaN
+ * @pre neither @p min nor @p max is NaN
  *
- * @exception lcmc::utils::except::UnexpectedNan Thrown if either min or max 
+ * @exception lcmc::utils::except::UnexpectedNan Thrown if either @p min or @p max 
  *	is NaN
- * @exception lcmc::models::except::NegativeRange Thrown if max > min
- * @exception std::invalid_argument Thrown if distrib is not a valid value.
+ * @exception lcmc::models::except::NegativeRange Thrown if @p max > @p min
+ * @exception std::invalid_argument Thrown if @p distrib is not a valid value.
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	add an element to the list.
@@ -523,10 +515,10 @@ RangeList::RangeType RangeList::RangeInfo::getType() const {
  * @param[in] parent A reference to the RangeList the 
  *	const_iterator points to.
  *
- * @pre where points either to an element of (*parent)'s underlying 
+ * @pre where points either to an element of (@p *parent)'s underlying 
  *	implementation, or to just after the end of that implementation
  *
- * @post const_iterator is equivalent to where.
+ * @post const_iterator is equivalent to @p where.
  *
  * @exceptsafe Does not throw exceptions.
  *
@@ -543,7 +535,7 @@ RangeList::const_iterator::const_iterator(MapType::const_iterator where,
  *
  * @param[in] other The iterator to copy.
  *
- * @post *this == other
+ * @post @p *this = @p other
  *
  * @exceptsafe Does not throw exceptions.
  */
@@ -557,7 +549,7 @@ RangeList::const_iterator::const_iterator(const RangeList::const_iterator& other
  *
  * @return An assignable lvalue
  *
- * @post *this == other
+ * @post @p *this = @p other
  *
  * @exceptsafe Does not throw exceptions.
  */
@@ -569,7 +561,7 @@ RangeList::const_iterator& RangeList::const_iterator::operator=(
 	return *this;
 }
 
-/** Implements std::BidirectionalIterator::==
+/** Implements <tt>std::BidirectionalIterator::==</tt>
  *
  * @param[in] other The const_iterator to compare to this one.
  *
@@ -581,7 +573,7 @@ bool RangeList::const_iterator::operator==(const const_iterator& other) const {
 	return (parent == (other.parent) && it == other.it);
 }
 
-/** Implements std::BidirectionalIterator::!=
+/** Implements <tt>std::BidirectionalIterator::!=</tt>
  *
  * @param[in] other The const_iterator to compare to this one.
  *
@@ -593,12 +585,13 @@ bool RangeList::const_iterator::operator!=(const const_iterator& other) const {
 	return (parent != (other.parent) || it!=other.it);
 }
 
-/** Implements std::BidirectionalIterator::*
+/** Implements <tt>std::BidirectionalIterator::*</tt>
  *
  * This is the one method that does not simply reflect the underlying 
- * iterator. const_iterator::* returns a pointer only to the parameter stored 
- * in the RangeList, not to the attached RangeInfo object. This change 
- * improves encapsulation of the RangeList implementation.
+ * iterator. const_iterator::operator* returns a 
+ * pointer only to the parameter stored in the RangeList, not to the attached 
+ * RangeInfo object. This change improves encapsulation of the RangeList 
+ * implementation.
  *
  * @return The ID of the parameter to which the iterator is pointing. The 
  * range information may be recovered using the RangeList::getMin(), 
@@ -609,8 +602,6 @@ bool RangeList::const_iterator::operator!=(const const_iterator& other) const {
  *
  * @exceptsafe Neither the iterator nor any RangeList it points to are 
  *	changed in the event of an exception.
- *
- * @todo How to allow for changes to RangeList invalidating the iterator?
  */
 const ParamType& RangeList::const_iterator::operator*() const {
 	// Class invariant guarantees that this is the only way to 
@@ -622,12 +613,13 @@ const ParamType& RangeList::const_iterator::operator*() const {
 	return it->first;
 }
 
-/** Implements std::BidirectionalIterator::->
+/** Implements <tt>std::BidirectionalIterator::-></tt>
  *
  * This is the one method that does not simply reflect the underlying 
- * iterator. const_iterator::-> returns a pointer only to the parameter stored 
- * in the RangeList, not to the attached RangeInfo object. This change 
- * improves encapsulation of the RangeList implementation.
+ * iterator. const_iterator::operator-> returns a 
+ * pointer only to the parameter stored in the RangeList, not to the attached 
+ * RangeInfo object. This change improves encapsulation of the RangeList 
+ * implementation.
  *
  * @return The ID of the parameter to which the iterator is pointing. The 
  * range information may be recovered using the RangeList::getMin(), 
@@ -649,7 +641,7 @@ const ParamType* RangeList::const_iterator::operator->() const {
 	return &(it->first);
 }
 
-/** Implements std::BidirectionalIterator::++ (prefix)
+/** Implements <tt>std::BidirectionalIterator::++</tt> (prefix)
  *
  * @return The new position of the iterator.
  *
@@ -670,7 +662,7 @@ RangeList::const_iterator& RangeList::const_iterator::operator++() {
 	return *this;
 }
 
-/** Implements std::BidirectionalIterator::++ (postfix)
+/** Implements <tt>std::BidirectionalIterator::++</tt> (postfix)
  *
  * @return The old position of the iterator.
  *
@@ -692,7 +684,7 @@ RangeList::const_iterator RangeList::const_iterator::operator++(int) {
 	return temp;
 }
 
-/** Implements std::BidirectionalIterator::-\- (prefix)
+/** Implements <tt>std::BidirectionalIterator::-\-</tt> (prefix)
  *
  * @return The new position of the iterator.
  *
@@ -713,7 +705,7 @@ RangeList::const_iterator& RangeList::const_iterator::operator--() {
 	return *this;
 }
 
-/** Implements std::BidirectionalIterator::-\- (postfix)
+/** Implements <tt>std::BidirectionalIterator::-\-</tt> (postfix)
  *
  * @return The old position of the iterator.
  *

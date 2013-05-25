@@ -23,26 +23,28 @@ using kpfutils::quantile;
 /** Computes the fraction of pairs of magnitudes above some threshold found 
  *	in each &Delta;t bin of a &Delta;m&Delta;t plot.
  *
- * @param[in] deltaT The time differences of the &Delta;m&Delta;t plot.
- * @param[in] deltaM The magnitude differences of the &Delta;m&Delta;t plot.
- * @param[in] binEdges A vector containing the (N+1) boundaries of the N bins 
+ * @param[in] deltaT The &Delta;t values of the &Delta;m&Delta;t plot.
+ * @param[in] deltaM The corresponding &Delta;m values of the &Delta;m&Delta;t plot.
+ * @param[in] binEdges A vector containing the (N+1) boundaries of the N &Delta;t bins 
  *	in which to count high-&Delta;m pairs.
  * @param[out] fracs A vector containing the fraction of &Delta;m values in 
  *	each bin that exceed threshold.
  * @param[in] threshold The characteristic magnitude difference above which 
  *	&Delta;m values are to be counted.
  *
- * @pre deltaT is sorted in ascending order
- * @pre binEdges is sorted in ascending order
+ * @pre @p deltaT is sorted in ascending order
+ * @pre @p binEdges is sorted in ascending order
  *
- * @pre deltaT does not contain any NaNs
- * @pre deltaM does not contain any NaNs
- * @pre binEdges does not contain any NaNs
+ * @pre @p deltaT does not contain any NaNs
+ * @pre @p deltaM does not contain any NaNs
+ * @pre @p binEdges does not contain any NaNs
  * 
- * @post fracs.size() = binEdges.size() - 1
- * @post For all i &isin; [0, binEdges.size()-1], fracs[i] contains the 
- *	fraction of deltaM > threshold where deltaT &isin; 
- *	[binEdges[i], binEdges[i+1]).
+ * @post @p fracs.size() = @p binEdges.size() - 1
+ * @post For all i &isin; [0, @p binEdges.size()-1], @p fracs[i] contains the 
+ *	fraction of @p deltaM > @p threshold, given deltaT &isin; 
+ *	[@p binEdges[i], @p binEdges[i+1]).
+ *
+ * @perform O(M + N) time, where N = @p deltaM.size() and M = @p binEdges.size()
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to store 
  *	the bin fractions.
@@ -106,38 +108,37 @@ void hiAmpBinFrac(const DoubleVec &deltaT, const DoubleVec &deltaM,
 /** Computes the quantile of pairs of magnitudes found in each &Delta;t bin 
  *	of a &Delta;m&Delta;t plot.
  *
- * @param[in] deltaT The time differences of the &Delta;m&Delta;t plot.
- * @param[in] deltaM The magnitude differences of the &Delta;m&Delta;t plot.
- * @param[in] binEdges A vector containing the (N+1) boundaries of the N bins 
+ * @param[in] deltaT The &Delta;t values of the &Delta;m&Delta;t plot.
+ * @param[in] deltaM The corresponding &Delta;m values of the &Delta;m&Delta;t plot.
+ * @param[in] binEdges A vector containing the (N+1) boundaries of the N &Delta;t bins 
  *	in which to calculate quantiles.
  * @param[out] quants A vector containing the quantiles within each bin.
  * @param[in] q The quantile to calculate.
  *
- * @pre deltaT is sorted in ascending order
- * @pre binEdges is sorted in ascending order
- * @pre 0 < quantile < 1
+ * @pre @p deltaT is sorted in ascending order
+ * @pre @p binEdges is sorted in ascending order
+ * @pre 0 < @p q < 1
  *
- * @pre deltaT does not contain any NaNs
- * @pre deltaM does not contain any NaNs
- * @pre binEdges does not contain any NaNs
+ * @pre @p deltaT does not contain any NaNs
+ * @pre @p deltaM does not contain any NaNs
+ * @pre @p binEdges does not contain any NaNs
  * 
- * @post quants.size() = binEdges.size() - 1
- * @post For all i &isin; [0, binEdges.size()-1], quants[i] contains the 
- *	qth quantile of deltaM where deltaT &isin; 
- *	[binEdges[i], binEdges[i+1])
+ * @post @p quants.size() = @p binEdges.size() - 1
+ * @post For all i &isin; [0, @p binEdges.size()-1], @p quants[i] contains the 
+ *	<tt>q</tt>th quantile of @p deltaM, given @p deltaT &isin; 
+ *	[@p binEdges[i], @p binEdges[i+1])
  *
- * @perform O(N log (N/M)), where N = deltaT.size() and M = binEdges.size()
+ * @perform O(N log N) time, where N = @p deltaT.size()
+ * @perfmore o(N log N - N log M) time, where N = @p deltaT.size() and M = @p binEdges.size()
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to store 
  *	the bin fractions.
- * @exception std::invalid_argument Thrown if the quantile is not in (0, 1)
- * @exception lcmc::stats::except::NotSorted Thrown if either deltaT or binEdges 
+ * @exception std::invalid_argument Thrown if @p q is not in (0, 1)
+ * @exception lcmc::stats::except::NotSorted Thrown if either @p deltaT or @p binEdges 
  *	is unsorted.
  *
  * @exceptsafe The function arguments are unchanged in the event 
  *	of an exception.
- *
- * @todo Prove performance
  */
 void deltaMBinQuantile(const DoubleVec &deltaT, const DoubleVec &deltaM, 
 		const DoubleVec &binEdges, DoubleVec &quants, double q) {

@@ -1,4 +1,4 @@
-/** Type definitions for lightcurveMC data representations
+/** Type definitions for Lightcurve MC data representations
  * @file lightcurveMC/samples/observations.h
  * @author Krzysztof Findeisen
  * @date Created May 4, 2012
@@ -24,17 +24,16 @@ namespace lcmc {
  */
 namespace inject {
 
-/** Interface class for generating data samples for signal injection testing. 
- * Subclasses represent particular samples from which example observations are 
- * to be drawn. Objects of (sub)class Observations represent individual 
- * sources drawn from the appropriate sample.
+/** Class for generating data samples for signal injection testing. 
  * 
- * Observations objects are non-deterministic in the sense that the user only 
- * specifies which sample the light curve comes from, but not which light 
- * curve from within the sample gets used. However, any individual object is 
- * immutable, and can be can be used without worrying about determinism.
+ * Objects of class Observations represent individual sources drawn from a 
+ * selected sample. Observations objects are non-deterministic in the sense 
+ * that the user only specifies which sample the light curve comes from, but 
+ * not which light curve from within the sample gets used. However, any 
+ * individual object is immutable, and can be can be used without worrying 
+ * about determinism.
  *
- * @invariant Observations and all its subclasses should be immutable.
+ * @invariant Observations is immutable.
  * @invariant The light curve has a median flux of 1, so that synthetic light 
  *	curve amplitudes can be expressed in units of the source flux.
  */

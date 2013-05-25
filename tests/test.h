@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/test.h
  * @author Krzysztof Findeisen
  * @date Created April 28, 2013
- * @date Last modified April 28, 2013
+ * @date Last modified May 24, 2013
  */
 
 #ifndef LCMCTESTH
@@ -10,19 +10,40 @@
 
 #include <memory>
 #include <vector>
+#include <boost/shared_ptr.hpp>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_rng.h>
+#include "../except/fileio.h"
 #include "../lightcurvetypes.h"
+#include "../mcio.h"
 
 namespace lcmc { namespace test {
+
+using boost::shared_ptr;
+using std::vector;
 
 /** Wrapper for a trusted Nan-testing function
  */
 bool testNan(const double x);
 
-/** Constructs a covariance matrix for a standard Gaussian process
+/** Constructs a covariance matrix for a white Gaussian process
  */
-void initGauss(gsl_matrix* const covars, const std::vector<double>& times, double tau);
+shared_ptr<gsl_matrix> initGaussWn(const vector<double>& times);
+/** Constructs a covariance matrix for a squared exponential Gaussian process
+ */
+shared_ptr<gsl_matrix> initGaussSe(const vector<double>& times, double tau);
+/** Constructs a covariance matrix for an exponential Gaussian process
+ */
+shared_ptr<gsl_matrix> initGaussDrw(const vector<double>& times, double tau);
+/** Constructs a covariance matrix for a Matérn Gaussian process
+ */
+shared_ptr<gsl_matrix> initGaussMat(const vector<double>& times, double tau, double nu);
+/** Constructs a covariance matrix for a periodic Gaussian process
+ */
+shared_ptr<gsl_matrix> initGaussP(const vector<double>& times, double tau, double period);
+/** Constructs a covariance matrix for a rational Gaussian process
+ */
+shared_ptr<gsl_matrix> initGaussR(const vector<double>& times, double tau, double alpha);
 
 /** This function is a wrapper for a trusted approximate comparison method.
  */
@@ -61,6 +82,49 @@ protected:
 
 private: 
 	gsl_rng* rng;
+};
+
+/** Data common to the test cases.
+ *
+ * At present, the only data is the simulation parameters.
+ */
+class ObsData {
+public: 
+	/** Defines the data for each test case.
+	 *
+	 * @pre A text file called @c ptfjds.txt exists in the 
+	 *	working directory and contains a list of Julian dates.
+	 *
+	 * @exception lcmc::except::FileIo Thrown if @c ptfjds.txt could not 
+	 *	be opened or has the wrong format.
+	 * @exception std::bad_alloc Thrown if there is not enough memory to 
+	 *	store the times.
+	 *
+	 * @exceptsafe Object construction is atomic.
+	 */
+	ObsData() : times() {
+		double minTStep, maxTStep;
+		shared_ptr<FILE> hJulDates(fopen("ptfjds.txt", "r"), &fclose);
+		if (hJulDates.get() == NULL) {
+			throw except::FileIo("Could not open ptfjds.txt.");
+		}
+		readTimeStamps(hJulDates.get(), times, minTStep, maxTStep);
+	}
+	
+	~ObsData() {
+	}
+
+	/** Number of Gaussian processes to generate
+	 */
+	const static size_t STOC_TEST_COUNT = 10000;
+
+	/** Number of deterministic light curves to generate
+	 */
+	const static size_t  DET_TEST_COUNT =   100;
+
+	/** Stores the the times at which the Gaussian process is sampled
+	 */
+	std::vector<double> times;
 };
 
 }}		// end lcmc::test

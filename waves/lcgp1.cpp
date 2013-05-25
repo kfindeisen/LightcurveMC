@@ -31,8 +31,8 @@ using std::auto_ptr;
  * @param[in] sigma The root-mean-square amplitude of the Gaussian process
  * @param[in] tau The correlation time of the Gaussian process.
  *
- * @pre sigma > 0
- * @pre tau > 0
+ * @pre @p sigma > 0
+ * @pre @p tau > 0
  *
  * @post The object represents a correlated Gaussian signal with the 
  *	given amplitude and correlation time.
@@ -65,18 +65,18 @@ SimpleGp::SimpleGp(const std::vector<double>& times, double sigma, double tau)
  * 
  * @post getFluxes() will now return the correct light curve.
  * 
- * @post fluxes.size() == getTimes().size()
- * @post if getTimes()[i] == getTimes()[j] for i &ne; j, then 
- *	fluxes[i] == fluxes[j]
+ * @post @p fluxes.size() = getTimes().size()
+ * @post if getTimes()[i] = getTimes()[j] for i &ne; j, then 
+ *	@p fluxes[i] = @p fluxes[j]
  * 
- * @post No element of fluxes is NaN
- * @post All elements in fluxes are non-negative
+ * @post No element of @p fluxes is NaN
+ * @post All elements in @p fluxes are non-negative
  * @post The median of the flux is one, when averaged over many elements and 
  *	many light curve instances.
  *
- * @post fluxToMag(fluxes) has a mean of zero and a standard deviation of sigma
- * @post cov(fluxToMag(fluxes[i]), fluxToMag(fluxes[j])) == 
- *	sigma^2 &times; exp(-0.5*((getTimes()[i]-getTimes()[j])/tau)^2) 
+ * @post fluxToMag(@p fluxes) has a mean of zero and a standard deviation of sigma
+ * @post cov(fluxToMag(@p fluxes[i]), fluxToMag(@p fluxes[j])) = 
+ *	@p sigma^2 &times; exp(-0.5*((getTimes()[i]-getTimes()[j])/@p tau)^2) 
  * 
  * @exception std::bad_alloc Thrown if there is not enough memory to compute 
  *	the light curve.
@@ -109,7 +109,7 @@ void SimpleGp::solveFluxes(std::vector<double>& fluxes) const {
 		try {
 			utils::multiNormal(temp, corrs, temp);
 		} catch (const std::invalid_argument& e) {
-			throw std::logic_error("BUG: SimpleGp uses invalid correlation matrix.\nOriginal error: " + std::string(e.what()));
+			throw std::logic_error("SimpleGp uses invalid correlation matrix.\nOriginal error: " + std::string(e.what()));
 		}
 		
 		utils::magToFlux(temp, temp);

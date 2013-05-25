@@ -1,4 +1,4 @@
-/** Definitions for lightcurveMC supporting infrastructure
+/** Definitions for Lightcurve MC supporting infrastructure
  * @file lightcurveMC/statsupport.cpp
  * @author Krzysztof Findeisen
  * @date Created May 9, 2013
@@ -80,7 +80,7 @@ using namespace stats;
 
 /** Returns a list of all statistic names recognized on the command line. 
  * 
- * @return A list of string identifiers, one for each allowed StatType 
+ * @return A list of string identifiers, one for each allowed @ref stats::StatType "StatType" 
  *	value. The order of the strings may be whatever is most convenient for 
  *	enumerating the types of statistics.
  *
@@ -109,22 +109,22 @@ const vector<string> statTypes() {
 	return theList;
 }
 
-/** Converts a string to its associated StatType.
+/** Converts a string to its associated @ref stats::StatType "StatType".
  *
  * @param[in] statName A short string describing the type of statistic to calculate.
  * 
  * @return The statistic identifier, if one exists.
  *
- * @pre statName is an element of statTypes()
+ * @pre @p statName is an element of @ref lcmc::parse::statTypes() "statTypes()"
  * 
- * @exception std::domain_error Thrown if the statistic name does not have a 
+ * @exception std::domain_error Thrown if @p statName does not have a 
  *	corresponding type.
  * @exception std::bad_alloc Thrown if not enough memory to match names 
  *	to statistics.
  *
  * @exceptsafe The arguments are unchanged in the event of an exception.
  *
- * @todo Is there a way to handle bad_alloc internally? Letting it get 
+ * @todo Is there a way to handle @p bad_alloc internally? Letting it get 
  *	thrown exposes the internal implementation.
  */
 StatType parseStat(const string& statName) {

@@ -18,7 +18,7 @@ namespace lcmc { namespace parse {
  */
 const std::vector<std::string> statTypes();
 
-/** Converts a string to its associated StatType.
+/** Converts a string to its associated @ref stats::StatType "StatType".
  */
 lcmc::stats::StatType parseStat(const std::string& statName);
 

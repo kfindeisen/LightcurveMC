@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/unit_gp.cpp
  * @author Krzysztof Findeisen
  * @date Created April 17, 2013
- * @date Last modified May 22, 2013
+ * @date Last modified May 24, 2013
  */
 
 #include "../warnflags.h"
@@ -38,55 +38,14 @@
 #include <boost/shared_ptr.hpp>
 #include "test.h"
 #include "../except/data.h"
-#include "../except/fileio.h"
 #include "../fluxmag.h"
 #include "../lightcurvetypes.h"
-#include "../mcio.h"
 #include "../waves/lightcurves_gp.h"
 
 namespace lcmc { namespace test {
 
 using boost::lexical_cast;
 using boost::shared_ptr;
-
-/** Data common to the test cases.
- *
- * At present, the only data is the simulation parameters.
- */
-class ObsData {
-public: 
-	/** Defines the data for each test case.
-	 *
-	 * @pre A text file called @c ptfjds.txt exists in the 
-	 *	working directory and contains a list of Julian dates.
-	 *
-	 * @exception lcmc::except::FileIo Thrown if @c ptfjds.txt could not 
-	 *	be opened or has the wrong format.
-	 * @exception std::bad_alloc Thrown if there is not enough memory to 
-	 *	store the times.
-	 *
-	 * @exceptsafe Object construction is atomic.
-	 */
-	ObsData() : times() {
-		double minTStep, maxTStep;
-		shared_ptr<FILE> hJulDates(fopen("ptfjds.txt", "r"), &fclose);
-		if (hJulDates.get() == NULL) {
-			throw except::FileIo("Could not open ptfjds.txt.");
-		}
-		readTimeStamps(hJulDates.get(), times, minTStep, maxTStep);
-	}
-	
-	~ObsData() {
-	}
-
-	/** Number of Gaussian processes to generate
-	 */
-	const static size_t TEST_COUNT     =  10000;
-
-	/** Stores the the times at which the Gaussian process is sampled
-	 */
-	std::vector<double> times;
-};
 
 /** Factory class for generating lots of identical white noise processes
  */
@@ -98,7 +57,7 @@ public:
 	 * @param[in] sigma the RMS amplitude of the white noise
 	 *
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
-	 *	store the times.
+	 *	store @p times.
 	 *
 	 * @exceptsafe Object construction is atomic.
 	 */
@@ -115,7 +74,7 @@ public:
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
 	 *	construct a new object.
 	 * @exception lcmc::models::except::BadParam Thrown if an illegal 
-	 *	value of sigma was passed to the factory constructor.
+	 *	value of @p sigma was passed to the factory constructor.
 	 *
 	 * @exceptsafe Object construction is atomic. The factory is unchanged 
 	 *	in the event of an exception.
@@ -141,7 +100,7 @@ public:
 	 * @param[in] tau the damping time for the random walk
 	 *
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
-	 *	store the times.
+	 *	store @p times.
 	 *
 	 * @exceptsafe Object construction is atomic.
 	 */
@@ -158,7 +117,7 @@ public:
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
 	 *	construct a new object.
 	 * @exception lcmc::models::except::BadParam Thrown if an illegal 
-	 *	value of diffus or tau was passed to the factory constructor.
+	 *	value of @p diffus or @p tau was passed to the factory constructor.
 	 *
 	 * @exceptsafe Object construction is atomic. The factory is unchanged 
 	 *	in the event of an exception.
@@ -184,7 +143,7 @@ public:
 	 * @param[in] diffus the diffusion constant for the random walk
 	 *
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
-	 *	store the times.
+	 *	store @p times.
 	 *
 	 * @exceptsafe Object construction is atomic.
 	 */
@@ -201,7 +160,7 @@ public:
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
 	 *	construct a new object.
 	 * @exception lcmc::models::except::BadParam Thrown if an illegal 
-	 *	value of diffus was passed to the factory constructor.
+	 *	value of @p diffus was passed to the factory constructor.
 	 *
 	 * @exceptsafe Object construction is atomic. The factory is unchanged 
 	 *	in the event of an exception.
@@ -227,7 +186,7 @@ public:
 	 * @param[in] tau the coherence time for the Gaussian process
 	 *
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
-	 *	store the times.
+	 *	store @p times.
 	 *
 	 * @exceptsafe Object construction is atomic.
 	 */
@@ -244,7 +203,7 @@ public:
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
 	 *	construct a new object.
 	 * @exception lcmc::models::except::BadParam Thrown if an illegal 
-	 *	value of sigma or tau was passed to the factory constructor.
+	 *	value of @p sigma or @p tau was passed to the factory constructor.
 	 *
 	 * @exceptsafe Object construction is atomic. The factory is unchanged 
 	 *	in the event of an exception.
@@ -272,7 +231,7 @@ public:
 	 * @param[in] tau1, tau2 the coherence times for the Gaussian components
 	 *
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
-	 *	store the times.
+	 *	store @p times.
 	 *
 	 * @exceptsafe Object construction is atomic.
 	 */
@@ -291,7 +250,7 @@ public:
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
 	 *	construct a new object.
 	 * @exception lcmc::models::except::BadParam Thrown if an illegal 
-	 *	value of sigma1, sigma2, tau1, or tau2 was passed to the 
+	 *	value of @p sigma1, @p sigma2, @p tau1, or @p tau2 was passed to the 
 	 *	factory constructor.
 	 *
 	 * @exceptsafe Object construction is atomic. The factory is unchanged 
@@ -317,7 +276,7 @@ private:
  * @param[in] factory A factory for generating light curves of a specific 
  *	type with specific parameters
  *
- * @exception lcmc::models::except::BadParam Thrown if the factory generates 
+ * @exception lcmc::models::except::BadParam Thrown if @p factory generates 
  *	invalid light curves.
  *
  * @exceptsafe Function arguments are in a valid state in the event of an exception.
@@ -493,7 +452,7 @@ BOOST_FIXTURE_TEST_SUITE(test_gp, ObsData)
  */
 BOOST_AUTO_TEST_CASE(white)
 {
-	testWhite(TEST_COUNT, times);
+	testWhite(STOC_TEST_COUNT, times);
 }
 
 /** Tests whether the simulated damped random walks have the correct distribution
@@ -510,9 +469,9 @@ BOOST_AUTO_TEST_CASE(white)
  */
 BOOST_AUTO_TEST_CASE(drw)
 {
-	testDrw(TEST_COUNT, times,   2.0);
-	testDrw(TEST_COUNT, times,  20.0);
-	testDrw(TEST_COUNT, times, 200.0);
+	testDrw(STOC_TEST_COUNT, times,   2.0);
+	testDrw(STOC_TEST_COUNT, times,  20.0);
+	testDrw(STOC_TEST_COUNT, times, 200.0);
 }
 
 /** Tests whether the simulated random walks have the correct distribution
@@ -529,9 +488,9 @@ BOOST_AUTO_TEST_CASE(drw)
  */
 BOOST_AUTO_TEST_CASE(rw)
 {
-	testRw(TEST_COUNT, times, 0.001);
-	testRw(TEST_COUNT, times, 0.01 );
-	testRw(TEST_COUNT, times, 0.1  );
+	testRw(STOC_TEST_COUNT, times, 0.001);
+	testRw(STOC_TEST_COUNT, times, 0.01 );
+	testRw(STOC_TEST_COUNT, times, 0.1  );
 }
 
 /** Tests whether the simulated Gaussian processes have the correct distribution
@@ -548,9 +507,9 @@ BOOST_AUTO_TEST_CASE(rw)
  */
 BOOST_AUTO_TEST_CASE(gp1)
 {
-	testStandardGp(TEST_COUNT, times,   2.0);
-	testStandardGp(TEST_COUNT, times,  20.0);
-	testStandardGp(TEST_COUNT, times, 200.0);
+	testStandardGp(STOC_TEST_COUNT, times,   2.0);
+	testStandardGp(STOC_TEST_COUNT, times,  20.0);
+	testStandardGp(STOC_TEST_COUNT, times, 200.0);
 }
 
 /** Tests whether the simulated Gaussian processes have the correct distribution
@@ -569,11 +528,11 @@ BOOST_AUTO_TEST_CASE(gp1)
 BOOST_AUTO_TEST_CASE(gp2)
 {
 	for(float tau1 = 2; tau1 < 1000.0; tau1 *= 10.0) {
-		testTwoGp(TEST_COUNT, times, tau1, tau1 / 10.0);
-		testTwoGp(TEST_COUNT, times, tau1, tau1 /  3.0);
-		testTwoGp(TEST_COUNT, times, tau1, tau1);
-		testTwoGp(TEST_COUNT, times, tau1, tau1 *  3.0);
-		testTwoGp(TEST_COUNT, times, tau1, tau1 * 10.0);
+		testTwoGp(STOC_TEST_COUNT, times, tau1, tau1 / 10.0);
+		testTwoGp(STOC_TEST_COUNT, times, tau1, tau1 /  3.0);
+		testTwoGp(STOC_TEST_COUNT, times, tau1, tau1);
+		testTwoGp(STOC_TEST_COUNT, times, tau1, tau1 *  3.0);
+		testTwoGp(STOC_TEST_COUNT, times, tau1, tau1 * 10.0);
 	}
 }
 

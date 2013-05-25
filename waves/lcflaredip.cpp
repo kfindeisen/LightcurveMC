@@ -25,15 +25,15 @@ using boost::lexical_cast;
  * @param[in] width The exponential decay time of the flare-like dip, 
  *	in units of the period.
  *
- * @pre amp > 0
- * @pre amp &le; 1
- * @pre period > 0
- * @pre phase &isin; [0, 1)
- * @pre 0 < width
- * @pre 0 < fade < 1
+ * @pre @p amp > 0
+ * @pre @p amp &le; 1
+ * @pre @p period > 0
+ * @pre @p phase &isin; [0, 1)
+ * @pre 0 < @p width
+ * @pre 0 < @p fade < 1
  *
- * @post A light curve is a deterministic function of amp, period, phase,  
- *	fade, and width: knowing these values is sufficient to determine 
+ * @post A light curve is a deterministic function of @p amp, @p period, @p phase,  
+ *	@p fade, and @p width: knowing these values is sufficient to determine 
  *	flux(t) for any value of t.
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
@@ -72,7 +72,7 @@ FlareDip::FlareDip(const std::vector<double> &times,
  * 
  * @return The flux emitted by the object at the specified phase.
  * 
- * @pre phase &isin; [0, 1)
+ * @pre @p phase &isin; [0, 1)
  *
  * @post the return value is determined entirely by the phase and 
  *	the parameters passed to the constructor

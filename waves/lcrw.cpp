@@ -18,13 +18,13 @@ namespace lcmc { namespace models {
 using std::auto_ptr;
 using boost::lexical_cast;
 
-/** Initializes the light curve to represent a damped random walk.
+/** Initializes the light curve to represent a random walk.
  *
  * @param[in] times The times at which the light curve will be sampled.
  * @param[in] diffus The diffusion constant of the random walk, in 
- *	units of flux^2/time
+ *	units of mag<sup>2</sup>/time
  *
- * @pre diffus > 0
+ * @pre @p diffus > 0
  *
  * @post The object represents a random walk with the given diffusion 
  *	constant.
@@ -53,18 +53,18 @@ RandomWalk::RandomWalk(const std::vector<double>& times, double diffus)
  * 
  * @post getFluxes() will now return the correct light curve.
  * 
- * @post fluxes.size() == getTimes().size()
- * @post if getTimes()[i] == getTimes()[j] for i &ne; j, then 
- *	fluxes[i] == fluxes[j]
+ * @post @p fluxes.size() = getTimes().size()
+ * @post if getTimes()[i] = getTimes()[j] for i &ne; j, then 
+ *	@p fluxes[i] = @p fluxes[j]
  * 
- * @post No element of fluxes is NaN
- * @post All elements in fluxes are non-negative
+ * @post No element of @p fluxes is NaN
+ * @post All elements in @p fluxes are non-negative
  * @post The median of the flux is one, when averaged over many elements and 
  *	many light curve instances.
  *
- * @post fluxToMag(fluxes) has a mean of zero and a standard deviation, at 
+ * @post fluxToMag(@p fluxes) has a mean of zero and a standard deviation, at 
  *	each time t, of sqrt(diffus*(t-getTimes()[0]))
- * @post cov(fluxToMag(fluxes[i]), fluxToMag(fluxes[j])) == 
+ * @post cov(fluxToMag(fluxes[i]), fluxToMag(fluxes[j])) = 
  *	diffus * (min{getTimes()[i], getTimes()[j]} - getTimes()[0])
  * 
  * @exception std::bad_alloc Thrown if there is not enough memory to compute 

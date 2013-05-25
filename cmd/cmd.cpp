@@ -75,23 +75,22 @@ using models::RangeList;
  * @param[out] lcList the list of light curve types to simulate
  * @param[out] statList the list of statistics to calculate for each simulated 
  *	light curve
- * @param[out] dataSet the hardcoded name of an observational data set into 
- *	which to inject light curves
+ * @param[out] dataSet the name of a file containing observed light curves into 
+ *	which to inject simulated light curves
  * @param[out] injectMode if true, the program will carry out an injection 
  *	analysis rather than merely generating theoretical light curves.
- *
- * @todo Break up this function.
  * 
- * @todo Current command-line format vulnerable to mismatches in which 
- *	argument is being referred to. Rewrite!
- *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	represent the command line arguments.
  * @exception std::logic_error Thrown if a bug is detected in the code.
- * @exception lcmc::except::ParseError Thrown if the output cannot be parsed.
+ * @exception lcmc::parse::except::ParseError Thrown if the output cannot be parsed.
  *
  * @exceptsafe All arguments are left in valid states in the event 
  *	of an exception.
+ *
+ * @todo Break up this function.
+ * @todo Current command-line format vulnerable to mismatches in which 
+ *	argument is being referred to. Rewrite!
  */
 void parseArguments(int argc, char* argv[], 
 		double& sigma, long& nTrials, long& toPrint, 
@@ -254,13 +253,13 @@ void parseArguments(int argc, char* argv[],
 			addParam(paramRanges, "a2", argAmp2, RangeList::LOGUNIFORM);
 			addParam(paramRanges, "p2", argPer2, RangeList::LOGUNIFORM);
 		} catch (const utils::except::UnexpectedNan& e) {
-			throw std::logic_error("BUG: parameter validation doesn't work!\nOriginal error: " + string(e.what()));
+			throw std::logic_error("Parameter validation doesn't work!\nOriginal error: " + string(e.what()));
 		} catch (const models::except::ExtraParam& e) {
-			throw std::logic_error("BUG: parameter parsing is incorrect!\nOriginal error: " + string(e.what()));
+			throw std::logic_error("Parameter parsing is incorrect!\nOriginal error: " + string(e.what()));
 		} catch (const models::except::NegativeRange& e) {
-			throw std::logic_error("BUG: parameter validation doesn't work!\nOriginal error: " + string(e.what()));
+			throw std::logic_error("Parameter validation doesn't work!\nOriginal error: " + string(e.what()));
 		} catch (const std::invalid_argument& e) {
-			throw std::logic_error("BUG: parameter parsing is incorrect!\nOriginal error: " + string(e.what()));
+			throw std::logic_error("Parameter parsing is incorrect!\nOriginal error: " + string(e.what()));
 		}
 	} catch (const TCLAP::ArgException& e) {
 		// Translate to a generic exception to encapsulate our choice of parser

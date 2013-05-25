@@ -2,7 +2,9 @@
  * @file lightcurveMC/tests/unit_stats.cpp
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
- * @date Last modified May 22, 2013
+ * @date Last modified May 24, 2013
+ *
+ * @todo Break up this file.
  */
 
 #include "../warnflags.h"
@@ -34,12 +36,15 @@
 #include <cerrno>
 #include <cmath>
 #include <cstring>
+#include <boost/lexical_cast.hpp>
+#include <boost/scoped_array.hpp>
 #include <boost/shared_ptr.hpp>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
+#include <gsl/gsl_statistics_double.h>
 #include "../stats/acfinterp.h"
 #include "../approx.h"
 #include "../except/fileio.h"
@@ -54,6 +59,7 @@
 
 
 using std::vector;
+using boost::lexical_cast;
 using boost::shared_ptr;
 
 namespace lcmc { namespace utils {
@@ -131,8 +137,6 @@ public:
 };
 
 /** Data common to the test cases.
- *
- * At present, contains only sampling times
  */
 class StatDummy {
 public: 
@@ -166,7 +170,8 @@ public:
 	vector<double> awfulVec;
 };
 
-/** Tests whether meanNoNan() and varianceNoNan() correctly handle NaN values
+/** Tests whether @ref utils::meanNoNan() "meanNoNan()" and 
+ *	@ref utils::varianceNoNan() "varianceNoNan()" correctly handle NaN values
  *
  * @param[in] seed A random seed for generating multiple data sets.
  * @param[in] nTests The number of values whose mean and variance will be calculated.
@@ -200,12 +205,16 @@ void testNanProof(unsigned long int seed, size_t nTests) {
 		BOOST_FAIL("Out of memory!");
 	}
 	
-	/** @todo Use an external mean / variance as the reference
-	 */
+	size_t nClean = clean.size();
+	boost::scoped_array<double> cleanArr(new double[nClean]);
+	for(size_t i = 0; i < nClean; i++) {
+		cleanArr[i] = clean[i];
+	}
+	
 	BOOST_CHECK_NO_THROW(myTestClose(utils::    meanNoNan(dirty), 
-		utils::    meanNoNan(clean), 1e-10));
+		gsl_stats_mean    (cleanArr.get(), 1, nClean), 1e-10));
 	BOOST_CHECK_NO_THROW(myTestClose(utils::varianceNoNan(dirty), 
-		utils::varianceNoNan(clean), 1e-10));
+		gsl_stats_variance(cleanArr.get(), 1, nClean), 1e-10));
 }
 
 /** Tests whether lcmc::utils::getHalfMatrix() correctly decomposes a matrix into two factors
@@ -216,27 +225,36 @@ void testNanProof(unsigned long int seed, size_t nTests) {
  * currently the only matrix tested is the covariance matrix of a standard 
  * Gaussian process.
  *
- * @param[in] times The observation times at which the Gaussian process is sampled
- * @param[in] tau The coherence time of the Gaussian process
+ * @param[in] initial The matrix to factor.
  *
- * @exceptsafe Does not throw exceptions.
+ * @pre @p initial is positive-semidefinite
+ *
+ * @exception std::invalid_argument Thrown if @p initial is not square.
+ *
+ * @exceptsafe The function arguments are unchanged in the event of an exception.
  */
-void testProduct(double tau, const vector<double>& times)
+void testProduct(const shared_ptr< gsl_matrix > & initial)
 {
-	const size_t nTimes = times.size();
+	const size_t N = initial->size1;
+	
+	if(N != initial->size2) {
+		try {
+			std::string len1 = lexical_cast<std::string>(initial->size1);
+			std::string len2 = lexical_cast<std::string>(initial->size2);
+			throw std::invalid_argument(len1 + "×" + len2 
+				+ " covariance matrix passed to testProduct().");
+		} catch (const boost::bad_lexical_cast &e) {
+			throw std::invalid_argument(
+				"Non-square covariance matrix passed to testProduct().");
+		}
+	}
 
 	// Can't guarantee that the gsl_ functions won't cause errors... 
 	//	especially since the error conditions are undocumented
 	try {	
-		shared_ptr<gsl_matrix> initial(gsl_matrix_alloc(nTimes, nTimes), &gsl_matrix_free);
-		if (initial.get() == NULL) {
-			throw std::bad_alloc();
-		}
-		initGauss(initial.get(), times, tau);
-		
 		shared_ptr<gsl_matrix> result = lcmc::utils::getHalfMatrix(initial);
 		
-		shared_ptr<gsl_matrix> product(gsl_matrix_calloc(nTimes, nTimes), &gsl_matrix_free);
+		shared_ptr<gsl_matrix> product(gsl_matrix_calloc(N, N), &gsl_matrix_free);
 		if (product.get() == NULL) {
 			throw std::bad_alloc();
 		}
@@ -246,7 +264,7 @@ void testProduct(double tau, const vector<double>& times)
 			throw std::runtime_error(gsl_strerror(status));
 		}
 	
-		shared_ptr<gsl_matrix> residuals(gsl_matrix_calloc(nTimes, nTimes), &gsl_matrix_free);
+		shared_ptr<gsl_matrix> residuals(gsl_matrix_calloc(N, N), &gsl_matrix_free);
 		if (residuals.get() == NULL) {
 			throw std::bad_alloc();
 		}
@@ -301,27 +319,6 @@ void testProduct(double tau, const vector<double>& times)
  */
 BOOST_FIXTURE_TEST_SUITE(test_nan, StatDummy)
 
-/** Tests whether NaN-proof statistics are consistent with normal ones
- *
- * @see testNanProof()
- *
- * @exceptsafe Does not throw exceptions.
- */
-BOOST_AUTO_TEST_CASE(nan_proof) {
-	testNanProof(  42, TEST_LEN);
-	testNanProof(  43, TEST_LEN);
-	testNanProof(1196, TEST_LEN);
-	testNanProof(1764, TEST_LEN);
-	testNanProof(3125, TEST_LEN);
-	
-	using lcmc::utils::    meanNoNan;
-	using lcmc::utils::varianceNoNan;
-	BOOST_CHECK_THROW(    meanNoNan(emptyVec), stats::except::NotEnoughData);
-	BOOST_CHECK_THROW(varianceNoNan(emptyVec), stats::except::NotEnoughData);
-	BOOST_CHECK_THROW(    meanNoNan(awfulVec), stats::except::NotEnoughData);
-	BOOST_CHECK_THROW(varianceNoNan(awfulVec), stats::except::NotEnoughData);
-}
-
 /** Tests whether NaN diagnostics work as advertised
  *
  * @exceptsafe Does not throw exceptions.
@@ -357,49 +354,121 @@ BOOST_AUTO_TEST_CASE(nan_check) {
 	BOOST_CHECK(!d::has_signaling_NaN ||  isNanOrInf(-d::signaling_NaN()));
 }
 
+/** Tests whether NaN-proof statistics are consistent with normal ones
+ *
+ * @see testNanProof()
+ *
+ * @exceptsafe Does not throw exceptions.
+ */
+BOOST_AUTO_TEST_CASE(nan_proof) {
+	testNanProof(  42, TEST_LEN);
+	testNanProof(  43, TEST_LEN);
+	testNanProof(1196, TEST_LEN);
+	testNanProof(1764, TEST_LEN);
+	testNanProof(3125, TEST_LEN);
+	
+	using lcmc::utils::    meanNoNan;
+	using lcmc::utils::varianceNoNan;
+	BOOST_CHECK_THROW(    meanNoNan(emptyVec), stats::except::NotEnoughData);
+	BOOST_CHECK_THROW(varianceNoNan(emptyVec), stats::except::NotEnoughData);
+	BOOST_CHECK_THROW(    meanNoNan(awfulVec), stats::except::NotEnoughData);
+	BOOST_CHECK_THROW(varianceNoNan(awfulVec), stats::except::NotEnoughData);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 
-/** Test cases for testing functions related to generating 
- *	multinormal distributions
+/** Test cases for testing functions related to light curve statistics
+ * 
  * @class BoostTest::test_stats
  */
 BOOST_FIXTURE_TEST_SUITE(test_stats, StatData)
 
-/** Tests whether getHalfMatrix() returns the correct decomposition of a matrix
+/** Tests whether @ref lcmc::utils::getHalfMatrix() "getHalfMatrix()" returns the correct decomposition of a matrix
  *
  * @see @ref lcmc::utils::getHalfMatrix() "getHalfMatrix()"
  * @see testProduct()
  *
  * @test given a Gaussian process covariance matrix corresponding to 
- *	uniform sampling and &tau; = 100, 50, 25, 10, 5, 2.5, or 1.0 days, 
- *	the result of getHalfMatrix() multiplied by its own transpose 
+ *	uniform sampling and &tau; = 100, 10, or 1.0 days, 
+ *	the result of @ref lcmc::utils::getHalfMatrix() "getHalfMatrix()" multiplied by its own transpose 
  *	equals the covariance matrix
  * @test given a Gaussian process covariance matrix corresponding to 
- *	PTF-like sampling and &tau; = 100, 50, 25, 10, 5, 2.5, or 1.0 days, 
- *	the result of getHalfMatrix() multiplied by its own transpose 
+ *	PTF-like sampling and &tau; = 100, 10, or 1.0 days, 
+ *	the result of @ref lcmc::utils::getHalfMatrix() "getHalfMatrix()" multiplied by its own transpose 
  *	equals the covariance matrix
- *
- * @todo Add broader test cases
  *
  * @exceptsafe Does not throw exceptions.
  */
 BOOST_AUTO_TEST_CASE(decomposition) {
-	testProduct(100.0, unifTimes);
-	testProduct( 50.0, unifTimes);
-	testProduct( 25.0, unifTimes);
-	testProduct( 10.0, unifTimes);
-	testProduct(  5.0, unifTimes);
-	testProduct(  2.5, unifTimes);
-	testProduct(  1.0, unifTimes);
+	// Pick simulation parameters
+	vector<double> taus;
+		taus.push_back(100.0);
+		taus.push_back( 10.0);
+		taus.push_back(  1.0);
+	vector<double> nus;
+		nus .push_back(0.5);
+		nus .push_back(1.0);
+		nus .push_back(1.5);
+		nus .push_back(5.83);
+	vector<double> alfs;
+		alfs.push_back(0.5);
+		alfs.push_back(1.0);
+		alfs.push_back(2.0);
+		alfs.push_back(4.2);
 
-	testProduct(100.0,  ptfTimes);
-	testProduct( 50.0,  ptfTimes);
-	testProduct( 25.0,  ptfTimes);
-	testProduct( 10.0,  ptfTimes);
-	testProduct(  5.0,  ptfTimes);
-	testProduct(  2.5,  ptfTimes);
-	testProduct(  1.0,  ptfTimes);
+	// White noise
+	shared_ptr<gsl_matrix> testMat = initGaussWn(unifTimes);
+	BOOST_CHECK_NO_THROW(testProduct(testMat));
+	testMat = initGaussWn(ptfTimes);
+	BOOST_CHECK_NO_THROW(testProduct(testMat));
+
+	// Squared exponential
+	for(vector<double>::const_iterator tau = taus.begin(); tau != taus.end(); tau++) {
+		testMat = initGaussSe(unifTimes, *tau);
+		BOOST_CHECK_NO_THROW(testProduct(testMat));
+		testMat = initGaussSe( ptfTimes, *tau);
+		BOOST_CHECK_NO_THROW(testProduct(testMat));
+	}
+
+	// Exponential
+	for(vector<double>::const_iterator tau = taus.begin(); tau != taus.end(); tau++) {
+		testMat = initGaussDrw(unifTimes, *tau);
+		BOOST_CHECK_NO_THROW(testProduct(testMat));
+		testMat = initGaussDrw( ptfTimes, *tau);
+		BOOST_CHECK_NO_THROW(testProduct(testMat));
+	}
+
+	// Matérn
+//	for(vector<double>::const_iterator tau = taus.begin(); tau != taus.end(); tau++) {
+//		for(vector<double>::const_iterator nu = nus.begin(); nu != nus.end(); nu++) {
+//			testMat = initGaussMat(unifTimes, *tau, *nu);
+//			BOOST_CHECK_NO_THROW(testProduct(testMat));
+//			testMat = initGaussMat( ptfTimes, *tau, *nu);
+//			BOOST_CHECK_NO_THROW(testProduct(testMat));
+//		}
+//	}
+
+	// Periodic
+	for(vector<double>::const_iterator tau = taus.begin(); tau != taus.end(); tau++) {
+		for(vector<double>::const_iterator p = taus.begin(); p != taus.end(); p++) {
+			testMat = initGaussP(unifTimes, *tau, *p);
+			BOOST_CHECK_NO_THROW(testProduct(testMat));
+//			testMat = initGaussP( ptfTimes, *tau, *p);
+//			BOOST_CHECK_NO_THROW(testProduct(testMat));
+		}
+	}
+
+	// Rational
+	for(vector<double>::const_iterator tau = taus.begin(); tau != taus.end(); tau++) {
+		for(vector<double>::const_iterator alf = alfs.begin(); 
+				alf != alfs.end(); alf++) {
+			testMat = initGaussR(unifTimes, *tau, *alf);
+			BOOST_CHECK_NO_THROW(testProduct(testMat));
+			testMat = initGaussR( ptfTimes, *tau, *alf);
+			BOOST_CHECK_NO_THROW(testProduct(testMat));
+		}
+	}
 }
 
 /** Tests whether @ref lcmc::stats::getSummaryStats() "getSummaryStats()" 
@@ -673,6 +742,37 @@ BOOST_AUTO_TEST_CASE(peakfind) {
 		BOOST_CHECK_LE(timescales[i-1], timescales[i]);
 	}
 }*/
+
+BOOST_AUTO_TEST_SUITE_END()
+
+/** Test cases for testing approximate comparison methods
+ * 
+ * @class BoostTest::test_approx
+ */
+BOOST_AUTO_TEST_SUITE(test_approx)
+
+/** Tests whether approximate equality test works correctly
+ *
+ * @see @ref lcmc::utils::ApproxEqual "ApproxEqual"
+ *
+ * @exceptsafe Does not throw exceptions.
+ */
+BOOST_AUTO_TEST_CASE(approx) {
+	BOOST_CHECK_THROW(utils::ApproxEqual badAp( 0.0 ), std::invalid_argument);
+	BOOST_CHECK_THROW(utils::ApproxEqual badAp(-0.01), std::invalid_argument);
+
+	utils::ApproxEqual apBasis(0.1);
+	
+	BOOST_CHECK_THROW(apBasis( 0.0, 1.0), std::invalid_argument);
+	BOOST_CHECK_THROW(apBasis(-1.0, 0.0), std::invalid_argument);
+	
+	BOOST_CHECK( apBasis(0.1, 0.1));
+	BOOST_CHECK( apBasis(1.0, 1.05));
+	BOOST_CHECK(!apBasis(1.0, 1.10001));
+	BOOST_CHECK( apBasis(1.0, 1.09999));
+	BOOST_CHECK(!apBasis(1.0, 0.90909));
+	BOOST_CHECK( apBasis(1.0, 0.90910));
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 
