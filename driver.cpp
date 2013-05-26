@@ -2,7 +2,7 @@
  * @file lightcurveMC/driver.cpp
  * @author Krzysztof Findeisen
  * @date Created January 22, 2010
- * @date Last modified May 22, 2013
+ * @date Last modified May 25, 2013
  */
 
 #include <memory>
@@ -145,7 +145,7 @@ int main(int argc, char* argv[]) {
 	/** @todo The injectMode flag here is dangerous... rewrite later!
 	 */
 	vector<double> tSeries;
-	double minTStep, maxTStep;
+//	double minTStep, maxTStep;
 	size_t nObs = 0;
 	if (!injectMode) {
 		/** @bug Attempts to open a nonexistent timestamp file cause a 
@@ -155,7 +155,7 @@ int main(int argc, char* argv[]) {
 		if(NULL == hJulDates.get()) {
 			throw lcmc::except::FileIo("Could not open timestamp file.");
 		}
-		readTimeStamps(hJulDates.get(), tSeries, minTStep, maxTStep);
+		readTimeStamps(hJulDates.get(), tSeries/*, minTStep, maxTStep*/);
 		nObs = tSeries.size();
 	}
 

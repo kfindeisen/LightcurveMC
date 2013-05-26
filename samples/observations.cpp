@@ -2,7 +2,7 @@
  * @file lightcurveMC/samples/observations.cpp
  * @author Krzysztof Findeisen
  * @date Created May 4, 2012
- * @date Last modified May 10, 2013
+ * @date Last modified May 25, 2013
  */
 
 #include <string>
@@ -34,6 +34,8 @@ namespace lcmc { namespace inject {
  * @exception std::bad_alloc Thrown if there is not enough memory to create the object.
  *
  * @exceptsafe Object construction is atomic.
+ *
+ * @bug Can only offer the basic guarantee because of the internal RNG.
  */
 Observations::Observations(const std::string& catalogName) : times(), fluxes() {
 	// Note: because sourcePicker is static, no memory management is needed
@@ -195,10 +197,20 @@ const std::vector<std::string> Observations::getLcLibrary(const std::string& cat
  * 
  * @post @p timeArray does not contain NaNs
  *
- * @exceptsafe Does not throw exceptions.
+ * @exception std::bad_alloc Thrown if there is not enough memory to copy 
+ *	the timestamps.
+ *
+ * @exceptsafe Neither the function argument nor the object are changed in 
+ *	the event of an exception.
  */
 void Observations::getTimes(std::vector<double> &timeArray) const {
-	timeArray = this->times;
+	using std::swap;
+
+	// copy-and-swap to allow atomic guarantee
+	// vector::= only offers the basic guarantee
+	std::vector<double> temp = this->times;
+	
+	swap(timeArray, temp);
 }
 
 /** Returns the flux measurements associated with this source.
@@ -207,10 +219,20 @@ void Observations::getTimes(std::vector<double> &timeArray) const {
  * 
  * @post @p fluxArray does not contain NaNs
  *
- * @exceptsafe Does not throw exceptions.
+ * @exception std::bad_alloc Thrown if there is not enough memory to copy 
+ *	the fluxes.
+ *
+ * @exceptsafe Neither the function argument nor the object are changed in 
+ *	the event of an exception.
  */
 void Observations::getFluxes(std::vector<double> &fluxArray) const {
-	fluxArray = this->fluxes;
+	using std::swap;
+
+	// copy-and-swap to allow atomic guarantee
+	// vector::= only offers the basic guarantee
+	std::vector<double> temp = this->fluxes;
+	
+	swap(fluxArray, temp);
 }
 
 }}		// end lcmc::inject

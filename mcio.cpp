@@ -78,6 +78,29 @@ void readTimeStamps(FILE* hInput, DoubleVec& dates, double& minDelT, double& max
 	maxDelT = dates.back() - dates.front();
 }
 
+/** Reads a file containing timestamps into a vector of dates
+ *
+ * @param[in] hInput an open file handle to be read. The file represented by @p hInput 
+ *	is assumed to be formatted as a list of floating-point values, 
+ *	one per line. 
+ * @param[out] dates a vector of doubles that stores the timestamps in @p hInput. The dates 
+ *	will be sorted in ascending order.
+ *
+ * @post @p dates does not contain any NaNs
+ *
+ * @exception std::bad_alloc Thrown if there is not enough memory to store the 
+ *	file contents.
+ * @exception lcmc::except::FileIo Thrown if file has the wrong format.
+ *
+ * @exceptsafe Program is in a consistent state in the event of an exception. 
+ */
+void readTimeStamps(FILE* hInput, DoubleVec& dates) {
+	// To be discarded
+	double minTemp, maxTemp;
+	
+	readTimeStamps(hInput, dates, minTemp, maxTemp);
+}
+
 /** Dumps the contents of a lightcurve to a file
  *
  * @param[in] fileName The name of the file to which to log the light curve

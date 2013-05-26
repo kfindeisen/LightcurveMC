@@ -21,6 +21,10 @@ typedef std::vector<double> DoubleVec;
  */	
 void readTimeStamps(FILE* hInput, DoubleVec &dates, double &minDelT, double &maxDelT);
 
+/** Reads a file containing timestamps into a vector of dates
+ */	
+void readTimeStamps(FILE* hInput, DoubleVec &dates);
+
 /** Dumps the contents of a lightcurve to a file
  */
 void printLightCurve(const std::string& fileName, 
