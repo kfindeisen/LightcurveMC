@@ -3,21 +3,24 @@
  * @author Ann Marie Cody
  * @author Krzysztof Findeisen
  * @date Created May 6, 2013
- * @date Last modified May 22, 2013
+ * @date Last modified May 26, 2013
  */
 
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <cmath>
 #include <boost/lexical_cast.hpp>
 #include <boost/scoped_array.hpp>
+#include <boost/shared_array.hpp>
 #include <boost/shared_ptr.hpp>
 #include <gsl/gsl_spline.h>
 #include "acfinterp.h"
-#include "../gsl_compat.h"
+#include "../gsl_compat.tmp.h"
 #include "../nan.h"
 #include "../except/nan.h"
 #include "../except/undefined.h"
+#include "../vecarray.tmp.h"
 
 #ifndef _GSL_HAS_ACF
 #include "acf.h"
@@ -25,10 +28,60 @@
 
 namespace lcmc { namespace stats { namespace interp {
 
+using std::string;
 using std::vector;
 using boost::lexical_cast;
 using boost::scoped_array;
+using boost::shared_array;
 using boost::shared_ptr;
+
+/** Generates a C array of evenly spaced values
+ *
+ * @param[in] min The minimum value in the grid
+ * @param[in] max An upper limit on the grid
+ * @param[in] step The grid spacing
+ *
+ * @param[out] grid,n A newly allocated array containing the grid.
+ *
+ * @pre @p min < @p max
+ * @pre @p step > 0
+ *
+ * @post @p min = min(@p grid)
+ * @post @p max - @p step &le; max(@p grid) < @p max
+ * @post for all i &isin; [0, n-2], @p grid[i+1] - @p grid[i] = @p step
+ *
+ * @exception std::invalid_argument Thrown if @p max &le; @p min 
+ *	or @p step &le; 0
+ * @exception std::bad_alloc Thrown if there is not enough memory to 
+ *	construct @p grid.
+ *
+ * @exceptsafe Function arguments are unchanged in the event 
+ *	of an exception.
+ */
+void evenGrid(double min, double max, double step, shared_array<double>& grid, size_t& n) {
+	if (step <= 0) {
+		throw std::runtime_error("Need positive step in evenGrid() (gave " 
+			+ lexical_cast<string>(step) + ")");
+	}
+	if (max <= min) {
+		throw std::runtime_error("Need min < max in evenGrid() (gave " 
+			+ lexical_cast<string>(min) + " and " 
+			+ lexical_cast<string>(max) + ")");
+	}
+	
+	// Don't update n until the array is allocated
+	size_t nAlloc = static_cast<size_t>(ceil( (max-min)/step ));
+
+	grid.reset(new double[nAlloc]);
+	
+	// IMPORTANT: no exceptions beyond this point
+	
+	n = nAlloc;
+	for(size_t i = 0; i < nAlloc; i++) {
+		grid[i] = min + i*step;
+	}
+}
+
 
 /** Calculates the autocorrelation function for a time series. 
  * 
@@ -55,7 +108,8 @@ using boost::shared_ptr;
  *	at &Delta;t = i*<tt>deltaT</tt>, for all i
  * @post @p acf[i] = 0 if i*<tt>deltaT</tt> > max(@p times) - min(@p times)
  *
- * @perform O(F<sup>2</sup>) worst-case time, where F = ceil((max(@p times)-min(@p times))/<tt>deltaT</tt>)
+ * @perform O(F<sup>2</sup>) worst-case time, where 
+ *	F = ceil((max(@p times)-min(@p times))/<tt>deltaT</tt>)
  * @perfmore O(F log F) best-case time
  * 
  * @exception lcmc::utils::except::UnexpectedNan Thrown if there are any 
@@ -70,107 +124,74 @@ using boost::shared_ptr;
  *
  * @exceptsafe The function parameters are unchanged in the event of 
  *	an exception.
- * 
- * @todo Break up this function
  */
 void autoCorr(const DoubleVec &times, const DoubleVec &data, 
 		double deltaT, size_t nAcf, DoubleVec &acf) {
+	using std::swap;
+	using utils::checkAlloc;
 
 	const size_t NOLD = times.size();
 	if (NOLD < 2) {
 		throw except::NotEnoughData("Cannot calculate autocorrelation function with fewer than 2 data points (gave " 
-			+ lexical_cast<std::string>(NOLD) + ").");
+			+ lexical_cast<string>(NOLD) + ").");
 	}
 	if (NOLD != data.size()) {
 		throw std::invalid_argument("Data and time arrays passed to autoCorr() must have the same length (gave " 
-			+ lexical_cast<std::string>(NOLD) + " and " 
-			+ lexical_cast<std::string>(data.size()) + ")");
+			+ lexical_cast<string>(NOLD) + " and " 
+			+ lexical_cast<string>(data.size()) + ")");
 	}
 	if (deltaT <= 0) {
 		throw std::invalid_argument("Need a positive time lag to construct an autocorrelation grid (gave " 
-			+ lexical_cast<std::string>(deltaT) + ")");
+			+ lexical_cast<string>(deltaT) + ")");
 	}
 	if (nAcf <= 0) {
 		throw std::invalid_argument("Must calculate autocorrelation function at a positive number of points " 
-			+ lexical_cast<std::string>(nAcf) + ")");
+			+ lexical_cast<string>(nAcf) + ")");
 	}
 
 	// In C++11, can directly return an array view of times and data
 	// For now, make a copy
-	scoped_array<double> tempTimes(new double[NOLD]);
-	for(size_t i = 0; i < NOLD; i++) {
-		if (utils::isNan(times[i])) {
-			throw utils::except::UnexpectedNan("NaN found in times given to autoCorr()");
-		}
-		tempTimes[i] = times[i];
-	}
-	scoped_array<double> tempData(new double[NOLD]);
-	for(size_t i = 0; i < NOLD; i++) {
-		if (utils::isNan(data[i])) {
-			throw utils::except::UnexpectedNan("NaN found in data given to autoCorr()");
-		}
-		tempData[i] = data[i];
-	}
+	shared_array<double> tempTimes = vecToArr(times);
+	shared_array<double> tempData  = vecToArr(data );
 	
 	// Generate a grid with spacing deltaT
-	const size_t NNEW = static_cast<size_t>(ceil((times.back()-times.front())/deltaT));
-	scoped_array<double> evenTimes(new double[NNEW]);
-	for(size_t i = 0; i < NNEW; i++) {
-		evenTimes[i] = times.front() + i*deltaT;
-	}
-	// assert: times.back() - deltaT <= evenTimes[NNEW-1] < times.back()
+	shared_array<double> evenTimes;
+	size_t nNew;
+	evenGrid(times.front(), times.back(), deltaT, evenTimes, nNew);
 
 	// Interpolate to the new grid
 	// Despite its name, gsl_spline is not necessarily a spline
-	shared_ptr<gsl_spline> dataInterp(gsl_spline_alloc(gsl_interp_linear, NOLD), 
-		&gsl_spline_free);
-	if (dataInterp.get() == NULL) {
-		throw std::bad_alloc();
-	}
-	int status = gsl_spline_init(dataInterp.get(), tempTimes.get(), tempData.get(), NOLD);
-	if (status) {
-		throw std::runtime_error(std::string("While computing ACF: ") 
-			+ gsl_strerror(status));
-	}
-	shared_ptr<gsl_interp_accel> interpTable(gsl_interp_accel_alloc(), 
+	shared_ptr<gsl_spline> interp(checkAlloc(gsl_spline_alloc(gsl_interp_linear, NOLD)), 
+		          &gsl_spline_free);
+	shared_ptr<gsl_interp_accel> interpTable(checkAlloc(gsl_interp_accel_alloc()), 
 		&gsl_interp_accel_free);
-	if (interpTable.get() == NULL) {
-		throw std::bad_alloc();
-	}
+	gslCheck( gsl_spline_init(interp.get(), tempTimes.get(), tempData.get(), NOLD), 
+			"While computing ACF: ");
 	
-	scoped_array<double> evenData(new double[NNEW]);
-	for(size_t i = 0; i < NNEW; i++) {
-		status = gsl_spline_eval_e(dataInterp.get(), evenTimes[i], 
-			interpTable.get(), evenData.get()+i);
-		if (status) {
-			throw std::runtime_error(std::string("While computing ACF: ") 
-				+ gsl_strerror(status));
-		}
+	scoped_array<double> evenData(new double[nNew]);
+	for(size_t i = 0; i < nNew; i++) {
+		gslCheck( gsl_spline_eval_e(interp.get(), evenTimes[i], 
+			interpTable.get(), evenData.get()+i), "While computing ACF: ");
 	}
 
 	// ACF
-	scoped_array<double> tempAcfs(new double[NNEW]);
+	scoped_array<double> tempAcfs(new double[nNew]);
 	#ifdef _GSL_HAS_ACF
 	Unknown specification. Please update this when GSL ACF available.
 	#else
-	autoCorrelation_stat(evenData.get(), tempAcfs.get(), NNEW);
+	autoCorrelation_stat(evenData.get(), tempAcfs.get(), nNew);
 	#endif
 		
 	// Convert to vector and trim off lags longer than (nAcf-1)*deltaT
-	acf.reserve(nAcf);
-	
+	vector<double> temp = arrToVec(tempAcfs.get(), std::min(nAcf, nNew));
+
+	if (nNew < nAcf) {
+		temp.insert(temp.end(), nAcf-nNew, 0.0);
+	}
+
 	// IMPORTANT: no exceptions past this point
 	
-	acf.clear();
-	for(size_t i = 0; i < nAcf && i < NNEW; i++) {
-		acf.push_back(tempAcfs[i]);
-	}
-	// If (nAcf-1)*deltaT > times.back() - times.front(), set the 
-	//	remaining values to 0. Note that if NNEW > nAcf this 
-	//	loop has no effect
-	for(size_t i = NNEW; i < nAcf; i++) {
-		acf.push_back(0.0);
-	}
+	swap(acf, temp);
 }
 
 }}}		// end lcmc::stats::interp

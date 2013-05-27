@@ -2,7 +2,7 @@
  * @file lightcurveMC/projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified May 25, 2013
+ * @date Last modified May 26, 2013
  */
 
 #ifndef LCMCPROJINFOH
@@ -16,7 +16,7 @@
 /** Current version of the program, to make version quoted by program 
  *	consistent with documentation.
  */
-#define VERSION_STRING "2.2.0"
+#define VERSION_STRING "2.3.0-devel+build.2"
 
 /** @mainpage
  *
@@ -658,6 +658,18 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    run_c1_
 @endverbatim
  * 
  * @page changelog Version History
+ *
+ * @section v2_3_0 Version 2.3.0-devel
+ *
+ * @subsection v2_3_0_diff Changes 
+ * 
+ * 
+ * @subsection v2_3_0_new New Features 
+ * 
+ * 
+ * @subsection v2_3_0_fix Bug Fixes 
+ * 
+ * - Observations now handles exceptions correctly.
  *
  * @section v2_2_0 Version 2.2.0
  *

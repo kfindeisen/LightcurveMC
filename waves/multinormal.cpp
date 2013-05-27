@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/multinormal.cpp
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
- * @date Last modified May 22, 2013
+ * @date Last modified May 26, 2013
  */
 
 #include <algorithm>
@@ -18,7 +18,7 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include "generators.h"
-#include "../gsl_compat.h"
+#include "../gsl_compat.tmp.h"
 
 namespace lcmc { namespace utils {
 
@@ -111,9 +111,9 @@ void multiNormal(const vector<double>& indVec, const shared_ptr<gsl_matrix>& cov
 	// overhead from approximate comparison exceeded the negligible 
 	// risk of a spurious cache miss.
 	#ifdef _GSL_HAS_MATRIX_EQUAL
-	if(prefixCache == NULL || gsl_matrix_equal(covCache.get(), covar.get()) != 1) {
+	if(prefixCache.get() == NULL || gsl_matrix_equal(covCache.get(), covar.get()) != 1) {
 	#else
-	if(prefixCache == NULL || !matrixEqual(covCache.get(), covar.get())) {
+	if(prefixCache.get() == NULL || !matrixEqual(covCache.get(), covar.get())) {
 	#endif
 		// copy-and-swap to ensure the cache is only updated 
 		//	if there are no exceptions
@@ -138,25 +138,21 @@ void multiNormal(const vector<double>& indVec, const shared_ptr<gsl_matrix>& cov
 	
 	// In C++11, can directly return a vector_const_view of indVec
 	// For now, make a copy
-	shared_ptr<gsl_vector> temp(gsl_vector_alloc(N), &gsl_vector_free);
-	if (temp.get() == NULL) { throw std::bad_alloc(); }
+	shared_ptr<gsl_vector> temp(checkAlloc(gsl_vector_alloc(N)), &gsl_vector_free);
 	for(size_t i = 0; i < N; i++) {
 		// assert: i is a valid index for both temp and indVec
 		gsl_vector_set(temp.get(), i, indVec[i]);
 	}
+
 	// Storage for the output
 	// calloc to prevent weirdness in the call to gsl_blas_dgemv
-	shared_ptr<gsl_vector> result(gsl_vector_calloc(N), &gsl_vector_free);
-	if (result.get() == NULL) { throw std::bad_alloc(); }
+	shared_ptr<gsl_vector> result(checkAlloc(gsl_vector_calloc(N)), &gsl_vector_free);
 	
 	// Multiply the prefix matrix by the uncorrelated vector to 
 	//	get the correlated one
 	// The product is stored in result
-	int status = gsl_blas_dgemv(CblasNoTrans, 1.0, prefixCache.get(), temp.get(), 0.0, result.get());
-	if (status) {
-		throw std::runtime_error(std::string("While generating multivariate normal vector: ") 
-			+ gsl_strerror(status));
-	}
+	gslCheck( gsl_blas_dgemv(CblasNoTrans, 1.0, prefixCache.get(), temp.get(), 
+		0.0, result.get()), "While generating multivariate normal vector: ");
 	
 	// corrVec untouched up to this point -- atomic guarantee satisfied
 
@@ -208,23 +204,16 @@ shared_ptr<gsl_matrix> getHalfMatrix(const shared_ptr<gsl_matrix>& a) {
 	const size_t N = a->size1;
 	
 	shared_ptr<gsl_eigen_symmv_workspace> eigenWork(
-			gsl_eigen_symmv_alloc(N), &gsl_eigen_symmv_free);
-	if (eigenWork.get() == NULL) { throw std::bad_alloc(); }
-	shared_ptr<gsl_vector> eigenVals(gsl_vector_alloc(N), &gsl_vector_free);
-	if (eigenVals.get() == NULL) { throw std::bad_alloc(); }
-	shared_ptr<gsl_matrix> eigenVecs(gsl_matrix_alloc(N, N), &gsl_matrix_free);
-	if (eigenVecs.get() == NULL) { throw std::bad_alloc(); }
+			checkAlloc(gsl_eigen_symmv_alloc(N)), &gsl_eigen_symmv_free);
+	shared_ptr<gsl_vector> eigenVals(checkAlloc(gsl_vector_alloc(N)), &gsl_vector_free);
+	shared_ptr<gsl_matrix> eigenVecs(checkAlloc(gsl_matrix_alloc(N, N)), &gsl_matrix_free);
 	
 	// Since gsl_eigen_symmv modifies a matrix in place, make a copy first
 	shared_ptr<gsl_matrix> aCopy;
 	matrixCopy(aCopy, a);
 			
-	int status = gsl_eigen_symmv(aCopy.get(), eigenVals.get(), eigenVecs.get(), 
-			eigenWork.get());
-	if (status) {
-		throw std::runtime_error(std::string("While generating multivariate normal vector: ") 
-			+ gsl_strerror(status));
-	}
+	gslCheck( gsl_eigen_symmv(aCopy.get(), eigenVals.get(), eigenVecs.get(), 
+			eigenWork.get()), "While generating multivariate normal vector: ");
 			
 	// Multiply eigenVecs by sqrt(diag(eigenVals)) to get a matrix 
 	//	that when multiplied by its transpose produces covar
@@ -241,11 +230,8 @@ shared_ptr<gsl_matrix> getHalfMatrix(const shared_ptr<gsl_matrix>& a) {
 				throw std::invalid_argument("Matrix is not positive semidefinite.");
 			}
 		}
-		status = gsl_vector_scale(&(curCol.vector), sqrt(curVal));
-		if (status) {
-			throw std::runtime_error(std::string("While generating multivariate normal vector: ") 
-				+ gsl_strerror(status));
-		}
+		gslCheck( gsl_vector_scale(&(curCol.vector), sqrt(curVal)), 
+			"While generating multivariate normal vector: ");
 	}
 	
 	return eigenVecs;
@@ -270,15 +256,11 @@ shared_ptr<gsl_matrix> getHalfMatrix(const shared_ptr<gsl_matrix>& a) {
 void matrixCopy(shared_ptr<gsl_matrix>& target, const shared_ptr<gsl_matrix>& newData) {
 	using std::swap;
 	
-	// If an exception is thrown, it will be in the call to gsl_matrix_alloc
-	shared_ptr <gsl_matrix> temp(gsl_matrix_alloc(newData->size1, newData->size2), 
-			&gsl_matrix_free);
-	if (temp.get() == NULL) { throw std::bad_alloc(); }
-	int status = gsl_matrix_memcpy(temp.get(), newData.get());
-	if (status) {
-		throw std::runtime_error(std::string("While copying matrix: ") 
-			+ gsl_strerror(status));
-	}
+	shared_ptr <gsl_matrix> temp(
+		checkAlloc(gsl_matrix_alloc(newData->size1, newData->size2)), 
+		          &gsl_matrix_free);
+
+	gslCheck( gsl_matrix_memcpy(temp.get(), newData.get()), "While copying matrix: "); 
 	
 	// IMPORTANT: no exceptions past this point
 	

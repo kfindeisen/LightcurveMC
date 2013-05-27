@@ -1,17 +1,18 @@
 # Compilation make for Lightcurve MC
 # by Krzysztof Findeisen
 # Created March 24, 2010
-# Last modified May 18, 2013
+# Last modified May 26, 2013
 
 include makefile.inc
 
 #---------------------------------------
 # Select all files
 PROJ     := lightcurveMC
-SOURCES  := binstats.cpp approxequal.cpp nanstats.cpp \
+SOURCES  := binstats.cpp sims.cpp approxequal.cpp fluxmag.cpp \
+	nanstats.cpp mcio.cpp \
 	lcsupport.cpp lightcurve.cpp paramlist.cpp lcregistry.cpp \
-	fluxmag.cpp statsupport.cpp \
-	mcio.cpp lcsio.cpp utils_except.cpp
+	statsupport.cpp \
+	cerror_except.cpp lcsio.cpp utils_except.cpp
 OBJS     := $(SOURCES:.cpp=.o)
 # except must be last because other libraries depend on it
 DIRS     := cmd samples stats waves except 
