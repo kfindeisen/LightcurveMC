@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/unit_stats.cpp
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
- * @date Last modified May 24, 2013
+ * @date Last modified May 28, 2013
  *
  * @todo Break up this file.
  */
@@ -32,8 +32,8 @@
 #include <algorithm>
 #include <limits>
 #include <stdexcept>
-#include <string>
-#include <cerrno>
+//#include <string>
+//#include <cerrno>
 #include <cmath>
 #include <cstring>
 #include <boost/lexical_cast.hpp>
@@ -47,8 +47,10 @@
 #include <gsl/gsl_statistics_double.h>
 #include "../stats/acfinterp.h"
 #include "../approx.h"
+#include "../cerror.h"
 #include "../except/fileio.h"
 #include "../waves/generators.h"
+#include "../gsl_compat.tmp.h"
 #include "../lcsio.h"
 #include "../stats/magdist.h"
 #include "../mcio.h"
@@ -61,6 +63,7 @@
 using std::vector;
 using boost::lexical_cast;
 using boost::shared_ptr;
+using lcmc::utils::checkAlloc;
 
 namespace lcmc { namespace utils {
 
@@ -101,12 +104,8 @@ public:
 	 * @exceptsafe Object construction is atomic.
 	 */
 	StatData() : ptfTimes(), unifTimes() {
-		double minTStep, maxTStep;
-		shared_ptr<FILE> hJulDates(fopen("ptfjds.txt", "r"), &fclose);
-		if (hJulDates.get() == NULL) {
-			throw except::FileIo("Could not open ptfjds.txt.");
-		}
-		readTimeStamps(hJulDates.get(), ptfTimes, minTStep, maxTStep);
+		shared_ptr<FILE> hJulDates = fileCheckOpen("ptfjds.txt", "r");
+		readTimeStamps(hJulDates.get(), ptfTimes);
 
 		for(size_t i = 0; i < TEST_LEN; i++) {
 			unifTimes.push_back(static_cast<double>(i));
@@ -185,10 +184,8 @@ void testNanProof(unsigned long int seed, size_t nTests) {
 		dirty.reserve(nTests);
 		clean.reserve(nTests);
 			
-		shared_ptr<gsl_rng> rng(gsl_rng_alloc(gsl_rng_mt19937), &gsl_rng_free);
-		if (rng.get() == NULL) {
-			throw std::bad_alloc();
-		}
+		shared_ptr<gsl_rng> rng(checkAlloc(gsl_rng_alloc(gsl_rng_mt19937)), 
+			&gsl_rng_free);
 		gsl_rng_set(rng.get(), seed);
 		
 		// Clean is identical to dirty, except that is doesn't have any NaNs
@@ -254,27 +251,23 @@ void testProduct(const shared_ptr< gsl_matrix > & initial)
 	try {	
 		shared_ptr<gsl_matrix> result = lcmc::utils::getHalfMatrix(initial);
 		
-		shared_ptr<gsl_matrix> product(gsl_matrix_calloc(N, N), &gsl_matrix_free);
-		if (product.get() == NULL) {
-			throw std::bad_alloc();
-		}
-		int status = gsl_blas_dgemm(CblasNoTrans, CblasTrans, 1.0, result.get(), result.get(), 
-				0.0, product.get());
+		shared_ptr<gsl_matrix> product(checkAlloc(gsl_matrix_calloc(N, N)), 
+			&gsl_matrix_free);
+		int status = gsl_blas_dgemm(CblasNoTrans, CblasTrans, 1.0, 
+			result.get(), result.get(), 0.0, product.get());
 		if (status) {
-			throw std::runtime_error(gsl_strerror(status));
+			gslCheck(status, "While testing getHalfMatrix(): ");
 		}
 	
-		shared_ptr<gsl_matrix> residuals(gsl_matrix_calloc(N, N), &gsl_matrix_free);
-		if (residuals.get() == NULL) {
-			throw std::bad_alloc();
-		}
+		shared_ptr<gsl_matrix> residuals(checkAlloc(gsl_matrix_calloc(N, N)), 
+			&gsl_matrix_free);
 		status = gsl_matrix_memcpy(residuals.get(), product.get());
 		if (status) {
-			throw std::runtime_error(gsl_strerror(status));
+			gslCheck(status, "While testing getHalfMatrix(): ");
 		}
 		status = gsl_matrix_sub   (residuals.get(), initial.get());
 		if (status) {
-			throw std::runtime_error(gsl_strerror(status));
+			gslCheck(status, "While testing getHalfMatrix(): ");
 		}
 
 		
@@ -506,9 +499,11 @@ BOOST_AUTO_TEST_CASE(zero_variance) {
  * @exceptsafe Does not throw exceptions.
  */
 BOOST_AUTO_TEST_CASE(acf) {
-	shared_ptr<FILE> hTarget(fopen("acftarget.txt", "r"), &fclose);
-	if (hTarget.get() == NULL) {
-		BOOST_FAIL("Could not open reference file: acftarget.txt");
+	shared_ptr<FILE> hTarget;
+	try {
+		hTarget = fileCheckOpen("acftarget.txt", "r");
+	} catch (const except::FileIo& e) {
+		BOOST_FAIL(e.what());
 	}
 	
 	try {
@@ -567,14 +562,10 @@ BOOST_AUTO_TEST_CASE(acf_interp) {
 				char fileName[80];
 				int status = sprintf(fileName, "idl_target_in_%i.txt", i);
 				if (status < 0) {
-					throw std::runtime_error(strerror(status));
+					cError("While testing interp::autoCorr(): ");
 				}
 				
-				shared_ptr<FILE> hInput(fopen(fileName, "r"), &fclose);
-				if (hInput.get() == NULL) {
-					throw except::FileIo("Could not open reference file: " 
-						+ std::string(fileName));
-				}
+				shared_ptr<FILE> hInput = fileCheckOpen(fileName, "r");
 				readMcLightCurve(hInput.get(), offsetIn, times, mags);
 			}
 	
@@ -583,14 +574,10 @@ BOOST_AUTO_TEST_CASE(acf_interp) {
 				char fileName[80];
 				int status = sprintf(fileName, "idl_target_acf_%i.txt", i);
 				if (status < 0) {
-					throw std::runtime_error(strerror(status));
+					cError("While testing interp::autoCorr(): ");
 				}
 	
-				shared_ptr<FILE> hOutput(fopen(fileName, "r"), &fclose);
-				if (hOutput.get() == NULL) {
-					throw except::FileIo("Could not open reference file: "
-						+ std::string(fileName));
-				}
+				shared_ptr<FILE> hOutput = fileCheckOpen(fileName, "r");
 				readMcLightCurve(hOutput.get(), offsetOut, lags, acfs);
 			}
 		} catch (const std::exception& e) {
@@ -640,14 +627,10 @@ BOOST_AUTO_TEST_CASE(peakfind) {
 				char fileName[80];
 				int status = sprintf(fileName, "idl_target_in_%i.txt", i);
 				if (status < 0) {
-					throw std::runtime_error(strerror(status));
+					cError("While testing peakFind(): ");
 				}
 				
-				shared_ptr<FILE> hInput(fopen(fileName, "r"), &fclose);
-				if (hInput.get() == NULL) {
-					throw except::FileIo("Could not open reference file: " 
-						+ std::string(fileName));
-				}
+				shared_ptr<FILE> hInput = fileCheckOpen(fileName, "r");
 				readMcLightCurve(hInput.get(), offsetIn, times, mags);
 			}
 	
@@ -656,14 +639,10 @@ BOOST_AUTO_TEST_CASE(peakfind) {
 				char fileName[80];
 				int status = sprintf(fileName, "idl_target_peak_%i.txt", i);
 				if (status < 0) {
-					throw std::runtime_error(strerror(status));
+					cError("While testing peakFind(): ");
 				}
 				
-				shared_ptr<FILE> hOutput(fopen(fileName, "r"), &fclose);
-				if (hOutput.get() == NULL) {
-					throw except::FileIo("Could not open reference file: "
-						+ std::string(fileName));
-				}
+				shared_ptr<FILE> hOutput = fileCheckOpen(fileName, "r");
 				readMcLightCurve(hOutput.get(), offsetOut, peakTimes, peaks);
 			}
 		} catch (const std::exception& e) {
@@ -708,14 +687,10 @@ BOOST_AUTO_TEST_CASE(peakfind) {
 		char fileName[80];
 		int status = sprintf(fileName, "peakfind_mono_target.txt");
 		if (status < 0) {
-			throw std::runtime_error(strerror(status));
+			cError("While testing peakFind(): ");
 		}
 		
-		shared_ptr<FILE> hInput(fopen(fileName, "r"), &fclose);
-		if (hInput.get() == NULL) {
-			throw except::FileIo("Could not open reference file: " 
-				+ std::string(fileName));
-		}
+		shared_ptr<FILE> hInput = fileCheckOpen(fileName, "r");
 		readMcLightCurve(hInput.get(), offsetIn, times, mags);
 	} catch (const std::exception& e) {
 		BOOST_FAIL(e.what());

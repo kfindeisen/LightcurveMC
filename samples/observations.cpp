@@ -2,7 +2,7 @@
  * @file lightcurveMC/samples/observations.cpp
  * @author Krzysztof Findeisen
  * @date Created May 4, 2012
- * @date Last modified May 25, 2013
+ * @date Last modified May 28, 2013
  */
 
 #include <string>
@@ -16,6 +16,7 @@
 #include "../except/fileio.h"
 #include "../except/inject.h"
 #include "../lcsio.h"
+#include "../mcio.h"
 #include "../nan.h"
 #include "../utils.tmp.h"
 
@@ -84,10 +85,11 @@ Observations::Observations(const std::string& catalogName) : times(), fluxes() {
 void Observations::readFile(const std::string& fileName) {
 	using std::swap;
 
-	// Don't leak an open file in the event of an exception
-	boost::shared_ptr<FILE> hLightCurve(fopen(fileName.c_str(), "r"), &fclose);
-	if (hLightCurve.get() == NULL) {
-		throw except::BadFile("Could not open file " + fileName, fileName);
+	boost::shared_ptr<FILE> hLightCurve;
+	try {
+		hLightCurve = fileCheckOpen(fileName, "r");
+	} catch(const lcmc::except::FileIo& e) {
+		throw except::BadFile(e.what(), fileName);
 	}
 	
 	// Use the existing interface
@@ -160,12 +162,13 @@ const std::vector<std::string> Observations::getLcLibrary(const std::string& cat
 
 	std::vector<std::string> fileList;
 	
-	// Don't leak an open file in the event of an exception
-	boost::shared_ptr<FILE> hCatalog(fopen(catalogName.c_str(), "r"), &fclose);
-	if (hCatalog.get() == NULL) {
-		throw except::NoCatalog("Could not open file '" + catalogName + "'.", 
-			catalogName);
+	boost::shared_ptr<FILE> hCatalog;
+	try {
+		hCatalog = fileCheckOpen(catalogName, "r");
+	} catch (const lcmc::except::FileIo& e) {
+		throw except::NoCatalog(e.what(), catalogName);
 	}
+
 	// Read the catalog line by line
 	/** @todo Add some format checking later!
 	 */
@@ -173,8 +176,7 @@ const std::vector<std::string> Observations::getLcLibrary(const std::string& cat
 		char textBuffer[128];
 		fgets(textBuffer, 128, hCatalog.get());
 		if (ferror(hCatalog.get())) {
-			throw lcmc::except::FileIo("Error while reading " + catalogName + ": "
-				+ strerror(ferror(hCatalog.get())));
+			fileError(hCatalog.get(), "Error while reading " + catalogName + ": ");
 		}
 		// Remove trailing whitespace!
 		std::string strBuffer(textBuffer);

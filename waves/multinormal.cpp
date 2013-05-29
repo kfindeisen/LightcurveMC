@@ -25,6 +25,7 @@ namespace lcmc { namespace utils {
 using std::vector;
 using boost::lexical_cast;
 using boost::shared_ptr;
+using utils::checkAlloc;
 
 /** Given a matrix A, returns a matrix B with the property 
  *	@f$ A = B B^\intercal @f$

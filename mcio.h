@@ -2,7 +2,7 @@
  * @file lightcurveMC/mcio.h
  * @author Krzysztof Findeisen
  * @date Created February 4, 2011
- * @date Last modified May 14, 2013
+ * @date Last modified May 27, 2013
  */
 
 #ifndef LMCIOH
@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <cstdio>
+#include <boost/shared_ptr.hpp>
 
 /** Shorthand for a vector of doubles
  */
@@ -29,5 +30,14 @@ void readTimeStamps(FILE* hInput, DoubleVec &dates);
  */
 void printLightCurve(const std::string& fileName, 
 		const DoubleVec& timeGrid, const DoubleVec& fluxGrid);
+
+/** Wrapper that throws @ref lcmc::except::FileIo "FileIo" if it cannot open a file
+ */
+boost::shared_ptr<FILE> fileCheckOpen(const std::string& fileName, const char* mode);
+
+/** Wrapper that throws @ref lcmc::except::FileIo "FileIo" in response to 
+ *	a C I/O library error
+ */
+void fileError(FILE* const stream, std::string msg);
 
 #endif		// end ifndef LMCIOH

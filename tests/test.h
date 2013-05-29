@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/test.h
  * @author Krzysztof Findeisen
  * @date Created April 28, 2013
- * @date Last modified May 24, 2013
+ * @date Last modified May 28, 2013
  */
 
 #ifndef LCMCTESTH
@@ -103,12 +103,8 @@ public:
 	 * @exceptsafe Object construction is atomic.
 	 */
 	ObsData() : times() {
-		double minTStep, maxTStep;
-		shared_ptr<FILE> hJulDates(fopen("ptfjds.txt", "r"), &fclose);
-		if (hJulDates.get() == NULL) {
-			throw except::FileIo("Could not open ptfjds.txt.");
-		}
-		readTimeStamps(hJulDates.get(), times, minTStep, maxTStep);
+		shared_ptr<FILE> hJulDates = fileCheckOpen("ptfjds.txt", "r");
+		readTimeStamps(hJulDates.get(), times);
 	}
 	
 	~ObsData() {

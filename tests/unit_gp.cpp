@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/unit_gp.cpp
  * @author Krzysztof Findeisen
  * @date Created April 17, 2013
- * @date Last modified May 24, 2013
+ * @date Last modified May 28, 2013
  */
 
 #include "../warnflags.h"
@@ -40,6 +40,7 @@
 #include "../except/data.h"
 #include "../fluxmag.h"
 #include "../lightcurvetypes.h"
+#include "../mcio.h"
 #include "../waves/lightcurves_gp.h"
 
 namespace lcmc { namespace test {
@@ -288,9 +289,11 @@ private:
  * @todo use an interface library to call the R script directly
  */
 void testGp(size_t nTest, const std::string& fileName, const TestFactory& factory) {
-	shared_ptr<FILE> hDump(fopen(fileName.c_str(), "w"), &fclose);
-	if (hDump.get() == NULL) {
-		BOOST_FAIL("Could not open output file " + fileName);
+	shared_ptr<FILE> hDump;
+	try {
+		hDump = fileCheckOpen(fileName, "r");
+	} catch (const except::FileIo& e) {
+		BOOST_FAIL(e.what());
 	}
 
 	try {
@@ -307,11 +310,13 @@ void testGp(size_t nTest, const std::string& fileName, const TestFactory& factor
 					it != mags.end(); it++) {
 				if (it == mags.begin()) {
 					if (fprintf(hDump.get(), "%0.5f", *it) < 0) {
-						throw except::FileIo(strerror(errno));
+						fileError(hDump.get(), "While printing to " 
+							+ fileName +":");
 					}
 				} else {
 					if (fprintf(hDump.get(), ", %0.5f", *it) < 0) {
-						throw except::FileIo(strerror(errno));
+						fileError(hDump.get(), "While printing to " 
+							+ fileName +":");
 					}
 				}
 			}

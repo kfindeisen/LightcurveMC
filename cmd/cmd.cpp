@@ -2,7 +2,7 @@
  * @file lightcurveMC/cmd/cmd.cpp
  * @author Krzysztof Findeisen
  * @date Created April 12, 2013
- * @date Last modified May 22, 2013
+ * @date Last modified May 27, 2013
  */
 
 #include <stdexcept>
@@ -109,12 +109,13 @@ void parseArguments(int argc, char* argv[],
 	try {
 		//--------------------------------------------------
 		// Common constraints
-		   PositiveNumber<double>    posReal;
-		   PositiveNumber<long>      posInt;
-		   PositiveNumber<Range>     posRange;
-		NonNegativeNumber<double> nonNegReal;
-		NonNegativeNumber<long>   nonNegInt;
-		UnitSubrange unitRange;
+		// TCLAP::Constraint interface not declared const :(
+		static    PositiveNumber<double>    posReal;
+		static    PositiveNumber<long>      posInt;
+		static    PositiveNumber<Range>     posRange;
+		static NonNegativeNumber<double> nonNegReal;
+		static NonNegativeNumber<long>   nonNegInt;
+		static UnitSubrange unitRange;
 	
 		//--------------------------------------------------
 		// Mandatory simulation settings
@@ -186,7 +187,8 @@ void parseArguments(int argc, char* argv[],
 			"the smallest and largest event widths to be tested. The width will be drawn from a log-uniform distribution.", 
 			false, 
 			Range(), &posRange, cmd);
-		ValueArg<Range> argWidth2 ("", "width2",   "the smallest and largest secondary widths to be tested. The width will be drawn from a log-uniform distribution.", 
+		ValueArg<Range> argWidth2 ("", "width2", 
+			"the smallest and largest secondary widths to be tested. The width will be drawn from a log-uniform distribution.", 
 			false, 
 			Range(), &posRange, cmd);
 		ValueArg<Range> argPer2 ("", "period2", 
@@ -264,6 +266,7 @@ void parseArguments(int argc, char* argv[],
 	} catch (const TCLAP::ArgException& e) {
 		// Translate to a generic exception to encapsulate our choice of parser
 		throw except::ParseError(e.argId() 
+			// Emulate TCLAP error reporting format
 			+ "\n             " + e.error() + "\n\n" 
 			+ "For complete USAGE and HELP type: \n   " 
 			+ cmd.getProgramName() + " --help\n");

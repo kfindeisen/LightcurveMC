@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/unit_dmdt.cpp
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified May 23, 2013
+ * @date Last modified May 27, 2013
  */
 
 #include "../warnflags.h"
@@ -38,8 +38,10 @@
 #include "../binstats.h"
 #include "../stats/cut.tmp.h"
 #include "../stats/dmdt.h"
+#include "../gsl_compat.tmp.h"
 
 using std::vector;
+using lcmc::utils::checkAlloc;
 
 // Ignore this declaration, since for some reason it confuses Doxygen
 /// @cond
@@ -69,10 +71,7 @@ public:
 	 * @exceptsafe Object construction is atomic.
 	 */
 	SimData() : amplitude(3.290), deltaM(), deltaT(), binEdges(), 
-			randomizer(gsl_rng_alloc(gsl_rng_mt19937), &gsl_rng_free) {
-		if (randomizer.get() == NULL) {
-			throw std::bad_alloc();
-		}
+			randomizer(checkAlloc(gsl_rng_alloc(gsl_rng_mt19937)), &gsl_rng_free) {
 		gsl_rng_set(randomizer.get(), 42);
 		
 		// Preliminary data set

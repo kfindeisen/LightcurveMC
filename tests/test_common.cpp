@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/test_common.cpp
  * @author Krzysztof Findeisen
  * @date Created April 28, 2013
- * @date Last modified May 24, 2013
+ * @date Last modified May 27, 2013
  */
 
 #include "../warnflags.h"
@@ -36,8 +36,9 @@
 #include <boost/lexical_cast.hpp>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
-#include "test.h"
+#include "../gsl_compat.tmp.h"
 #include "../lightcurvetypes.h"
+#include "test.h"
 
 namespace lcmc { 
 
@@ -48,6 +49,7 @@ namespace test {
 
 using boost::lexical_cast;
 using std::vector;
+using utils::checkAlloc;
 
 /** Wrapper for a trusted Nan-testing function
  *
@@ -321,10 +323,7 @@ TestFactory::~TestFactory() {
  * @exceptsafe Object creation is atomic
  */
 TestRandomFactory::TestRandomFactory() 
-		: TestFactory(), rng(gsl_rng_alloc(gsl_rng_mt19937)) {
-	if (rng == NULL) {
-		throw std::bad_alloc();
-	}
+		: TestFactory(), rng(checkAlloc(gsl_rng_alloc(gsl_rng_mt19937))) {
 	gsl_rng_set(rng, 5489);
 }
 

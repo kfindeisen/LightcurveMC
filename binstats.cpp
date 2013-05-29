@@ -2,7 +2,7 @@
  * @file lightcurveMC/binstats.cpp
  * @author Krzysztof Findeisen
  * @date Created June 6, 2011
- * @date Last modified May 24, 2013
+ * @date Last modified May 28, 2013
  */
 
 #include <algorithm>
@@ -19,12 +19,14 @@
 #include <timescales/timescales.h>
 #include "stats/acfinterp.h"
 #include "binstats.h"
+#include "cerror.h"
 #include "stats/cut.tmp.h"
 #include "stats/dmdt.h"
 #include "stats/experimental.h"
 #include "except/fileio.h"
 #include "fluxmag.h"
 #include "stats/magdist.h"
+#include "mcio.h"
 #include "nan.h"
 #include "stats/peakfind.h"
 #include "except/undefined.h"
@@ -569,8 +571,7 @@ void LcBinStats::printBinStats(FILE* const file) const {
 	// Start with the bin ID
 	int status = fprintf(file, "%s", binName.c_str());
 	if (status < 0) {
-		throw std::runtime_error("Could not print output in printBinStats(): " 
-			+ string(strerror(errno)));
+		cError("Could not print output in printBinStats(): ");
 	}
 
 	if (hasStat(stats, C1)) {
@@ -630,8 +631,7 @@ void LcBinStats::printBinStats(FILE* const file) const {
 
 	status = fprintf(file, "\n");
 	if (status < 0) {
-		throw std::runtime_error("Could not print output in printBinStats(): " 
-			+ string(strerror(errno)));
+		cError("Could not print output in printBinStats(): ");
 	}
 }
 
@@ -658,98 +658,84 @@ void LcBinStats::printBinHeader(FILE* const file, const RangeList& binSpecs,
 
 	int status = sprintf(binLabel, "LCType\t");
 	if (status < 0) {
-		throw std::runtime_error("String formatting error in printBinHeader(): " 
-			+ string(strerror(errno)));
+		cError("String formatting error in printBinHeader(): ");
 	}
 	for(RangeList::const_iterator it = binSpecs.begin(); it != binSpecs.end(); it++) {
 		status = sprintf(binLabel, "%s\t%-7s", binLabel, (*it).c_str());
 		if (status < 0) {
-			throw std::runtime_error("String formatting error in printBinHeader(): " 
-				+ string(strerror(errno)));
+			cError("String formatting error in printBinHeader(): ");
 		}
 	}
 	
 	status = sprintf(binLabel, "%s\tNoise", binLabel);
 	if (status < 0) {
-		throw std::runtime_error("String formatting error in printBinHeader(): " 
-			+ string(strerror(errno)));
+		cError("String formatting error in printBinHeader(): ");
 	}
 
 	if (hasStat(outputStats, C1)) {
 		status = sprintf(binLabel, "%s\tGrankin C1±err\tC1 Distribution", binLabel);
 		if (status < 0) {
-			throw std::runtime_error("String formatting error in printBinHeader(): " 
-				+ string(strerror(errno)));
+			cError("String formatting error in printBinHeader(): ");
 		}
 	}
 	if (hasStat(outputStats, PERIOD)) {
 		status = sprintf(binLabel, "%s\tPeriod±err\tFinite\tPeriod Distribution", binLabel);
 		if (status < 0) {
-			throw std::runtime_error("String formatting error in printBinHeader(): " 
-				+ string(strerror(errno)));
+			cError("String formatting error in printBinHeader(): ");
 		}
 	}
 	if (hasStat(outputStats, PERIODOGRAM)) {
 		status = sprintf(binLabel, "%s\tPeriodograms", binLabel);
 		if (status < 0) {
-			throw std::runtime_error("String formatting error in printBinHeader(): " 
-				+ string(strerror(errno)));
+			cError("String formatting error in printBinHeader(): ");
 		}
 	}
 	if (hasStat(outputStats, DMDTCUT)) {
 		status = sprintf(binLabel, "%s\t50%% cut at 1/3±err\tFinite\t50%%@1/3 Distribution\t50%% cut at 1/2±err\tFinite\t50%%@1/2 Distribution\t90%% cut at 1/3±err\tFinite\t90%%@1/3 Distribution\t90%% cut at 1/2±err\tFinite\t90%%@1/2 Distribution", binLabel);
 		if (status < 0) {
-			throw std::runtime_error("String formatting error in printBinHeader(): " 
-				+ string(strerror(errno)));
+			cError("String formatting error in printBinHeader(): ");
 		}
 	}
 	if (hasStat(outputStats, DMDT)) {
 		status = sprintf(binLabel, "%s\tDMDT Medians", binLabel);
 		if (status < 0) {
-			throw std::runtime_error("String formatting error in printBinHeader(): " 
-				+ string(strerror(errno)));
+			cError("String formatting error in printBinHeader(): ");
 		}
 	}
 	if (hasStat(outputStats, IACFCUT)) {
 		status = sprintf(binLabel, "%s\tACF cut at 1/9±err\tFinite\tACF@1/3 Distribution\tACF cut at 1/4±err\tFinite\tACF@1/4 Distribution\tACF cut at 1/2±err\tFinite\tACF@1/2 Distribution", binLabel);
 		if (status < 0) {
-			throw std::runtime_error("String formatting error in printBinHeader(): " 
-				+ string(strerror(errno)));
+			cError("String formatting error in printBinHeader(): ");
 		}
 	}
 	if (hasStat(outputStats, SACFCUT)) {
 		status = sprintf(binLabel, "%s\tACF cut at 1/9±err\tFinite\tACF@1/3 Distribution\tACF cut at 1/4±err\tFinite\tACF@1/4 Distribution\tACF cut at 1/2±err\tFinite\tACF@1/2 Distribution", binLabel);
 		if (status < 0) {
-			throw std::runtime_error("String formatting error in printBinHeader(): " 
-				+ string(strerror(errno)));
+			cError("String formatting error in printBinHeader(): ");
 		}
 	}
 	if (hasStat(outputStats, IACF)) {
 		status = sprintf(binLabel, "%s\tACFs", binLabel);
 		if (status < 0) {
-			throw std::runtime_error("String formatting error in printBinHeader(): " 
-				+ string(strerror(errno)));
+			cError("String formatting error in printBinHeader(): ");
 		}
 	}
 	if (hasStat(outputStats, PEAKCUT)) {
 		status = sprintf(binLabel, "%s\tPeakFind cut at 1/3±err\tFinite\tPeakFind@1/3 Distribution\tPeakFind at 1/2±err\tFinite\tPeakFind@1/2 Distribution\tPeakFind at 80%%±err\tFinite\tPeakFind@80%% Distribution", binLabel);
 		if (status < 0) {
-			throw std::runtime_error("String formatting error in printBinHeader(): " 
-				+ string(strerror(errno)));
+			cError("String formatting error in printBinHeader(): ");
 		}
 	}
 	if (hasStat(outputStats, PEAKFIND)) {
 		status = sprintf(binLabel, "%s\tPeaks", binLabel);
 		if (status < 0) {
-			throw std::runtime_error("String formatting error in printBinHeader(): " 
-				+ string(strerror(errno)));
+			cError("String formatting error in printBinHeader(): ");
 		}
 	}
 
 	status = fprintf(file, "%s\n", binLabel);
 	if (status < 0) {
-		throw std::runtime_error("Could not print header in printBinHeader(): " 
-			+ string(strerror(errno)));
+		cError("String formatting error in printBinHeader(): ");
 	}
 }
 
@@ -792,22 +778,19 @@ string LcBinStats::makeBinName(const string& lcName, const RangeList& binSpecs,
 	
 	int status = sprintf(binId, "%-14s", lcName.c_str());
 	if (status < 0) {
-		throw std::runtime_error("String formatting error in makeBinName(): " 
-			+ string(strerror(errno)));
+		cError("String formatting error in makeBinName(): ");
 	}
 	for(RangeList::const_iterator it = binSpecs.begin(); 
 			it != binSpecs.end(); it++) {
 		double paramMin = binSpecs.getMin(*it);
 		status = sprintf(binId, "%s\t%0.3g", binId, paramMin);
 		if (status < 0) {
-			throw std::runtime_error("String formatting error in makeBinName(): " 
-				+ string(strerror(errno)));
+			cError("String formatting error in makeBinName(): ");
 		}
 	}
 	status = sprintf(binId, "%s\t%s", binId, noise.c_str());
 	if (status < 0) {
-		throw std::runtime_error("String formatting error in makeBinName(): " 
-			+ string(strerror(errno)));
+		cError("String formatting error in makeBinName(): ");
 	}
 	
 	return binId;
@@ -836,8 +819,7 @@ string LcBinStats::makeFileName(const string& lcName, const RangeList& binSpecs,
 
 	int status = sprintf(binId, "%s", lcName.c_str());
 	if (status < 0) {
-		throw std::runtime_error("String formatting error in makeBinName(): " 
-			+ string(strerror(errno)));
+		cError("String formatting error in makeFileName(): ");
 	}
 	for(RangeList::const_iterator it = binSpecs.begin(); it != binSpecs.end(); it++) {
 		char shortName = (*it)[0];
@@ -845,14 +827,12 @@ string LcBinStats::makeFileName(const string& lcName, const RangeList& binSpecs,
 		
 		status = sprintf(binId, "%s_%c%0.2f", binId, shortName, paramMin);
 		if (status < 0) {
-			throw std::runtime_error("String formatting error in makeBinName(): " 
-				+ string(strerror(errno)));
+			cError("String formatting error in makeFileName(): ");
 		}
 	}
 	status = sprintf(binId, "%s_n%s", binId, noise.c_str());
 	if (status < 0) {
-		throw std::runtime_error("String formatting error in makeBinName(): " 
-			+ string(strerror(errno)));
+		cError("String formatting error in makeFileName(): ");
 	}
 	
 	return binId;
@@ -957,21 +937,16 @@ void printStat(FILE* const file, const DoubleVec& archive,
 	int status = fprintf(file, "\t%6.3g±%5.2g\t%6.3g\t%s",
 			meanStats, stddevStats, fracStats, distribFile.c_str() );
 	if (status < 0) {
-		throw std::runtime_error(string("Could not print statistics in printStat(): ") 
-			+ strerror(errno));
+		cError("Could not print statistics in printStat(): ");
 	}
 
-	shared_ptr<FILE> auxFile(fopen(distribFile.c_str(), "w"), &fclose);
-	if (auxFile.get() == NULL) {
-		throw lcmc::except::FileIo("Could not open log file '" + distribFile 
-			+ "' in printStat(): " + strerror(errno));
-	}
+	shared_ptr<FILE> auxFile = fileCheckOpen(distribFile, "w");
 	
 	for(size_t i = 0; i < archive.size(); i++) {
 		status = fprintf(auxFile.get(), "%0.3f\n", archive[i]);
 		if (status < 0) {
-			throw lcmc::except::FileIo("Could not write to log file '" + distribFile 
-				+ "' in printStat(): " + strerror(errno));
+			fileError(auxFile.get(), "Could not write to log file '" + distribFile 
+				+ "' in printStat(): ");
 		}
 	}
 }
@@ -1012,21 +987,16 @@ void printStatAlwaysDefined(FILE* const file, const DoubleVec& archive,
 	int status = fprintf(file, "\t%6.3g±%5.2g\t%s",
 			meanStats, stddevStats, distribFile.c_str() );
 	if (status < 0) {
-		throw std::runtime_error(string("Could not print statistics in printStatAlwaysDefined(): ") 
-			+ strerror(errno));
+		cError("Could not print statistics in printStatAlwaysDefined(): ");
 	}
 
-	shared_ptr<FILE> auxFile(fopen(distribFile.c_str(), "w"), &fclose);
-	if (auxFile.get() == NULL) {
-		throw lcmc::except::FileIo("Could not open log file '" + distribFile 
-			+ "' in printStatAlwaysDefined(): " + strerror(errno));
-	}
+	shared_ptr<FILE> auxFile = fileCheckOpen(distribFile, "w");
 	
 	for(size_t i = 0; i < archive.size(); i++) {
 		status = fprintf(auxFile.get(), "%0.3f\n", archive[i]);
 		if (status < 0) {
-			throw lcmc::except::FileIo("Could not write to log file '" + distribFile 
-				+ "' in printStatAlwaysDefined(): " + strerror(errno));
+			fileError(auxFile.get(), "Could not write to log file '" + distribFile 
+				+ "' in printStatAlwaysDefined(): ");
 		}
 	}
 }
@@ -1057,40 +1027,35 @@ void printStat(FILE* const file, const std::vector<DoubleVec>& timeArchive,
 	
 	int status = fprintf(file, "\t%s", distribFile.c_str());
 	if (status < 0) {
-		throw std::runtime_error(string("Could not print log file name in printStat(): ") 
-			+ strerror(errno));
+		cError("Could not print log file name in printStat(): ");
 	}
 
-	shared_ptr<FILE> auxFile(fopen(distribFile.c_str(), "w"), &fclose);
-	if (auxFile.get() == NULL) {
-		throw lcmc::except::FileIo("Could not open log file '" + distribFile 
-			+ "' in printStat(): " + strerror(errno));
-	}
+	shared_ptr<FILE> auxFile = fileCheckOpen(distribFile, "w");
 	
 	for(size_t i = 0; i < statArchive.size(); i++) {
 		for(size_t j = 0; j < timeArchive[i].size(); j++) {
 			status = fprintf(auxFile.get(), "%0.3f ", timeArchive[i][j]);
 			if (status < 0) {
-				throw lcmc::except::FileIo("Could not write to log file '" 
-					+ distribFile + "' in printStat(): " + strerror(errno));
+				fileError(auxFile.get(), "Could not write to log file '" 
+					+ distribFile + "' in printStat(): ");
 			}
 		}
 		status = fprintf(auxFile.get(), "\n");
 		if (status < 0) {
-			throw lcmc::except::FileIo("Could not write to log file '" 
-				+ distribFile + "' in printStat(): " + strerror(errno));
+			fileError(auxFile.get(), "Could not write to log file '" 
+				+ distribFile + "' in printStat(): ");
 		}
 		for(size_t j = 0; j < statArchive[i].size(); j++) {
 			status = fprintf(auxFile.get(), "%0.3f ", statArchive[i][j]);
 			if (status < 0) {
-				throw lcmc::except::FileIo("Could not write to log file '" 
-					+ distribFile + "' in printStat(): " + strerror(errno));
+				fileError(auxFile.get(), "Could not write to log file '" 
+					+ distribFile + "' in printStat(): ");
 			}
 		}
 		status = fprintf(auxFile.get(), "\n");
 		if (status < 0) {
-			throw lcmc::except::FileIo("Could not write to log file '" 
-				+ distribFile + "' in printStat(): " + strerror(errno));
+			fileError(auxFile.get(), "Could not write to log file '" + distribFile 
+				+ "' in printStat(): ");
 		}
 	}
 }

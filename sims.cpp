@@ -2,7 +2,7 @@
  * @file lightcurveMC/sims.cpp
  * @author Krzysztof Findeisen
  * @date Created May 25, 2013
- * @date Last modified May 26, 2013
+ * @date Last modified May 28, 2013
  */
 
 #include <stdexcept>
@@ -14,6 +14,7 @@
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
 #include "except/fileio.h"
+#include "gsl_compat.tmp.h"
 #include "lightcurvetypes.h"
 #include "mcio.h"
 #include "samples/observations.h"
@@ -26,6 +27,7 @@ using std::string;
 using std::vector;
 using boost::shared_ptr;
 using models::ParamList;
+using utils::checkAlloc;
 
 namespace models {
 
@@ -88,10 +90,7 @@ void makeTimes(const string& dateList, vector<double>& times) {
 	static string oldTimeFile;
 
 	if (oldTimeFile.empty() || oldTimeFile != dateList) {
-		shared_ptr<FILE> hJulDates(fopen(dateList.c_str(), "r"), &fclose);
-		if(NULL == hJulDates.get()) {
-			throw except::FileIo("Could not open timestamp file: " + dateList);
-		}
+		shared_ptr<FILE> hJulDates = fileCheckOpen(dateList, "r");
 
 		// readTimeStamps() is not atomic
 		// use copy-and-swap to ensure the cache doesn't get corrupted
@@ -118,7 +117,7 @@ void makeTimes(const string& dateList, vector<double>& times) {
  *
  * @post The data previously in @p noise are erased
  * @post @p noise.size() = @p times.size()
- * @post @p noise contains uncorrelated Gaussian noise.
+ * @post @p noise contains uncorrelated Gaussian noise with variance &sigma;<sup>2</sup>.
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	generate random numbers or store the output.
@@ -134,10 +133,7 @@ void makeWhiteNoise(const vector<double>& times, double sigma, vector<double>& n
 	static shared_ptr<gsl_rng> mcDriver;
 	// Separate instantiation to ensure gsl_rng_alloc() gets called until it succeeds
 	if (mcDriver.get() == NULL) {
-		mcDriver.reset(gsl_rng_alloc(gsl_rng_mt19937), &gsl_rng_free);
-		if (mcDriver.get() == NULL) {
-			throw std::bad_alloc();
-		}
+		mcDriver.reset(checkAlloc(gsl_rng_alloc(gsl_rng_mt19937)), &gsl_rng_free);
 		gsl_rng_set(mcDriver.get(), 27);
 	}
 
@@ -286,10 +282,7 @@ ParamList drawParams(const models::RangeList& limits) {
 	// Separate initialization to ensure that drawParams() will try to 
 	// allocate an RNG until it succeeds
 	if (!randomizer) {
-		randomizer = gsl_rng_alloc(gsl_rng_mt19937);
-		if (!randomizer) {
-			throw std::bad_alloc();
-		}
+		randomizer = checkAlloc(gsl_rng_alloc(gsl_rng_mt19937));
 	}
 	if (!seeded) {
 		gsl_rng_set(randomizer, 42);

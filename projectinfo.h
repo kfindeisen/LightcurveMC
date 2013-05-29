@@ -2,7 +2,7 @@
  * @file lightcurveMC/projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified May 26, 2013
+ * @date Last modified May 28, 2013
  */
 
 #ifndef LCMCPROJINFOH
@@ -16,7 +16,7 @@
 /** Current version of the program, to make version quoted by program 
  *	consistent with documentation.
  */
-#define VERSION_STRING "2.3.0-devel+build.2"
+#define VERSION_STRING "2.3.0-devel+build.3"
 
 /** @mainpage
  *
@@ -38,7 +38,7 @@
  * - Support for calculation of C1, periods, &Delta;m&Delta;t timescales, 
  *	ACF timescales, and peak-finding.
  *
- * @section about About
+ * @section credits Credits
  *
  * Lightcurve MC was primarily written by Krzysztof Findeisen. Please contact 
  * him at krzys, astro caltech edu for questions or feedback. The peak-finding 

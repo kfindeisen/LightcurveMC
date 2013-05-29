@@ -2,7 +2,7 @@
  * @file cerror_except.cpp
  * @author Krzysztof Findeisen
  * @date Created May 26, 2013
- * @date Last modified May 26, 2013
+ * @date Last modified May 27, 2013
  */
 
 #include <stdexcept>
@@ -10,7 +10,7 @@
 #include <cerrno>
 #include <cstring>
 #include <gsl/gsl_errno.h>
-#include "gsl_compat.tmp.h"
+#include "cerror.h"
 
 /** Wrapper that throws @c std::runtime_error in response to a GSL error
  *
@@ -37,6 +37,8 @@ void gslCheck(int status, std::string msg) {
  */
 void cError(std::string msg) {
 	if (errno != 0) {
-		throw std::runtime_error(msg + strerror(errno));
+		int err = errno;
+		errno = 0;
+		throw std::runtime_error(msg + strerror(err));
 	}
 }
