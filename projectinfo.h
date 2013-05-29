@@ -2,7 +2,7 @@
  * @file lightcurveMC/projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified May 28, 2013
+ * @date Last modified May 29, 2013
  */
 
 #ifndef LCMCPROJINFOH
@@ -41,8 +41,9 @@
  * @section credits Credits
  *
  * Lightcurve MC was primarily written by Krzysztof Findeisen. Please contact 
- * him at krzys, astro caltech edu for questions or feedback. The peak-finding 
- * code was adapted from work by Ann-Marie Cody.
+ * him at krzys, astro caltech edu for questions, feedback, or bug reports. 
+ * The @c peakFind function was adapted from work by Ann Marie Cody. 
+ * The @c ParamList class was suggested by Tim Morton.
  * 
  * @page install Installation
  *
@@ -121,14 +122,14 @@
  * <dt><tt>-\-noise &lt;amp&gt;</tt></dt><dd>Adds white noise of the specified 
  *	RMS amplitude (in units of the median light curve flux) to the 
  *	measurements before carrying out any statistical analysis. This 
- *	argument may not be combined with the -\-add argument.</dd>
+ *	argument may not be combined with the @c -\-add argument.</dd>
  * <dt><tt>-\-ntrials &lt;number&gt;</tt></dt><dd>The number of light curves to 
- *	generate (per light curve type). If no -\-ntrials argument is 
+ *	generate (per light curve type). If no @c -\-ntrials argument is 
  *	specified, defaults to 1000.</dd>
  * <dt><tt>-\-print &lt;number&gt;</tt></dt><dd>This argument is intended primarily for 
  *	debugging program behavior. It prints the specified number of light 
  *	curves (per light curve type) to temporary files as tables of date and 
- *	flux. If no -\-print argument is specified, defaults to 0.</dd>
+ *	flux. If no @c -\-print argument is specified, defaults to 0.</dd>
  * <dt><tt>-s, -\-stat &lt;keyword&gt;</tt></dt><dd>This argument, which may be 
  * repeated, specifies the test(s) to run on the simulated light curves. 
  * Allowed keywords are: 
@@ -143,7 +144,7 @@
  *	<dt><tt>periplot</tt></dt><dd>Creates a file containing all the Lomb-Scargle 
  *	periodograms generated in a particular run</dd>
  *	<dt><tt>dmdtcut</tt></dt><dd>Calculates the mean and scatter, across multiple 
- *	light curves, of the &Delta;t where the median and the 90th 
+ *	light curves, of the &Delta;t value where the median and the 90th 
  *	percentile of &Delta;m cross one third and one half of the measured 
  *	light curve amplitude</dd>
  *	<dt><tt>dmdtplot</tt></dt><dd>Creates a file containing all the median 
@@ -183,7 +184,7 @@
  * the first and second numbers the same.</dd>
  * <dt><tt>&lt;light curve list&gt;</tt></dt><dd>A space-separated list of keywords 
  * describing the light curve(s) to simulate. At least one value is required, 
- * and the list must be given after &lt;jdlist&gt; if the latter is used. 
+ * and the list must be given after @c &lt;jdlist&gt; if the latter is used. 
  * Allowed keywords are:
  *	<dl>
  *	<dt><tt>flat</tt></dt><dd>Generates a light curve with no variability. 
@@ -460,7 +461,7 @@
  * specifying different numbers of parameters from run to run will lead to 
  * outputs with different numbers of columns, which can no longer be easily 
  * read as a single table. The next entry is the file name provided with the 
- * -\-add keyword, if applicable, or the -\-noise keyword otherwise.
+ * @c -\-add keyword, if applicable, or the @c -\-noise keyword otherwise.
  * 
  * The remaining elements of the row are the outputs of the statistical 
  * analysis. Any statistics not calculated by the program are omitted. 
@@ -591,7 +592,7 @@ sine            0.01    4       0       0.05      4.01± 0.19         1  run_peri
  * 
  * @subsection ex_toomany Unnecessary Parameters
  *
- * Unused parameters change the file format but not the statistics: 
+ * Unused parameters change the output format but not the statistics: 
  * 
  * @par Type: 
 @verbatim
@@ -625,7 +626,7 @@ flare_dip       1       4       0       0.3     0.01    0        0.111±0.053    
 flare_peak      1       4       0       0.3     0.01    0        0.747±0.069    run_c1_flare_peak_a1.00_p4.00_p0.00_w0.30_w0.01_n0.dat
 @endverbatim
  * 
- * @subsection ex_inject Injection Tests, Multiple Runs
+ * @subsection ex_inject Injection Tests, Multiple Statistics, Multiple Runs
  *
  * At what amplitude can clean statistics still be extracted given realistic noise?
  * 
