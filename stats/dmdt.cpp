@@ -2,23 +2,32 @@
  * @file lightcurveMC/stats/dmdt.cpp
  * @author Krzysztof Findeisen
  * @date Created April 12, 2013
- * @date Last modified May 22, 2013
+ * @date Last modified June 8, 2013
+ *
+ * @todo Break up this file.
  */
 
 #include <algorithm>
 #include <limits>
 #include <string>
 #include <vector>
+#include <cmath>
 #include <cstdio>
 #include <boost/lexical_cast.hpp>
+#include <timescales/timescales.h>
+#include "cut.tmp.h"
 #include "dmdt.h"
 #include "../except/data.h"
+#include "magdist.h"
+#include "statfamilies.h"
+#include "../except/undefined.h"
 #include "../utils.tmp.h"
 
 namespace lcmc { namespace stats {
 
 using boost::lexical_cast;
 using kpfutils::quantile;
+using std::vector;
 
 /** Computes the fraction of pairs of magnitudes above some threshold found 
  *	in each &Delta;t bin of a &Delta;m&Delta;t plot.
@@ -186,6 +195,112 @@ void deltaMBinQuantile(const DoubleVec &deltaT, const DoubleVec &deltaM,
 	// IMPORTANT: no exceptions beyond this point
 	
 	swap(quants, tempQuants);
+}
+
+/** Does all &Delta;m&Delta;t-related computations for a given light curve.
+ *
+ * @param[in] times The times at which the light curve was sampled.
+ * @param[in] mags The values of the light curve
+ * @param[in] getCut Flag indicating that cuts through the the 
+ *	&Delta;m&Delta;t quantiles should be extracted
+ * @param[in] getPlot Flag indicating that the &Delta;m&Delta;t quantiles 
+ *	should be stored
+ * @param[out] cut50Amp3 The NamedCollection in which to record the 
+ *	&Delta;t value at which the 50th percentile of &Delta;m crosses 1/3 
+ *	the amplitude.
+ * @param[out] cut50Amp2 The NamedCollection in which to record the 
+ *	&Delta;t value at which the 50th percentile of &Delta;m crosses 1/2 
+ *	the amplitude.
+ * @param[out] cut90Amp3 The NamedCollection in which to record the 
+ *	&Delta;t value at which the 90th percentile of &Delta;m crosses 1/3 
+ *	the amplitude.
+ * @param[out] cut90Amp2 The NamedCollection in which to record the 
+ *	&Delta;t value at which the 90th percentile of &Delta;m crosses 1/2 
+ *	the amplitude.
+ * @param[out] dmdtMed The NamedCollection in which to record the 
+ *	median value of &Delta;m as a function of &Delta;t.
+ *
+ * @pre @p times.size() = @p mags.size()
+ * @pre Neither @p times nor @p mags may contain NaNs
+ * 
+ * @post if @p getCut, then new elements are appended to @p cut50Amp3, 
+ *	@p cut50Amp2, @p cut90Amp3, and @p cut90Amp2. If any of the cuts are 
+ *	undefined, NaN is appended to the corresponding collection.
+ * @post if @p getPlot, then a new element is appended to @p dmdtMed.
+ *
+ * @exception std::bad_alloc Thrown if there is not enough memory to 
+ *	store more statistics.
+ * @exception std::invalid_argument Thrown if @p times and @p mags do not 
+ *	have matching lengths or if @p times or @p data contains NaNs.
+ * @exception lcmc::stats::except::NotEnoughData Thrown if @p times 
+ *	and @p mags are too short to calculate the desired statistics.
+ *
+ * @exceptsafe The program is in a consistent state in the event of an exception.
+ */
+void doDmdt(const vector<double>& times, const vector<double>& mags, 
+		bool getCut, bool getPlot, 
+		CollectedScalars& cut50Amp3, CollectedScalars& cut50Amp2, 
+		CollectedScalars& cut90Amp3, CollectedScalars& cut90Amp2, 
+		CollectedPairs& dmdtMed) {
+	if (times.size() != mags.size()) {
+		throw std::invalid_argument("Times and mags must have the same length in doDmdt() (gave " 
+			+ lexical_cast<string>(times.size()) + " for times and " 
+			+ lexical_cast<string>(mags.size()) + " for mags).");
+	}
+
+	if (getCut || getPlot) {
+		try {
+			double amplitude = getAmplitude(mags);
+			
+			if (amplitude > 0) {
+				double minBin = -1.97;
+				double maxBin = log10(kpftimes::deltaT(times));
+				
+				DoubleVec binEdges;
+				for (double bin = minBin; bin < maxBin; bin += 0.15) {
+					binEdges.push_back(pow(10.0,bin));
+				}
+				// Get the bin containing maxBin as well
+				binEdges.push_back(pow(10.0,maxBin));
+				
+				DoubleVec deltaT, deltaM;
+				kpftimes::dmdt(times, mags, deltaT, deltaM);
+				
+				// Need median for for both getCut and getPlot
+				DoubleVec change50;
+				deltaMBinQuantile(deltaT, deltaM, binEdges, change50, 0.50);
+				
+				if (getCut) {
+					DoubleVec change90;
+					deltaMBinQuantile(deltaT, deltaM, binEdges, change90, 0.90);
+					
+					// no exceptions (other than bad_alloc) beyond this point
+					
+					// Key cuts
+					cut50Amp3.addStat(cutFunction(binEdges, 
+						change50, MoreThan(amplitude / 3.0) ));
+					cut50Amp2.addStat(cutFunction(binEdges, 
+						change50, MoreThan(amplitude / 2.0) ));
+					
+					cut90Amp3.addStat(cutFunction(binEdges, 
+						change90, MoreThan(amplitude / 3.0) ));
+					cut90Amp2.addStat(cutFunction(binEdges, 
+						change90, MoreThan(amplitude / 2.0) ));
+				}
+
+				// no exceptions (other than bad_alloc) beyond this point
+				
+				if (getPlot) {
+					dmdtMed.addStat(binEdges, change50);
+				}
+			}
+		} catch (const except::NotEnoughData &e) {
+			// The one kind of Undefined we don't want to ignore
+			throw;
+		} catch (const except::Undefined &e) {
+			// Don't add any dmdt stats; move on
+		}
+	}
 }
 
 }}	// end lcmc::stats

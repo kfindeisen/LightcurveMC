@@ -88,7 +88,7 @@ using models::RangeList;
  * @exceptsafe All arguments are left in valid states in the event 
  *	of an exception.
  *
- * @todo Break up this function.
+ * @todo Reimplenent using <tt>Boost.Program Options</tt>
  * @todo Current command-line format vulnerable to mismatches in which 
  *	argument is being referred to. Rewrite!
  */

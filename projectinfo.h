@@ -2,7 +2,7 @@
  * @file lightcurveMC/projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified May 29, 2013
+ * @date Last modified June 7, 2013
  */
 
 #ifndef LCMCPROJINFOH
@@ -16,7 +16,7 @@
 /** Current version of the program, to make version quoted by program 
  *	consistent with documentation.
  */
-#define VERSION_STRING "2.3.0-devel+build.3"
+#define VERSION_STRING "2.3.0-devel+build.4"
 
 /** @mainpage
  *
@@ -470,7 +470,8 @@
  * <dl>
  * <dt><tt>c1</tt></dt><dd>The program prints the average value of C1 (@cite RotorCtts) 
  * calculated from the simulation runs, followed by &plusmn;, followed by the 
- * standard deviation of the C1 values. The program then prints the name of a 
+ * standard deviation of the C1 values. The program then prints the fraction 
+ * of simulations in which C1 was defined, followed by the name of a 
  * file containing the individual C1 values from each simulation, one per 
  * line, for more in-depth analysis of the results.</dd>
  * <dt><tt>period</tt></dt><dd>The program prints the average period calculated from 
@@ -619,11 +620,11 @@ lightcurveMC myjdlist.txt sine magsine flare_dip flare_peak \
 @endverbatim
  * @par Output: 
 @verbatim
-LCType          a       p       ph      width   width2  Noise   Grankin C1±err  C1 Distribution
-sine            1       4       0       0.3     0.01    0        0.158±0.093    run_c1_sine_a1.00_p4.00_p0.00_w0.30_w0.01_n0.dat
-magsine         1       4       0       0.3     0.01    0        0.496± 0.11    run_c1_magsine_a1.00_p4.00_p0.00_w0.30_w0.01_n0.dat
-flare_dip       1       4       0       0.3     0.01    0        0.111±0.053    run_c1_flare_dip_a1.00_p4.00_p0.00_w0.30_w0.01_n0.dat
-flare_peak      1       4       0       0.3     0.01    0        0.747±0.069    run_c1_flare_peak_a1.00_p4.00_p0.00_w0.30_w0.01_n0.dat
+LCType          a       p       ph      width   width2  Noise   C1±err  Finite	C1 Distribution
+sine            1       4       0       0.3     0.01    0        0.158±0.093    1	run_c1_sine_a1.00_p4.00_p0.00_w0.30_w0.01_n0.dat
+magsine         1       4       0       0.3     0.01    0        0.496± 0.11    1	run_c1_magsine_a1.00_p4.00_p0.00_w0.30_w0.01_n0.dat
+flare_dip       1       4       0       0.3     0.01    0        0.111±0.053    1	run_c1_flare_dip_a1.00_p4.00_p0.00_w0.30_w0.01_n0.dat
+flare_peak      1       4       0       0.3     0.01    0        0.747±0.069    1	run_c1_flare_peak_a1.00_p4.00_p0.00_w0.30_w0.01_n0.dat
 @endverbatim
  * 
  * @subsection ex_inject Injection Tests, Multiple Statistics, Multiple Runs
@@ -644,18 +645,18 @@ lightcurveMC --add myobslist.txt flat broad_peak sharp_peak \
 @endverbatim
  * @par Output: 
 @verbatim
-LCType          a       p       ph      Noise   Grankin C1±err  C1 Distribution Period±err      Finite  Period Distribution
-flat            0.01    4       0       myobslist.txt     0.401±7.5e-10  run_c1_flat_a0.01_p4.00_p0.00_nmyobslist.txt.dat    nan±  nan         0  run_peri_flat_a0.01_p4.00_p0.00_nmyobslist.txt.dat
-broad_peak      0.01    4       0       myobslist.txt     0.402±0.0026   run_c1_broad_peak_a0.01_p4.00_p0.00_nmyobslist.txt.dat      nan±  nan         0  run_peri_broad_peak_a0.01_p4.00_p0.00_nmyobslist.txt.dat
-sharp_peak      0.01    4       0       myobslist.txt     0.402±0.0031   run_c1_sharp_peak_a0.01_p4.00_p0.00_nmyobslist.txt.dat      nan±  nan         0  run_peri_sharp_peak_a0.01_p4.00_p0.00_nmyobslist.txt.dat
-LCType          a       p       ph      Noise   Grankin C1±err  C1 Distribution Period±err      Finite  Period Distribution
-flat            0.1     4       0       myobslist.txt     0.401±7.5e-10  run_c1_flat_a0.10_p4.00_p0.00_nmyobslist.txt.dat    nan±  nan         0  run_peri_flat_a0.10_p4.00_p0.00_nmyobslist.txt.dat
-broad_peak      0.1     4       0       myobslist.txt     0.426±0.024    run_c1_broad_peak_a0.10_p4.00_p0.00_nmyobslist.txt.dat      nan±  nan         0  run_peri_broad_peak_a0.10_p4.00_p0.00_nmyobslist.txt.dat
-sharp_peak      0.1     4       0       myobslist.txt     0.414±0.022    run_c1_sharp_peak_a0.10_p4.00_p0.00_nmyobslist.txt.dat      nan±  nan         0  run_peri_sharp_peak_a0.10_p4.00_p0.00_nmyobslist.txt.dat
-LCType          a       p       ph      Noise   Grankin C1±err  C1 Distribution Period±err      Finite  Period Distribution
-flat            1       4       0       myobslist.txt     0.401±7.5e-10  run_c1_flat_a1.00_p4.00_p0.00_nmyobslist.txt.dat    nan±  nan         0  run_peri_flat_a1.00_p4.00_p0.00_nmyobslist.txt.dat
-broad_peak      1       4       0       myobslist.txt     0.635±0.059    run_c1_broad_peak_a1.00_p4.00_p0.00_nmyobslist.txt.dat      nan±  nan         0  run_peri_broad_peak_a1.00_p4.00_p0.00_nmyobslist.txt.dat
-sharp_peak      1       4       0       myobslist.txt      0.67±0.074    run_c1_sharp_peak_a1.00_p4.00_p0.00_nmyobslist.txt.dat      nan±  nan         0  run_peri_sharp_peak_a1.00_p4.00_p0.00_nmyobslist.txt.dat
+LCType          a       p       ph      Noise   C1±err  Finite	C1 Distribution Period±err      Finite  Period Distribution
+flat            0.01    4       0       myobslist.txt     0.401±7.5e-10  1	run_c1_flat_a0.01_p4.00_p0.00_nmyobslist.txt.dat    nan±  nan         0  run_peri_flat_a0.01_p4.00_p0.00_nmyobslist.txt.dat
+broad_peak      0.01    4       0       myobslist.txt     0.402±0.0026   1	run_c1_broad_peak_a0.01_p4.00_p0.00_nmyobslist.txt.dat      nan±  nan         0  run_peri_broad_peak_a0.01_p4.00_p0.00_nmyobslist.txt.dat
+sharp_peak      0.01    4       0       myobslist.txt     0.402±0.0031   1	run_c1_sharp_peak_a0.01_p4.00_p0.00_nmyobslist.txt.dat      nan±  nan         0  run_peri_sharp_peak_a0.01_p4.00_p0.00_nmyobslist.txt.dat
+LCType          a       p       ph      Noise   C1±err  C1 Distribution Period±err      Finite  Period Distribution
+flat            0.1     4       0       myobslist.txt     0.401±7.5e-10  1	run_c1_flat_a0.10_p4.00_p0.00_nmyobslist.txt.dat    nan±  nan         0  run_peri_flat_a0.10_p4.00_p0.00_nmyobslist.txt.dat
+broad_peak      0.1     4       0       myobslist.txt     0.426±0.024    1	run_c1_broad_peak_a0.10_p4.00_p0.00_nmyobslist.txt.dat      nan±  nan         0  run_peri_broad_peak_a0.10_p4.00_p0.00_nmyobslist.txt.dat
+sharp_peak      0.1     4       0       myobslist.txt     0.414±0.022    1	run_c1_sharp_peak_a0.10_p4.00_p0.00_nmyobslist.txt.dat      nan±  nan         0  run_peri_sharp_peak_a0.10_p4.00_p0.00_nmyobslist.txt.dat
+LCType          a       p       ph      Noise   C1±err  C1 Distribution Period±err      Finite  Period Distribution
+flat            1       4       0       myobslist.txt     0.401±7.5e-10  1	run_c1_flat_a1.00_p4.00_p0.00_nmyobslist.txt.dat    nan±  nan         0  run_peri_flat_a1.00_p4.00_p0.00_nmyobslist.txt.dat
+broad_peak      1       4       0       myobslist.txt     0.635±0.059    1	run_c1_broad_peak_a1.00_p4.00_p0.00_nmyobslist.txt.dat      nan±  nan         0  run_peri_broad_peak_a1.00_p4.00_p0.00_nmyobslist.txt.dat
+sharp_peak      1       4       0       myobslist.txt      0.67±0.074    1	run_c1_sharp_peak_a1.00_p4.00_p0.00_nmyobslist.txt.dat      nan±  nan         0  run_peri_sharp_peak_a1.00_p4.00_p0.00_nmyobslist.txt.dat
 @endverbatim
  * 
  * @page changelog Version History
@@ -671,6 +672,9 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    run_c1_
  * @subsection v2_3_0_fix Bug Fixes 
  * 
  * - Observations now handles exceptions correctly.
+ * - Undefined values of C1 and the period will no longer be omitted from 
+ *	the program output. Program output now includes the fraction of runs 
+ *	in which C1 is defined.
  *
  * @section v2_2_0 Version 2.2.0
  *
@@ -740,7 +744,7 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    run_c1_
  * - @ref lcmc::models::RandomWalk "RandomWalk" and 
  *	@ref lcmc::models::TwoScaleGp "TwoScaleGp". Added corresponding test 
  *	cases to @ref lcmc::test::BoostTest::test_gp "test_gp".
- * - Support for command-line arguments "amp2" and "period2".
+ * - Support for command-line arguments @c -\-amp2 and @c -\-period2.
  * 
  * @subsection v2_1_0_fix Bug Fixes 
  * 
@@ -795,8 +799,8 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    run_c1_
  *	interface to add support for stochastic light curves.
  * - Deleted ILightCurve::modelParams()
  * - Cleaned up documentation.
- * - From now on, version numbers will conform to the 
- *	<a href="http://semver.org/">Semantic Versioning specification</a>.
+ * - From now on, version numbers will conform to 
+ *	<a href="http://semver.org/spec/v2.0.0-rc.1.html">version 2.0.0-rc.1 of the Semantic Versioning specification</a>.
  * 
  * @subsection v2_0_0_new New Features 
  * 

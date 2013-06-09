@@ -56,4 +56,4 @@ For complete USAGE and HELP type:
 
 EXPECTED RESULT: FAIL (--add with bad argument)
 ERROR: Could not open GarbageTestSample: No such file or directory
-LCType		a      	p      	ph     	Noise	Grankin C1±err	C1 Distribution	50% cut at 1/3±err	Finite	50%@1/3 Distribution	50% cut at 1/2±err	Finite	50%@1/2 Distribution	90% cut at 1/3±err	Finite	90%@1/3 Distribution	90% cut at 1/2±err	Finite	90%@1/2 Distribution
+LCType		a      	p      	ph     	Noise	C1±err	Finite	C1 Distribution	50%@1/3±err	Finite	50%@1/3 Distribution	50%@1/2±err	Finite	50%@1/2 Distribution	90%@1/3±err	Finite	90%@1/3 Distribution	90%@1/2±err	Finite	90%@1/2 Distribution

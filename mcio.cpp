@@ -114,6 +114,8 @@ void readTimeStamps(FILE* hInput, DoubleVec& dates) {
  * @exception lcmc::except::FileIo Thrown if file has the wrong format.
  *
  * @exceptsafe Program is in a consistent state in the event of an exception. 
+ *
+ * @bug Write more (flux) digits!
  */
 void printLightCurve(const std::string& fileName, 
 		const DoubleVec& timeGrid, const DoubleVec& fluxGrid) {

@@ -12,6 +12,7 @@
 #include <vector>
 #include <cstdio>
 #include "paramlist.h"
+#include "stats/statcollect.h"
 
 namespace lcmc { 
 
@@ -110,7 +111,7 @@ public:
 		const RangeList& binSpecs, const std::string& noise);
 
 	/** Prints a header row representing the statistics printed by 
-	 *	printBinStats to the specified file
+	 *	printBinStats() to the specified file
 	 */
 	static void printBinHeader(FILE* const file, const RangeList& binSpecs, 
 		const std::vector<StatType>& outputStats);
@@ -125,38 +126,34 @@ private:
 	
 	std::vector<StatType> stats;
 	
-	DoubleVec C1vals;
+	CollectedScalars C1vals;
 	
-	DoubleVec periods;
-	std::vector<DoubleVec> periFreqs;
-	std::vector<DoubleVec> periPowers;
+	CollectedScalars periods;
+	CollectedPairs periodograms;
 
 	// Delta-m Delta-t statistics
-	DoubleVec cutDmdt50Amp3s;
-	DoubleVec cutDmdt50Amp2s;
-	DoubleVec cutDmdt90Amp3s;
-	DoubleVec cutDmdt90Amp2s;
-	std::vector<DoubleVec> dmdtMedianTimes;
-	std::vector<DoubleVec> dmdtMedians;
+	CollectedScalars cutDmdt50Amp3s;
+	CollectedScalars cutDmdt50Amp2s;
+	CollectedScalars cutDmdt90Amp3s;
+	CollectedScalars cutDmdt90Amp2s;
+	CollectedPairs dmdtMedians;
 	
 	// ACF statistics (in multiple flavors)
-	DoubleVec cutIAcf9s;
-	DoubleVec cutIAcf4s;
-	DoubleVec cutIAcf2s;
-	std::vector<DoubleVec> iAcfTimes;
-	std::vector<DoubleVec> iAcfs;
-	DoubleVec cutSAcf9s;
-	DoubleVec cutSAcf4s;
-	DoubleVec cutSAcf2s;
-	std::vector<DoubleVec> sAcfTimes;
-	std::vector<DoubleVec> sAcfs;
+	CollectedScalars cutIAcf9s;
+	CollectedScalars cutIAcf4s;
+	CollectedScalars cutIAcf2s;
+	CollectedPairs iAcfs;
+
+	CollectedScalars cutSAcf9s;
+	CollectedScalars cutSAcf4s;
+	CollectedScalars cutSAcf2s;
+	CollectedPairs sAcfs;
 	
 	// Peak-finding statistics
-	DoubleVec cutPeakAmp3s;
-	DoubleVec cutPeakAmp2s;
-	DoubleVec cutPeakMax08s;
-	std::vector<DoubleVec> peakTimes;
-	std::vector<DoubleVec> peakValues;
+	CollectedScalars cutPeakAmp3s;
+	CollectedScalars cutPeakAmp2s;
+	CollectedScalars cutPeakMax08s;
+	CollectedPairs peaks;
 };
 
 }}		// end lcmc::stats

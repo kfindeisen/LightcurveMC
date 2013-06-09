@@ -1,7 +1,7 @@
 # Compilation make for lightcurveMC/stats/*
 # by Krzysztof Findeisen
 # Created April 28, 2013
-# Last modified May 18, 2013
+# Last modified June 8, 2013
 
 include ../makefile.inc
 
@@ -9,8 +9,9 @@ include ../makefile.inc
 # Directory contents
 PROJ     := stats
 
-SOURCES  := acfinterp.cpp dmdt.cpp experimental.cpp magdist.cpp peakfind.cpp \
-	acf.cpp
+SOURCES  := acf.cpp named.cpp output.cpp pairs.cpp scalars.cpp vectors.cpp \
+	acfdriver.cpp acfinterp.cpp dmdt.cpp experimental.cpp \
+	magdist.cpp peakdriver.cpp peakfind.cpp periodogram.cpp
 	
 include ../makefile.subdirs
 include ../makefile.common
