@@ -94,12 +94,8 @@ public:
 	 */
 	void addNull();
 
-	/** Prints a single family of statistics to the specified file
-	 */
 	void printStats(FILE* const hOutput) const;
 
-	/** Deletes all the simulation results from the object. 
-	 */
 	void clear();
 
 	/** Prints a header row representing the statistics printed by 
@@ -123,12 +119,8 @@ public:
 	 */
 	void addStat(const DoubleVec& value);
 
-	/** Prints a single family of statistics to the specified file
-	 */
 	void printStats(FILE* const hOutput) const;
 
-	/** Deletes all the simulation results from the object. 
-	 */
 	void clear();
 
 	/** Prints a header row representing the statistics printed by 
@@ -153,12 +145,8 @@ public:
 	 */
 	void addStat(const DoubleVec& x, const DoubleVec& y);
 
-	/** Prints a single family of statistics to the specified file
-	 */
 	void printStats(FILE* const hOutput) const;
 
-	/** Deletes all the simulation results from the object. 
-	 */
 	void clear();
 
 	/** Prints a header row representing the statistics printed by 

@@ -2,7 +2,7 @@
  * @file lightcurveMC/samples/observations.cpp
  * @author Krzysztof Findeisen
  * @date Created May 4, 2012
- * @date Last modified May 28, 2013
+ * @date Last modified June 8, 2013
  */
 
 #include <string>
@@ -14,6 +14,7 @@
 #include "../fluxmag.h"
 #include "observations.h"
 #include "../except/fileio.h"
+#include "../gsl_compat.tmp.h"
 #include "../except/inject.h"
 #include "../lcsio.h"
 #include "../mcio.h"
@@ -35,13 +36,14 @@ namespace lcmc { namespace inject {
  * @exception std::bad_alloc Thrown if there is not enough memory to create the object.
  *
  * @exceptsafe Object construction is atomic.
- *
- * @bug Can only offer the basic guarantee because of the internal RNG.
  */
 Observations::Observations(const std::string& catalogName) : times(), fluxes() {
 	// Note: because sourcePicker is static, no memory management is needed
-	static gsl_rng * const sourcePicker = gsl_rng_alloc(gsl_rng_mt19937);
-	gsl_rng_set(sourcePicker, 5489);
+	static gsl_rng * sourcePicker = NULL;
+	if (sourcePicker == NULL) {
+		sourcePicker = gsl_rng_alloc(gsl_rng_mt19937);
+		gsl_rng_set(sourcePicker, 5489);
+	}
 
 	// Grab the light curves in the sample
 	const std::vector<std::string> library = getLcLibrary(catalogName);
@@ -50,8 +52,12 @@ Observations::Observations(const std::string& catalogName) : times(), fluxes() {
 		throw lcmc::except::FileIo("Catalog " + catalogName + " does not contain any light curves.");
 	}
 	
-	// gsl_rng_uniform int() generates over [0, n), not [0, n]
-	unsigned long int index = gsl_rng_uniform_int(sourcePicker, library.size());
+	// copy-and-swap the generator state, to ensure it only changes 
+	//	if the object is successfully constructed
+	gsl_rng * tempRng = utils::checkAlloc(gsl_rng_clone(sourcePicker));
+	
+	// gsl_rng_uniform_int() generates over [0, n), not [0, n]
+	unsigned long int index = gsl_rng_uniform_int(tempRng, library.size());
 	
 	try {
 		readFile(library.at(index));
@@ -60,6 +66,10 @@ Observations::Observations(const std::string& catalogName) : times(), fluxes() {
 	} catch (const except::BadFormat& e) {
 		throw lcmc::except::FileIo(e.what());
 	}
+	
+	// IMPORTANT: no exceptions beyond this point
+	
+	gsl_rng_memcpy(sourcePicker, tempRng);
 }
 
 /** Initializes an object to the value of a particular light curve.
