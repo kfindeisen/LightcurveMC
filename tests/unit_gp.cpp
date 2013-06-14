@@ -291,7 +291,7 @@ private:
 void testGp(size_t nTest, const std::string& fileName, const TestFactory& factory) {
 	shared_ptr<FILE> hDump;
 	try {
-		hDump = fileCheckOpen(fileName, "r");
+		hDump = fileCheckOpen(fileName, "w");
 	} catch (const except::FileIo& e) {
 		BOOST_FAIL(e.what());
 	}

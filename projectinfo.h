@@ -2,7 +2,11 @@
  * @file lightcurveMC/projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified June 8, 2013
+ * @date Last modified June 14, 2013
+ *
+ * @todo Consider adding an algorithms overview for interested researchers.
+ * @todo Rely less on integration tests
+ * @todo Look into a truly free alternative to GSL
  */
 
 #ifndef LCMCPROJINFOH
@@ -19,7 +23,7 @@
  * "+build" tag can be used to distinguish which development version 
  *	was used to create which output
  */
-#define VERSION_STRING "2.3.0-devel+build.5"
+#define VERSION_STRING "2.3.0-devel+build.6"
 
 /** @mainpage
  *
@@ -45,8 +49,9 @@
  *
  * Lightcurve MC was primarily written by Krzysztof Findeisen. Please contact 
  * him at krzys, astro caltech edu for questions, feedback, or bug reports. 
- * The @c peakFind function was adapted from work by Ann Marie Cody. 
- * The @c ParamList class was suggested by Tim Morton.
+ * The @c peakFind and @c peakFindTimescales functions were adapted from work 
+ * by Ann Marie Cody. 
+ * The @c ParamList class was suggested by Timothy Morton.
  * 
  * @page install Installation
  *
@@ -663,6 +668,10 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    1	run_c
 @endverbatim
  * 
  * @page changelog Version History
+ * 
+ * Lightcurve MC conforms to 
+ * <a href="http://semver.org/spec/v2.0.0-rc.1.html">version 2.0.0-rc.1 of the Semantic Versioning specification</a>. 
+ * All version numbers are to be interpreted as described therein.
  *
  * @section v2_3_0 Version 2.3.0-devel
  *
@@ -674,8 +683,11 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    1	run_c
  * 
  * @subsection v2_3_0_fix Bug Fixes 
  * 
- * - Observations now handles exceptions correctly.
- * - Observations objects are now correctly randomized.
+ * - @c makefile is now more robust to missing directories
+ * - @ref lcmc::inject::Observations "Observations" now handles exceptions 
+ *	correctly.
+ * - @ref lcmc::inject::Observations "Observations" objects 
+ *	are now correctly randomized.
  * - Undefined values of C1 and the period will no longer be omitted from 
  *	the program output. Program output now includes the fraction of runs 
  *	in which C1 is defined.

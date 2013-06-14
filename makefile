@@ -55,7 +55,7 @@ include makefile.common
 doc: doc/
 doc/: driver.cpp $(SOURCES) $(DIRS) tests doxygen.cfg statistics.bib
 	doxygen doxygen.cfg
-	cd doc/latex ; make
+	cd doc/latex && make
 
 #---------------------------------------
 # Test cases
@@ -69,7 +69,7 @@ tests/test: $(OBJS) $(DIRS) tests
 autotest: $(PROJ) unittest
 	@echo "Beginning regression test suite..."
 	@echo "Tests started on `date`"
-	@cd tests; ./autotest.sh; echo "Tests completed on `date`"
+	@cd tests && ./autotest.sh ; echo "Tests completed on `date`"
 
 # Unit test code cannot be properly compiled as a library, so depend on the objects directly
 test.d: tests/makefile

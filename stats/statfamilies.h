@@ -40,7 +40,7 @@ void doAcf(const vector<double>& times, const vector<double>& data,
 
 /** Does all peak-finding related computations for a given light curve.
  */
-void doPeakMax(const vector<double>& times, const vector<double>& mags, 
+void doPeak(const vector<double>& times, const vector<double>& mags, 
 		bool getCut, bool getPlot, 
 		CollectedScalars& cut3, CollectedScalars& cut2, 
 		CollectedScalars& cut80, CollectedPairs& peakPlot);

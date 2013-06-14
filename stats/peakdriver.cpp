@@ -56,8 +56,10 @@ using std::vector;
  *	and @p mags are too short to calculate the desired statistics.
  *
  * @exceptsafe The program is in a consistent state in the event of an exception.
+ *
+ * @bug 80% statistic gives anomalously low values for sines
  */
-void doPeakMax(const vector<double>& times, const vector<double>& mags, 
+void doPeak(const vector<double>& times, const vector<double>& mags, 
 		bool getCut, bool getPlot, 
 		CollectedScalars& cut3, CollectedScalars& cut2, 
 		CollectedScalars& cut80, CollectedPairs& peakPlot) {

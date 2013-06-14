@@ -206,7 +206,7 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 		hasStat(stats, SACFCUT), hasStat(stats, SACF), 
 		this->cutSAcf9s, this->cutSAcf4s, this->cutSAcf2s, this->sAcfs);
 
-	doPeakMax(cleanTimes, cleanMags, hasStat(stats, PEAKCUT), hasStat(stats, PEAKFIND), 
+	doPeak(cleanTimes, cleanMags, hasStat(stats, PEAKCUT), hasStat(stats, PEAKFIND), 
 		this->cutPeakAmp3s, this->cutPeakAmp2s, this->cutPeakMax08s, this->peaks);
 }
 
