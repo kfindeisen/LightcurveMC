@@ -2,7 +2,7 @@
  * @file utils.tmp.h
  * @author Krzysztof Findeisen
  * @date Created July 21, 2011
- * @date Last modified May 22, 2013
+ * @date Last modified June 17, 2013
  */
 
 #include <algorithm>
@@ -87,7 +87,13 @@ mean(ConstInputIterator first, ConstInputIterator last) {
 	if (count <= 0) {
 		throw except::NotEnoughData("Not enough data to compute mean");
 	}
-	return static_cast<Value>(sum / count);
+
+	// Force floating-point arithmetic to avoid inconsistencies in 
+	//	integer division rounding conventions
+	// Delayed conversion because ++ operator is inaccurate for large doubles
+	double dcount = static_cast<double>(count);
+
+	return static_cast<Value>(sum / dcount);
 }
 
 /** Finds the variance of the values in a generic container object. The 
@@ -150,8 +156,13 @@ variance(ConstInputIterator first, ConstInputIterator last) {
 		throw except::NotEnoughData("Not enough data to compute variance");
 	}
 
+	// Force floating-point arithmetic to avoid inconsistencies in 
+	//	integer division rounding conventions
+	// Delayed conversion because ++ operator is inaccurate for large doubles
+	double dcount = static_cast<double>(count);
+
 	// Minimize number of divisions and maximize dividend in case value_type is integral
-	return static_cast<Value>((sumsq - sum*sum/count)/(count-1));
+	return static_cast<Value>((sumsq - sum*sum/dcount)/(dcount-1));
 }
 
 /** Finds the (uninterpolated) quantile of the values in a generic container 
