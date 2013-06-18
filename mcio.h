@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 #include <cstdio>
-#include <boost/shared_ptr.hpp>
+#include <boost/smart_ptr.hpp>
 
 /** Shorthand for a vector of doubles
  */

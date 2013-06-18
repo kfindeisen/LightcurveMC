@@ -12,7 +12,7 @@
 #include <gsl/gsl_randist.h>
 #include "lcstochastic.h"
 
-#include "../warnflags.h"
+#include "../../common/warnflags.h"
 
 namespace lcmc { namespace models {
 

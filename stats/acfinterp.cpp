@@ -11,9 +11,7 @@
 #include <vector>
 #include <cmath>
 #include <boost/lexical_cast.hpp>
-#include <boost/scoped_array.hpp>
-#include <boost/shared_array.hpp>
-#include <boost/shared_ptr.hpp>
+#include <boost/smart_ptr.hpp>
 #include <gsl/gsl_spline.h>
 #include "acfinterp.h"
 #include "../gsl_compat.tmp.h"

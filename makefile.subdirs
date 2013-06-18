@@ -11,4 +11,4 @@ PROJ := $(PROJ:=.a)
 PROJ := $(PROJ:%=../lib%)
 $(PROJ): $(OBJS)
 	@echo "Packaging $@..."
-	@$(AR) $(ARFLAGS) $@ $^
+	@$(AR) $(ARFLAGS)T $@ $^

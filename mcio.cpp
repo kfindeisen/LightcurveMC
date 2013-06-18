@@ -12,7 +12,7 @@
 #include <cstdio>
 #include <cstring>
 #include <boost/lexical_cast.hpp>
-#include <boost/shared_ptr.hpp>
+#include <boost/smart_ptr.hpp>
 #include "except/fileio.h"
 #include "mcio.h"
 

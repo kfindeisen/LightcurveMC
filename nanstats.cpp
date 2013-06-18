@@ -11,7 +11,7 @@
 #include <boost/lexical_cast.hpp>
 #include "nan.h"
 #include "except/undefined.h"
-#include "utils.tmp.h"
+#include "../common/stats.tmp.h"
 
 namespace lcmc { namespace utils {
 

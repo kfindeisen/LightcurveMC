@@ -10,7 +10,7 @@
 
 #include <memory>
 #include <vector>
-#include <boost/shared_ptr.hpp>
+#include <boost/smart_ptr.hpp>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_rng.h>
 #include "../except/fileio.h"

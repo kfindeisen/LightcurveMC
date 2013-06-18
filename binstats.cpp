@@ -34,7 +34,7 @@
 #include "stats/statfamilies.h"
 #include "except/undefined.h"
 
-#include "warnflags.h"
+#include "../common/warnflags.h"
 
 /** Size of character buffers to use when generating strings
  */

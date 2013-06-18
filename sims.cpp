@@ -10,7 +10,7 @@
 #include <vector>
 #include <cmath>
 #include <cstdio>
-#include <boost/shared_ptr.hpp>
+#include <boost/smart_ptr.hpp>
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
 #include "except/fileio.h"

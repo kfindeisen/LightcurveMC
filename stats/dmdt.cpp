@@ -21,7 +21,7 @@
 #include "magdist.h"
 #include "statfamilies.h"
 #include "../except/undefined.h"
-#include "../utils.tmp.h"
+#include "../../common/stats.tmp.h"
 
 namespace lcmc { namespace stats {
 

@@ -14,7 +14,7 @@
 #include <boost/lexical_cast.hpp>
 #include "experimental.h"
 #include "../except/data.h"
-#include "../utils.tmp.h"
+#include "../../common/stats.tmp.h"
 
 namespace lcmc { namespace stats {
 

@@ -14,7 +14,7 @@
 #include <vector>
 #include <boost/concept_check.hpp>
 
-#include "../warnflags.h"
+#include "../../common/warnflags.h"
 
 // TCLAP uses C-style casts
 #ifdef GNUC_COARSEWARN

@@ -9,7 +9,7 @@
 #include <vector>
 #include <cstdio>
 #include <cstring>
-#include <boost/shared_ptr.hpp>
+#include <boost/smart_ptr.hpp>
 #include <gsl/gsl_rng.h>
 #include "../fluxmag.h"
 #include "observations.h"
@@ -19,7 +19,7 @@
 #include "../lcsio.h"
 #include "../mcio.h"
 #include "../nan.h"
-#include "../utils.tmp.h"
+#include "../../common/stats.tmp.h"
 
 namespace lcmc { namespace inject {
 

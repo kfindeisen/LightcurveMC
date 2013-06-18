@@ -10,7 +10,7 @@
 #ifndef LCMCPARAMLISTH
 #define LCMCPARAMLISTH
 
-#include "warnflags.h"
+#include "../common/warnflags.h"
 
 // std::iterator<> uses non-virtual destructors
 #ifdef GNUC_COARSEWARN

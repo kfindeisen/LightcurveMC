@@ -5,7 +5,7 @@
  * @date Last modified May 28, 2013
  */
 
-#include "../warnflags.h"
+#include "../../common/warnflags.h"
 
 // Boost.Test uses C-style casts and non-virtual destructors
 #ifdef GNUC_COARSEWARN
@@ -35,7 +35,7 @@
 #include <cstdio>
 #include <cstring>
 #include <boost/lexical_cast.hpp>
-#include <boost/shared_ptr.hpp>
+#include <boost/smart_ptr.hpp>
 #include "test.h"
 #include "../except/data.h"
 #include "../fluxmag.h"

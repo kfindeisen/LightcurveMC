@@ -7,7 +7,7 @@
  * @todo Break up this file.
  */
 
-#include "../warnflags.h"
+#include "../../common/warnflags.h"
 
 // Boost.Test uses C-style casts and non-virtual destructors
 #ifdef GNUC_COARSEWARN
@@ -37,8 +37,7 @@
 #include <cmath>
 #include <cstring>
 #include <boost/lexical_cast.hpp>
-#include <boost/scoped_array.hpp>
-#include <boost/shared_ptr.hpp>
+#include <boost/smart_ptr.hpp>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_matrix.h>

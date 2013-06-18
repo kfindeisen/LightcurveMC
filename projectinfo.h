@@ -671,7 +671,10 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    1	run_c
  * 
  * Lightcurve MC conforms to 
  * <a href="http://semver.org/spec/v2.0.0-rc.1.html">version 2.0.0-rc.1 of the Semantic Versioning specification</a>. 
- * All version numbers are to be interpreted as described therein.
+ * All version numbers are to be interpreted as described therein. The 
+ * @ref use "\"User's Guide\"" @htmlonly page, @endhtmlonly 
+ * @latexonly chapter, @endlatexonly not including the "Examples" section, 
+ * constitutes the public API for the program.
  *
  * @section v2_3_0 Version 2.3.0-devel
  *

@@ -17,7 +17,7 @@
 //#include "../projectinfo.h"
 //#include "../statparser.h"
 
-#include "../warnflags.h"
+#include "../../common/warnflags.h"
 
 // TCLAP uses C-style casts
 #ifdef GNUC_COARSEWARN

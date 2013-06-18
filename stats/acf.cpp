@@ -7,8 +7,7 @@
 
 #include <stdexcept>
 #include <string>
-#include <boost/scoped_array.hpp>
-#include <boost/shared_ptr.hpp>
+#include <boost/smart_ptr.hpp>
 #include <gsl/gsl_fft_halfcomplex.h>
 #include <gsl/gsl_fft_real.h>
 #include <gsl/gsl_statistics_double.h>

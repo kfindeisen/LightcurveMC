@@ -7,7 +7,7 @@
 
 #include <stdexcept>
 #include <vector>
-#include <boost/shared_array.hpp>
+#include <boost/smart_ptr.hpp>
 
 /** Returns an array copy of a vector.
  *

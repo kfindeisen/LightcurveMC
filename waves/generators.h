@@ -9,7 +9,7 @@
 #define LCMCGENERATORSH
 
 #include <vector>
-#include <boost/shared_ptr.hpp>
+#include <boost/smart_ptr.hpp>
 #include <gsl/gsl_matrix.h>
 
 namespace lcmc { namespace utils {
