@@ -2,7 +2,7 @@
  * @file lightcurveMC/sims.cpp
  * @author Krzysztof Findeisen
  * @date Created May 25, 2013
- * @date Last modified May 28, 2013
+ * @date Last modified June 18, 2013
  */
 
 #include <stdexcept>
@@ -13,12 +13,13 @@
 #include <boost/smart_ptr.hpp>
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
-#include "except/fileio.h"
+#include "../common/fileio.h"
 #include "gsl_compat.tmp.h"
 #include "lightcurvetypes.h"
 #include "mcio.h"
 #include "samples/observations.h"
 #include "sims.h"
+#include "../common/alloc.tmp.h"
 
 namespace lcmc { 
 
@@ -27,7 +28,7 @@ using std::string;
 using std::vector;
 using boost::shared_ptr;
 using models::ParamList;
-using utils::checkAlloc;
+using kpfutils::checkAlloc;
 
 namespace models {
 
@@ -74,7 +75,7 @@ auto_ptr<ILightCurve> lcFactory(LightCurveType whichLc, const vector<double> &ti
  * @post The data previously in @p times are erased
  * @post @p times contains a list of Julian dates, sorted in ascending order.
  *
- * @exception lcmc::except::FileIo Thrown if @p dateList could 
+ * @exception kpfutils::except::FileIo Thrown if @p dateList could 
  *	not be read or had the wrong format.
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	store the output.
@@ -90,7 +91,7 @@ void makeTimes(const string& dateList, vector<double>& times) {
 	static string oldTimeFile;
 
 	if (oldTimeFile.empty() || oldTimeFile != dateList) {
-		shared_ptr<FILE> hJulDates = fileCheckOpen(dateList, "r");
+		shared_ptr<FILE> hJulDates = kpfutils::fileCheckOpen(dateList, "r");
 
 		// readTimeStamps() is not atomic
 		// use copy-and-swap to ensure the cache doesn't get corrupted
@@ -163,7 +164,7 @@ void makeWhiteNoise(const vector<double>& times, double sigma, vector<double>& n
  *	of one, then offset to a median flux of zero. 
  *
  * @exception lcmc::inject::except::NoCatalog Thrown if @p catalog does not exist.
- * @exception lcmc::except::FileIo Thrown if the catalog or the light 
+ * @exception kpfutils::except::FileIo Thrown if the catalog or the light 
  *	curve could not be read.
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	store the output.

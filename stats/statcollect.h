@@ -39,7 +39,7 @@ public:
 	 *
 	 * @exception std::runtime_error Thrown if there are difficulties writing 
 	 *	to @p file
-	 * @exception lcmc::except::FileIo Thrown if there are difficulties writing 
+	 * @exception kpfutils::except::FileIo Thrown if there are difficulties writing 
 	 *	to the distribution file.
 	 *
 	 * @exceptsafe The program is in a consistent state in the event 

@@ -2,7 +2,7 @@
  * @file lightcurveMC/except/paramlist.h
  * @author Krzysztof Findeisen
  * @date Created April 22, 2013
- * @date Last modified May 7, 2013
+ * @date Last modified June 18, 2013
  */
 
 #ifndef LCMCPARAMEXCEPTH
@@ -10,7 +10,7 @@
 
 #include <stdexcept>
 #include <string>
-#include "exception.h"
+#include "../../common/checkedexception.h"
 #include "../paramlist.h"
 
 namespace lcmc { namespace models { namespace except {
@@ -22,7 +22,7 @@ using std::string;
  *
  * The missing parameter is queryable in a machine-readable form.
  */
-class MissingParam : public lcmc::except::CheckedException {
+class MissingParam : public kpfutils::except::CheckedException {
 public:
 	/** Constructs a MissingParam object.
 	 */
@@ -60,7 +60,7 @@ private:
  *
  * The minimum and maximum values are queryable in a machine-readable form.
  */
-class NegativeRange : public lcmc::except::CheckedException {
+class NegativeRange : public kpfutils::except::CheckedException {
 public: 
 	/** Constructs a NegativeRange object.
 	 */

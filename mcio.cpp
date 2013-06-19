@@ -2,18 +2,16 @@
  * @file lightcurveMC/mcio.cpp
  * @author Krzysztof Findeisen
  * @date Created February 4, 2011
- * @date Last modified May 28, 2013
+ * @date Last modified June 18, 2013
  */
 
 #include <algorithm>
-#include <stdexcept>
 #include <string>
-#include <cerrno>
+#include <vector>
 #include <cstdio>
-#include <cstring>
-#include <boost/lexical_cast.hpp>
 #include <boost/smart_ptr.hpp>
-#include "except/fileio.h"
+#include "../common/cerror.h"
+#include "../common/alloc.tmp.h"
 #include "mcio.h"
 
 using std::sort;
@@ -36,7 +34,7 @@ using boost::shared_ptr;
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to store the 
  *	file contents.
- * @exception lcmc::except::FileIo Thrown if file has the wrong format.
+ * @exception kpfutils::except::FileIo Thrown if file has the wrong format.
  *
  * @exceptsafe Program is in a consistent state in the event of an exception. 
  */
@@ -49,7 +47,7 @@ void readTimeStamps(FILE* hInput, DoubleVec& dates, double& minDelT, double& max
 	while(!feof(hInput)) {
 		nRead = fscanf(  hInput, "%lf\n", &buffer);
 		if(nRead < 1/* || ferror(hInput) || nRead == EOF*/) {
-			fileError(hInput, "Misformatted time stamp file: ");
+			kpfutils::fileError(hInput, "Misformatted time stamp file: ");
 		}
 		dates.push_back(buffer);
 	}
@@ -90,7 +88,7 @@ void readTimeStamps(FILE* hInput, DoubleVec& dates, double& minDelT, double& max
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to store the 
  *	file contents.
- * @exception lcmc::except::FileIo Thrown if file has the wrong format.
+ * @exception kpfutils::except::FileIo Thrown if file has the wrong format.
  *
  * @exceptsafe Program is in a consistent state in the event of an exception. 
  */
@@ -111,7 +109,7 @@ void readTimeStamps(FILE* hInput, DoubleVec& dates) {
  * @pre @p timeGrid does not contain any NaNs
  * @pre @p fluxGrid does not contain any NaNs
  *
- * @exception lcmc::except::FileIo Thrown if file has the wrong format.
+ * @exception kpfutils::except::FileIo Thrown if file has the wrong format.
  *
  * @exceptsafe Program is in a consistent state in the event of an exception. 
  *
@@ -119,68 +117,19 @@ void readTimeStamps(FILE* hInput, DoubleVec& dates) {
  */
 void printLightCurve(const std::string& fileName, 
 		const DoubleVec& timeGrid, const DoubleVec& fluxGrid) {
-	shared_ptr<FILE> hOutput = fileCheckOpen(fileName, "w");
+	shared_ptr<FILE> hOutput = kpfutils::fileCheckOpen(fileName, "w");
 
 	// Print the table
 	int status = fprintf(hOutput.get(), "#Time\tFlux\n");
 	if (status < 0) {
-		fileError(hOutput.get(), "Could not write to file '" 
+		kpfutils::fileError(hOutput.get(), "Could not write to file '" 
 			+ fileName + "' in printLightCurve(): ");
 	}
 	for(size_t i = 0; i < timeGrid.size(); i++) {
 		status = fprintf(hOutput.get(), "%0.5f\t%7.4f\n", timeGrid[i], fluxGrid[i]);
 		if (status < 0) {
-			fileError(hOutput.get(), "Could not write to file '" 
+			kpfutils::fileError(hOutput.get(), "Could not write to file '" 
 				+ fileName + "' in printLightCurve(): ");
 		}
-	}
-}
-
-/** Wrapper that throws @ref lcmc::except::FileIo "FileIo" if it cannot open a file
- *
- * @param[in] filename The file to open.
- * @param[in] mode The mode to open the file, following the same 
- *	conventions as for @c fopen()
- *
- * @return A handle to the newly opened file.
- *
- * @exception lcmc::except::FileIo Thrown if the file could not be opened.
- * 
- * @exceptsafe The function arguments are unchanged in the event of an exception.
- */
-shared_ptr<FILE> fileCheckOpen(const std::string& fileName, const char* mode) {
-	FILE* handle = fopen(fileName.c_str(), mode);
-	
-	if (handle == NULL) {
-		// Not all implementations of fopen() set errno on an error
-		if (errno) {
-			int err = errno;
-			errno = 0;
-			throw lcmc::except::FileIo("Could not open " 
-				+ fileName + ": " + strerror(err));
-		} else {
-			throw lcmc::except::FileIo("Could not open " + fileName);
-		}
-	}
-	
-	return shared_ptr<FILE>(handle, &fclose);
-}
-
-/** Wrapper that throws @ref lcmc::except::FileIo "FileIo" in response to 
- *	a C I/O library error
- *
- * @param[in] stream The stream to test for errors
- * @param[in] msg A string prepended to the error message.
- *
- * @exception lcmc::except::FileIo Thrown if @c ferror(@p stream)
- * 
- * @exceptsafe The function arguments are unchanged in the event of an exception.
- */
-void fileError(FILE* const stream, std::string msg) {
-	if (ferror(stream) || feof(stream)) {
-		int err = errno;
-		clearerr(stream);
-		errno = 0;
-		throw lcmc::except::FileIo(msg + strerror(err));
 	}
 }

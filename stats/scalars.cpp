@@ -12,6 +12,7 @@
 #include "../mcio.h"
 #include "output.h"
 #include "statcollect.h"
+#include "../../common/cerror.h"
 
 namespace lcmc { namespace stats {
 
@@ -96,7 +97,7 @@ void CollectedScalars::printHeader(FILE* const hOutput, const string& fieldName)
 	int status = fprintf(hOutput, "\t%s±err\tFinite\t%s Distribution", 
 			fieldName.c_str(), fieldName.c_str());
 	if (status < 0) {
-		fileError(hOutput, "String formatting error in printHeader(): ");
+		kpfutils::fileError(hOutput, "String formatting error in printHeader(): ");
 	}
 }
 

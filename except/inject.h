@@ -2,7 +2,7 @@
  * @file lightcurveMC/except/inject.h
  * @author Krzysztof Findeisen
  * @date Created May 8, 2013
- * @date Last modified May 8, 2013
+ * @date Last modified June 18, 2013
  */
 
 #ifndef LCMCINJECTEXCEPTH
@@ -10,7 +10,8 @@
 
 #include <stdexcept>
 #include <string>
-#include "fileio.h"
+#include "../../common/checkedexception.h"
+#include "../../common/fileio.h"
 
 namespace lcmc { namespace inject { namespace except {
 
@@ -18,7 +19,7 @@ using std::string;
 
 /** Exception thrown when a light curve file could not be opened
  */
-class BadFile: public lcmc::except::FileIo {
+class BadFile: public kpfutils::except::FileIo {
 public:
 	/** Constructs a BadFile object.
 	 */
@@ -36,7 +37,7 @@ private:
 
 /** Exception thrown when a light curve file is not formatted correctly
  */
-class BadFormat: public lcmc::except::FileIo {
+class BadFormat: public kpfutils::except::FileIo {
 public:
 	/** Constructs a BadFormat object.
 	 */
@@ -54,7 +55,7 @@ private:
 
 /** Exception thrown when a light curve catalog could not be found
  */
-class NoCatalog: public lcmc::except::CheckedException {
+class NoCatalog: public kpfutils::except::CheckedException {
 public:
 	/** Constructs a NoCatalog object.
 	 */

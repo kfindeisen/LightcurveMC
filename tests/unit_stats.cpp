@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/unit_stats.cpp
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
- * @date Last modified May 28, 2013
+ * @date Last modified June 18, 2013
  *
  * @todo Break up this file.
  */
@@ -46,8 +46,8 @@
 #include <gsl/gsl_statistics_double.h>
 #include "../stats/acfinterp.h"
 #include "../approx.h"
-#include "../cerror.h"
-#include "../except/fileio.h"
+#include "../../common/cerror.h"
+#include "../../common/fileio.h"
 #include "../waves/generators.h"
 #include "../gsl_compat.tmp.h"
 #include "../lcsio.h"
@@ -57,12 +57,15 @@
 #include "../stats/peakfind.h"
 #include "test.h"
 #include "../except/undefined.h"
+#include "../../common/alloc.tmp.h"
 
 
 using std::vector;
 using boost::lexical_cast;
 using boost::shared_ptr;
-using lcmc::utils::checkAlloc;
+using kpfutils::checkAlloc;
+using kpfutils::cError;
+using kpfutils::fileCheckOpen;
 
 namespace lcmc { namespace utils {
 
@@ -95,7 +98,7 @@ public:
 	 * @pre A text file called @c ptfjds.txt exists in the 
 	 *	working directory and contains a list of Julian dates.
 	 *
-	 * @exception lcmc::except::FileIo Thrown if @c ptfjds.txt could not 
+	 * @exception kpfutils::except::FileIo Thrown if @c ptfjds.txt could not 
 	 *	be opened or has the wrong format.
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
 	 *	store the times.
@@ -501,7 +504,7 @@ BOOST_AUTO_TEST_CASE(acf) {
 	shared_ptr<FILE> hTarget;
 	try {
 		hTarget = fileCheckOpen("acftarget.txt", "r");
-	} catch (const except::FileIo& e) {
+	} catch (const kpfutils::except::FileIo& e) {
 		BOOST_FAIL(e.what());
 	}
 	

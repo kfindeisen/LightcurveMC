@@ -2,7 +2,7 @@
  * @file lightcurveMC/except/data.h
  * @author Krzysztof Findeisen
  * @date Created May 8, 2013
- * @date Last modified May 11, 2013
+ * @date Last modified June 18, 2013
  */
 
 #ifndef LCMCDATAEXCEPTH
@@ -10,7 +10,7 @@
 
 #include <stdexcept>
 #include <string>
-#include "exception.h"
+#include "../../common/checkedexception.h"
 
 namespace lcmc { 
 
@@ -34,7 +34,7 @@ namespace models { namespace except {
 /** This exception is thrown if a model parameter is given a value 
  *	outside its allowed range.
  */
-class BadParam : public lcmc::except::CheckedException {
+class BadParam : public kpfutils::except::CheckedException {
 public:
 	/** Constructs a BadParam object.
 	 */

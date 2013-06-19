@@ -10,7 +10,7 @@
 #include <cerrno>
 #include <cstring>
 #include <gsl/gsl_errno.h>
-#include "cerror.h"
+//#include "cerror.h"
 
 /** Wrapper that throws @c std::runtime_error in response to a GSL error
  *
@@ -24,21 +24,5 @@
 void gslCheck(int status, std::string msg) {
 	if (status != 0) {
 		throw std::runtime_error(msg + gsl_strerror(status));
-	}
-}
-
-/** Wrapper that throws @c std::runtime_error in response to a C library error
- *
- * @param[in] msg A string prepended to the error message.
- *
- * @exception std::runtime_error Thrown if @c errno &ne; 0
- * 
- * @exceptsafe The function arguments are unchanged in the event of an exception.
- */
-void cError(std::string msg) {
-	if (errno != 0) {
-		int err = errno;
-		errno = 0;
-		throw std::runtime_error(msg + strerror(err));
 	}
 }

@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/test.h
  * @author Krzysztof Findeisen
  * @date Created April 28, 2013
- * @date Last modified May 28, 2013
+ * @date Last modified June 18, 2013
  */
 
 #ifndef LCMCTESTH
@@ -13,9 +13,10 @@
 #include <boost/smart_ptr.hpp>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_rng.h>
-#include "../except/fileio.h"
+#include "../../common/fileio.h"
 #include "../lightcurvetypes.h"
 #include "../mcio.h"
+#include "../../common/alloc.tmp.h"
 
 namespace lcmc { namespace test {
 
@@ -95,7 +96,7 @@ public:
 	 * @pre A text file called @c ptfjds.txt exists in the 
 	 *	working directory and contains a list of Julian dates.
 	 *
-	 * @exception lcmc::except::FileIo Thrown if @c ptfjds.txt could not 
+	 * @exception kpfutils::except::FileIo Thrown if @c ptfjds.txt could not 
 	 *	be opened or has the wrong format.
 	 * @exception std::bad_alloc Thrown if there is not enough memory to 
 	 *	store the times.
@@ -103,7 +104,7 @@ public:
 	 * @exceptsafe Object construction is atomic.
 	 */
 	ObsData() : times() {
-		shared_ptr<FILE> hJulDates = fileCheckOpen("ptfjds.txt", "r");
+		shared_ptr<FILE> hJulDates = kpfutils::fileCheckOpen("ptfjds.txt", "r");
 		readTimeStamps(hJulDates.get(), times);
 	}
 	

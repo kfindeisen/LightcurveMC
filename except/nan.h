@@ -2,7 +2,7 @@
  * @file lightcurveMC/except/nan.h
  * @author Krzysztof Findeisen
  * @date Created May 2, 2013
- * @date Last modified May 2, 2013
+ * @date Last modified June 18, 2013
  */
 
 #ifndef LCMCNANEXCEPTH
@@ -10,7 +10,7 @@
 
 #include <stdexcept>
 #include <string>
-#include "exception.h"
+#include "../../common/checkedexception.h"
 
 namespace lcmc { namespace utils { namespace except {
 

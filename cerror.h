@@ -12,10 +12,6 @@
 
 /** Wrapper that throws @c std::runtime_error in response to a GSL error
  */
-void gslCheck(int status, std::string msg);
-
-/** Wrapper that throws @c std::runtime_error in response to a C library error
- */
-void cError(std::string msg);
+//void gslCheck(int status, std::string msg);
 
 #endif	// CERRORH

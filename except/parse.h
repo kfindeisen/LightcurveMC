@@ -2,7 +2,7 @@
  * @file lightcurveMC/except/parse.h
  * @author Krzysztof Findeisen
  * @date Created May 11, 2013
- * @date Last modified May 11, 2013
+ * @date Last modified June 18, 2013
  */
 
 #ifndef LCMCPARSEEXCEPTH
@@ -10,7 +10,7 @@
 
 #include <stdexcept>
 #include <string>
-#include "exception.h"
+#include "../../common/checkedexception.h"
 
 namespace lcmc { namespace parse { namespace except {
 
@@ -18,7 +18,7 @@ using std::string;
 
 /** This exception is thrown for general parsing errors.
  */
-class ParseError : public lcmc::except::CheckedException {
+class ParseError : public kpfutils::except::CheckedException {
 public:
 	/** Constructs a ParseError object.
 	 */

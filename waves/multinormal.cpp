@@ -19,13 +19,14 @@
 #include <gsl/gsl_vector.h>
 #include "generators.h"
 #include "../gsl_compat.tmp.h"
+#include "../../common/alloc.tmp.h"
 
 namespace lcmc { namespace utils {
 
 using std::vector;
 using boost::lexical_cast;
 using boost::shared_ptr;
-using utils::checkAlloc;
+using kpfutils::checkAlloc;
 
 /** Given a matrix A, returns a matrix B with the property 
  *	@f$ A = B B^\intercal @f$

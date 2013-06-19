@@ -2,7 +2,7 @@
  * @file lightcurveMC/binstats.cpp
  * @author Krzysztof Findeisen
  * @date Created June 6, 2011
- * @date Last modified June 8, 2013
+ * @date Last modified June 18, 2013
  */
 
 #include <algorithm>
@@ -19,11 +19,11 @@
 #include <timescales/timescales.h>
 #include "stats/acfinterp.h"
 #include "binstats.h"
-#include "cerror.h"
+#include "../common/cerror.h"
 #include "stats/cut.tmp.h"
 #include "stats/dmdt.h"
 #include "stats/experimental.h"
-#include "except/fileio.h"
+#include "../common/fileio.h"
 #include "fluxmag.h"
 #include "stats/magdist.h"
 #include "mcio.h"
@@ -51,6 +51,8 @@ namespace lcmc { namespace stats {
 using boost::lexical_cast;
 using boost::shared_ptr;
 using std::string;
+using kpfutils::cError;
+using kpfutils::fileError;
 using lcmc::models::RangeList;
 using lcmc::models::ParamList;
 
@@ -261,7 +263,7 @@ void LcBinStats::clear() {
  *
  * @exception std::runtime_error Thrown if there are difficulties writing 
  *	to @p file
- * @exception lcmc::except::FileIo Thrown if there are difficulties writing 
+ * @exception kpfutils::except::FileIo Thrown if there are difficulties writing 
  *	to an auxiliary file
  *
  * @exceptsafe The program is in a consistent state in the event 

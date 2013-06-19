@@ -2,7 +2,7 @@
  * @file lightcurveMC/stats/output.cpp
  * @author Krzysztof Findeisen
  * @date Created June 7, 2013
- * @date Last modified June 7, 2013
+ * @date Last modified June 18, 2013
  */
 
 #include <algorithm>
@@ -12,7 +12,8 @@
 #include <cmath>
 #include <cstdio>
 #include <boost/smart_ptr.hpp>
-#include "../cerror.h"
+#include "../../common/cerror.h"
+#include "../../common/alloc.tmp.h"
 #include "../mcio.h"
 #include "output.h"
 #include "../nan.h"
@@ -23,6 +24,7 @@ namespace lcmc { namespace stats {
 using boost::shared_ptr;
 using std::string;
 using std::vector;
+using namespace kpfutils;
 
 /** Calculates the mean and standard deviation of a collection of statistics
  *
@@ -105,7 +107,7 @@ void getSummaryStats(const vector<double>& values, double& mean, double& stddev,
  *
  * @exception std::runtime_error Thrown if there are difficulties writing 
  *	to @p file
- * @exception lcmc::except::FileIo Thrown if there are difficulties writing 
+ * @exception kpfutils::except::FileIo Thrown if there are difficulties writing 
  *	to @p distribFile
  *
  * @exceptsafe The program is in a consistent state in the event 
@@ -156,7 +158,7 @@ void printStat(FILE* const file, const vector<double>& archive,
  *
  * @exception std::runtime_error Thrown if there are difficulties writing 
  *	to @p file
- * @exception lcmc::except::FileIo Thrown if there are difficulties writing 
+ * @exception kpfutils::except::FileIo Thrown if there are difficulties writing 
  *	to @p distribFile
  *
  * @exceptsafe The program is in a consistent state in the event 
@@ -200,7 +202,7 @@ void printStatAlwaysDefined(FILE* const file, const vector<double>& archive,
  *
  * @exception std::runtime_error Thrown if there are difficulties writing 
  *	to @p file
- * @exception lcmc::except::FileIo Thrown if there are difficulties writing 
+ * @exception kpfutils::except::FileIo Thrown if there are difficulties writing 
  *	to @p distribFile
  *
  * @exceptsafe The program is in a consistent state in the event 
@@ -246,7 +248,7 @@ void printStat(FILE* const file, const std::vector<vector<double> >& archive,
  *
  * @exception std::runtime_error Thrown if there are difficulties writing 
  *	to @p file
- * @exception lcmc::except::FileIo Thrown if there are difficulties writing 
+ * @exception kpfutils::except::FileIo Thrown if there are difficulties writing 
  *	to @p distribFile
  *
  * @exceptsafe The program is in a consistent state in the event 

@@ -2,12 +2,12 @@
  * @file lightcurveMC/except/parse.cpp
  * @author Krzysztof Findeisen
  * @date Created May 11, 2013
- * @date Last modified May 11, 2013
+ * @date Last modified June 18, 2013
  */
 
 #include <stdexcept>
 #include <string>
-#include "exception.h"
+#include "../../common/checkedexception.h"
 #include "parse.h"
 
 namespace lcmc { namespace parse { namespace except {

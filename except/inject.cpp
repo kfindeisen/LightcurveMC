@@ -2,13 +2,13 @@
  * @file lightcurveMC/except/inject.cpp
  * @author Krzysztof Findeisen
  * @date Created May 8, 2013
- * @date Last modified May 8, 2013
+ * @date Last modified June 18, 2013
  */
 
 #include <stdexcept>
 #include <string>
-#include "exception.h"
-#include "fileio.h"
+#include "../../common/checkedexception.h"
+#include "../../common/fileio.h"
 #include "inject.h"
 
 namespace lcmc { namespace inject { namespace except {

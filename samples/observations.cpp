@@ -2,7 +2,7 @@
  * @file lightcurveMC/samples/observations.cpp
  * @author Krzysztof Findeisen
  * @date Created May 4, 2012
- * @date Last modified June 8, 2013
+ * @date Last modified June 18, 2013
  */
 
 #include <string>
@@ -13,13 +13,15 @@
 #include <gsl/gsl_rng.h>
 #include "../fluxmag.h"
 #include "observations.h"
-#include "../except/fileio.h"
+#include "../../common/fileio.h"
 #include "../gsl_compat.tmp.h"
 #include "../except/inject.h"
 #include "../lcsio.h"
 #include "../mcio.h"
 #include "../nan.h"
 #include "../../common/stats.tmp.h"
+#include "../../common/cerror.h"
+#include "../../common/alloc.tmp.h"
 
 namespace lcmc { namespace inject {
 
@@ -31,7 +33,7 @@ namespace lcmc { namespace inject {
  *	the sample.
  * 
  * @exception lcmc::inject::except::NoCatalog Thrown if the catalog file does not exist.
- * @exception lcmc::except::FileIo Thrown if the catalog or the light curve 
+ * @exception kpfutils::except::FileIo Thrown if the catalog or the light curve 
  *	could not be read.
  * @exception std::bad_alloc Thrown if there is not enough memory to create the object.
  *
@@ -49,12 +51,12 @@ Observations::Observations(const std::string& catalogName) : times(), fluxes() {
 	const std::vector<std::string> library = getLcLibrary(catalogName);
 	
 	if (library.size() == 0) {
-		throw lcmc::except::FileIo("Catalog " + catalogName + " does not contain any light curves.");
+		throw kpfutils::except::FileIo("Catalog " + catalogName + " does not contain any light curves.");
 	}
 	
 	// copy-and-swap the generator state, to ensure it only changes 
 	//	if the object is successfully constructed
-	gsl_rng * tempRng = utils::checkAlloc(gsl_rng_clone(sourcePicker));
+	gsl_rng * tempRng = kpfutils::checkAlloc(gsl_rng_clone(sourcePicker));
 	
 	// gsl_rng_uniform_int() generates over [0, n), not [0, n]
 	unsigned long int index = gsl_rng_uniform_int(tempRng, library.size());
@@ -62,9 +64,9 @@ Observations::Observations(const std::string& catalogName) : times(), fluxes() {
 	try {
 		readFile(library.at(index));
 	} catch (const except::BadFile& e) {
-		throw lcmc::except::FileIo(e.what());
+		throw kpfutils::except::FileIo(e.what());
 	} catch (const except::BadFormat& e) {
-		throw lcmc::except::FileIo(e.what());
+		throw kpfutils::except::FileIo(e.what());
 	}
 	
 	// IMPORTANT: no exceptions beyond this point
@@ -97,8 +99,8 @@ void Observations::readFile(const std::string& fileName) {
 
 	boost::shared_ptr<FILE> hLightCurve;
 	try {
-		hLightCurve = fileCheckOpen(fileName, "r");
-	} catch(const lcmc::except::FileIo& e) {
+		hLightCurve = kpfutils::fileCheckOpen(fileName, "r");
+	} catch(const kpfutils::except::FileIo& e) {
 		throw except::BadFile(e.what(), fileName);
 	}
 	
@@ -159,7 +161,7 @@ void Observations::readFile(const std::string& fileName) {
  * 
  * @exception lcmc::inject::except::NoCatalog Thrown if the catalog file 
  *	does not exist.
- * @exception lcmc::except::FileIo Thrown if the catalog could not 
+ * @exception kpfutils::except::FileIo Thrown if the catalog could not 
  *	be read.
  * @exception std::bad_alloc Thrown if there is not enough memory to store 
  *	the catalog.
@@ -174,8 +176,8 @@ const std::vector<std::string> Observations::getLcLibrary(const std::string& cat
 	
 	boost::shared_ptr<FILE> hCatalog;
 	try {
-		hCatalog = fileCheckOpen(catalogName, "r");
-	} catch (const lcmc::except::FileIo& e) {
+		hCatalog = kpfutils::fileCheckOpen(catalogName, "r");
+	} catch (const kpfutils::except::FileIo& e) {
 		throw except::NoCatalog(e.what(), catalogName);
 	}
 
@@ -186,7 +188,7 @@ const std::vector<std::string> Observations::getLcLibrary(const std::string& cat
 		char textBuffer[128];
 		fgets(textBuffer, 128, hCatalog.get());
 		if (ferror(hCatalog.get())) {
-			fileError(hCatalog.get(), "Error while reading " + catalogName + ": ");
+			kpfutils::fileError(hCatalog.get(), "Error while reading " + catalogName + ": ");
 		}
 		// Remove trailing whitespace!
 		std::string strBuffer(textBuffer);

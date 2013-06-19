@@ -2,7 +2,7 @@
  * @file lightcurveMC/except/undefined.h
  * @author Krzysztof Findeisen
  * @date Created May 5, 2013
- * @date Last modified May 7, 2013
+ * @date Last modified June 18, 2013
  */
 
 #ifndef LCMCUNDEFEXCEPTH
@@ -10,7 +10,7 @@
 
 #include <stdexcept>
 #include <string>
-#include "exception.h"
+#include "../../common/checkedexception.h"
 
 namespace lcmc { namespace stats { namespace except {
 
@@ -19,7 +19,7 @@ using std::string;
 /** This exception is thrown if a statistic cannot be calculated from the 
  *	available data.
  */
-class Undefined : public lcmc::except::CheckedException {
+class Undefined : public kpfutils::except::CheckedException {
 public:
 	/** Constructs an Undefined object.
 	 */

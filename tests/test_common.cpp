@@ -39,6 +39,7 @@
 #include "../gsl_compat.tmp.h"
 #include "../lightcurvetypes.h"
 #include "test.h"
+#include "../../common/alloc.tmp.h"
 
 namespace lcmc { 
 
@@ -49,7 +50,7 @@ namespace test {
 
 using boost::lexical_cast;
 using std::vector;
-using utils::checkAlloc;
+using kpfutils::checkAlloc;
 
 /** Wrapper for a trusted Nan-testing function
  *

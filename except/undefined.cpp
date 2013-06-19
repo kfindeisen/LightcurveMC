@@ -2,12 +2,12 @@
  * @file lightcurveMC/except/undefined.cpp
  * @author Krzysztof Findeisen
  * @date Created May 5, 2013
- * @date Last modified May 7, 2013
+ * @date Last modified June 18, 2013
  */
 
 #include <stdexcept>
 #include <string>
-#include "exception.h"
+#include "../../common/checkedexception.h"
 #include "undefined.h"
 
 namespace lcmc { namespace stats { namespace except {

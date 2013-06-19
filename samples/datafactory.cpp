@@ -34,7 +34,7 @@ namespace lcmc { namespace inject {
  * 
  * @exception lcmc::inject::except::NoCatalog Thrown if the catalog file 
  *	does not exist.
- * @exception lcmc::except::FileIo Thrown if the catalog or the light 
+ * @exception kpfutils::except::FileIo Thrown if the catalog or the light 
  *	curve could not be read.
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	create the object.

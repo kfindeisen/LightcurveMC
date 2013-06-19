@@ -18,7 +18,8 @@
 #include "../nan.h"
 #include "../except/nan.h"
 #include "../except/undefined.h"
-#include "../vecarray.tmp.h"
+#include "../../common/vecarray.tmp.h"
+#include "../../common/alloc.tmp.h"
 
 #ifndef _GSL_HAS_ACF
 #include "acf.h"
@@ -126,7 +127,7 @@ void evenGrid(double min, double max, double step, shared_array<double>& grid, s
 void autoCorr(const DoubleVec &times, const DoubleVec &data, 
 		double deltaT, size_t nAcf, DoubleVec &acf) {
 	using std::swap;
-	using utils::checkAlloc;
+	using kpfutils::checkAlloc;
 
 	const size_t NOLD = times.size();
 	if (NOLD < 2) {

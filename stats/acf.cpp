@@ -14,6 +14,7 @@
 #include "acf.h"
 #include "../gsl_compat.tmp.h"
 #include "../except/undefined.h"
+#include "../../common/alloc.tmp.h"
 
 namespace lcmc { namespace stats { 
 
@@ -84,7 +85,7 @@ void squareAmpHalfComplex(double hcArr[], size_t n) {
  */
 void autoCorrelation_sp(const double data[], double acfs[], size_t n) {
 	using boost::shared_ptr;
-	using utils::checkAlloc;
+	using kpfutils::checkAlloc;
 	
 	if (n < 2) {
 		throw except::NotEnoughData("Cannot calculate autocorrelation function with fewer than 2 data points.");

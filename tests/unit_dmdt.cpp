@@ -39,9 +39,10 @@
 #include "../stats/cut.tmp.h"
 #include "../stats/dmdt.h"
 #include "../gsl_compat.tmp.h"
+#include "../../common/alloc.tmp.h"
 
 using std::vector;
-using lcmc::utils::checkAlloc;
+using kpfutils::checkAlloc;
 
 // Ignore this declaration, since for some reason it confuses Doxygen
 /// @cond

@@ -42,6 +42,8 @@
 #include "../lightcurvetypes.h"
 #include "../mcio.h"
 #include "../waves/lightcurves_gp.h"
+#include "../../common/cerror.h"
+#include "../../common/alloc.tmp.h"
 
 namespace lcmc { namespace test {
 
@@ -291,8 +293,8 @@ private:
 void testGp(size_t nTest, const std::string& fileName, const TestFactory& factory) {
 	shared_ptr<FILE> hDump;
 	try {
-		hDump = fileCheckOpen(fileName, "w");
-	} catch (const except::FileIo& e) {
+		hDump = kpfutils::fileCheckOpen(fileName, "w");
+	} catch (const kpfutils::except::FileIo& e) {
 		BOOST_FAIL(e.what());
 	}
 
@@ -310,12 +312,12 @@ void testGp(size_t nTest, const std::string& fileName, const TestFactory& factor
 					it != mags.end(); it++) {
 				if (it == mags.begin()) {
 					if (fprintf(hDump.get(), "%0.5f", *it) < 0) {
-						fileError(hDump.get(), "While printing to " 
+						kpfutils::fileError(hDump.get(), "While printing to " 
 							+ fileName +":");
 					}
 				} else {
 					if (fprintf(hDump.get(), ", %0.5f", *it) < 0) {
-						fileError(hDump.get(), "While printing to " 
+						kpfutils::fileError(hDump.get(), "While printing to " 
 							+ fileName +":");
 					}
 				}
