@@ -38,7 +38,7 @@
 #include "../binstats.h"
 #include "../stats/cut.tmp.h"
 #include "../stats/dmdt.h"
-#include "../gsl_compat.tmp.h"
+#include "../gsl_compat.h"
 #include "../../common/alloc.tmp.h"
 
 using std::vector;

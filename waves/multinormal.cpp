@@ -18,7 +18,7 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include "generators.h"
-#include "../gsl_compat.tmp.h"
+#include "../gsl_compat.h"
 #include "../../common/alloc.tmp.h"
 
 namespace lcmc { namespace utils {

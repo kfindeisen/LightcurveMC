@@ -2,7 +2,7 @@
  * @file lightcurveMC/projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified June 14, 2013
+ * @date Last modified June 28, 2013
  *
  * @todo Consider adding an algorithms overview for interested researchers.
  * @todo Rely less on integration tests
@@ -49,8 +49,8 @@
  *
  * Lightcurve MC was primarily written by Krzysztof Findeisen. Please contact 
  * him at krzys, astro caltech edu for questions, feedback, or bug reports. 
- * The @c peakFind and @c peakFindTimescales functions were adapted from work 
- * by Ann Marie Cody. 
+ * The @c peakFind() and @c peakFindTimescales() functions were adapted 
+ * from work by Ann Marie Cody. 
  * The @c ParamList class was suggested by Timothy Morton.
  * 
  * @page install Installation
@@ -175,6 +175,10 @@
  *	the measured light curve amplitude</dd>
  *	<dt><tt>peakplot</tt></dt><dd>Creates a file containing all the plots of time 
  *	separation vs. threshold magnitude for identifying a peak.</dd>
+ *	<dt><tt>gptau</tt></dt><dd>Fits a Gaussian process model to each light 
+ *	curve and returns the best-fit time scale parameters. Be aware that 
+ *	this statistic is several orders of magnitude slower than the other 
+ *	options.</dd>
  *	</dl>
  * If no @c -\-stat arguments are given, the default behavior is to run all tests.
  * </dd>
@@ -563,6 +567,12 @@
  * run. The first row in each pair contains the timescales in space-delimited 
  * format, while the second row contains the magnitude differences at which 
  * each timescale was calculated in space-delimited format.</dd>
+ * <dt><tt>gptau</tt></dt><dd>The program prints the average time scale 
+ * calculated from the simulation runs, followed by &plusmn;, followed by the 
+ * standard deviation of the periods. The program then prints the fraction 
+ * of simulations in which a time scale could be solved for, followed by 
+ * the name of a file containing the individual periods from each simulation, 
+ * one per line, for more in-depth analysis of the results.</dd>
  * </dl>
  * 
  * @section examples Examples
@@ -683,6 +693,7 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    1	run_c
  * 
  * @subsection v2_3_0_new New Features 
  * 
+ * - Support for Gaussian process timescales
  * 
  * @subsection v2_3_0_fix Bug Fixes 
  * 

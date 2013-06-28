@@ -14,7 +14,7 @@
 #include <boost/smart_ptr.hpp>
 #include <gsl/gsl_spline.h>
 #include "acfinterp.h"
-#include "../gsl_compat.tmp.h"
+#include "../gsl_compat.h"
 #include "../nan.h"
 #include "../except/nan.h"
 #include "../except/undefined.h"
@@ -136,8 +136,8 @@ void autoCorr(const DoubleVec &times, const DoubleVec &data,
 	}
 	if (NOLD != data.size()) {
 		throw std::invalid_argument("Data and time arrays passed to autoCorr() must have the same length (gave " 
-			+ lexical_cast<string>(NOLD) + " and " 
-			+ lexical_cast<string>(data.size()) + ")");
+			+ lexical_cast<string>(NOLD) + " for times and " 
+			+ lexical_cast<string>(data.size()) + " for data)");
 	}
 	if (deltaT <= 0) {
 		throw std::invalid_argument("Need a positive time lag to construct an autocorrelation grid (gave " 

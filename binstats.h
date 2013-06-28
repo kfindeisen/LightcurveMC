@@ -2,7 +2,9 @@
  * @file lightcurveMC/binstats.h
  * @author Krzysztof Findeisen
  * @date Reconstructed June 23, 2011
- * @date Last modified May 24, 2013
+ * @date Last modified June 27, 2013
+ *
+ * @todo Break up this file
  */
 
 #ifndef BINSTATSH
@@ -63,7 +65,10 @@ enum StatType {
 	PEAKCUT, 
 	/** Represents dumps of peak-find plots
 	 */
-	PEAKFIND
+	PEAKFIND, 
+	/** Represents the best-fit Gaussian process model
+	 */
+	GPTAU
 };
 
 /** Organizes test statistics on artificial light curves. LcBinStats can 
@@ -126,6 +131,8 @@ private:
 	
 	std::vector<StatType> stats;
 	
+	//----------------------------------------
+	
 	CollectedScalars C1vals;
 	
 	CollectedScalars periods;
@@ -154,6 +161,8 @@ private:
 	CollectedScalars cutPeakAmp2s;
 	CollectedScalars cutPeakMax08s;
 	CollectedPairs peaks;
+
+	CollectedScalars gpTaus;
 };
 
 }}		// end lcmc::stats

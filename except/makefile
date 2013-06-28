@@ -10,7 +10,7 @@ include ../makefile.inc
 PROJ     := except
 
 SOURCES  := data.cpp inject.cpp iterator.cpp nan.cpp \
-	paramlist.cpp parse.cpp undefined.cpp 
+	paramlist.cpp parse.cpp r.cpp undefined.cpp 
 	
 include ../makefile.subdirs
 include ../makefile.common

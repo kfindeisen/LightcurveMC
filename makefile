@@ -1,7 +1,7 @@
 # Compilation make for Lightcurve MC
 # by Krzysztof Findeisen
 # Created March 24, 2010
-# Last modified May 26, 2013
+# Last modified June 24, 2013
 
 include makefile.inc
 
@@ -11,7 +11,7 @@ PROJ     := lightcurveMC
 SOURCES  := binstats.cpp sims.cpp approxequal.cpp fluxmag.cpp \
 	nanstats.cpp mcio.cpp \
 	lcsupport.cpp lightcurve.cpp paramlist.cpp lcregistry.cpp \
-	statsupport.cpp \
+	rinstance.cpp statsupport.cpp \
 	cerror_except.cpp lcsio.cpp
 OBJS     := $(SOURCES:.cpp=.o)
 # except must be last because other libraries depend on it
@@ -23,7 +23,7 @@ TESTLIBS := $(LIBS) boost_unit_test_framework-mt
 # Primary build option
 $(PROJ): driver.o $(OBJS) $(DIRS)
 	@echo "Linking $@ with $(LIBS:%=-l%)"
-	@$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(filter %.o,$^) $(DIRS:%=-l%) $(LIBS:%=-l%) $(LIBDIRS:%=-L %) -L ../common -L .
+	@$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(filter %.o,$^) $(DIRS:%=-l%) $(LIBS:%=-l%) $(RLIBS) $(LIBDIRS:%=-L %) -L ../common -L .
 
 #---------------------------------------
 # Subdirectories
@@ -63,7 +63,7 @@ doc/: driver.cpp $(SOURCES) $(DIRS) tests doxygen.cfg statistics.bib
 unittest: tests/test
 tests/test: $(OBJS) $(DIRS) tests
 	@echo "Linking $@ with $(TESTLIBS:%=-l%)"
-	@$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(filter %.o,$^) $(DIRS:%=-l%) $(TESTLIBS:%=-l%) $(LIBDIRS:%=-L %) -L ../common -L .
+	@$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(filter %.o,$^) $(DIRS:%=-l%) $(TESTLIBS:%=-l%) $(RLIBS) $(LIBDIRS:%=-L %) -L ../common -L .
 
 .PHONY: autotest
 autotest: $(PROJ) unittest

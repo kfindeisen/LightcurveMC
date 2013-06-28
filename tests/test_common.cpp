@@ -36,7 +36,7 @@
 #include <boost/lexical_cast.hpp>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
-#include "../gsl_compat.tmp.h"
+#include "../gsl_compat.h"
 #include "../lightcurvetypes.h"
 #include "test.h"
 #include "../../common/alloc.tmp.h"

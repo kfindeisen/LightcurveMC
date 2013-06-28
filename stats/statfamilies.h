@@ -45,6 +45,12 @@ void doPeak(const vector<double>& times, const vector<double>& mags,
 		CollectedScalars& cut3, CollectedScalars& cut2, 
 		CollectedScalars& cut80, CollectedPairs& peakPlot);
 
+
+/** Does all GP-related computations for a given light curve.
+ */
+void doGaussFit(const vector<double>& times, const vector<double>& data, 
+		bool getGp, CollectedScalars& timescales);
+
 }}		// end lcmc::stats
 
 #endif		// End ifndef LCMCSTATFAMH

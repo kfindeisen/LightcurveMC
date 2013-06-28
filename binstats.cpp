@@ -2,34 +2,24 @@
  * @file lightcurveMC/binstats.cpp
  * @author Krzysztof Findeisen
  * @date Created June 6, 2011
- * @date Last modified June 18, 2013
+ * @date Last modified June 27, 2013
  */
 
 #include <algorithm>
-#include <limits>
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include <cerrno>
-#include <cmath>
 #include <cstdio>
-#include <cstring>
 #include <boost/lexical_cast.hpp>
-#include <boost/smart_ptr.hpp>
 #include <timescales/timescales.h>
 #include "stats/acfinterp.h"
 #include "binstats.h"
 #include "../common/cerror.h"
-#include "stats/cut.tmp.h"
-#include "stats/dmdt.h"
-#include "stats/experimental.h"
-#include "../common/fileio.h"
 #include "fluxmag.h"
 #include "stats/magdist.h"
-#include "mcio.h"
 #include "stats/output.h"
 #include "nan.h"
-#include "stats/peakfind.h"
+#include "paramlist.h"
 #include "stats/statcollect.h"
 #include "stats/statfamilies.h"
 #include "except/undefined.h"
@@ -49,7 +39,6 @@
 namespace lcmc { namespace stats {
 
 using boost::lexical_cast;
-using boost::shared_ptr;
 using std::string;
 using kpfutils::cError;
 using kpfutils::fileError;
@@ -101,7 +90,8 @@ LcBinStats::LcBinStats(const string& modelName, const RangeList& binSpecs, const
 		cutPeakAmp3s("Timescales for peaks > 1/3 amp", "run_cutpeak3_" + fileName + ".dat"), 
 		cutPeakAmp2s("Timescales for peaks > 1/3 amp", "run_cutpeak2_" + fileName + ".dat"), 
 		cutPeakMax08s("Timescales for peaks > 80% max", "run_cutpeak45_" + fileName + ".dat"), 
-		peaks("Peaks", "run_peaks_" + fileName + ".dat") {
+		peaks("Peaks", "run_peaks_" + fileName + ".dat"), 
+		gpTaus("GP", "run_gpt_" + fileName + ".dat") {
 	if (toCalc.size() == 0) {
 		throw std::invalid_argument("LcBinStats won't calculate any statistics");
 	}
@@ -210,6 +200,8 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 
 	doPeak(cleanTimes, cleanMags, hasStat(stats, PEAKCUT), hasStat(stats, PEAKFIND), 
 		this->cutPeakAmp3s, this->cutPeakAmp2s, this->cutPeakMax08s, this->peaks);
+
+	doGaussFit(cleanTimes, cleanMags, hasStat(stats, GPTAU), this->gpTaus);
 }
 
 // Re-enable all compiler warnings
@@ -250,6 +242,8 @@ void LcBinStats::clear() {
 	cutPeakAmp2s.clear();
 	cutPeakMax08s.clear();
 	peaks.clear();
+	
+	gpTaus.clear();
 }
 
 /** Prints a row representing the accumulated statistics to the specified file.
@@ -320,6 +314,9 @@ void LcBinStats::printBinStats(FILE* const file) const {
 	}
 	if (hasStat(stats, PEAKFIND)) {
 		peaks.printStats(file);
+	}
+	if (hasStat(stats, GPTAU)) {
+		gpTaus.printStats(file);
 	}
 
 	status = fprintf(file, "\n");
@@ -405,6 +402,9 @@ void LcBinStats::printBinHeader(FILE* const file, const RangeList& binSpecs,
 	}
 	if (hasStat(outputStats, PEAKFIND)) {
 		CollectedPairs::printHeader(file, "Peaks");
+	}
+	if (hasStat(outputStats, GPTAU)) {
+		CollectedScalars::printHeader(file, "GP Time");
 	}
 
 	status = fprintf(file, "\n");

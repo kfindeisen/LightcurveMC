@@ -14,7 +14,7 @@
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
 #include "../common/fileio.h"
-#include "gsl_compat.tmp.h"
+#include "gsl_compat.h"
 #include "lightcurvetypes.h"
 #include "mcio.h"
 #include "samples/observations.h"

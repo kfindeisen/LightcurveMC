@@ -1,6 +1,6 @@
 /** Compatibility definitions to allow the program to interface 
  *	well with GSL
- * @file lightcurveMC/gsl_compat.tmp.h
+ * @file lightcurveMC/gsl_compat.h
  * @author Krzysztof Findeisen
  * @date Created May 7, 2013
  * @date Last modified May 26, 2013

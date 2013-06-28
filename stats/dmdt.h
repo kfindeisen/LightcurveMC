@@ -9,8 +9,6 @@
 #define LCMCDMDTH
 
 #include <vector>
-#include <boost/concept_check.hpp>
-#include <boost/concept/requires.hpp>
 
 namespace lcmc { namespace stats {
 

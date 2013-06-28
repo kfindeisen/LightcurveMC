@@ -49,7 +49,7 @@
 #include "../../common/cerror.h"
 #include "../../common/fileio.h"
 #include "../waves/generators.h"
-#include "../gsl_compat.tmp.h"
+#include "../gsl_compat.h"
 #include "../lcsio.h"
 #include "../stats/magdist.h"
 #include "../mcio.h"

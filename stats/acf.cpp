@@ -12,7 +12,7 @@
 #include <gsl/gsl_fft_real.h>
 #include <gsl/gsl_statistics_double.h>
 #include "acf.h"
-#include "../gsl_compat.tmp.h"
+#include "../gsl_compat.h"
 #include "../except/undefined.h"
 #include "../../common/alloc.tmp.h"
 

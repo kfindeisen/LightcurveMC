@@ -14,7 +14,7 @@
 #include "../fluxmag.h"
 #include "observations.h"
 #include "../../common/fileio.h"
-#include "../gsl_compat.tmp.h"
+#include "../gsl_compat.h"
 #include "../except/inject.h"
 #include "../lcsio.h"
 #include "../mcio.h"
