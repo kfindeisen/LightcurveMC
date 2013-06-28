@@ -23,7 +23,7 @@
  * "+build" tag can be used to distinguish which development version 
  *	was used to create which output
  */
-#define VERSION_STRING "2.3.0-devel+build.6"
+#define VERSION_STRING "2.3.0-devel+build.7"
 
 /** @mainpage
  *
