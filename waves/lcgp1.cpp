@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lcgp1.cpp
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
- * @date Last modified May 22, 2013
+ * @date Last modified June 16, 2013
  */
 
 #include <algorithm>
@@ -103,9 +103,9 @@ void SimpleGp::solveFluxes(std::vector<double>& fluxes) const {
 		for(size_t i = 0; i < times.size(); i++) {
 			temp.push_back(rng->rNorm());
 		}
-	
+		
 		shared_ptr<gsl_matrix> corrs = getCovar();
-	
+		
 		try {
 			utils::multiNormal(temp, corrs, temp);
 		} catch (const std::invalid_argument& e) {
@@ -119,6 +119,30 @@ void SimpleGp::solveFluxes(std::vector<double>& fluxes) const {
 	
 	swap(fluxes, temp);
 	commit(rng);
+}
+
+/** Approximate comparison function that handles zeros cleanly.
+ *
+ * @param[in] x, y The values to compare
+ *
+ * @return true iff (x = y = 0) or (|@p x - @p y|/|@p x| and |@p x - @p y|/|@p y| < @p epsilon)
+ *
+ * @exception std::bad_alloc Thrown if could not compute approximate comparison test.
+ *
+ * @exceptsafe The parameters and object state are unchanged in the event 
+ *	of an exception. Does not throw after the first call.
+ *
+ * @todo Is there any way to handle bad_alloc internally? Letting it get 
+ *	thrown exposes the function implementation.
+ */
+bool cacheCheck(double x, double y) {
+	const static utils::ApproxEqual approx(1e-12);
+	
+	if (x == 0.0 || y == 0.0) {
+		return (x == y);
+	} else {
+		return approx(x, y);
+	}
 }
 
 /** Allocates and initializes the covariance matrix for the 
@@ -140,7 +164,6 @@ shared_ptr<gsl_matrix> SimpleGp::getCovar() const {
 	
 	// Define a cache to prevent identical simulation runs from having to 
 	//	recalculate the covariance
-	const static utils::ApproxEqual cacheCheck(1e-12);
 	// invariant: oldCov is empty <=> oldTimes is empty
 	static shared_ptr<gsl_matrix> oldCov;
 	static std::vector<double> oldTimes;
@@ -151,12 +174,12 @@ shared_ptr<gsl_matrix> SimpleGp::getCovar() const {
 	this->getTimes(times);
 	size_t nTimes = times.size();
 
-	if(oldCov == NULL 
+	if(oldCov.get() == NULL 
 			|| !cacheCheck(oldSigma, sigma)
 			|| !cacheCheck(oldTau, tau)
 			|| oldTimes.size() != nTimes
 			|| !std::equal(oldTimes.begin(), oldTimes.end(), 
-					times.begin(), cacheCheck) ) {
+					times.begin(), &cacheCheck) ) {
 		// Cache is out of date
 		
 		// copy-and-swap

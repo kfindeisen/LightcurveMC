@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/unit_gp.cpp
  * @author Krzysztof Findeisen
  * @date Created April 17, 2013
- * @date Last modified May 28, 2013
+ * @date Last modified July 17, 2013
  */
 
 #include "../../common/warnflags.h"
@@ -541,6 +541,58 @@ BOOST_AUTO_TEST_CASE(gp2)
 		testTwoGp(STOC_TEST_COUNT, times, tau1, tau1 *  3.0);
 		testTwoGp(STOC_TEST_COUNT, times, tau1, tau1 * 10.0);
 	}
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+/** Generates a number of Gaussian processes but ignores the results
+ *
+ * @param[in] nTest The number of light curve instances to generate
+ * @param[in] factory A factory for generating light curves of a specific 
+ *	type with specific parameters
+ *
+ * @exception lcmc::models::except::BadParam Thrown if @p factory generates 
+ *	invalid light curves.
+ * @exception std::logic_error Thrown if light curve could not be evaluated.
+ *
+ * @exceptsafe Function arguments are in a valid state in the event of an exception.
+ */
+void dummyGp(size_t nTest, const TestFactory& factory) {
+	try {
+		for (size_t i = 0; i < nTest; i++) {
+			std::vector<double> mags;
+			std::auto_ptr<lcmc::models::ILightCurve> model = factory.make();
+			// Model does not get calculated until first call to getFluxes()
+			model->getFluxes(mags);
+		}
+	} catch (const std::bad_alloc& e) {
+		BOOST_FAIL("Out of memory!");
+	}
+}
+
+/** Test cases for known bugs
+ * @class BoostTest::test_gp_bugfix
+ */
+BOOST_AUTO_TEST_SUITE(test_gp_bugfix)
+
+/** Tests whether Gaussian processes can handle time series including zeros
+ *
+ * @exceptsafe Does not throw exceptions
+ */
+BOOST_AUTO_TEST_CASE(zerotime)
+{
+	using namespace lcmc::models;
+	
+	std::vector<double> evenTimes;
+	for(double i = 0.0; i <= 10.0; i += 0.1) {
+		evenTimes.push_back(i);
+	}
+
+	BOOST_CHECK_NO_THROW(dummyGp(10, TestWhiteNoiseFactory(evenTimes, 1.0)));
+	BOOST_CHECK_NO_THROW(dummyGp(10, TestDrwFactory(evenTimes, 2.0, 1.0)));
+	BOOST_CHECK_NO_THROW(dummyGp(10, TestRwFactory(evenTimes, 2.0)));
+	BOOST_CHECK_NO_THROW(dummyGp(10, TestGpFactory(evenTimes, 1.0, 1.0)));
+	BOOST_CHECK_NO_THROW(dummyGp(10, TestTwoGpFactory(evenTimes, 1.0, 1.0, 0.3, 0.1)));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

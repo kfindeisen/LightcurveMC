@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lcgp2.cpp
  * @author Krzysztof Findeisen
  * @date Created April 29, 2013
- * @date Last modified May 22, 2013
+ * @date Last modified July 16, 2013
  */
 
 #include <algorithm>
@@ -140,6 +140,10 @@ void TwoScaleGp::solveFluxes(std::vector<double>& fluxes) const {
 	commit(rng);
 }
 
+/** Approximate comparison function that handles zeros cleanly.
+ */
+bool cacheCheck(double x, double y);
+
 /** Allocates and initializes the covariance matrix for the 
  *	Gaussian process. 
  *
@@ -159,7 +163,6 @@ shared_ptr<gsl_matrix> TwoScaleGp::getCovar() const {
 	
 	// Define a cache to prevent identical simulation runs from having to 
 	//	recalculate the covariance
-	const static utils::ApproxEqual cacheCheck(1e-12);
 	// invariant: oldCov is empty <=> oldTimes is empty
 	static shared_ptr<gsl_matrix> oldCov;
 	static std::vector<double> oldTimes;
@@ -170,14 +173,14 @@ shared_ptr<gsl_matrix> TwoScaleGp::getCovar() const {
 	this->getTimes(times);
 	size_t nTimes = times.size();
 
-	if(oldCov == NULL 
+	if(oldCov.get() == NULL 
 			|| !cacheCheck(oldSigma1, sigma1)
 			|| !cacheCheck(oldSigma2, sigma2)
 			|| !cacheCheck(oldTau1, tau1)
 			|| !cacheCheck(oldTau2, tau2)
 			|| oldTimes.size() != nTimes
 			|| !std::equal(oldTimes.begin(), oldTimes.end(), 
-					times.begin(), cacheCheck) ) {
+					times.begin(), &cacheCheck) ) {
 		// Cache is out of date
 		// Cache is out of date
 		

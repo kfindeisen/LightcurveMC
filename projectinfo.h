@@ -705,6 +705,9 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    1	run_c
  * - Undefined values of C1 and the period will no longer be omitted from 
  *	the program output. Program output now includes the fraction of runs 
  *	in which C1 is defined.
+ * - @c simple_gp and @c two_gp light curves now work correctly when one of 
+ *	the input time stamps equals exactly zero
+ * - error messages related to parameters now match those seen by the user
  *
  * @section v2_2_0 Version 2.2.0
  *

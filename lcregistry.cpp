@@ -175,7 +175,7 @@ std::auto_ptr<ILightCurve> lcFactory(LightCurveType whichLc, const std::vector<d
 	} else if (whichLc == ONEGP()) {
 		return auto_ptr<ILightCurve>(new SimpleGp(times, lcParams.get("a"), lcParams.get("p")));
 	} else if (whichLc == TWOGP()) {
-		return auto_ptr<ILightCurve>(new TwoScaleGp(times, lcParams.get("a"), lcParams.get("p"), lcParams.get("a2"), lcParams.get("p2") ));
+		return auto_ptr<ILightCurve>(new TwoScaleGp(times, lcParams.get("a"), lcParams.get("p"), lcParams.get("amp2"), lcParams.get("period2") ));
 
 	} else {
 		throw std::invalid_argument("Unsupported light curve.");

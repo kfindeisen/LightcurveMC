@@ -252,8 +252,8 @@ void parseArguments(int argc, char* argv[],
 			addParam(paramRanges, "width", argWidth, RangeList::LOGUNIFORM);
 			addParam(paramRanges, "width2", argWidth2, RangeList::LOGUNIFORM);
 			addParam(paramRanges, "d", argDiffus, RangeList::LOGUNIFORM);
-			addParam(paramRanges, "a2", argAmp2, RangeList::LOGUNIFORM);
-			addParam(paramRanges, "p2", argPer2, RangeList::LOGUNIFORM);
+			addParam(paramRanges, "amp2", argAmp2, RangeList::LOGUNIFORM);
+			addParam(paramRanges, "period2", argPer2, RangeList::LOGUNIFORM);
 		} catch (const utils::except::UnexpectedNan& e) {
 			throw std::logic_error("Parameter validation doesn't work!\nOriginal error: " + string(e.what()));
 		} catch (const models::except::ExtraParam& e) {

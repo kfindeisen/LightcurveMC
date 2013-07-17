@@ -13,7 +13,7 @@ status=0
 status=$(($status || $?))
 ../lightcurveMC --version
 status=$(($status || $?))
-nice -n 15 ./test -i -t test_approx,test_dmdt,test_nan,test_paramlist,test_rangelist,test_stats,test_wave
+nice -n 15 ./test -i -t test_approx,test_dmdt,test_gp_bugfix,test_nan,test_paramlist,test_rangelist,test_stats,test_wave
 #nice -n 15 ./test -t test_gp -l message
 status=$(($status || $?))
 
