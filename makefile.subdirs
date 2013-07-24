@@ -1,7 +1,7 @@
 # Common recipes for Lightcurve MC compilation
 # by Krzysztof Findeisen
 # Created April 28, 2013
-# Last modified May 18, 2013
+# Last modified July 24, 2013
 
 OBJS     := $(SOURCES:.cpp=.o)
 
@@ -11,4 +11,4 @@ PROJ := $(PROJ:=.a)
 PROJ := $(PROJ:%=../lib%)
 $(PROJ): $(OBJS)
 	@echo "Packaging $@..."
-	@$(AR) $(ARFLAGS)T $@ $^
+	@$(AR) $(ARFLAGS) $@ $^
