@@ -2,12 +2,13 @@
  * @file lightcurveMC/stats/cut.tmp.h
  * @author Krzysztof Findeisen
  * @date Created May 9, 2013
- * @date Last modified May 15, 2013
+ * @date Last modified July 24, 2013
  */
 
 #ifndef LCMCCUTH
 #define LCMCCUTH
 
+#include <algorithm>
 #include <vector>
 #include <boost/concept_check.hpp>
 #include <boost/concept/requires.hpp>

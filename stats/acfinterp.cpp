@@ -150,8 +150,8 @@ void autoCorr(const DoubleVec &times, const DoubleVec &data,
 
 	// In C++11, can directly return an array view of times and data
 	// For now, make a copy
-	shared_array<double> tempTimes = vecToArr(times);
-	shared_array<double> tempData  = vecToArr(data );
+	shared_array<double> tempTimes = kpfutils::vecToArr(times);
+	shared_array<double> tempData  = kpfutils::vecToArr(data );
 	
 	// Generate a grid with spacing deltaT
 	shared_array<double> evenTimes;
@@ -182,7 +182,7 @@ void autoCorr(const DoubleVec &times, const DoubleVec &data,
 	#endif
 		
 	// Convert to vector and trim off lags longer than (nAcf-1)*deltaT
-	vector<double> temp = arrToVec(tempAcfs.get(), std::min(nAcf, nNew));
+	vector<double> temp = kpfutils::arrToVec(tempAcfs.get(), std::min(nAcf, nNew));
 
 	if (nNew < nAcf) {
 		temp.insert(temp.end(), nAcf-nNew, 0.0);
