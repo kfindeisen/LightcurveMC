@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/unit_gp.cpp
  * @author Krzysztof Findeisen
  * @date Created April 17, 2013
- * @date Last modified July 17, 2013
+ * @date Last modified July 24, 2013
  */
 
 #include "../../common/warnflags.h"
@@ -570,6 +570,12 @@ void dummyGp(size_t nTest, const TestFactory& factory) {
 	}
 }
 
+// Boost.Test uses C-style casts and non-virtual destructors
+#ifdef GNUC_FINEWARN
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
+#endif
+
 /** Test cases for known bugs
  * @class BoostTest::test_gp_bugfix
  */
@@ -596,5 +602,10 @@ BOOST_AUTO_TEST_CASE(zerotime)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+// Re-enable all compiler warnings
+#ifdef GNUC_FINEWARN
+#pragma GCC diagnostic pop
+#endif
 
 }}		// end lcmc::test

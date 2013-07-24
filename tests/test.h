@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/test.h
  * @author Krzysztof Findeisen
  * @date Created April 28, 2013
- * @date Last modified June 18, 2013
+ * @date Last modified July 24, 2013
  */
 
 #ifndef LCMCTESTH
@@ -73,8 +73,16 @@ public:
 	/** Initializes the random number generator
 	 */
 	explicit TestRandomFactory();
+	
+	/** Creates a random generator in the same state as @p other
+	 */
+	TestRandomFactory(const TestRandomFactory& other);
 
-	virtual ~TestRandomFactory();
+	/** Sets the random generator to the same state as @p other
+	 */
+	TestRandomFactory& operator=(const TestRandomFactory& other);
+
+//	virtual ~TestRandomFactory();
 
 protected: 
 	/** Draws a standard uniform variate.
@@ -82,7 +90,7 @@ protected:
 	double sample() const;
 
 private: 
-	gsl_rng* rng;
+	shared_ptr<gsl_rng> rng;
 };
 
 /** Data common to the test cases.
@@ -108,7 +116,7 @@ public:
 		readTimeStamps(hJulDates.get(), times);
 	}
 	
-	~ObsData() {
+	virtual ~ObsData() {
 	}
 
 	/** Number of Gaussian processes to generate

@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/unit_stats.cpp
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
- * @date Last modified June 18, 2013
+ * @date Last modified July 24, 2013
  *
  * @todo Break up this file.
  */
@@ -114,7 +114,7 @@ public:
 		}
 	}
 	
-	~StatData() {
+	virtual ~StatData() {
 	}
 
 	/** Number of times to use for a uniformly sampled data set
@@ -155,7 +155,7 @@ public:
 		}
 	}
 	
-	~StatDummy() {
+	virtual ~StatDummy() {
 	}
 
 	/** Number of times to use for a uniformly sampled data set
@@ -722,6 +722,13 @@ BOOST_AUTO_TEST_CASE(peakfind) {
 
 BOOST_AUTO_TEST_SUITE_END()
 
+
+// Boost.Test uses non-virtual destructors
+#ifdef GNUC_FINEWARN
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
+#endif
+
 /** Test cases for testing approximate comparison methods
  * 
  * @class BoostTest::test_approx
@@ -752,5 +759,10 @@ BOOST_AUTO_TEST_CASE(approx) {
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+// Re-enable all compiler warnings
+#ifdef GNUC_FINEWARN
+#pragma GCC diagnostic pop
+#endif
 
 }}		// end lcmc::test

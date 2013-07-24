@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/unit_dmdt.cpp
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified May 27, 2013
+ * @date Last modified July 24, 2013
  */
 
 #include "../../common/warnflags.h"
@@ -86,7 +86,7 @@ public:
 		binEdges.push_back(pow(10.0,MAXTIME));
 	}
 	
-	~SimData() {
+	virtual ~SimData() {
 	}
 	
 	/** Randomly places points according to the distribution for a 

@@ -2,7 +2,7 @@
  * @file lightcurveMC/projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified June 28, 2013
+ * @date Last modified July 24, 2013
  *
  * @todo Consider adding an algorithms overview for interested researchers.
  * @todo Rely less on integration tests
@@ -23,7 +23,7 @@
  * "+build" tag can be used to distinguish which development version 
  *	was used to create which output
  */
-#define VERSION_STRING "2.3.0-devel+build.7"
+#define VERSION_STRING "2.3.0-devel+build.8"
 
 /** @mainpage
  *
@@ -707,7 +707,9 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    1	run_c
  *	in which C1 is defined.
  * - @c simple_gp and @c two_gp light curves now work correctly when one of 
  *	the input time stamps equals exactly zero
- * - error messages related to parameters now match those seen by the user
+ * - error messages related to parameters now use parameter names expected 
+ *	by the user
+ * - corrected some compatibility issues with GCC 4.7 and Boost 1.53
  *
  * @section v2_2_0 Version 2.2.0
  *

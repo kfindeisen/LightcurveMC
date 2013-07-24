@@ -2,7 +2,7 @@
  * @file lightcurveMC/paramlist.h
  * @author Krzysztof Findeisen
  * @date Created April 3, 2012
- * @date Last modified May 7, 2013
+ * @date Last modified July 23, 2013
  * 
  * These types handle information needed to set up simulation runs.
  */
@@ -190,6 +190,12 @@ private:
 	RangeType distrib;
 };
 
+// std::iterator<> uses non-virtual destructors
+#ifdef GNUC_FINEWARN
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
+#endif
+
 /** Iterator class for finding the parameters stored in a RangeList.
  *
  * The RangeList::const_iterator allows callers to access the entire RangeList 
@@ -260,6 +266,11 @@ private:
 	// Used to implement begin() and end() in the presence of changes to RangeList
 	const RangeList::MapType* parent;
 };
+
+// Re-enable all compiler warnings
+#ifdef GNUC_FINEWARN
+#pragma GCC diagnostic pop
+#endif
 
 }}		// end lcmc::models
 

@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/unit_paramlist.cpp
  * @author Krzysztof Findeisen
  * @date Created May 3, 2013
- * @date Last modified May 4, 2013
+ * @date Last modified July 24, 2013
  */
 
 #include "../../common/warnflags.h"
@@ -64,6 +64,9 @@ public:
 		dummyRangeList.add("d",  0.0,  1.0, RangeList::UNIFORM);
 		dummyRangeList.add("a",  3.5,  4.2, RangeList::UNIFORM);
 		dummyRangeList.add("c", -8.0, -7.3, RangeList::LOGUNIFORM);
+	}
+	
+	virtual ~ParamData() {
 	}
 
 	/** Empty @ref lcmc::models::ParamList "ParamList" object.

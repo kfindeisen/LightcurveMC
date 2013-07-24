@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/test_common.cpp
  * @author Krzysztof Findeisen
  * @date Created April 28, 2013
- * @date Last modified May 27, 2013
+ * @date Last modified July 24, 2013
  */
 
 #include "../../common/warnflags.h"
@@ -34,6 +34,7 @@
 #include <vector>
 #include <cmath>
 #include <boost/lexical_cast.hpp>
+#include <boost/smart_ptr.hpp>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include "../gsl_compat.h"
@@ -49,6 +50,7 @@ namespace lcmc {
 namespace test {
 
 using boost::lexical_cast;
+using boost::shared_ptr;
 using std::vector;
 using kpfutils::checkAlloc;
 
@@ -324,13 +326,52 @@ TestFactory::~TestFactory() {
  * @exceptsafe Object creation is atomic
  */
 TestRandomFactory::TestRandomFactory() 
-		: TestFactory(), rng(checkAlloc(gsl_rng_alloc(gsl_rng_mt19937))) {
-	gsl_rng_set(rng, 5489);
+		: TestFactory(), 
+		rng(checkAlloc(gsl_rng_alloc(gsl_rng_mt19937)), &gsl_rng_free) {
+	gsl_rng_set(rng.get(), 5489);
 }
 
-TestRandomFactory::~TestRandomFactory() {
-	gsl_rng_free(rng);
+/** Creates a random generator in the same state as @p other
+ *
+ * @param[in] other The factory to copy
+ *
+ * @exception std::bad_alloc Thrown if there is not enough memory to allocate 
+ *	the random number generator.
+ * 
+ * @exceptsafe Object creation is atomic
+ */
+TestRandomFactory::TestRandomFactory(const TestRandomFactory& other) : 
+		TestFactory(), rng(checkAlloc(gsl_rng_clone(other.rng.get())), &gsl_rng_free) {
 }
+
+/** Sets the random generator to the same state as @p other
+ *
+ * @param[in] other The factory to copy
+ *
+ * @return an assignable rvalue
+ *
+ * @exception std::bad_alloc Thrown if there is not enough memory to copy the state
+ * @exception std::runtime_error Thrown if the state could not be reset
+ *
+ * @exceptsafe Neither object is changed in the event of an exception.
+ */
+TestRandomFactory& TestRandomFactory::operator=(const TestRandomFactory& other) {
+	// use copy-and-swap to guarantee exception safety
+	shared_ptr<gsl_rng> temp(checkAlloc(gsl_rng_alloc(gsl_rng_mt19937)), gsl_rng_free);
+	int status = gsl_rng_memcpy(temp.get(), other.rng.get());
+	gslCheck(status, "While copying TestRandomFactory: ");
+	
+	// IMPORTANT: no exceptions beyond this point
+	
+	using std::swap;
+	swap(this->rng, temp);
+	
+	return *this;
+}
+
+//TestRandomFactory::~TestRandomFactory() {
+//	gsl_rng_free(rng);
+//}
 
 /** Draws a standard uniform variate.
  *
@@ -339,7 +380,7 @@ TestRandomFactory::~TestRandomFactory() {
  * @exceptsafe Does not throw exceptions.
  */
 double TestRandomFactory::sample() const {
-	return gsl_rng_uniform(rng);
+	return gsl_rng_uniform(rng.get());
 }
 
 }}		// end lcmc::test
