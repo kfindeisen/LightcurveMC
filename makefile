@@ -12,7 +12,7 @@ SOURCES  := binstats.cpp sims.cpp approxequal.cpp fluxmag.cpp \
 	nanstats.cpp mcio.cpp \
 	lcsupport.cpp lightcurve.cpp paramlist.cpp lcregistry.cpp \
 	rinstance.cpp statsupport.cpp \
-	cerror_except.cpp lcsio.cpp
+	cerror_except.cpp
 OBJS     := $(SOURCES:.cpp=.o)
 # except must be last because other libraries depend on it
 DIRS     := cmd samples stats waves except 

@@ -16,7 +16,7 @@
 #include "../../common/fileio.h"
 #include "../gsl_compat.h"
 #include "../except/inject.h"
-#include "../lcsio.h"
+#include "../../common/lcio.h"
 #include "../mcio.h"
 #include "../nan.h"
 #include "../../common/stats.tmp.h"
@@ -61,13 +61,7 @@ Observations::Observations(const std::string& catalogName) : times(), fluxes() {
 	// gsl_rng_uniform_int() generates over [0, n), not [0, n]
 	unsigned long int index = gsl_rng_uniform_int(tempRng, library.size());
 	
-	try {
-		readFile(library.at(index));
-	} catch (const except::BadFile& e) {
-		throw kpfutils::except::FileIo(e.what());
-	} catch (const except::BadFormat& e) {
-		throw kpfutils::except::FileIo(e.what());
-	}
+	readFile(library.at(index));
 	
 	// IMPORTANT: no exceptions beyond this point
 	
@@ -84,10 +78,8 @@ Observations::Observations(const std::string& catalogName) : times(), fluxes() {
  * @post times does not contain NaNs
  * @post fluxes does not contain NaNs
  * 
- * @exception lcmc::inject::except::BadFile Thrown if the file could not 
- *	be opened.
- * @exception lcmc::inject::except::BadFormat Thrown if the file does not 
- *	conform to the expected format.
+ * @exception kpfutils::except::FileIo Thrown if the file could not 
+ *	be opened or if the file does not conform to the expected format.
  * @exception std::bad_alloc Thrown if there is not enough memory to store 
  *	the light curve.
  *
@@ -97,32 +89,11 @@ Observations::Observations(const std::string& catalogName) : times(), fluxes() {
 void Observations::readFile(const std::string& fileName) {
 	using std::swap;
 
-	boost::shared_ptr<FILE> hLightCurve;
-	try {
-		hLightCurve = kpfutils::fileCheckOpen(fileName, "r");
-	} catch(const kpfutils::except::FileIo& e) {
-		throw except::BadFile(e.what(), fileName);
-	}
-	
 	// Use the existing interface
 	// Temporary variables for exception safety
-	double offset;
 	std::vector<double> dummyFluxes, dummyTimes, dummyErrors;
-	try {
-		readWgLightCurve(hLightCurve.get(), 0.1, offset, dummyTimes, 
-			dummyFluxes, dummyErrors);
-	} catch (const std::runtime_error e) {
-		// Convert to proper exception type
-		// readWgLightCurve doesn't know the filename, so add that in
-		throw except::BadFormat("While reading " + fileName + ": " 
-			+ e.what(), "<not available>");
-	}
-	
-	// Add the offset back in -- it was a crappy idea anyway
-	for(std::vector<double>::iterator it = dummyTimes.begin(); 
-			it != dummyTimes.end(); it++) {
-		*it += offset;
-	}
+	kpfutils::readWgLightCurve(fileName, 0.1, dummyTimes, 
+		dummyFluxes, dummyErrors);
 	
 	// Convert from magnitudes to fluxes
 	utils::magToFlux(dummyFluxes, dummyFluxes);

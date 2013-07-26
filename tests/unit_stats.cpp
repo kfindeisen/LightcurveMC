@@ -50,7 +50,7 @@
 #include "../../common/fileio.h"
 #include "../waves/generators.h"
 #include "../gsl_compat.h"
-#include "../lcsio.h"
+#include "../../common/lcio.h"
 #include "../stats/magdist.h"
 #include "../mcio.h"
 #include "../nan.h"
@@ -559,7 +559,6 @@ BOOST_AUTO_TEST_CASE(acf_interp) {
 		vector<double> lags, acfs;
 
 		try {
-			double offsetIn;
 			{
 				char fileName[80];
 				int status = sprintf(fileName, "idl_target_in_%i.txt", i);
@@ -567,11 +566,9 @@ BOOST_AUTO_TEST_CASE(acf_interp) {
 					cError("While testing interp::autoCorr(): ");
 				}
 				
-				shared_ptr<FILE> hInput = fileCheckOpen(fileName, "r");
-				readMcLightCurve(hInput.get(), offsetIn, times, mags);
+				kpfutils::readMcLightCurve(fileName, times, mags);
 			}
 	
-			double offsetOut;
 			{
 				char fileName[80];
 				int status = sprintf(fileName, "idl_target_acf_%i.txt", i);
@@ -579,8 +576,7 @@ BOOST_AUTO_TEST_CASE(acf_interp) {
 					cError("While testing interp::autoCorr(): ");
 				}
 	
-				shared_ptr<FILE> hOutput = fileCheckOpen(fileName, "r");
-				readMcLightCurve(hOutput.get(), offsetOut, lags, acfs);
+				kpfutils::readMcLightCurve(fileName, lags, acfs);
 			}
 		} catch (const std::exception& e) {
 			BOOST_FAIL(e.what());
@@ -624,28 +620,22 @@ BOOST_AUTO_TEST_CASE(peakfind) {
 		vector<double> peakTimes, peaks;
 		
 		try {
-			double offsetIn;
 			{
 				char fileName[80];
-				int status = sprintf(fileName, "idl_target_in_%i.txt", i);
-				if (status < 0) {
+				if (sprintf(fileName, "idl_target_in_%i.txt", i) < 0) {
 					cError("While testing peakFind(): ");
 				}
 				
-				shared_ptr<FILE> hInput = fileCheckOpen(fileName, "r");
-				readMcLightCurve(hInput.get(), offsetIn, times, mags);
+				kpfutils::readMcLightCurve(fileName, times, mags);
 			}
 	
-			double offsetOut;
 			{
 				char fileName[80];
-				int status = sprintf(fileName, "idl_target_peak_%i.txt", i);
-				if (status < 0) {
+				if (sprintf(fileName, "idl_target_peak_%i.txt", i) < 0) {
 					cError("While testing peakFind(): ");
 				}
 				
-				shared_ptr<FILE> hOutput = fileCheckOpen(fileName, "r");
-				readMcLightCurve(hOutput.get(), offsetOut, peakTimes, peaks);
+				kpfutils::readMcLightCurve(fileName, peakTimes, peaks);
 			}
 		} catch (const std::exception& e) {
 			BOOST_FAIL(e.what());
@@ -670,55 +660,6 @@ BOOST_AUTO_TEST_CASE(peakfind) {
 		BOOST_CHECK(nBad <= peakTimes.size()/1000);
 	}	// end loop over examples
 }
-
-/* Tests for a bug where @ref lcmc::stats::peakFind() "peakFind()" produces 
- * non-monototonic output
- *
- * @see @ref lcmc::stats::peakFind() "peakFind()"
- *
- * @test Monotonic output
- *
- * @exceptsafe Does not throw exceptions.
- */
-/*BOOST_AUTO_TEST_CASE(peakfind_mono) {
-
-	vector<double> times, mags;
-	
-	try {
-		double offsetIn;
-		char fileName[80];
-		int status = sprintf(fileName, "peakfind_mono_target.txt");
-		if (status < 0) {
-			cError("While testing peakFind(): ");
-		}
-		
-		shared_ptr<FILE> hInput = fileCheckOpen(fileName, "r");
-		readMcLightCurve(hInput.get(), offsetIn, times, mags);
-	} catch (const std::exception& e) {
-		BOOST_FAIL(e.what());
-	}
-
-	vector<double> magCuts, timescales;
-	try {
-		const static double minMag = 0.01;
-		double amp = stats::getAmplitude(mags);
-		for (double mag = minMag; mag < amp; mag += minMag) {
-			magCuts.push_back(mag);
-		}
-	} catch (const std::exception& e) {
-		BOOST_FAIL(e.what());
-	}
-
-	BOOST_CHECK_NO_THROW(lcmc::stats::peakFindTimescales(times, mags, 
-		magCuts, timescales));
-	
-	BOOST_REQUIRE_EQUAL(magCuts.size(), timescales.size());
-		
-	// Monotonic?
-	for(size_t i = 1; i < timescales.size(); i++) {
-		BOOST_CHECK_LE(timescales[i-1], timescales[i]);
-	}
-}*/
 
 BOOST_AUTO_TEST_SUITE_END()
 

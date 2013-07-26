@@ -2,7 +2,7 @@
  * @file lightcurveMC/projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified July 24, 2013
+ * @date Last modified July 25, 2013
  *
  * @todo Consider adding an algorithms overview for interested researchers.
  * @todo Rely less on integration tests
@@ -23,7 +23,7 @@
  * "+build" tag can be used to distinguish which development version 
  *	was used to create which output
  */
-#define VERSION_STRING "2.3.0-devel+build.8"
+#define VERSION_STRING "2.3.0-devel+build.9"
 
 /** @mainpage
  *
@@ -690,6 +690,7 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    1	run_c
  *
  * @subsection v2_3_0_diff Changes 
  * 
+ * - Generic lightcurve code has now been moved to the @c kpfutils common library
  * 
  * @subsection v2_3_0_new New Features 
  * 
