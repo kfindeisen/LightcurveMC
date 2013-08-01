@@ -2,13 +2,15 @@
  * @file lightcurveMC/waves/lcrw.cpp
  * @author Krzysztof Findeisen
  * @date Created April 29, 2013
- * @date Last modified May 22, 2013
+ * @date Last modified August 1, 2013
  */
 
 #include <memory>
+#include <stdexcept>
 #include <vector>
 #include <cmath>
 #include <boost/lexical_cast.hpp>
+#include <boost/smart_ptr.hpp>
 #include "../except/data.h"
 #include "../fluxmag.h"
 #include "lightcurves_gp.h"
@@ -17,6 +19,7 @@ namespace lcmc { namespace models {
 
 using std::auto_ptr;
 using boost::lexical_cast;
+using boost::shared_ptr;
 
 /** Initializes the light curve to represent a random walk.
  *
@@ -37,7 +40,7 @@ using boost::lexical_cast;
  * @exceptsafe Object construction is atomic.
  */
 RandomWalk::RandomWalk(const std::vector<double>& times, double diffus) 
-		: Stochastic(times), d(diffus) {
+		: GaussianProcess(times), d(diffus) {
 	if (diffus <= 0.0) {
 		throw except::BadParam("All RandomWalk light curves need positive diffusion coefficients (gave " 
 			+ lexical_cast<string>(diffus) + ").");
@@ -66,6 +69,8 @@ RandomWalk::RandomWalk(const std::vector<double>& times, double diffus)
  *	each time t, of sqrt(diffus*(t-getTimes()[0]))
  * @post cov(fluxToMag(fluxes[i]), fluxToMag(fluxes[j])) = 
  *	diffus * (min{getTimes()[i], getTimes()[j]} - getTimes()[0])
+ * 
+ * @perform O(N) time, where N = @p times.size()
  * 
  * @exception std::bad_alloc Thrown if there is not enough memory to compute 
  *	the light curve.
@@ -119,6 +124,13 @@ void RandomWalk::solveFluxes(std::vector<double>& fluxes) const {
 		
 	swap(fluxes, temp);
 	commit(rng);
+}
+
+/** Allocates and initializes the covariance matrix for the 
+ *	Gaussian process. 
+ */
+shared_ptr<gsl_matrix> RandomWalk::getCovar() const {
+	throw std::logic_error("Unexpected call to RandomWalk::getCovar().");
 }
 
 }}		// end lcmc::models

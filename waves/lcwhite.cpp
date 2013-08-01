@@ -2,12 +2,14 @@
  * @file lightcurveMC/waves/lcwhite.cpp
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
- * @date Last modified May 22, 2013
+ * @date Last modified August 1, 2013
  */
 
 #include <memory>
+#include <stdexcept>
 #include <vector>
 #include <boost/lexical_cast.hpp>
+#include <boost/smart_ptr.hpp>
 #include "../except/data.h"
 #include "../fluxmag.h"
 #include "lightcurves_gp.h"
@@ -16,6 +18,7 @@ namespace lcmc { namespace models {
 
 using std::auto_ptr;
 using boost::lexical_cast;
+using boost::shared_ptr;
 
 /** Initializes the light curve to represent a white noise process.
  *
@@ -35,7 +38,7 @@ using boost::lexical_cast;
  * @exceptsafe Object construction is atomic.
  */
 WhiteNoise::WhiteNoise(const std::vector<double>& times, double sigma) 
-		: Stochastic(times), sigma(sigma) {
+		: GaussianProcess(times), sigma(sigma) {
 	if (sigma <= 0.0) {
 		throw except::BadParam("All WhiteNoise light curves need positive standard deviations (gave " 
 			+ lexical_cast<string>(sigma) + ").");
@@ -63,6 +66,8 @@ WhiteNoise::WhiteNoise(const std::vector<double>& times, double sigma)
  * @post fluxToMag(@p fluxes) has a mean of zero and a standard deviation of sigma
  * @post cov(fluxToMag(fluxes[i]), fluxToMag(fluxes[j])) = 0 
  *	if getTimes()[i] &ne; getTimes()[j]
+ * 
+ * @perform O(N) time, where N = @p times.size()
  * 
  * @exception std::bad_alloc Thrown if there is not enough memory to compute 
  *	the light curve.
@@ -110,6 +115,13 @@ void WhiteNoise::solveFluxes(std::vector<double>& fluxes) const {
 	
 	swap(fluxes, temp);
 	commit(rng);
+}
+
+/** Allocates and initializes the covariance matrix for the 
+ *	Gaussian process. 
+ */
+shared_ptr<gsl_matrix> WhiteNoise::getCovar() const {
+	throw std::logic_error("Unexpected call to WhiteNoise::getCovar().");
 }
 
 }}		// end lcmc::models

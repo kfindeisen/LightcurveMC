@@ -23,7 +23,7 @@
  * "+build" tag can be used to distinguish which development version 
  *	was used to create which output
  */
-#define VERSION_STRING "2.3.0-devel+build.10"
+#define VERSION_STRING "2.3.0-devel+build.11"
 
 /** @mainpage
  *
@@ -706,6 +706,7 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    1	run_c
  * @subsection v2_3_0_diff Changes 
  * 
  * - Generic light curve code has now been moved to the @c kpfutils common library
+ * - Made Gaussian process code more concise
  * 
  * @subsection v2_3_0_new New Features 
  * 
@@ -715,7 +716,7 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    1	run_c
  * @subsection v2_3_0_fix Bug Fixes 
  * 
  * - @c makefile is now more robust to missing directories
- * - @ref Periodic light curves now check for invalid @p width and @p width2 parameters.
+ * - Periodic light curves now check for invalid @p width and @p width2 parameters.
  * - @ref lcmc::inject::Observations "Observations" now handles exceptions 
  *	correctly.
  * - @ref lcmc::inject::Observations "Observations" objects 

@@ -2,29 +2,29 @@
  * @file lightcurveMC/waves/lcgp2.cpp
  * @author Krzysztof Findeisen
  * @date Created April 29, 2013
- * @date Last modified July 16, 2013
+ * @date Last modified August 1, 2013
  */
 
 #include <algorithm>
-#include <memory>
-#include <stdexcept>
+//#include <memory>
+//#include <stdexcept>
 #include <string>
 #include <vector>
 #include <cmath>
 #include <boost/lexical_cast.hpp>
 #include <boost/smart_ptr.hpp>
 #include <gsl/gsl_matrix.h>
-#include "../approx.h"
+//#include "../approx.h"
 #include "../except/data.h"
-#include "../fluxmag.h"
-#include "generators.h"
+//#include "../fluxmag.h"
+//#include "generators.h"
 #include "lightcurves_gp.h"
 
 namespace lcmc { namespace models {
 
 using boost::lexical_cast;
 using boost::shared_ptr;
-using std::auto_ptr;
+//using std::auto_ptr;
 
 /** Initializes the light curve to represent a two-component Gaussian process.
  * 
@@ -53,91 +53,24 @@ using std::auto_ptr;
  */
 TwoScaleGp::TwoScaleGp(const std::vector<double>& times, 
 			double sigma1, double tau1, double sigma2, double tau2) 
-		: Stochastic(times), sigma1(sigma1), sigma2(sigma2), 
+		: GaussianProcess(times), sigma1(sigma1), sigma2(sigma2), 
 		tau1(tau1), tau2(tau2) {
 	if (sigma1 <= 0.0) {
-		throw except::BadParam("All DampedRandomWalk light curves need positive standard deviations (gave " 
-			+ lexical_cast<string>(sigma1) + " for the first component).");
+		throw except::BadParam("All TwoScaleGp light curves need positive standard deviations (gave " 
+			+ lexical_cast<std::string>(sigma1) + " for the first component).");
 	}
 	if (tau1 <= 0.0) {
-		throw except::BadParam("All DampedRandomWalk light curves need positive coherence times (gave " 
-			+ lexical_cast<string>(tau1) + " for the first component).");
+		throw except::BadParam("All TwoScaleGp light curves need positive coherence times (gave " 
+			+ lexical_cast<std::string>(tau1) + " for the first component).");
 	}
 	if (sigma2 <= 0.0) {
-		throw except::BadParam("All DampedRandomWalk light curves need positive standard deviations (gave " 
-			+ lexical_cast<string>(sigma2) + " for the first component).");
+		throw except::BadParam("All TwoScaleGp light curves need positive standard deviations (gave " 
+			+ lexical_cast<std::string>(sigma2) + " for the first component).");
 	}
 	if (tau2 <= 0.0) {
-		throw except::BadParam("All DampedRandomWalk light curves need positive coherence times (gave " 
-			+ lexical_cast<string>(tau2) + " for the first component).");
+		throw except::BadParam("All TwoScaleGp light curves need positive coherence times (gave " 
+			+ lexical_cast<std::string>(tau2) + " for the first component).");
 	}
-}
-
-/** Computes a realization of the light curve. 
- *
- * The light curve is computed from times and the internal random 
- * number generator, and its values are stored in fluxes.
- *
- * @param[out] fluxes The flux vector to update.
- * 
- * @post getFluxes() will now return the correct light curve.
- * 
- * @post @p fluxes.size() = getTimes().size()
- * @post if getTimes()[i] = getTimes()[j] for i &ne; j, then 
- *	@p fluxes[i] = @p fluxes[j]
- * 
- * @post No element of @p fluxes is NaN
- * @post All elements in @p fluxes are non-negative
- * @post The median of the flux is one, when averaged over many elements and 
- *	many light curve instances.
- *
- * @post fluxToMag(@p fluxes) has a mean of zero and a standard deviation of 
- *	sqrt(sigma_1^2 + sigma_2^2)
- * @post cov(fluxToMag(@p fluxes[i]), fluxToMag(@p fluxes[j])) = 
- *	  sigma_1^2 &times; exp(-0.5*((getTimes()[i]-getTimes()[j])/tau_1)^2) 
- *	+ sigma_2^2 &times; exp(-0.5*((getTimes()[i]-getTimes()[j])/tau_2)^2) 
- * 
- * @exception std::bad_alloc Thrown if there is not enough memory to compute 
- *	the light curve.
- * @exception std::logic_error Thrown if a bug was found in the flux 
- *	calculations.
- *
- * @exceptsafe Neither the object nor the argument are changed in the 
- *	event of an exception.
- */
-void TwoScaleGp::solveFluxes(std::vector<double>& fluxes) const {
-	using std::swap;
-
-	// invariant: this->times() is sorted in ascending order
-	std::vector<double> times;
-	this->getTimes(times);
-	
-	// copy-and-swap
-	auto_ptr<StochasticRng> rng = checkout();
-	std::vector<double> temp;
-
-	if (times.size() > 0) {
-		temp.reserve(times.size());
-		
-		for(size_t i = 0; i < times.size(); i++) {
-			temp.push_back(rng->rNorm());
-		}
-	
-		shared_ptr<gsl_matrix> corrs = getCovar();
-		
-		try {
-			utils::multiNormal(temp, corrs, temp);
-		} catch (const std::invalid_argument& e) {
-			throw std::logic_error("TwoScaleGp uses invalid correlation matrix.\nOriginal error: " + std::string(e.what()));
-		}
-		
-		utils::magToFlux(temp, temp);
-	}
-	
-	// IMPORTANT: no exceptions past this point
-	
-	swap(fluxes, temp);
-	commit(rng);
 }
 
 /** Approximate comparison function that handles zeros cleanly.

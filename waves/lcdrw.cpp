@@ -2,13 +2,15 @@
  * @file lightcurveMC/waves/lcdrw.cpp
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
- * @date Last modified May 22, 2013
+ * @date Last modified August 1, 2013
  */
 
 #include <memory>
+#include <stdexcept>
 #include <vector>
 #include <cmath>
 #include <boost/lexical_cast.hpp>
+#include <boost/smart_ptr.hpp>
 #include "../except/data.h"
 #include "../fluxmag.h"
 #include "lightcurves_gp.h"
@@ -17,6 +19,7 @@ namespace lcmc { namespace models {
 
 using std::auto_ptr;
 using boost::lexical_cast;
+using boost::shared_ptr;
 
 /** Initializes the light curve to represent a damped random walk.
  *
@@ -31,6 +34,8 @@ using boost::lexical_cast;
  * @post The object represents a damped random walk with the given diffusion 
  *	constant and correlation time.
  *
+ * @perform O(N) time, where N = @p times.size()
+ * 
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the object.
  * @exception lcmc::models::except::BadParam Thrown if any of the parameters 
@@ -39,7 +44,7 @@ using boost::lexical_cast;
  * @exceptsafe Object construction is atomic.
  */
 DampedRandomWalk::DampedRandomWalk(const std::vector<double>& times, double diffus, double tau) 
-		: Stochastic(times), sigma(sqrt(0.5*diffus*tau)), tau(tau) {
+		: GaussianProcess(times), sigma(sqrt(0.5*diffus*tau)), tau(tau) {
 	if (diffus <= 0.0) {
 		throw except::BadParam("All DampedRandomWalk light curves need positive diffusion coefficients (gave " 
 			+ lexical_cast<string>(diffus) + ").");
@@ -133,6 +138,13 @@ void DampedRandomWalk::solveFluxes(std::vector<double>& fluxes) const {
 		
 	swap(fluxes, temp);
 	commit(rng);
+}
+
+/** Allocates and initializes the covariance matrix for the 
+ *	Gaussian process. 
+ */
+shared_ptr<gsl_matrix> DampedRandomWalk::getCovar() const {
+	throw std::logic_error("Unexpected call to DampedRandomWalk::getCovar().");
 }
 
 }}		// end lcmc::models

@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lightcurves_gp.h
  * @author Krzysztof Findeisen
  * @date Created March 21, 2013
- * @date Last modified May 12, 2013
+ * @date Last modified August 1, 2013
  */
 
 #ifndef LCMCCURVEGPH
@@ -14,10 +14,34 @@
 
 namespace lcmc { namespace models {
 
+/** GaussianProcess represents variables that vary as any kind of Gaussian 
+ * process in magnitude space.
+ *
+ * GaussianProcess is an abstract base class. Subclasses of GaussianProcess 
+ * represent Gaussian processes with specific kernels by implementing 
+ * getCovar() and optionally overriding solveFluxes().
+ */
+class GaussianProcess : public Stochastic {
+public: 
+	/** Initializes the light curve to represent a Gaussian process.
+	 */
+	explicit GaussianProcess(const std::vector<double>& times);
+
+private:
+	/** Computes a realization of the light curve. 
+	 */
+	virtual void solveFluxes(std::vector<double>& fluxes) const;
+	
+	/** Allocates and initializes the covariance matrix for the 
+	 *	Gaussian process. 
+	 */
+	virtual boost::shared_ptr<gsl_matrix> getCovar() const = 0;
+};
+
 /** WhiteNoise represents variables that vary stochastically on infinitesimal 
  *	time scales.
  */
-class WhiteNoise : public Stochastic {
+class WhiteNoise : public GaussianProcess {
 public: 
 	/** Initializes the light curve to represent a white noise process.
 	 */
@@ -28,13 +52,18 @@ private:
 	 */	
 	void solveFluxes(std::vector<double>& fluxes) const;
 	
+	/** Allocates and initializes the covariance matrix for the 
+	 *	Gaussian process. 
+	 */
+	boost::shared_ptr<gsl_matrix> getCovar() const;
+
 	double sigma;
 };
 
 /** RandomWalk represents variables that vary stochastically without bound in 
  * magnitude space.
  */
-class RandomWalk : public Stochastic {
+class RandomWalk : public GaussianProcess {
 public: 
 	/** Initializes the light curve to represent a random walk.
 	 */
@@ -45,13 +74,18 @@ private:
 	 */	
 	void solveFluxes(std::vector<double>& fluxes) const;
 	
+	/** Allocates and initializes the covariance matrix for the 
+	 *	Gaussian process. 
+	 */
+	boost::shared_ptr<gsl_matrix> getCovar() const;
+
 	double d;
 };
 
 /** DampedRandomWalk represents variables that vary stochastically within 
  * bounds in magnitude space.
  */
-class DampedRandomWalk : public Stochastic {
+class DampedRandomWalk : public GaussianProcess {
 public: 
 	/** Initializes the light curve to represent a damped random walk.
 	 */
@@ -62,13 +96,18 @@ private:
 	 */	
 	void solveFluxes(std::vector<double>& fluxes) const;
 	
+	/** Allocates and initializes the covariance matrix for the 
+	 *	Gaussian process. 
+	 */
+	boost::shared_ptr<gsl_matrix> getCovar() const;
+
 	double sigma, tau;
 };
 
 /** SimpleGp represents variables that vary as a standard Gaussian process in 
  * magnitude space.
  */
-class SimpleGp : public Stochastic {
+class SimpleGp : public GaussianProcess {
 public: 
 	/** Initializes the light curve to represent a standard Gaussian process.
 	 */
@@ -77,7 +116,7 @@ public:
 private:
 	/** Computes a realization of the light curve. 
 	 */	
-	void solveFluxes(std::vector<double>& fluxes) const;
+//	void solveFluxes(std::vector<double>& fluxes) const;
 	
 	/** Allocates and initializes the covariance matrix for the 
 	 *	Gaussian process. 
@@ -90,7 +129,7 @@ private:
 /** TwoScaleGp represents variables that vary as a two-timescale analog to a 
  * standard Gaussian process in magnitude space.
  */
-class TwoScaleGp : public Stochastic {
+class TwoScaleGp : public GaussianProcess {
 public: 
 	/** Initializes the light curve to represent a two-component 
 	 *	Gaussian process.
@@ -101,7 +140,7 @@ public:
 private:
 	/** Computes a realization of the light curve. 
 	 */	
-	void solveFluxes(std::vector<double>& fluxes) const;
+//	void solveFluxes(std::vector<double>& fluxes) const;
 	
 	/** Allocates and initializes the covariance matrix for the 
 	 *	Gaussian process. 

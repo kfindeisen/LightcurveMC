@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/multinormal.cpp
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
- * @date Last modified May 26, 2013
+ * @date Last modified August 1, 2013
  */
 
 #include <algorithm>
@@ -58,6 +58,9 @@ bool matrixEqual(const gsl_matrix* const a, const gsl_matrix* const b);
  *
  * @post @p corrVec.size() = @p indVec.size()
  *
+ * @perform O(N<sup>3</sup>) time, where N = @p times.size()
+ * @perfmore O(N<sup>2</sup>) memory
+ * 
  * @exception std::bad_alloc Thrown if there was not enough memory to 
  *	compute the transformation
  * @exception std::invalid_argument Thrown if the lengths do not match 
