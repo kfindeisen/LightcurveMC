@@ -2,7 +2,7 @@
  * @file lightcurveMC/lcregistry.cpp
  * @author Krzysztof Findeisen
  * @date Created April 25, 2012
- * @date Last modified May 10, 2013
+ * @date Last modified August 1, 2013
  * 
  * The functions defined here handle the details of the ILightCurve subclasses.
  */
@@ -41,6 +41,7 @@ const LightCurveType BROADPEAKWAVE() {return LightCurveType( 4);}
 const LightCurveType SHARPPEAKWAVE() {return LightCurveType( 5);}
 const LightCurveType   ECLIPSEWAVE() {return LightCurveType( 6);}
 const LightCurveType   MAGSINEWAVE() {return LightCurveType( 7);}
+const LightCurveType     AATAUWAVE() {return LightCurveType( 8);}
 	
 const LightCurveType      SLOWPEAK() {return LightCurveType(10);}
 const LightCurveType     FLAREPEAK() {return LightCurveType(11);}
@@ -89,6 +90,7 @@ const LightCurveRegistry & getLightCurveRegistry() {
 		registry.insert(LightCurveEntry( "sharp_peak", SHARPPEAKWAVE() ));
 		registry.insert(LightCurveEntry(    "eclipse",   ECLIPSEWAVE() ));
 		registry.insert(LightCurveEntry(    "magsine",   MAGSINEWAVE() ));
+		registry.insert(LightCurveEntry(      "aatau",     AATAUWAVE() ));
 		
 		// Outburst waveforms
 		registry.insert(LightCurveEntry(  "slow_peak",      SLOWPEAK() ));
@@ -148,6 +150,8 @@ std::auto_ptr<ILightCurve> lcFactory(LightCurveType whichLc, const std::vector<d
 		return auto_ptr<ILightCurve>(new EclipseWave  (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph")));
 	} else if (whichLc == MAGSINEWAVE()) {
 		return auto_ptr<ILightCurve>(new MagSineWave  (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph")));
+	} else if (whichLc == AATAUWAVE()) {
+		return auto_ptr<ILightCurve>(new AaTauWave    (times, lcParams.get("a"), lcParams.get("p"), lcParams.get("ph"), lcParams.get("width")));
 
 	// Bursty light curves	
 	} else if (whichLc ==   SLOWPEAK()) {

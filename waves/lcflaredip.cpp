@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lcFlareDip.cpp
  * @author Krzysztof Findeisen
  * @date Created August 21, 2012
- * @date Last modified May 22, 2013
+ * @date Last modified July 31, 2013
  */
 
 #include <cmath>
@@ -51,11 +51,11 @@ FlareDip::FlareDip(const std::vector<double> &times,
 			+ lexical_cast<string>(amp) + ").");
 	}
 	if (fade <= 0.0) {
-		throw except::BadParam("All FlareDip light curves need positive fall times (gave " 
+		throw except::BadParam("All FlareDip light curves need positive linear fall times (gave " 
 			+ lexical_cast<string>(fade) + ").");
 	}
 	if (width <= 0.0) {
-		throw except::BadParam("All FlareDip light curves need positive recovery times (gave " 
+		throw except::BadParam("All FlareDip light curves need positive exponential recovery times (gave " 
 			+ lexical_cast<string>(width) + ").");
 	}
 	if (fade > 1.0) {
@@ -69,6 +69,8 @@ FlareDip::FlareDip(const std::vector<double> &times,
  * @param[in] phase The light curve phase at which an observation is 
  *	taken. Observations are assumed to be instantaneous, with no 
  *	averaging over rapid variability.
+ * @param[in] amp The light curve amplitude, in the same units 
+ *	as passed to the constructor.
  * 
  * @return The flux emitted by the object at the specified phase.
  * 

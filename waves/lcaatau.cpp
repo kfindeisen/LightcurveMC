@@ -1,30 +1,38 @@
-/** Defines the SharpPeakWave light curve class.
- * @file lightcurveMC/waves/lcsharp.cpp
+/** Defines the AaTauWave light curve class.
+ * @file lightcurveMC/waves/lcaatau.cpp
  * @author Krzysztof Findeisen
- * @date Created April 24, 2012
- * @date Last modified July 31, 2013
+ * @date Created July 31, 2013
+ * @date Last modified August 1, 2013
  */
 
 #include <cmath>
+#include <boost/lexical_cast.hpp>
 #include <gsl/gsl_math.h>
+#include "../except/data.h"
+#include "../fluxmag.h"
 #include "lightcurves_periodic.h"
 
 namespace lcmc { namespace models {
 
-/** Initializes the light curve to represent a periodic function 
- * flux(time).
+using boost::lexical_cast;
+
+/** Initializes the light curve to represent a periodic function flux(time).
  *
  * @param[in] times The times at which the light curve will be sampled.
- * @param[in] amp The amplitude of the light curve
+ * @param[in] amp The amplitude of the light curve in magnitudes
  * @param[in] period The period of the light curve
  * @param[in] phase The phase of the light curve at time 0
+ * @param[in] width The fraction of the light curve that takes place 
+ *	within a dip
  *
  * @pre @p amp > 0
  * @pre @p period > 0
  * @pre @p phase &isin; [0, 1)
+ * @pre @p width &isin; (0, 1]
  *
- * @post The object represents a peaked periodic signal with the 
- *	given amplitude, period, and initial phase.
+ * @post The object represents a periodic signal with the given 
+ *	amplitude, period, and initial phase, and dips lasting 
+ *	@p width of a full cycle.
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
  *	construct the object.
@@ -33,9 +41,17 @@ namespace lcmc { namespace models {
  *
  * @exceptsafe Object construction is atomic.
  */
-SharpPeakWave::SharpPeakWave(const std::vector<double> &times, 
-			double amp, double period, double phase) 
-			: PeriodicLc(times, amp, period, phase) {
+AaTauWave::AaTauWave(const std::vector<double> &times, double amp, double period, 
+		double phase, double width) : 
+		PeriodicLc(times, amp, period, phase), width(width) {
+	if (width <= 0.0) {
+		throw except::BadParam("All AaTauWave light curves need positive widths (gave " 
+			+ lexical_cast<string>(width) + ").");
+	}
+	if (width > 1.0) {
+		throw except::BadParam("All AaTauWave light curves need widths less than or equal to 1 (gave " 
+			+ lexical_cast<string>(width) + ").");
+	}
 }
 
 /** Samples the waveform at the specified phase.
@@ -54,8 +70,8 @@ SharpPeakWave::SharpPeakWave(const std::vector<double> &times,
  *	the parameters passed to the constructor
  *
  * @post the return value is not NaN
+ * @post the return value is non-negative
  * @post the mode of the flux is one, when averaged over many times.
- * @post return value &ge; 1
  * 
  * @exception std::logic_error Thrown if a bug was found in the flux 
  *	calculations.
@@ -63,8 +79,17 @@ SharpPeakWave::SharpPeakWave(const std::vector<double> &times,
  * @exceptsafe Neither the object nor the argument are changed in the 
  *	event of an exception.
  */
-double SharpPeakWave::fluxPhase(double phase, double amp) const {
-	return 1 + amp*(-0.05 + 0.105/(1.1 + sin(2*M_PI*phase)));
+double AaTauWave::fluxPhase(double phase, double amp) const {
+	double mag;
+	if (phase < 0.5*width) {
+		mag = -amp*cos(M_PI_2 * phase / width);
+	} else if (phase > 1.0 - 0.5*width) {
+		mag = -amp*cos(M_PI_2 * (phase-1.0) / width);
+	} else {
+		mag = 0.0;
+	}
+	
+	return utils::magToFlux(mag);
 }
 
 }}		// end lcmc::models

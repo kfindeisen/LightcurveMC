@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lcsine.cpp
  * @author Krzysztof Findeisen
  * @date Created April 24, 2012
- * @date Last modified May 22, 2013
+ * @date Last modified July 31, 2013
  */
 
 #include <cmath>
@@ -49,6 +49,8 @@ SineWave::SineWave(const std::vector<double> &times, double amp, double period, 
  * @param[in] phase The light curve phase at which an observation is 
  *	taken. Observations are assumed to be instantaneous, with no 
  *	averaging over rapid variability.
+ * @param[in] amp The light curve amplitude, in the same units 
+ *	as passed to the constructor.
  * 
  * @return The flux emitted by the object at the specified phase.
  * 

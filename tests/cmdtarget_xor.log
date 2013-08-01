@@ -35,21 +35,21 @@ magsine       	1	0.25	0	NonSpitzerNonVar	 0.494±0.072	     1	run_c1_magsine_a1.0
 white_noise   	1	0.25	0	NonSpitzerNonVar	 0.497±0.023	     1	run_c1_white_noise_a1.00_p0.25_p0.00_nNonSpitzerNonVar.dat	 0.116± 0.14	     1	run_cut50_3_white_noise_a1.00_p0.25_p0.00_nNonSpitzerNonVar.dat	  0.18± 0.22	   0.4	run_cut50_2_white_noise_a1.00_p0.25_p0.00_nNonSpitzerNonVar.dat	 0.015±0.0058	     1	run_cut90_3_white_noise_a1.00_p0.25_p0.00_nNonSpitzerNonVar.dat	 0.015±0.0058	     1	run_cut90_2_white_noise_a1.00_p0.25_p0.00_nNonSpitzerNonVar.dat
 EXPECTED RESULT: FAIL (both --add and jdList given, but no waves)
 PARSE ERROR: Argument: (--lclist)
-             Value 'ptfjds.txt' does not meet constraint: broad_peak|drw|eclipse|ellipse|flare_dip|flare_peak|flat|flat_dip|flat_peak|magsine|sharp_peak|simple_gp|sine|slow_dip|slow_peak|triangle|two_gp|walk|white_noise
+             Value 'ptfjds.txt' does not meet constraint: aatau|broad_peak|drw|eclipse|ellipse|flare_dip|flare_peak|flat|flat_dip|flat_peak|magsine|sharp_peak|simple_gp|sine|slow_dip|slow_peak|triangle|two_gp|walk|white_noise
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
 
 EXPECTED RESULT: FAIL (both --add and jdList given, with one wave)
 PARSE ERROR: Argument: (--lclist)
-             Value 'ptfjds.txt' does not meet constraint: broad_peak|drw|eclipse|ellipse|flare_dip|flare_peak|flat|flat_dip|flat_peak|magsine|sharp_peak|simple_gp|sine|slow_dip|slow_peak|triangle|two_gp|walk|white_noise
+             Value 'ptfjds.txt' does not meet constraint: aatau|broad_peak|drw|eclipse|ellipse|flare_dip|flare_peak|flat|flat_dip|flat_peak|magsine|sharp_peak|simple_gp|sine|slow_dip|slow_peak|triangle|two_gp|walk|white_noise
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
 
 EXPECTED RESULT: FAIL (both --add and jdList given, with multiple waves)
 PARSE ERROR: Argument: (--lclist)
-             Value 'ptfjds.txt' does not meet constraint: broad_peak|drw|eclipse|ellipse|flare_dip|flare_peak|flat|flat_dip|flat_peak|magsine|sharp_peak|simple_gp|sine|slow_dip|slow_peak|triangle|two_gp|walk|white_noise
+             Value 'ptfjds.txt' does not meet constraint: aatau|broad_peak|drw|eclipse|ellipse|flare_dip|flare_peak|flat|flat_dip|flat_peak|magsine|sharp_peak|simple_gp|sine|slow_dip|slow_peak|triangle|two_gp|walk|white_noise
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help
@@ -84,7 +84,7 @@ For complete USAGE and HELP type:
 
 EXPECTED RESULT: FAIL (--noise, --add, and jdList all given)
 PARSE ERROR: Argument: (--lclist)
-             Value 'ptfjds.txt' does not meet constraint: broad_peak|drw|eclipse|ellipse|flare_dip|flare_peak|flat|flat_dip|flat_peak|magsine|sharp_peak|simple_gp|sine|slow_dip|slow_peak|triangle|two_gp|walk|white_noise
+             Value 'ptfjds.txt' does not meet constraint: aatau|broad_peak|drw|eclipse|ellipse|flare_dip|flare_peak|flat|flat_dip|flat_peak|magsine|sharp_peak|simple_gp|sine|slow_dip|slow_peak|triangle|two_gp|walk|white_noise
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help

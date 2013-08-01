@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lcslowpeak.cpp
  * @author Krzysztof Findeisen
  * @date Created May 2, 2012
- * @date Last modified May 22, 2013
+ * @date Last modified July 31, 2013
  */
 
 #include <cmath>
@@ -50,6 +50,10 @@ SlowPeak::SlowPeak(const std::vector<double> &times,
 		throw except::BadParam("All SlowPeak light curves need positive widths (gave " 
 			+ lexical_cast<string>(width) + ").");
 	}
+	if (width >= 0.234107) {
+		throw except::BadParam("All SlowPeak light curves need widths less than 0.234107 (gave " 
+			+ lexical_cast<string>(width) + ").");
+	}
 }
 
 /** Samples the waveform at the specified phase.
@@ -57,6 +61,8 @@ SlowPeak::SlowPeak(const std::vector<double> &times,
  * @param[in] phase The light curve phase at which an observation is 
  *	taken. Observations are assumed to be instantaneous, with no 
  *	averaging over rapid variability.
+ * @param[in] amp The light curve amplitude, in the same units 
+ *	as passed to the constructor.
  * 
  * @return The flux emitted by the object at the specified phase.
  * 

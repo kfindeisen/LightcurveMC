@@ -49,7 +49,7 @@ For complete USAGE and HELP type:
 
 EXPECTED RESULT: FAIL (jdList and bad wave given)
 PARSE ERROR: Argument: (--lclist)
-             Value 'fakeTestWave' does not meet constraint: broad_peak|drw|eclipse|ellipse|flare_dip|flare_peak|flat|flat_dip|flat_peak|magsine|sharp_peak|simple_gp|sine|slow_dip|slow_peak|triangle|two_gp|walk|white_noise
+             Value 'fakeTestWave' does not meet constraint: aatau|broad_peak|drw|eclipse|ellipse|flare_dip|flare_peak|flat|flat_dip|flat_peak|magsine|sharp_peak|simple_gp|sine|slow_dip|slow_peak|triangle|two_gp|walk|white_noise
 
 For complete USAGE and HELP type: 
    ../lightcurveMC --help

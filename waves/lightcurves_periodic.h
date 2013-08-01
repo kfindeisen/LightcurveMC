@@ -208,6 +208,28 @@ private:
 	double fluxPhase(double phase, double amp) const;
 };
 
+/** AaTauWave describes variables with periodic dips in magnitude space. The light 
+ * curve can be described entirely by its amplitude, period, phase offset, 
+ * and dip width.
+ *
+ * @invariant One is the modal flux returned by AaTauWave.
+ */
+class AaTauWave : public PeriodicLc {
+public: 
+	/** Initializes the light curve to represent a periodic function 
+	 * flux(time).
+	 */
+	explicit AaTauWave(const std::vector<double> &times, 
+			double amp, double period, double phase, double width);
+
+private:
+	/** Samples the waveform at the specified phase.
+	 */
+	double fluxPhase(double phase, double amp) const;
+	
+	double width;
+};
+
 }}		// end lcmc::models
 
 #endif		// end ifndef LCMCCURVEPERIH

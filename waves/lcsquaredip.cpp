@@ -2,7 +2,7 @@
  * @file lightcurveMC/waves/lcSquareDip.cpp
  * @author Krzysztof Findeisen
  * @date Created August 21, 2012
- * @date Last modified May 22, 2013
+ * @date Last modified July 31, 2013
  */
 
 #include <cmath>
@@ -52,6 +52,10 @@ SquareDip::SquareDip(const std::vector<double> &times,
 		throw except::BadParam("All SquareDip light curves need positive widths (gave " 
 			+ lexical_cast<string>(width) + ").");
 	}
+	if (width >= 1.0) {
+		throw except::BadParam("All SquareDip light curves need widths less than 1 (gave " 
+			+ lexical_cast<string>(width) + ").");
+	}
 }
 
 /** Samples the waveform at the specified phase.
@@ -59,6 +63,8 @@ SquareDip::SquareDip(const std::vector<double> &times,
  * @param[in] phase The light curve phase at which an observation is 
  *	taken. Observations are assumed to be instantaneous, with no 
  *	averaging over rapid variability.
+ * @param[in] amp The light curve amplitude, in the same units 
+ *	as passed to the constructor.
  * 
  * @return The flux emitted by the object at the specified phase.
  * 

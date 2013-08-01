@@ -11,9 +11,9 @@ status=0
 nice -n 15 ../lightcurveMC -a "0.5 0.5" -p "0.25 400.0" -w "1.00 1.00" --width2 "1.000 1.000" --ntrials 10 --add NonSpitzerNonVar \
 	flat sine -s C1 -s dmdtcut \
 	>> injecttest_snr1e6.log
-nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 400.0" -w "0.30 0.30" --width2 "0.030 0.030" --ntrials 10 --add NonSpitzerNonVar \
-	slow_peak flare_peak flat_peak -s C1 -s dmdtcut \
-	>> injecttest_snr1e6.log
+#nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 400.0" -w "0.30 0.30" --width2 "0.030 0.030" --ntrials 10 --add NonSpitzerNonVar \
+#	slow_peak flare_peak flat_peak -s C1 -s dmdtcut \
+#	>> injecttest_snr1e6.log
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 400.0" -w "0.23 0.23" --width2 "0.023 0.023" --ntrials 10 --add NonSpitzerNonVar \
 	slow_peak flare_peak flat_peak -s C1 -s dmdtcut \
 	>> injecttest_snr1e6.log
@@ -57,9 +57,9 @@ if [[ ! -r nonspitzernonvar.cat ]] ; then echo "Cannot read nonspitzernonvar.cat
 nice -n 15 ../lightcurveMC -a "0.5 0.5" -p "0.25 400.0" -w "1.00 1.00" --width2 "1.000 1.000" --ntrials 10 --add NonSpitzerNonVar \
 	flat sine -s C1 -s dmdtcut \
 	>> injecttest_snr100.log
-nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 400.0" -w "0.30 0.30" --width2 "0.030 0.030" --ntrials 10 --add NonSpitzerNonVar \
-	slow_peak flare_peak flat_peak -s C1 -s dmdtcut \
-	>> injecttest_snr100.log
+#nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 400.0" -w "0.30 0.30" --width2 "0.030 0.030" --ntrials 10 --add NonSpitzerNonVar \
+#	slow_peak flare_peak flat_peak -s C1 -s dmdtcut \
+#	>> injecttest_snr100.log
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 400.0" -w "0.23 0.23" --width2 "0.023 0.023" --ntrials 10 --add NonSpitzerNonVar \
 	slow_peak flare_peak flat_peak -s C1 -s dmdtcut \
 	>> injecttest_snr100.log
@@ -103,9 +103,9 @@ if [[ ! -r nonspitzernonvar.cat ]] ; then echo "Cannot read nonspitzernonvar.cat
 nice -n 15 ../lightcurveMC -a "0.5 0.5" -p "0.25 400.0" -w "1.00 1.00" --width2 "1.000 1.000" --ntrials 10 --add NonSpitzerNonVar \
 	flat sine -s C1 -s dmdtcut \
 	>> injecttest_snr5.log
-nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 400.0" -w "0.30 0.30" --width2 "0.030 0.030" --ntrials 10 --add NonSpitzerNonVar \
-	slow_peak flare_peak flat_peak -s C1 -s dmdtcut \
-	>> injecttest_snr5.log
+#nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 400.0" -w "0.30 0.30" --width2 "0.030 0.030" --ntrials 10 --add NonSpitzerNonVar \
+#	slow_peak flare_peak flat_peak -s C1 -s dmdtcut \
+#	>> injecttest_snr5.log
 nice -n 15 ../lightcurveMC -a "1.0 1.0" -p "0.25 400.0" -w "0.23 0.23" --width2 "0.023 0.023" --ntrials 10 --add NonSpitzerNonVar \
 	slow_peak flare_peak flat_peak -s C1 -s dmdtcut \
 	>> injecttest_snr5.log

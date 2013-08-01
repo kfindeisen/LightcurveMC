@@ -2,7 +2,7 @@
  * @file lightcurveMC/projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified July 25, 2013
+ * @date Last modified August 1, 2013
  *
  * @todo Consider adding an algorithms overview for interested researchers.
  * @todo Rely less on integration tests
@@ -23,7 +23,7 @@
  * "+build" tag can be used to distinguish which development version 
  *	was used to create which output
  */
-#define VERSION_STRING "2.3.0-devel+build.9"
+#define VERSION_STRING "2.3.0-devel+build.10"
 
 /** @mainpage
  *
@@ -223,6 +223,21 @@
  *			light curve, in magnitudes.</dd>
  *		<dt><tt>-p, -\-period</tt></dt><dd>The period of the light curve, 
  *			in days.</dd>
+ *		</dl>
+ *	Optional keywords: <dl>
+ *		<dt><tt>-\-ph</tt></dt><dd>The phase of the light curve at time zero. 
+ *			If the keyword is omitted, the phase is 
+ *			drawn randomly from the interval [0, 1).</dd>
+ *		</dl></dd>
+ *	<dt><tt>aatau</tt></dt><dd>Generates a signal that has periodic dips in magnitude.<br>
+ *	Required keywords: <dl>
+ *		<dt><tt>-a, -\-amp</tt></dt><dd>Specifies the half-amplitude of the 
+ *			light curve, in magnitudes.</dd>
+ *		<dt><tt>-p, -\-period</tt></dt><dd>The period of the light curve, 
+ *			in days.</dd>
+ *		<dt><tt>-w, -\-width</tt></dt><dd>The edge-to-edge width of 
+ *			the dip, in units of the period. Must be less 
+ *			than 1.0.</dd>
  *		</dl>
  *	Optional keywords: <dl>
  *		<dt><tt>-\-ph</tt></dt><dd>The phase of the light curve at time zero. 
@@ -690,15 +705,17 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    1	run_c
  *
  * @subsection v2_3_0_diff Changes 
  * 
- * - Generic lightcurve code has now been moved to the @c kpfutils common library
+ * - Generic light curve code has now been moved to the @c kpfutils common library
  * 
  * @subsection v2_3_0_new New Features 
  * 
+ * - Support for AA&nbsp;Tau light curves
  * - Support for Gaussian process timescales
  * 
  * @subsection v2_3_0_fix Bug Fixes 
  * 
  * - @c makefile is now more robust to missing directories
+ * - @ref Periodic light curves now check for invalid @p width and @p width2 parameters.
  * - @ref lcmc::inject::Observations "Observations" now handles exceptions 
  *	correctly.
  * - @ref lcmc::inject::Observations "Observations" objects 
