@@ -2,7 +2,7 @@
  * @file lightcurveMC/stats/statfamilies.h
  * @author Krzysztof Findeisen
  * @date Created June 8, 2013
- * @date Last modified June 8, 2013
+ * @date Last modified August 5, 2013
  */
 
 #ifndef LCMCSTATFAMH
@@ -49,7 +49,8 @@ void doPeak(const vector<double>& times, const vector<double>& mags,
 /** Does all GP-related computations for a given light curve.
  */
 void doGaussFit(const vector<double>& times, const vector<double>& data, 
-		bool getGp, CollectedScalars& timescales);
+		bool getGp, double trueTime, CollectedScalars& timescales, 
+		CollectedScalars& timeErrors, CollectedScalars& normDevs);
 
 }}		// end lcmc::stats
 

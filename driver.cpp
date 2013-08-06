@@ -110,7 +110,7 @@ int main(int argc, char* argv[]) {
 		////////////////////
 		// And start simulating
 		LcBinStats::printBinHeader(stdout, limits, statList);
-	
+		
 		for(vector<LightCurveType>::const_iterator curve = lcList.begin(); 
 				curve != lcList.end(); curve++) {
 			const string curName = *(lcNameList.begin() + (curve - lcList.begin()));
@@ -148,7 +148,7 @@ int main(int argc, char* argv[]) {
 			curBin.printBinStats(stdout);
 	
 		}	// end loop over light curve types
-
+	
 	// End of program; use Pokemon exception handling to 
 	//	handle error messages gracefully
 	} catch(TCLAP::ExitException &e) {

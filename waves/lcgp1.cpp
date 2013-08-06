@@ -6,18 +6,13 @@
  */
 
 #include <algorithm>
-//#include <memory>
-//#include <stdexcept>
 #include <string>
 #include <vector>
 #include <cmath>
 #include <boost/lexical_cast.hpp>
 #include <boost/smart_ptr.hpp>
 #include <gsl/gsl_matrix.h>
-//#include "../approx.h"
 #include "../except/data.h"
-//#include "../fluxmag.h"
-//#include "generators.h"
 #include "lightcurves_gp.h"
 
 namespace lcmc { namespace models {

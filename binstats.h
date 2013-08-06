@@ -2,7 +2,7 @@
  * @file lightcurveMC/binstats.h
  * @author Krzysztof Findeisen
  * @date Reconstructed June 23, 2011
- * @date Last modified June 27, 2013
+ * @date Last modified August 5, 2013
  *
  * @todo Break up this file
  */
@@ -132,8 +132,8 @@ private:
 	std::vector<StatType> stats;
 	
 	//----------------------------------------
-	
-	CollectedScalars C1vals;
+
+	CollectedScalars c1vals;
 	
 	CollectedScalars periods;
 	CollectedPairs periodograms;
@@ -163,6 +163,8 @@ private:
 	CollectedPairs peaks;
 
 	CollectedScalars gpTaus;
+	CollectedScalars gpErrors;
+	CollectedScalars gpChi;
 };
 
 }}		// end lcmc::stats

@@ -2,7 +2,7 @@
  * @file lightcurveMC/stats/scalars.cpp
  * @author Krzysztof Findeisen
  * @date Reconstructed June 7, 2013
- * @date Last modified June 8, 2013
+ * @date Last modified August 6, 2013
  */
 
 #include <limits>
@@ -76,6 +76,30 @@ void CollectedScalars::clear() {
 	stats.clear();
 }
 
+/** Returns a vector containing the data in the same order as 
+ * printed by printStats()
+ *
+ * @param[in] outVector A vector in which the data will be stored
+ * 
+ * @post @p outVector contains a copy of the data output by printStats(), 
+ * 	in the same order
+ * @post Any data previously in @p outVector is deleted
+ * 
+ * @exception std::bad_alloc Thrown if there is not enough memory 
+ *	to copy the data.
+ * @exceptsafe Neither this object nor @p outVector are changed in the event 
+ *	of an exception.
+ */
+void CollectedScalars::toVector(vector<double>& outVector) const {
+	// copy-and-swap
+	vector<double> temp = stats;
+
+	// IMPORTANT: no exceptions beyond this point
+	
+	using std::swap;
+	swap(outVector, temp);
+}
+
 /** Prints a header row representing the statistics printed by 
  *	printStats() to the specified file
  * 
@@ -101,4 +125,48 @@ void CollectedScalars::printHeader(FILE* const hOutput, const string& fieldName)
 	}
 }
 
+/** Non-throwing swap
+ *
+ * @param[in,out] other The collection with which to exchange contents.
+ *
+ * @post The data previously contained in @p other is now stored in @p *this, 
+ *	and vice versa. All names are switched as well.
+ * 
+ * @perform Constant time
+ *
+ * @exceptsafe Does not throw exceptions.
+ */
+void CollectedScalars::swap(CollectedScalars& other) {
+	using std::swap;
+	
+	NamedCollection::swap(other);
+	
+	swap(this->stats, other.stats);
+}
+
+/** Non-throwing swap
+ *
+ * @param[in,out] a,b The collections to exchange contents.
+ *
+ * @post The data previously contained in @p a is now stored in @p b, 
+ *	and vice versa. All names are switched as well.
+ * 
+ * @perform Constant time
+ *
+ * @exceptsafe Does not throw exceptions.
+ */
+void swap(CollectedScalars& a, CollectedScalars& b) {
+	a.swap(b);
+}
+
 }}		// end lcmc::stats
+
+namespace std {
+
+template <>
+void swap<lcmc::stats::CollectedScalars>(lcmc::stats::CollectedScalars& a, 
+		lcmc::stats::CollectedScalars& b) {
+	a.swap(b);
+}
+
+}

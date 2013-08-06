@@ -2,9 +2,10 @@
  * @file lightcurveMC/stats/peakdriver.cpp
  * @author Krzysztof Findeisen
  * @date Created June 8, 2013
- * @date Last modified June 8, 2013
+ * @date Last modified August 5, 2013
  */
 
+#include <algorithm>
 #include <stdexcept>
 #include <vector>
 #include <boost/lexical_cast.hpp>
@@ -44,8 +45,8 @@ using std::vector;
  * @pre @p times.size() = @p mags.size()
  * @pre Neither @p times nor @p mags may contain NaNs
  * 
- * @post if @p getCut, then new elements are appended to @p cut80, 
- *	If the cut is undefined, NaN is appended.
+ * @post if @p getCut, then new elements are appended to @p cut3, @p cut2, 
+ *	and @p cut80. If the cut is undefined, NaN is appended.
  * @post if @p getPlot, then a new element is appended to @p peakPlot.
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to 
@@ -56,8 +57,6 @@ using std::vector;
  *	and @p mags are too short to calculate the desired statistics.
  *
  * @exceptsafe The program is in a consistent state in the event of an exception.
- *
- * @bug 80% statistic gives anomalously low values for sines
  */
 void doPeak(const vector<double>& times, const vector<double>& mags, 
 		bool getCut, bool getPlot, 
@@ -70,33 +69,31 @@ void doPeak(const vector<double>& times, const vector<double>& mags,
 			+ lexical_cast<string>( mags.size()) + " for mags).");
 	}
 
-	if (getCut) {
+	if (getCut || getPlot) {
+		// copy-and-swap
+		CollectedScalars temp3    = cut3;
+		CollectedScalars temp2    = cut2;
+		CollectedScalars temp80   = cut80;
+		CollectedPairs   tempPlot = peakPlot;
+		
 		try {
 			double amplitude = getAmplitude(mags);
-			
-			if (amplitude > 0) {
-				DoubleVec magCuts;
-				magCuts.push_back(amplitude / 3.0);
-				magCuts.push_back(amplitude / 2.0);
-			
-				DoubleVec cutTimes;
-				peakFindTimescales(times, mags, magCuts, cutTimes);
 				
-				// Key cuts
-				cut3.addStat(cutTimes[0]);
-				cut2.addStat(cutTimes[1]);
+			// Treat cut2 and cut3 separately for improved efficiency
+			if (getCut) {
+				if (amplitude > 0) {
+					DoubleVec magCuts;
+					magCuts.push_back(amplitude / 3.0);
+					magCuts.push_back(amplitude / 2.0);
+				
+					DoubleVec cutTimes;
+					peakFindTimescales(times, mags, magCuts, cutTimes);
+					
+					// Key cuts
+					temp3.addStat(cutTimes[0]);
+					temp2.addStat(cutTimes[1]);
+				}
 			}
-		} catch (const except::NotEnoughData &e) {
-			// The one kind of Undefined we don't want to ignore
-			throw;
-		} catch (const except::Undefined &e) {
-			// Don't add any acf stats; move on
-		}
-	}
-	
-	if (getPlot || getCut) {
-//		try {
-			double amplitude = getAmplitude(mags);
 			
 			if (amplitude > 0) {
 				const static double minMag = 0.01;
@@ -110,7 +107,7 @@ void doPeak(const vector<double>& times, const vector<double>& mags,
 				peakFindTimescales(times, mags, magCuts, cutTimes);
 				
 				if (getPlot) {
-					peakPlot.addStat(cutTimes, magCuts);
+					tempPlot.addStat(cutTimes, magCuts);
 				}
 				
 				if (getCut) {
@@ -125,15 +122,37 @@ void doPeak(const vector<double>& times, const vector<double>& mags,
 					peakFindTimescales(times, mags, 
 						vector<double>(1, mag08), singleTime);
 					// singleTime.size() == 1 guaranteed
-					cut80.addStat(singleTime.front());
+					temp80.addStat(singleTime.front());
 				}
 			}
-		/*} catch (const except::NotEnoughData &e) {
+		} catch (const except::NotEnoughData &e) {
 			// The one kind of Undefined we don't want to ignore
 			throw;
 		} catch (const except::Undefined &e) {
-			// Don't add any peak-find stats; move on
-		}*/
+			// Don't know how many of the collections were updated... revert to input
+			temp3    = cut3;
+			temp2    = cut2;
+			temp80   = cut80;
+			tempPlot = peakPlot;
+			
+			// May still throw bad_alloc
+			if (getCut) {
+				temp3 .addNull();
+				temp2 .addNull();
+				temp80.addNull();
+			}
+//			if (getPlot) {
+//				tempPlot.addNull();
+//			}
+		}
+		
+		// IMPORTANT: no exceptions beyond this point
+		
+		using std::swap;		
+		swap(cut3    , temp3 );
+		swap(cut2    , temp2 );
+		swap(cut80   , temp80);
+		swap(peakPlot, tempPlot);
 	}
 }
 

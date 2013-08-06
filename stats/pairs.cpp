@@ -2,7 +2,7 @@
  * @file lightcurveMC/stats/pairs.cpp
  * @author Krzysztof Findeisen
  * @date Reconstructed June 7, 2013
- * @date Last modified June 7, 2013
+ * @date Last modified August 6, 2013
  */
 
 #include <string>
@@ -95,4 +95,49 @@ void CollectedPairs::printHeader(FILE* const hOutput, const string& fieldName) {
 	}
 }
 
+/** Non-throwing swap
+ *
+ * @param[in,out] other The collection with which to exchange contents.
+ *
+ * @post The data previously contained in @p other is now stored in @p *this, 
+ *	and vice versa. All names are switched as well.
+ * 
+ * @perform Constant time
+ *
+ * @exceptsafe Does not throw exceptions.
+ */
+void CollectedPairs::swap(CollectedPairs& other) {
+	using std::swap;
+	
+	NamedCollection::swap(other);
+	
+	swap(this->x, other.x);
+	swap(this->y, other.y);
+}
+
+/** Non-throwing swap
+ *
+ * @param[in,out] a,b The collections to exchange contents.
+ *
+ * @post The data previously contained in @p a is now stored in @p b, 
+ *	and vice versa. All names are switched as well.
+ * 
+ * @perform Constant time
+ *
+ * @exceptsafe Does not throw exceptions.
+ */
+void swap(CollectedPairs& a, CollectedPairs& b) {
+	a.swap(b);
+}
+
 }}		// end lcmc::stats
+
+namespace std {
+
+template <>
+void swap<lcmc::stats::CollectedPairs>(lcmc::stats::CollectedPairs& a, 
+		lcmc::stats::CollectedPairs& b) {
+	a.swap(b);
+}
+
+}

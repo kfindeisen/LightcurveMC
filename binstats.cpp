@@ -2,10 +2,11 @@
  * @file lightcurveMC/binstats.cpp
  * @author Krzysztof Findeisen
  * @date Created June 6, 2011
- * @date Last modified June 27, 2013
+ * @date Last modified August 5, 2013
  */
 
 #include <algorithm>
+#include <limits>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -20,6 +21,7 @@
 #include "stats/output.h"
 #include "nan.h"
 #include "paramlist.h"
+#include "except/paramlist.h"
 #include "stats/statcollect.h"
 #include "stats/statfamilies.h"
 #include "except/undefined.h"
@@ -71,7 +73,7 @@ LcBinStats::LcBinStats(const string& modelName, const RangeList& binSpecs, const
 		: binName(makeBinName(modelName, binSpecs, noise)), 
 		fileName(makeFileName(modelName, binSpecs, noise)), 
 		stats(toCalc), 
-		C1vals("C1", "run_c1_" + fileName + ".dat"), 
+		c1vals("C1", "run_c1_" + fileName + ".dat"), 
 		periods("Period", "run_peri_" + fileName + ".dat"), 
 		periodograms("Periodograms", "run_pgram_" + fileName + ".dat"), 
 		cutDmdt50Amp3s("50th percentile crossing 1/3 amp", "run_cut50_3_" + fileName + ".dat"), 
@@ -91,7 +93,9 @@ LcBinStats::LcBinStats(const string& modelName, const RangeList& binSpecs, const
 		cutPeakAmp2s("Timescales for peaks > 1/3 amp", "run_cutpeak2_" + fileName + ".dat"), 
 		cutPeakMax08s("Timescales for peaks > 80% max", "run_cutpeak45_" + fileName + ".dat"), 
 		peaks("Peaks", "run_peaks_" + fileName + ".dat"), 
-		gpTaus("GP", "run_gpt_" + fileName + ".dat") {
+		gpTaus("GP", "run_gpt_" + fileName + ".dat"), 
+		gpErrors("GP_err", "run_gperr_" + fileName + ".dat"), 
+		gpChi("GP_chiSq", "run_gpchi_" + fileName + ".dat") {
 	if (toCalc.size() == 0) {
 		throw std::invalid_argument("LcBinStats won't calculate any statistics");
 	}
@@ -118,7 +122,7 @@ void scargleAdapter(const DoubleVec& times, const DoubleVec& data,
 		offsets.push_back(i*offStep);
 	}
 	
-	kpftimes::autoCorr(times, data, offsets, acfs);
+	kpftimes::autoCorr(times, data, offsets, acfs/*, 100000.0*/);
 }
 
 // Current implementation of analyzeLightCurve does not use  
@@ -166,19 +170,28 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 	utils::removeNans(mags, cleanMags, times, cleanTimes);
 
 	////////////////////////////////////////
+	// Light curve properties
+	double trueTime;
+	try {
+		trueTime = trueParams.get("p");
+	} catch (const models::except::MissingParam& e) {
+		trueTime = std::numeric_limits<double>::quiet_NaN();
+	}
+	
+	////////////////////////////////////////
 	// The statistics
 	
 	if (hasStat(stats, C1)) {
 		try {
 			double C1 = getC1(cleanMags);
-			C1vals.addStat(C1);
+			c1vals.addStat(C1);
 		} catch (const except::NotEnoughData &e) {
 			// The one kind of Undefined we don't want to ignore
 			throw;
 		} catch (const except::Undefined &e) {
 			// Undefined must have been thrown by getC1(), 
 			//	so addStat() has not yet been called
-			C1vals.addNull();
+			c1vals.addNull();
 		}
 	}
 
@@ -201,7 +214,8 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
 	doPeak(cleanTimes, cleanMags, hasStat(stats, PEAKCUT), hasStat(stats, PEAKFIND), 
 		this->cutPeakAmp3s, this->cutPeakAmp2s, this->cutPeakMax08s, this->peaks);
 
-	doGaussFit(cleanTimes, cleanMags, hasStat(stats, GPTAU), this->gpTaus);
+	doGaussFit(cleanTimes, cleanMags, hasStat(stats, GPTAU), trueTime, 
+		this->gpTaus, this->gpErrors, this->gpChi);
 }
 
 // Re-enable all compiler warnings
@@ -216,7 +230,7 @@ void LcBinStats::analyzeLightCurve(const DoubleVec& times, const DoubleVec& flux
  * @exceptsafe Does not throw exceptions.
  */
 void LcBinStats::clear() {
-	C1vals.clear();
+	c1vals.clear();
 
 	periods.clear();
 	periodograms.clear();
@@ -243,7 +257,9 @@ void LcBinStats::clear() {
 	cutPeakMax08s.clear();
 	peaks.clear();
 	
-	gpTaus.clear();
+	gpTaus  .clear();
+	gpErrors.clear();
+	gpChi.clear();
 }
 
 /** Prints a row representing the accumulated statistics to the specified file.
@@ -265,13 +281,12 @@ void LcBinStats::clear() {
  */
 void LcBinStats::printBinStats(FILE* const file) const {
 	// Start with the bin ID
-	int status = fprintf(file, "%s", binName.c_str());
-	if (status < 0) {
+	if (fprintf(file, "%s", binName.c_str()) < 0) {
 		cError("Could not print output in printBinStats(): ");
 	}
 
 	if (hasStat(stats, C1)) {
-		C1vals.printStats(file);
+		c1vals.printStats(file);
 	}
 	if (hasStat(stats, PERIOD)) {
 		periods.printStats(file);
@@ -316,11 +331,24 @@ void LcBinStats::printBinStats(FILE* const file) const {
 		peaks.printStats(file);
 	}
 	if (hasStat(stats, GPTAU)) {
-		gpTaus.printStats(file);
+		gpTaus  .printStats(file);
+		gpErrors.printStats(file);
+		
+		vector<double> normDevs;
+		gpChi.toVector(normDevs);
+		double chi = 0.0;
+		for(vector<double>::const_iterator it = normDevs.begin(); 
+				it != normDevs.end(); it++) {
+			if (!utils::isNan(*it)) {
+				chi += (*it) * (*it);
+			}
+		}
+		if (fprintf(file, "\t%6.3g", chi) < 0) {
+			cError("Could not print output in printBinStats(): ");
+		}
 	}
 
-	status = fprintf(file, "\n");
-	if (status < 0) {
+	if (fprintf(file, "\n") < 0) {
 		cError("Could not print output in printBinStats(): ");
 	}
 }
@@ -405,10 +433,13 @@ void LcBinStats::printBinHeader(FILE* const file, const RangeList& binSpecs,
 	}
 	if (hasStat(outputStats, GPTAU)) {
 		CollectedScalars::printHeader(file, "GP Time");
+		CollectedScalars::printHeader(file, "GP Error");
+		if (fprintf(file, "\tGP Chi^2") < 0) {
+			fileError(file, "Header output failed in printBinHeader(): ");
+		}
 	}
 
-	status = fprintf(file, "\n");
-	if (status < 0) {
+	if (fprintf(file, "\n") < 0) {
 		fileError(file, "Header output failed in printBinHeader(): ");
 	}
 }

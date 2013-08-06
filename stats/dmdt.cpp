@@ -2,7 +2,7 @@
  * @file lightcurveMC/stats/dmdt.cpp
  * @author Krzysztof Findeisen
  * @date Created April 12, 2013
- * @date Last modified June 8, 2013
+ * @date Last modified August 5, 2013
  *
  * @todo Break up this file.
  */
@@ -249,6 +249,13 @@ void doDmdt(const vector<double>& times, const vector<double>& mags,
 	}
 
 	if (getCut || getPlot) {
+		// copy-and-swap
+		CollectedScalars temp50Amp3 = cut50Amp3;
+		CollectedScalars temp50Amp2 = cut50Amp2;
+		CollectedScalars temp90Amp3 = cut90Amp3;
+		CollectedScalars temp90Amp2 = cut90Amp2;
+		CollectedPairs   tempMed    = dmdtMed;
+		
 		try {
 			double amplitude = getAmplitude(mags);
 			
@@ -274,32 +281,53 @@ void doDmdt(const vector<double>& times, const vector<double>& mags,
 					DoubleVec change90;
 					deltaMBinQuantile(deltaT, deltaM, binEdges, change90, 0.90);
 					
-					// no exceptions (other than bad_alloc) beyond this point
-					
 					// Key cuts
-					cut50Amp3.addStat(cutFunction(binEdges, 
+					temp50Amp3.addStat(cutFunction(binEdges, 
 						change50, MoreThan(amplitude / 3.0) ));
-					cut50Amp2.addStat(cutFunction(binEdges, 
+					temp50Amp2.addStat(cutFunction(binEdges, 
 						change50, MoreThan(amplitude / 2.0) ));
 					
-					cut90Amp3.addStat(cutFunction(binEdges, 
+					temp90Amp3.addStat(cutFunction(binEdges, 
 						change90, MoreThan(amplitude / 3.0) ));
-					cut90Amp2.addStat(cutFunction(binEdges, 
+					temp90Amp2.addStat(cutFunction(binEdges, 
 						change90, MoreThan(amplitude / 2.0) ));
 				}
 
-				// no exceptions (other than bad_alloc) beyond this point
-				
 				if (getPlot) {
-					dmdtMed.addStat(binEdges, change50);
+					tempMed.addStat(binEdges, change50);
 				}
 			}
 		} catch (const except::NotEnoughData &e) {
 			// The one kind of Undefined we don't want to ignore
 			throw;
 		} catch (const except::Undefined &e) {
-			// Don't add any dmdt stats; move on
+			// Don't know how many of the collections were updated... revert to input
+			temp50Amp3 = cut50Amp3;
+			temp50Amp2 = cut50Amp2;
+			temp90Amp3 = cut90Amp3;
+			temp90Amp2 = cut90Amp2;
+			tempMed    = dmdtMed;
+			
+			// May still throw bad_alloc
+			if (getCut) {
+				temp50Amp3.addNull();
+				temp50Amp2.addNull();
+				temp90Amp3.addNull();
+				temp90Amp2.addNull();
+			}
+//			if (getPlot) {
+//				tempMed.addNull();
+//			}
 		}
+		
+		// IMPORTANT: no exceptions beyond this point
+		
+		using std::swap;		
+		swap(cut50Amp3, temp50Amp3);
+		swap(cut50Amp2, temp50Amp2);
+		swap(cut90Amp3, temp90Amp3);
+		swap(cut90Amp2, temp90Amp2);
+		swap(dmdtMed  , tempMed   );
 	}
 }
 

@@ -19,7 +19,8 @@ namespace lcmc { namespace models {
  *
  * GaussianProcess is an abstract base class. Subclasses of GaussianProcess 
  * represent Gaussian processes with specific kernels by implementing 
- * getCovar() and optionally overriding solveFluxes().
+ * the private function getCovar() and optionally overriding the private 
+ * function solveFluxes().
  */
 class GaussianProcess : public Stochastic {
 public: 

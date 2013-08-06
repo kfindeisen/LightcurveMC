@@ -2,9 +2,10 @@
  * @file lightcurveMC/stats/named.cpp
  * @author Krzysztof Findeisen
  * @date Reconstructed June 7, 2013
- * @date Last modified June 7, 2013
+ * @date Last modified August 5, 2013
  */
 
+#include <algorithm>
 #include <string>
 #include "statcollect.h"
 
@@ -47,5 +48,23 @@ const string& NamedCollection::getFileName() const {
 	return auxFile;
 }
 
+/** Non-throwing swap
+ *
+ * @param[in,out] other The collection with which to exchange contents.
+ *
+ * @post @p other.getStatName() and @p other.getFileName() return the 
+ *	values previously returned by @p this->getStatName() and 
+ *	@p this->getFileName(), and vice versa
+ *
+ * @perform Constant time
+ *
+ * @exceptsafe Does not throw exceptions.
+ */
+void NamedCollection::swap(NamedCollection& other) {
+	using std::swap;
+	
+	swap(this->statName, other.statName);
+	swap(this->auxFile , other.auxFile );
+}
 
 }}		// end lcmc::stats

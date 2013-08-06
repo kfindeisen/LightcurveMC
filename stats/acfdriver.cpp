@@ -2,9 +2,10 @@
  * @file lightcurveMC/stats/acfdriver.cpp
  * @author Krzysztof Findeisen
  * @date Created June 8, 2013
- * @date Last modified June 8, 2013
+ * @date Last modified August 5, 2013
  */
 
+#include <algorithm>
 #include <vector>
 #include <boost/lexical_cast.hpp>
 #include <timescales/timescales.h>
@@ -74,7 +75,13 @@ void doAcf(const vector<double>& times, const vector<double>& data,
 	}
 
 	if (getCut || getPlot) {
-//		try {
+		// copy-and-swap
+		CollectedScalars temp9    = cut9;
+		CollectedScalars temp4    = cut4;
+		CollectedScalars temp2    = cut2;
+		CollectedPairs   tempPlot = acfPlot;
+		
+		try {
 			// Regular grid at which offsets are generated
 			const static double offStep = 0.1;
 			// Minimum difference between two offsets written to a log file
@@ -88,8 +95,6 @@ void doAcf(const vector<double>& times, const vector<double>& data,
 			
 			DoubleVec acf;
 			acfFunc(times, data, offStep, offsets.size(), acf);
-			
-			// no exceptions (other than bad_alloc) beyond this point
 			
 			if (getPlot) {
 				// Record only logarithmically spaced bins, for compactness
@@ -108,24 +113,46 @@ void doAcf(const vector<double>& times, const vector<double>& data,
 					// else skip
 				}
 								
-				acfPlot.addStat(logOffs, logAcf);
+				tempPlot.addStat(logOffs, logAcf);
 			}
 			
 			if (getCut) {
 				// Key cuts
-				cut9.addStat(cutFunction(offsets, acf, 
+				temp9.addStat(cutFunction(offsets, acf, 
 					LessThan(1.0/9.0)));
-				cut4.addStat(cutFunction(offsets, acf, 
+				temp4.addStat(cutFunction(offsets, acf, 
 					LessThan(0.25)   ));
-				cut2.addStat(cutFunction(offsets, acf, 
+				temp2.addStat(cutFunction(offsets, acf, 
 					LessThan(0.5)    ));
 			}
-		/*} catch (const except::NotEnoughData &e) {
+		} catch (const except::NotEnoughData &e) {
 			// The one kind of Undefined we don't want to ignore
 			throw;
 		} catch (const except::Undefined &e) {
-			// Don't add any acf stats; move on
-		}*/
+			// Don't know how many of the collections were updated... revert to input
+			temp9    = cut9;
+			temp4    = cut4;
+			temp2    = cut2;
+			tempPlot = acfPlot;
+			
+			// May still throw bad_alloc
+			if (getCut) {
+				temp9.addNull();
+				temp4.addNull();
+				temp2.addNull();
+			}
+//			if (getPlot) {
+//				tempPlot.addNull();
+//			}
+		}
+		
+		// IMPORTANT: no exceptions beyond this point
+
+		using std::swap;		
+		swap(cut9   , temp9);
+		swap(cut4   , temp4);
+		swap(cut2   , temp2);
+		swap(acfPlot, tempPlot);
 	}
 }
 

@@ -82,9 +82,9 @@ AaTauWave::AaTauWave(const std::vector<double> &times, double amp, double period
 double AaTauWave::fluxPhase(double phase, double amp) const {
 	double mag;
 	if (phase < 0.5*width) {
-		mag = -amp*cos(M_PI_2 * phase / width);
+		mag = -amp*cos(M_PI * phase / width);
 	} else if (phase > 1.0 - 0.5*width) {
-		mag = -amp*cos(M_PI_2 * (phase-1.0) / width);
+		mag = -amp*cos(M_PI * (phase-1.0) / width);
 	} else {
 		mag = 0.0;
 	}

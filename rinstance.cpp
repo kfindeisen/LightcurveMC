@@ -2,7 +2,7 @@
  * @file lightcurveMC/rinstance.cpp
  * @author Krzysztof Findeisen
  * @date Created June 24, 2013
- * @date Last modified June 24, 2013
+ * @date Last modified July 22, 2013
  */
 
 #include <exception>
@@ -35,11 +35,13 @@ shared_ptr<RInside> getRInstance() {
 	if (globalInstance.get() == NULL) {
 		try {
 			globalInstance.reset(new RInside);
-			// Ensure warnings are visible to the caller
-			globalInstance->parseEvalQ("options(warn = 2)");
 		} catch (const std::exception& e) {
 			throw except::BadRSession(e.what());
 		}
+		// IMPORTANT: no exceptions beyond this point
+
+		// Ensure warnings are visible to the caller
+		globalInstance->parseEvalQ("options(warn = 2)");
 	}
 	
 	// assert: globalInstance points to a valid session

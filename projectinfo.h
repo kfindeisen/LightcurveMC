@@ -2,7 +2,7 @@
  * @file lightcurveMC/projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified August 1, 2013
+ * @date Last modified August 6, 2013
  *
  * @todo Consider adding an algorithms overview for interested researchers.
  * @todo Rely less on integration tests
@@ -23,7 +23,7 @@
  * "+build" tag can be used to distinguish which development version 
  *	was used to create which output
  */
-#define VERSION_STRING "2.3.0-devel+build.11"
+#define VERSION_STRING "2.3.0-devel+build.12"
 
 /** @mainpage
  *
@@ -43,7 +43,7 @@
  * - Support for signal injection tests using a randomized sample of base 
  * 	light curves
  * - Support for calculation of C1, periods, &Delta;m&Delta;t timescales, 
- *	ACF timescales, and peak-finding.
+ *	ACF timescales, peak-finding, and Gaussian process modeling.
  *
  * @section credits Credits
  *
@@ -584,10 +584,14 @@
  * each timescale was calculated in space-delimited format.</dd>
  * <dt><tt>gptau</tt></dt><dd>The program prints the average time scale 
  * calculated from the simulation runs, followed by &plusmn;, followed by the 
- * standard deviation of the periods. The program then prints the fraction 
+ * standard deviation of the time scales. The program then prints the fraction 
  * of simulations in which a time scale could be solved for, followed by 
- * the name of a file containing the individual periods from each simulation, 
- * one per line, for more in-depth analysis of the results.</dd>
+ * the name of a file containing the individual time scales from each 
+ * simulation, one per line, for more in-depth analysis of the results. 
+ * These four values are then repeated for the formal uncertainty on the 
+ * time scale. Finally, the program prints the &chi;<sup>2</sup> statistic 
+ * describing whether the inferred time scales are consistent with the true 
+ * light curve time scale, given their formal errors.</dd>
  * </dl>
  * 
  * @section examples Examples
@@ -694,23 +698,28 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    1	run_c
  * 
  * @page changelog Version History
  * 
+ * @brief <b></b>
+ * 
  * Lightcurve MC conforms to 
- * <a href="http://semver.org/spec/v2.0.0-rc.1.html">version 2.0.0-rc.1 of the Semantic Versioning specification</a>. 
+ * <a href="http://semver.org/spec/v2.0.0.html">version 2.0.0 of the Semantic Versioning specification</a>. 
  * All version numbers are to be interpreted as described therein. The 
  * @ref use "\"User's Guide\"" @htmlonly page, @endhtmlonly 
  * @latexonly chapter, @endlatexonly not including the "Examples" section, 
- * constitutes the public API for the program.
+ * fills the role of the public API for the program.
  *
  * @section v2_3_0 Version 2.3.0-devel
  *
  * @subsection v2_3_0_diff Changes 
  * 
  * - Generic light curve code has now been moved to the @c kpfutils common library
- * - Made Gaussian process code more concise
+ * - Factored Gaussian process code into a new class, 
+ *	@ref lcmc::models::GaussianProcess "GaussianProcess"
+ * - Versioning convention updated from version 2.0.0-rc.1 to 
+ *	<a href="http://semver.org/spec/v2.0.0.html">version 2.0.0 of the Semantic Versioning specification</a>.
  * 
  * @subsection v2_3_0_new New Features 
  * 
- * - Support for AA&nbsp;Tau light curves
+ * - Support for AA Tau light curves
  * - Support for Gaussian process timescales
  * 
  * @subsection v2_3_0_fix Bug Fixes 
@@ -726,9 +735,9 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    1	run_c
  *	in which C1 is defined.
  * - @c simple_gp and @c two_gp light curves now work correctly when one of 
  *	the input time stamps equals exactly zero
- * - error messages related to parameters now use parameter names expected 
+ * - Corrected some compatibility issues with GCC 4.7's warnings system
+ * - Error messages related to parameters now use parameter names expected 
  *	by the user
- * - corrected some compatibility issues with GCC 4.7 and Boost 1.53
  *
  * @section v2_2_0 Version 2.2.0
  *
