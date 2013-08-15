@@ -2,7 +2,7 @@
  * @file lightcurveMC/projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified August 6, 2013
+ * @date Last modified August 14, 2013
  *
  * @todo Consider adding an algorithms overview for interested researchers.
  * @todo Rely less on integration tests
@@ -23,7 +23,7 @@
  * "+build" tag can be used to distinguish which development version 
  *	was used to create which output
  */
-#define VERSION_STRING "2.3.0-devel+build.12"
+#define VERSION_STRING "2.3.0-devel+build.13"
 
 /** @mainpage
  *
@@ -57,29 +57,39 @@
  *
  * @section install_reqs Requirements
  *
- * Lightcurve MC is written in standard C++, and should build on any 
- * C++98/C++03-compliant compiler. For portability between build 
- * environments, no TR1 or C++11 features are included. However, the 
- * makefile itself is specific to GCC, so users wishing to install 
- * Lightcurve MC on a non-Unix platform may need to revise the contents of 
- * the following files: 
+ * Lightcurve MC is written primarily in standard C++, with a few components 
+ * written in R. The program should build on any C++98/C++03-compliant 
+ * compiler. For portability between build environments, no TR1 or C++11 
+ * features are included. However, the makefile itself is specific to GCC, so 
+ * users wishing to install Lightcurve MC on a non-Unix platform may need to 
+ * revise the contents of the following files: 
  * - @c makefile
  * - @c makefile.inc
  * - @c makefile.common
  * - @c makefile.subdirs
- * 
  * The program may switch to CMake in the future for improved portability.
  *
- * Lightcurve MC depends on the following external libraries:
+ * The sections written in R require version 2.15.1 or later of the 
+ * R interpreter. The program has not been tested with R version 3.
+ *
+ * Lightcurve MC depends on the following libraries, available from the 
+ * same source as Lightcurve MC: 
+ * - Timescales 1.0 or later
+ * - kpfutils 1.0 or later
+ * and on the following external libraries:
  * - <a href="http://www.boost.org/">Boost</a> 1.33 or later
  * - <a href="http://www.gnu.org/software/gsl/">Gnu Scientific Library (GSL)</a> 1.8 
  *	or later (version 1.15 or later recommended for best performance when 
  *	generating Gaussian process light curves)
  * - <a href="http://tclap.sourceforge.net/">Templatized Command Line Parser (TCLAP)</a> 1.2 
  *	or later
+ * - <a href="http://dirk.eddelbuettel.com/code/rcpp.html">Rcpp</a> 0.8.5 or later
+ * - <a href="http://dirk.eddelbuettel.com/code/rinside.html">RInside</a> 0.2.6 or later
+ * - <a href="http://cran.r-project.org/web/packages/gptk/">Gaussian Process Tool Kit (gptk)</a> 1.03 or later
+ * - <a href="http://cran.r-project.org/web/packages/numDeriv/">numDeriv</a> 2006.4-1 or later
  * 
  * These libraries are not provided with the installation package, as most 
- * systems will have Boost and GSL installed already. Please contact your 
+ * systems will have Boost, GSL, and R installed already. Please contact your 
  * system administrator if these libraries are not installed.
  * 
  * In addition, (re-)generating this documentation requires 

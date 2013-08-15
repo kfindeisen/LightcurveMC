@@ -2,7 +2,7 @@
  * @file lightcurveMC/rinstance.cpp
  * @author Krzysztof Findeisen
  * @date Created June 24, 2013
- * @date Last modified July 22, 2013
+ * @date Last modified August 14, 2013
  */
 
 #include <exception>
@@ -34,7 +34,8 @@ shared_ptr<RInside> getRInstance() {
 	static shared_ptr<RInside> globalInstance;
 	if (globalInstance.get() == NULL) {
 		try {
-			globalInstance.reset(new RInside);
+			// Make sure errors cause exceptions rather than program termination
+			globalInstance.reset(new RInside(0, 0, false, false, true));
 		} catch (const std::exception& e) {
 			throw except::BadRSession(e.what());
 		}

@@ -5,17 +5,11 @@
  * @date Last modified May 11, 2013
  */
 
-//#include <stdexcept>
 #include <string>
 #include <vector>
 #include "../binstats.h"
-//#include "cmd_constraints.tmp.h"
-//#include "cmd_ranges.tmp.h"
-//#include "../lightcurveparser.h"
 #include "../lightcurvetypes.h"
 #include "../paramlist.h"
-//#include "../projectinfo.h"
-//#include "../statparser.h"
 
 #include "../../common/warnflags.h"
 
