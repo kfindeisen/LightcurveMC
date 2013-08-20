@@ -41,6 +41,8 @@ namespace lcmc { namespace parse {
 using std::string;
 using namespace TCLAP;
 
+/** Represents the range of values from which a model parameter may be drawn
+ */
 typedef std::pair<double, double> Range;
 
 /** Specifies the command line parameters that describe model parameter ranges

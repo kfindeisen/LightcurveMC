@@ -58,7 +58,7 @@ void logSimOptions(CmdLineInterface& cmd) {
 /** Parses the command line parameters that change optional settings
  *
  * @param[in] cmd The command-line parser used by the program
- * @param[out] nTrails The number of times to run the simulations.
+ * @param[out] nTrials The number of times to run the simulations.
  * @param[out] nPrint The number of simulations whose light curves should 
  *	be dumped to file.
  * 
