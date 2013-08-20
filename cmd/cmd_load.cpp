@@ -2,21 +2,19 @@
  * @file lightcurveMC/cmd/cmd_load.cpp
  * @author Krzysztof Findeisen
  * @date Created May 11, 2013
- * @date Last modified May 22, 2013
+ * @date Last modified August 19, 2013
  */
 
 #include <stdexcept>
 #include <string>
 #include <vector>
 #include "../binstats.h"
-#include "cmd.h"
-//#include "cmd_constraints.tmp.h"
-//#include "cmd_ranges.tmp.h"
+#include "cmd.tmp.h"
+#include "cmd_constraints.tmp.h"
 #include "../lightcurveparser.h"
 #include "../lightcurvetypes.h"
 #include "../paramlist.h"
 #include "../except/parse.h"
-//#include "../projectinfo.h"
 #include "../statparser.h"
 
 #include "../../common/warnflags.h"
@@ -48,6 +46,50 @@ using models::RangeList;
 using stats::StatType;
 using namespace TCLAP;
 
+/** Returns a TCLAP::Constraint object that forces the argument to be a known 
+ * light curve.
+ *
+ * @return A global constraint object.
+ *
+ * @exception std::bad_alloc Thrown if there is not enough memory to create 
+ *	the object.
+ *
+ * @exceptsafe The program state is unchanged in the event of an exception.
+ */
+KeywordConstraint* getLcList() {
+	static KeywordConstraint* theConstraint = NULL;
+	if (theConstraint == NULL) {
+		// Because KeywordConstraint takes a mutable reference, need a 
+		//	local variable to store the function value
+		std::vector<string> lcNames = lightCurveTypes();
+		theConstraint = new KeywordConstraint(lcNames);
+	}
+	
+	return theConstraint;
+}
+
+/** Returns a TCLAP::Constraint object that forces the argument to be a known 
+ * statistic.
+ *
+ * @return A global constraint object.
+ *
+ * @exception std::bad_alloc Thrown if there is not enough memory to create 
+ *	the object.
+ *
+ * @exceptsafe The program state is unchanged in the event of an exception.
+ */
+KeywordConstraint* getStatList() {
+	static KeywordConstraint* theConstraint = NULL;
+	if (theConstraint == NULL) {
+		// Because KeywordConstraint takes a mutable reference, need a 
+		//	local variable to store the function value
+		std::vector<string> statNames = statTypes();
+		theConstraint = new KeywordConstraint(statNames);
+	}
+	
+	return theConstraint;
+}
+
 /** Adds a parameter to a light curve specification if the appropriate 
  * command line argument was used
  *
@@ -78,6 +120,32 @@ void addParam(RangeList& range, const ParamType& paramName,
 	if (paramValue.isSet()) {
 		range.add(paramName, paramValue.getValue(), distrib);
 	}
+}
+
+/** Specifies the command line parameters that list light curves and statistics
+ *
+ * @param[in,out] cmd The command-line parser used by the program
+ * 
+ * @post @p cmd now contains command-line parameters for list input to 
+ *	Lightcurve MC
+ * 
+ * @exceptsafe Does not throw exceptions.
+ */
+void logSimLists(CmdLineInterface& cmd) {
+	// Light curve list
+	KeywordConstraint* lcAllowed = getLcList();
+	UnlabeledMultiArg<string>* argLcList = new UnlabeledMultiArg<string>("lclist", 
+		"List of light curves to model, in order. Allowed values are: " + 
+		lcAllowed->description(), 
+		true, lcAllowed);
+	cmd.add(argLcList);
+	
+	// Statistics list
+	KeywordConstraint* statAllowed = getStatList();
+	MultiArg<string>* argStatList = new MultiArg<string>("s", "stat", 
+		"List of statistics to calculate, in order. Allowed values are: " + statAllowed->description(), 
+		false, statAllowed);
+	cmd.add(argStatList);
 }
 
 /** Transforms a list of light curve names on the command line to a list of 

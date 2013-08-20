@@ -2,7 +2,7 @@
  * @file lightcurveMC/projectinfo.h
  * @author Krzysztof Findeisen
  * @date Created April 19, 2013
- * @date Last modified August 14, 2013
+ * @date Last modified August 20, 2013
  *
  * @todo Consider adding an algorithms overview for interested researchers.
  * @todo Rely less on integration tests
@@ -23,7 +23,7 @@
  * "+build" tag can be used to distinguish which development version 
  *	was used to create which output
  */
-#define VERSION_STRING "2.3.0-devel+build.13"
+#define VERSION_STRING "2.3.0-devel+build.14"
 
 /** @mainpage
  *
@@ -724,6 +724,7 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    1	run_c
  * - Generic light curve code has now been moved to the @c kpfutils common library
  * - Factored Gaussian process code into a new class, 
  *	@ref lcmc::models::GaussianProcess "GaussianProcess"
+ * - Factored command line parsing code into separate functions.
  * - Versioning convention updated from version 2.0.0-rc.1 to 
  *	<a href="http://semver.org/spec/v2.0.0.html">version 2.0.0 of the Semantic Versioning specification</a>.
  * 

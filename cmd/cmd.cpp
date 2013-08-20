@@ -2,51 +2,22 @@
  * @file lightcurveMC/cmd/cmd.cpp
  * @author Krzysztof Findeisen
  * @date Created April 12, 2013
- * @date Last modified May 27, 2013
+ * @date Last modified August 19, 2013
  */
 
 #include <stdexcept>
-#include <sstream>
 #include <string>
 #include <vector>
-#include "../binstats.h"
-#include "cmd.h"
-#include "cmd_constraints.tmp.h"
-#include "cmd_ranges.tmp.h"
-#include "../lightcurveparser.h"
+#include "cmd.tmp.h"
+#include "cmdlinedyn.h"
 #include "../lightcurvetypes.h"
 #include "../paramlist.h"
 #include "../except/nan.h"
 #include "../except/paramlist.h"
 #include "../except/parse.h"
 #include "../projectinfo.h"
-#include "../statparser.h"
 
 #include "../../common/warnflags.h"
-
-// TCLAP uses C-style casts
-#ifdef GNUC_COARSEWARN
-#pragma GCC diagnostic ignored "-Wold-style-cast"
-#endif
-
-// TCLAP uses C-style casts
-#ifdef GNUC_FINEWARN
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
-#endif
-
-#include <tclap/CmdLine.h>
-
-// Re-enable all compiler warnings
-#ifdef GNUC_FINEWARN
-#pragma GCC diagnostic pop
-#endif
-
-/** Extracts formatted input into a pair of double precision floating point 
- * values.
- */
-// Must be declared in the global namespace to be identified by TCLAP
-std::istream& operator>> (std::istream& str, std::pair<double, double>& val);
 
 namespace lcmc { namespace parse {
 
@@ -100,112 +71,24 @@ void parseArguments(int argc, char* argv[],
 		vector<      StatType>& statList, 
 		string& dataSet, bool& injectMode) {
 	using namespace TCLAP;
-	typedef std::pair<double, double> Range;
 	
   	// Start by defining the command line
-	CmdLine cmd(PROG_SUMMARY, ' ', VERSION_STRING);
-	cmd.setExceptionHandling(false);
+	CmdLineDyn cmd(PROG_SUMMARY, ' ', VERSION_STRING);
 	
 	try {
-		//--------------------------------------------------
-		// Common constraints
-		// TCLAP::Constraint interface not declared const :(
-		static    PositiveNumber<double>    posReal;
-		static    PositiveNumber<long>      posInt;
-		static    PositiveNumber<Range>     posRange;
-		static NonNegativeNumber<double> nonNegReal;
-		static NonNegativeNumber<long>   nonNegInt;
-		static UnitSubrange unitRange;
-	
-		//--------------------------------------------------
-		// Mandatory simulation settings
-		ValueArg<double> argNoise("", "noise", "Gaussian error added to each photometric measurement, in units of the typical source flux. REQUIRES that <date file> is provided.", 
-			false, 
-			0.0, &nonNegReal);
-	
-		ValueArg<string> argInject("", "add", 
-			"Name of a text file containing the names of light curves to sample.", 
-			false, 
-			"", "file list");
-	
-		UnlabeledValueArg<string> argDateFile("jdlist", 
-			"Text file containing a list of Julian dates, one per line.", 
-			true, 
-			"", "date list");
-		cmd.xorAdd(argInject, argDateFile);
-		// argNoise is only allowed if argDateFile is used, but since 
-		//	argDateFile is already in a xor relationship we'll have to 
-		//	enforce this constraint manually after parsing
-		cmd.add(argNoise);
-	
-		//--------------------------------------------------
-		// Optional simulation settings
-		ValueArg<long> argRepeat("", "ntrials", "Number of light curves generated per bin. 1000 if omitted.", 
-			false, 
-			1000, &posInt, cmd);
-		ValueArg<long> argPrint("", "print", "Number of light curves to print. 0 if omitted.", 
-			false, 
-			0, &nonNegInt, cmd);
-	
-		//--------------------------------------------------
-		// Light curve list
-		std::vector<string> lcNames = lightCurveTypes();
-		KeywordConstraint lcAllowed(lcNames);
-		UnlabeledMultiArg<string> argLcList("lclist", 
-			"List of light curves to model, in order. Allowed values are: " + lcAllowed.description(), 
-			true, 
-			&lcAllowed, cmd);
+		// Register program parameters
+		logSimType(cmd);
+		logSimOptions(cmd);
+		logSimLists(cmd);
+		logModelParams(cmd);
 		
-		//--------------------------------------------------
-		// Statistics list
-		std::vector<string> statNames = statTypes();
-		KeywordConstraint statAllowed(statNames);
-		MultiArg<string> argStatList("s", "stat", 
-			"List of statistics to calculate, in order. Allowed values are: " + statAllowed.description(), 
-			false, 
-			&statAllowed, cmd);
-		
-		//--------------------------------------------------
-		// Model parameters
-		ValueArg<Range> argPer ("p", "period", 
-			"the smallest and largest periods, in days, to be tested. The period will be drawn from a log-uniform distribution.", 
-			false, 
-			Range(), &posRange, cmd);
-		ValueArg<Range> argAmp ("a", "amp", 
-			"the smallest and largest amplitudes to be tested. The amplitude will be drawn from a log-uniform distribution.", 
-			false, 
-			Range(), &posRange, cmd);
-		ValueArg<Range> argPhi ("", "ph", 
-			"the smallest and largest initial phases to be tested. The phase will be drawn from a uniform distribution. MUST be a subinterval of [0.0, 1.0]. Set to \"0.0 1.0\" if unspecified.", 
-			false, 
-			Range(0.0, 1.0), &unitRange, cmd);
-		ValueArg<Range> argDiffus ("d", "diffus", 
-			"the smallest and largest diffusion constants to be tested. The constant will be drawn from a log-uniform distribution.", 
-			false, 
-			Range(), &posRange, cmd);
-		ValueArg<Range> argWidth ("w", "width", 
-			"the smallest and largest event widths to be tested. The width will be drawn from a log-uniform distribution.", 
-			false, 
-			Range(), &posRange, cmd);
-		ValueArg<Range> argWidth2 ("", "width2", 
-			"the smallest and largest secondary widths to be tested. The width will be drawn from a log-uniform distribution.", 
-			false, 
-			Range(), &posRange, cmd);
-		ValueArg<Range> argPer2 ("", "period2", 
-			"the smallest and largest secondary periods, in days, to be tested. The secondary period will be drawn from a log-uniform distribution.", 
-			false, 
-			Range(), &posRange, cmd);
-		ValueArg<Range> argAmp2 ("", "amp2", 
-			"the smallest and largest secondary amplitudes to be tested. The secondary amplitude will be drawn from a log-uniform distribution.", 
-			false, 
-			Range(), &posRange, cmd);
-	
-		//--------------------------------------------------
 		// Read from the command line
 	
 		cmd.parse( argc, argv );
 		// constraint: --noise only valid if jdList defined
-		if (argNoise.isSet() && !argDateFile.isSet()) {
+		if (getParam<ValueArg<double> >(cmd, "noise").isSet() 
+				&& !getParam<UnlabeledValueArg<string> >(cmd, "jdlist")
+				.isSet()) {
 			throw CmdLineParseException("Mutually exclusive argument already set!", 
 				"(--noise)");
 		}
@@ -214,19 +97,15 @@ void parseArguments(int argc, char* argv[],
 		// Export values
 	
 		// Mandatory simulation settings
-		sigma    = argNoise   .getValue();
-		dataSet  = argInject  .getValue();
-		jdList   = argDateFile.getValue();
-		// Test if --add argument was used
-		injectMode = (dataSet.size() > 0);
+		parseSimType(cmd, jdList, dataSet, injectMode, sigma);
 	
 		// Optional simulation settings
-		nTrials  = argRepeat  .getValue();
-		toPrint  = argPrint   .getValue();
+		parseSimOptions(cmd, nTrials, toPrint);
 	
 		// Light curve list
 		try {
-			parseLcList(argLcList, lcNameList, lcList);
+			parseLcList(getParam<UnlabeledMultiArg<string> >(cmd, "lclist"), 
+				lcNameList, lcList);
 		} catch (const except::NoLightCurves& e) {
 			throw except::NoLightCurves(string(e.what()) 
 				+ " Type " + cmd.getProgramName() 
@@ -235,7 +114,8 @@ void parseArguments(int argc, char* argv[],
 	
 		// Statistics list
 		try {
-			parseStatList(argStatList, statList);
+			parseStatList(getParam<MultiArg<string> >(cmd, "stat"), 
+				statList);
 		} catch (const except::NoStats& e) {
 			throw except::NoStats(string(e.what()) 
 				+ " Type " + cmd.getProgramName() 
@@ -244,16 +124,7 @@ void parseArguments(int argc, char* argv[],
 	
 		// Model parameters
 		try {
-			paramRanges.clear();
-			addParam(paramRanges, "a", argAmp, RangeList::LOGUNIFORM);
-			addParam(paramRanges, "p", argPer, RangeList::LOGUNIFORM);
-			// Include default phase if no user input
-			paramRanges.add("ph", argPhi.getValue(), RangeList::UNIFORM);
-			addParam(paramRanges, "width", argWidth, RangeList::LOGUNIFORM);
-			addParam(paramRanges, "width2", argWidth2, RangeList::LOGUNIFORM);
-			addParam(paramRanges, "d", argDiffus, RangeList::LOGUNIFORM);
-			addParam(paramRanges, "amp2", argAmp2, RangeList::LOGUNIFORM);
-			addParam(paramRanges, "period2", argPer2, RangeList::LOGUNIFORM);
+			parseModelParams(cmd, paramRanges);
 		} catch (const utils::except::UnexpectedNan& e) {
 			throw std::logic_error("Parameter validation doesn't work!\nOriginal error: " + string(e.what()));
 		} catch (const models::except::ExtraParam& e) {
