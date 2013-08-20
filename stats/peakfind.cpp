@@ -15,8 +15,6 @@
 #include <boost/concept_check.hpp>
 #include <boost/lexical_cast.hpp>
 #include <gsl/gsl_math.h>
-//#include "../nan.h"
-//#include "../except/nan.h"
 #include "peakfind.h"
 #include "../except/undefined.h"
 #include "../../common/stats.tmp.h"
@@ -251,8 +249,6 @@ void peakFindTimescales(const DoubleVec& times, const DoubleVec& data,
 		peakFind(times, data, *mag, peakTimes, peakHeights);
 		
 		if (peakTimes.size() > 1) {
-//			tempTimes.push_back( (times.back() - times.front()) 
-//					/ (peakTimes.size()-1) );
 			/** @todo Reimplement using an iterator adapter
 			 */
 			DoubleVec intervals;
