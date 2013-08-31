@@ -2,7 +2,7 @@
  * @file lightcurveMC/stats/gpfit.cpp
  * @author Krzysztof Findeisen
  * @date Created June 24, 2013
- * @date Last modified July 31, 2013
+ * @date Last modified August 31, 2013
  */
 
 #include <limits>
@@ -98,10 +98,8 @@ void fitGaussGp(const vector<double>& times, const vector<double>& data,
 	// Estimate the errors
 	r->parseEvalQ("hess <- jacobian(function(p) {gpGradient(p, model)}, gpExtractParam(model))");
 	// If likelihood maximized poorly, Hessian matrix will be asymmetric
-	r->parseEvalQ("ele13 <- hess[1,3]");
-	r->parseEvalQ("ele31 <- hess[3,1]");
-	if ( !utils::ApproxEqual(1e-4)(Rcpp::as<double>((*r)["ele13"]), 
-			Rcpp::as<double>((*r)["ele31"])) ) {
+	r->parseEvalQ("isSym <- isSymmetric(hess, tol=1e-4)");
+	if ( Rcpp::as<bool>((*r)["isSym"]) ) {
 		throw std::runtime_error("In fitGaussGp(), Hessian matrix is asymmetric. This probably means the fit is not a local likelihood maximum.");
 	}
 
@@ -130,7 +128,6 @@ void fitGaussGp(const vector<double>& times, const vector<double>& data,
 		// Only std::exception can catch all possible Rcpp errors
 		throw std::runtime_error(e.what());
 	}
-
 }
 
 }}		// end lcmc::stats
