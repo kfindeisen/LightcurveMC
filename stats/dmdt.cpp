@@ -21,6 +21,7 @@
 #include "magdist.h"
 #include "statfamilies.h"
 #include "../except/undefined.h"
+#include "../../common/stat_except.h"
 #include "../../common/stats.tmp.h"
 
 namespace lcmc { namespace stats {
@@ -57,7 +58,7 @@ using std::vector;
  *
  * @exception std::bad_alloc Thrown if there is not enough memory to store 
  *	the bin fractions.
- * @exception lcmc::stats::except::NotSorted Thrown if either deltaT or binEdges 
+ * @exception kpfutils::except::NotSorted Thrown if either deltaT or binEdges 
  *	is unsorted.
  *
  * @exceptsafe The function arguments are unchanged in the event 
@@ -68,10 +69,10 @@ void hiAmpBinFrac(const DoubleVec &deltaT, const DoubleVec &deltaM,
 	using std::swap;
 
 	if (!kpfutils::isSorted(deltaT.begin(), deltaT.end())) {
-		throw except::NotSorted("deltaT is not sorted in hiAmpBinFrac()");
+		throw kpfutils::except::NotSorted("deltaT is not sorted in hiAmpBinFrac()");
 	}
 	if (!kpfutils::isSorted(binEdges.begin(), binEdges.end())) {
-		throw except::NotSorted("binEdges is not sorted in hiAmpBinFrac()");
+		throw kpfutils::except::NotSorted("binEdges is not sorted in hiAmpBinFrac()");
 	}
 	
 	DoubleVec tempFracs;
@@ -143,7 +144,7 @@ void hiAmpBinFrac(const DoubleVec &deltaT, const DoubleVec &deltaM,
  * @exception std::bad_alloc Thrown if there is not enough memory to store 
  *	the bin fractions.
  * @exception std::invalid_argument Thrown if @p q is not in (0, 1)
- * @exception lcmc::stats::except::NotSorted Thrown if either @p deltaT or @p binEdges 
+ * @exception kpfutils::except::NotSorted Thrown if either @p deltaT or @p binEdges 
  *	is unsorted.
  *
  * @exceptsafe The function arguments are unchanged in the event 
@@ -158,10 +159,10 @@ void deltaMBinQuantile(const DoubleVec &deltaT, const DoubleVec &deltaM,
 			+ lexical_cast<std::string>(q) + ")");
 	}
 	if (!kpfutils::isSorted(deltaT.begin(), deltaT.end())) {
-		throw except::NotSorted("deltaT is not sorted in deltaMBinQuantile()");
+		throw kpfutils::except::NotSorted("deltaT is not sorted in deltaMBinQuantile()");
 	}
 	if (!kpfutils::isSorted(binEdges.begin(), binEdges.end())) {
-		throw except::NotSorted("binEdges is not sorted in deltaMBinQuantile()");
+		throw kpfutils::except::NotSorted("binEdges is not sorted in deltaMBinQuantile()");
 	}
 	
 	// copy-and-swap

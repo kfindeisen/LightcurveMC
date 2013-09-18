@@ -16,21 +16,21 @@ using std::string;
 
 namespace stats { namespace except {
 
-/** Constructs a NotSorted object.
- *
- * @param[in] what_arg A string with the same content as the value 
- *	returned by what().
- *
- * @post this->what() = @p what_arg.c_str()
- *
- * @exception std::bad_alloc Thrown if there is not enough memory to 
- *	construct the exception.
- * 
- * @exceptsafe Object construction is atomic.
- */
-NotSorted::NotSorted(const string& what_arg) : invalid_argument(what_arg) {
-}
-
+///** Constructs a NotSorted object.
+// *
+// * @param[in] what_arg A string with the same content as the value 
+// *	returned by what().
+// *
+// * @post this->what() = @p what_arg.c_str()
+// *
+// * @exception std::bad_alloc Thrown if there is not enough memory to 
+// *	construct the exception.
+// * 
+// * @exceptsafe Object construction is atomic.
+// */
+//NotSorted::NotSorted(const string& what_arg) : invalid_argument(what_arg) {
+//}
+//
 }}		// end lcmc::stats::except
 
 namespace models { namespace except {

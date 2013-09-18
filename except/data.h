@@ -18,14 +18,14 @@ using std::string;
 
 namespace stats { namespace except {
 
-/** This exception is thrown if a function argument is not sorted.
- */
-class NotSorted : public std::invalid_argument {
-public:
-	/** Constructs a NotSorted object.
-	 */
-	explicit NotSorted(const string& what_arg);
-};
+///** This exception is thrown if a function argument is not sorted.
+// */
+//class NotSorted : public std::invalid_argument {
+//public:
+//	/** Constructs a NotSorted object.
+//	 */
+//	explicit NotSorted(const string& what_arg);
+//};
 
 }}		// end lcmc::stats::except
 

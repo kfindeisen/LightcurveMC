@@ -46,7 +46,7 @@ using boost::lexical_cast;
  *	calculations.
  * @exception std::invalid_argument Thrown if @p times is insufficiently long 
  *	or if @p fluxes has a different length from @p times
- * @exception lcmc::stats::except::NotSorted Thrown if @p times is unsorted.
+ * @exception kpfutils::except::NotSorted Thrown if @p times is unsorted.
  *
  * @exceptsafe The function arguments are unchanged in the event 
  *	of an exception.
@@ -67,7 +67,7 @@ void rmsVsTRooted(const DoubleVec &times, const DoubleVec &fluxes,
 		+ lexical_cast<std::string>(fluxes.size()) + " for fluxes)");
 	}
 	if (!kpfutils::isSorted(times.begin(), times.end())) {
-		throw except::NotSorted("times is not sorted in rmsVsTRooted()");
+		throw kpfutils::except::NotSorted("times is not sorted in rmsVsTRooted()");
 	}
 	
 	// copy-and-swap
@@ -114,7 +114,7 @@ void rmsVsTRooted(const DoubleVec &times, const DoubleVec &fluxes,
  *	calculations.
  * @exception std::invalid_argument Thrown if @p times is insufficiently long 
  *	or if @p fluxes has a different length from @p times
- * @exception lcmc::stats::except::NotSorted Thrown if @p times is unsorted.
+ * @exception kpfutils::except::NotSorted Thrown if @p times is unsorted.
  * 
  * @exceptsafe The function arguments are unchanged in the event 
  *	of an exception.
@@ -137,7 +137,7 @@ void rmsVsTAllPairs(const DoubleVec &times, const DoubleVec &fluxes,
 		+ lexical_cast<std::string>(fluxes.size()) + " for fluxes)");
 	}
 	if (!kpfutils::isSorted(times.begin(), times.end())) {
-		throw except::NotSorted("times is not sorted in rmsVsTAllPairs()");
+		throw kpfutils::except::NotSorted("times is not sorted in rmsVsTAllPairs()");
 	}
 	
 	// Temporary storage that allows the data to be sorted together
