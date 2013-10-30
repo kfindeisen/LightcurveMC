@@ -44,6 +44,7 @@
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_statistics_double.h>
+#include <timescales/timescales.h>
 #include "../stats/acfinterp.h"
 #include "../approx.h"
 #include "../../common/cerror.h"
@@ -54,7 +55,6 @@
 #include "../stats/magdist.h"
 #include "../mcio.h"
 #include "../nan.h"
-#include "../stats/peakfind.h"
 #include "test.h"
 #include "../except/undefined.h"
 #include "../../common/alloc.tmp.h"
@@ -605,14 +605,15 @@ BOOST_AUTO_TEST_CASE(acf_interp) {
 	}	// end loop over examples
 }
 
-/** Tests whether @ref lcmc::stats::peakFind() "peakFind()" matches 
+/** Tests whether @ref kpftimes::peakFind() "peakFind()" matches 
  *	Ann Marie's original program
  *
- * @see @ref lcmc::stats::peakFind() "peakFind()"
+ * @see @ref kpftimes::peakFind() "peakFind()"
  *
  * @test Consistent results with original IDL code
  *
  * @exceptsafe Does not throw exceptions
+ *
  */
 BOOST_AUTO_TEST_CASE(peakfind) {
 	for(size_t i = 0; i <= 13; i++) {
@@ -642,7 +643,7 @@ BOOST_AUTO_TEST_CASE(peakfind) {
 		}
 		
 		vector<double> myTimes, myPeaks;
-		BOOST_REQUIRE_NO_THROW(lcmc::stats::peakFind(times, mags, 0.05, 
+		BOOST_REQUIRE_NO_THROW(kpftimes::peakFind(times, mags, 0.05, 
 			myTimes, myPeaks));
 		
 		BOOST_REQUIRE_EQUAL(myTimes.size(), peakTimes.size());

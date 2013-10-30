@@ -11,7 +11,7 @@ PROJ     := stats
 
 SOURCES  := acf.cpp named.cpp output.cpp pairs.cpp scalars.cpp vectors.cpp \
 	acfdriver.cpp acfinterp.cpp dmdt.cpp experimental.cpp gpdriver.cpp \
-	gpfit.cpp magdist.cpp peakdriver.cpp peakfind.cpp periodogram.cpp
+	gpfit.cpp magdist.cpp peakdriver.cpp periodogram.cpp
 	
 include ../makefile.subdirs
 include ../makefile.common

@@ -2,17 +2,17 @@
  * @file lightcurveMC/stats/peakdriver.cpp
  * @author Krzysztof Findeisen
  * @date Created June 8, 2013
- * @date Last modified August 5, 2013
+ * @date Last modified October 29, 2013
  */
 
 #include <algorithm>
 #include <stdexcept>
 #include <vector>
 #include <boost/lexical_cast.hpp>
+#include <timescales/timescales.h>
 #include "cut.tmp.h"
 #include "magdist.h"
 #include "../nan.h"
-#include "peakfind.h"
 #include "statcollect.h"
 #include "statfamilies.h"
 #include "../except/undefined.h"
@@ -21,6 +21,7 @@ namespace lcmc { namespace stats {
 
 using boost::lexical_cast;
 using std::vector;
+using kpftimes::peakFindTimescales;
 
 /** Does all peak-finding related computations for a given light curve.
  *
@@ -87,7 +88,8 @@ void doPeak(const vector<double>& times, const vector<double>& mags,
 					magCuts.push_back(amplitude / 2.0);
 				
 					DoubleVec cutTimes;
-					peakFindTimescales(times, mags, magCuts, cutTimes);
+					peakFindTimescales(times, mags, 
+						magCuts, cutTimes);
 					
 					// Key cuts
 					temp3.addStat(cutTimes[0]);
