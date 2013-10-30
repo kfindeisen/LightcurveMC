@@ -2,7 +2,7 @@
  * @file lightcurveMC/tests/unit_stats.cpp
  * @author Krzysztof Findeisen
  * @date Created April 18, 2013
- * @date Last modified July 24, 2013
+ * @date Last modified October 29, 2013
  *
  * @todo Break up this file.
  */
@@ -32,8 +32,6 @@
 #include <algorithm>
 #include <limits>
 #include <stdexcept>
-//#include <string>
-//#include <cerrno>
 #include <cmath>
 #include <cstring>
 #include <boost/lexical_cast.hpp>
@@ -44,7 +42,6 @@
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_statistics_double.h>
-#include <timescales/timescales.h>
 #include "../stats/acfinterp.h"
 #include "../approx.h"
 #include "../../common/cerror.h"
@@ -602,63 +599,6 @@ BOOST_AUTO_TEST_CASE(acf_interp) {
 		}
 		BOOST_WARN(nBad == 0 || nBad >= nAcf/1000);
 		BOOST_CHECK(nBad <= nAcf/1000);
-	}	// end loop over examples
-}
-
-/** Tests whether @ref kpftimes::peakFind() "peakFind()" matches 
- *	Ann Marie's original program
- *
- * @see @ref kpftimes::peakFind() "peakFind()"
- *
- * @test Consistent results with original IDL code
- *
- * @exceptsafe Does not throw exceptions
- *
- */
-BOOST_AUTO_TEST_CASE(peakfind) {
-	for(size_t i = 0; i <= 13; i++) {
-		vector<double> times, mags;
-		vector<double> peakTimes, peaks;
-		
-		try {
-			{
-				char fileName[80];
-				if (sprintf(fileName, "idl_target_in_%i.txt", i) < 0) {
-					cError("While testing peakFind(): ");
-				}
-				
-				kpfutils::readMcLightCurve(fileName, times, mags);
-			}
-	
-			{
-				char fileName[80];
-				if (sprintf(fileName, "idl_target_peak_%i.txt", i) < 0) {
-					cError("While testing peakFind(): ");
-				}
-				
-				kpfutils::readMcLightCurve(fileName, peakTimes, peaks);
-			}
-		} catch (const std::exception& e) {
-			BOOST_FAIL(e.what());
-		}
-		
-		vector<double> myTimes, myPeaks;
-		BOOST_REQUIRE_NO_THROW(kpftimes::peakFind(times, mags, 0.05, 
-			myTimes, myPeaks));
-		
-		BOOST_REQUIRE_EQUAL(myTimes.size(), peakTimes.size());
-		BOOST_REQUIRE_EQUAL(myTimes.size(), myPeaks.size());
-		
-		// Allow for occasional deviations due to roundoff errors
-		unsigned int nBad = 0;
-		for(size_t j = 0; j < myTimes.size(); j++) {
-			if (!isClose(myTimes[j], peakTimes[j], 1e-5) 
-					|| !isClose(myPeaks[j], peaks[j], 1e-5)) {
-				nBad++;
-			}
-		}
-		BOOST_WARN(nBad == 0 || nBad >= peakTimes.size()/1000);
-		BOOST_CHECK(nBad <= peakTimes.size()/1000);
 	}	// end loop over examples
 }
 
