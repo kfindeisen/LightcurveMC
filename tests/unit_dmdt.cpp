@@ -34,10 +34,10 @@
 #include <boost/smart_ptr.hpp>
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
+#include <timescales/timescales.h>
 #include "test.h"
 #include "../binstats.h"
 #include "../stats/cut.tmp.h"
-#include "../stats/dmdt.h"
 #include "../gsl_compat.h"
 #include "../../common/alloc.tmp.h"
 
@@ -200,9 +200,11 @@ BOOST_FIXTURE_TEST_SUITE(test_dmdt, SimData)
  */
 BOOST_AUTO_TEST_CASE(quantileCuts)
 {
+	/** @todo Move this test to timescales... after the supporting code is in place
+	 */
 	using lcmc::stats::cutFunction;
 	using lcmc::stats::MoreThan;
-	using lcmc::stats::deltaMBinQuantile;
+	using kpftimes::deltaMBinQuantile;
 	
 	vector<double> cut50Amp3s, cut50Amp2s, cut90Amp3s, cut90Amp2s;
 
