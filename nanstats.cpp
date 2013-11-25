@@ -11,6 +11,7 @@
 #include <boost/lexical_cast.hpp>
 #include "nan.h"
 #include "except/undefined.h"
+#include "../common/nan.h"
 #include "../common/stats.tmp.h"
 
 namespace lcmc { namespace utils {
@@ -18,32 +19,6 @@ namespace lcmc { namespace utils {
 using std::vector;
 using std::numeric_limits;
 using boost::lexical_cast;
-
-/** isNan() tests whether a floating-point number is undefined
- *
- * @param[in] x The number to test
- * 
- * @return true if and only if @p x equals signaling or quiet not-a-number
- *
- * @exceptsafe Does not throw exceptions.
- */
-bool isNan(const double x) {
-	return (x != x);
-}
-
-/** isNanOrInf() tests whether a floating-point number is non-finite
- *
- * @param[in] x The number to test
- * 
- * @return true if and only if @p x equals signaling or quiet not-a-number, 
- *	or @p x is infinite
- *
- * @exceptsafe Does not throw exceptions.
- */
-bool isNanOrInf(const double x) {
-	return ( isNan(x) || (x ==  numeric_limits<double>::infinity()) 
-			  || (x == -numeric_limits<double>::infinity()) );
-}
 
 /** lessFinite() allows floating-point numbers to be ordered consistently in the 
  *	presence of NaNs.
@@ -58,9 +33,9 @@ bool isNanOrInf(const double x) {
  * @exceptsafe Does not throw exceptions.
  */
 bool lessFinite(double x, double y) {
-	if (!isNan(x) && !isNan(y)) {
+	if (!kpfutils::isNan(x) && !kpfutils::isNan(y)) {
 		return (x < y);
-	} else if (isNan(x)) {
+	} else if (kpfutils::isNan(x)) {
 		// if isNan(y), returns false, as it should
 		return (y == numeric_limits<double>::infinity());
 	} else {
@@ -122,7 +97,7 @@ void removeNans(const vector<double>& badVals, vector<double>& goodVals,
 	
 	for(vector<double>::const_iterator badIt = badVals.begin(), sideIt = sideVals.begin();
 			badIt != badVals.end(); badIt++, sideIt++) {
-		if (!isNan(*badIt)) {
+		if (!kpfutils::isNan(*badIt)) {
 			goodOut. push_back( *badIt);
 			matchOut.push_back(*sideIt);
 		}
@@ -153,7 +128,7 @@ double meanNoNan(const vector<double>& vals) {
 	// Ignore all NaN values
 	// Predicate argument needs to be default-constructible
 	// 	Can't use either std::unary_negate or boost:unary_negate
-	typedef filter_iterator<NotNan, vector<double>::const_iterator> NotNanFilter;
+	typedef filter_iterator<kpfutils::NotNan, vector<double>::const_iterator> NotNanFilter;
 	NotNanFilter firstClean(vals.begin(), vals.end());
 	NotNanFilter  lastClean(vals.end()  , vals.end());
 	
@@ -182,7 +157,7 @@ double varianceNoNan(const vector<double>& vals) {
 	// Ignore all NaN values
 	// Predicate argument needs to be default-constructible
 	// 	Can't use either std::unary_negate or boost:unary_negate
-	typedef filter_iterator<NotNan, vector<double>::const_iterator> NotNanFilter;
+	typedef filter_iterator<kpfutils::NotNan, vector<double>::const_iterator> NotNanFilter;
 	NotNanFilter firstClean(vals.begin(), vals.end());
 	NotNanFilter  lastClean(vals.end()  , vals.end());
 

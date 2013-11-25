@@ -19,31 +19,6 @@ namespace utils {
 
 using std::vector;
 
-/** isNan() tests whether a floating-point number is undefined
- */
-bool isNan(double x);
-
-/** isNanOrInf() tests whether a floating-point number is non-finite
- */
-bool isNanOrInf(double x);
-
-/** Default-constructible predicate for testing whether something is not NaN
- */
-class NotNan {
-public: 
-	/** Returns true iff the argument is not NaN.
-	 *
-	 * @param[in] x
-	 *
-	 * @return @p x &ne; NaN
-	 *
-	 * @exceptsafe Does not throw exceptions.
-	 */
-	bool operator() (double x) {
-		return !isNan(x);
-	}
-};
-
 /** lessFinite() allows floating-point numbers to be ordered consistently in the 
  *	presence of NaNs.
  */

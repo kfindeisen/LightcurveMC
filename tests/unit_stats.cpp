@@ -311,41 +311,6 @@ void testProduct(const shared_ptr< gsl_matrix > & initial)
  */
 BOOST_FIXTURE_TEST_SUITE(test_nan, StatDummy)
 
-/** Tests whether NaN diagnostics work as advertised
- *
- * @exceptsafe Does not throw exceptions.
- */
-BOOST_AUTO_TEST_CASE(nan_check) {
-	// Easy access to special double values
-	typedef std::numeric_limits<double> d;
-	
-	using lcmc::utils::        isNan;
-	using lcmc::utils::   isNanOrInf;
-	using lcmc::utils::    meanNoNan;
-	using lcmc::utils::varianceNoNan;
-	
-	BOOST_WARN(d::     has_infinity);
-	BOOST_WARN(d::    has_quiet_NaN);
-	BOOST_WARN(d::has_signaling_NaN);
-
-	// Skip tests if the system doesn't support special floating-point values
-	BOOST_CHECK(!d::     has_infinity || !isNan( d::     infinity()));
-	BOOST_CHECK(                         !isNan( 3.0               ));
-	BOOST_CHECK(                         !isNan( 0.0               ));
-	BOOST_CHECK(                         !isNan(-3.0               ));
-	BOOST_CHECK(!d::     has_infinity || !isNan(-d::     infinity()));
-	BOOST_CHECK(!d::    has_quiet_NaN ||  isNan(-d::    quiet_NaN()));
-	BOOST_CHECK(!d::has_signaling_NaN ||  isNan(-d::signaling_NaN()));
-	
-	BOOST_CHECK(!d::     has_infinity ||  isNanOrInf( d::     infinity()));
-	BOOST_CHECK(                         !isNanOrInf( 3.0               ));
-	BOOST_CHECK(                         !isNanOrInf( 0.0               ));
-	BOOST_CHECK(                         !isNanOrInf(-3.0               ));
-	BOOST_CHECK(!d::     has_infinity ||  isNanOrInf(-d::     infinity()));
-	BOOST_CHECK(!d::    has_quiet_NaN ||  isNanOrInf(-d::    quiet_NaN()));
-	BOOST_CHECK(!d::has_signaling_NaN ||  isNanOrInf(-d::signaling_NaN()));
-}
-
 /** Tests whether NaN-proof statistics are consistent with normal ones
  *
  * @see testNanProof()
@@ -482,7 +447,7 @@ BOOST_AUTO_TEST_CASE(zero_variance) {
 		BOOST_REQUIRE_NO_THROW(lcmc::stats::getSummaryStats(constantSignal, mean, stddev, "Constant Signal Test"));
 		
 		BOOST_CHECK(!testNan(stddev));
-		BOOST_CHECK(stddev < 1e-12);
+		BOOST_CHECK_LT(stddev, 1e-6);
 
 	} catch (const std::bad_alloc& e) {
 		BOOST_FAIL("Out of memory!");
