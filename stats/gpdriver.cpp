@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 #include <boost/lexical_cast.hpp>
-#include "../nan.h"
+#include "../../common/nan.h"
 #include "statcollect.h"
 #include "statfamilies.h"
 
@@ -81,7 +81,7 @@ void doGaussFit(const vector<double>& times, const vector<double>& data,
 				tempTimes .addStat(bestTime);
 				tempErrors.addStat(timeErr);
 				
-				if (utils::isNan(trueTime)) {
+				if (kpfutils::isNan(trueTime)) {
 					tempDevs.addNull();
 				} else {
 					tempDevs.addStat((bestTime - trueTime)/timeErr);

@@ -16,6 +16,7 @@
 #include "../../common/alloc.tmp.h"
 #include "../mcio.h"
 #include "output.h"
+#include "../../common/nan.h"
 #include "../nan.h"
 #include "../except/undefined.h"
 
@@ -81,7 +82,7 @@ void getSummaryStats(const vector<double>& values, double& mean, double& stddev,
 	size_t n = values.size();
 	
 	double badCount = static_cast<double>(
-		std::count_if(values.begin(), values.end(), &utils::isNanOrInf));
+		std::count_if(values.begin(), values.end(), &kpfutils::isNanOrInf));
 	goodFrac = (n > 0 ? 1.0 - badCount/n : 0.0);
 	
 	getSummaryStats(values, mean, stddev, statName);

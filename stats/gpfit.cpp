@@ -2,7 +2,7 @@
  * @file lightcurveMC/stats/gpfit.cpp
  * @author Krzysztof Findeisen
  * @date Created June 24, 2013
- * @date Last modified August 31, 2013
+ * @date Last modified October 30, 2013
  */
 
 #include <limits>
@@ -10,7 +10,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/smart_ptr.hpp>
 #include "../approx.h"
-#include "../nan.h"
+#include "../../common/nan.h"
 #include "../r_compat.h"
 #include "../except/undefined.h"
 
@@ -99,7 +99,7 @@ void fitGaussGp(const vector<double>& times, const vector<double>& data,
 	r->parseEvalQ("hess <- jacobian(function(p) {gpGradient(p, model)}, gpExtractParam(model))");
 	// If likelihood maximized poorly, Hessian matrix will be asymmetric
 	r->parseEvalQ("isSym <- isSymmetric(hess, tol=1e-4)");
-	if ( Rcpp::as<bool>((*r)["isSym"]) ) {
+	if ( !Rcpp::as<bool>((*r)["isSym"]) ) {
 		throw std::runtime_error("In fitGaussGp(), Hessian matrix is asymmetric. This probably means the fit is not a local likelihood maximum.");
 	}
 
@@ -113,10 +113,10 @@ void fitGaussGp(const vector<double>& times, const vector<double>& data,
 		double tempErr  = Rcpp::as<double>((*r)["err"]);
 		// Rcpp will convert NAs to NaNs without error, but we don't 
 		// want to allow those solutions
-		if (utils::isNan(tempTime)) {
+		if (kpfutils::isNan(tempTime)) {
 			throw std::runtime_error("In fitGaussGp(), code ran successfully, but time scale was NA");
 		}
-		if (utils::isNan(tempErr)) {
+		if (kpfutils::isNan(tempErr)) {
 			throw std::runtime_error("In fitGaussGp(), found a time scale, but time scale error was NA");
 		}
 

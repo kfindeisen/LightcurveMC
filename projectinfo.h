@@ -9,6 +9,28 @@
  * @todo Look into a truly free alternative to GSL
  */
 
+/* Copyright 2014, California Institute of Technology.
+ *
+ * This file is part of LightcurveMC.
+ * 
+ * LightcurveMC is free software: you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License as published 
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version, subject to the following 
+ * exception added under Section 7 of the License:
+ *	* Neither the name of the copyright holder nor the names of its contributors 
+ *	  may be used to endorse or promote products derived from this software 
+ *	  without specific prior written permission.
+ * 
+ * LightcurveMC is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with LightcurveMC. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #ifndef LCMCPROJINFOH
 #define LCMCPROJINFOH
 
@@ -23,7 +45,7 @@
  * "+build" tag can be used to distinguish which development version 
  *	was used to create which output
  */
-#define VERSION_STRING "2.3.0-devel+build.15"
+#define VERSION_STRING "2.3.0"
 
 /** @mainpage
  *
@@ -45,12 +67,32 @@
  * - Support for calculation of C1, periods, &Delta;m&Delta;t timescales, 
  *	ACF timescales, peak-finding, and Gaussian process modeling.
  *
+ * @section legal License
+ * 
+ * Copyright (C) 2014 California Institute of Technology
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version, subject to the following 
+ * exception added under Section 7 of the License:
+ *	* Neither the name of the copyright holder nor the names of its contributors 
+ *	  may be used to endorse or promote products derived from this software 
+ *	  without specific prior written permission.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License 
+ * in <a href="../../LICENSE">lightcurveMC/LICENSE</a> 
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  * @section credits Credits
  *
  * Lightcurve MC was primarily written by Krzysztof Findeisen. Please contact 
  * him at krzys, astro caltech edu for questions, feedback, or bug reports. 
- * The @c peakFind() and @c peakFindTimescales() functions were adapted 
- * from work by Ann Marie Cody. 
  * The @c ParamList class was suggested by Timothy Morton.
  * 
  * @page install Installation
@@ -67,6 +109,7 @@
  * - @c makefile.inc
  * - @c makefile.common
  * - @c makefile.subdirs
+ * 
  * The program may switch to CMake in the future for improved portability.
  *
  * The sections written in R require version 2.15.1 or later of the 
@@ -76,6 +119,7 @@
  * same source as Lightcurve MC: 
  * - Timescales 1.0 or later
  * - kpfutils 1.0 or later
+ * 
  * and on the following external libraries:
  * - <a href="http://www.boost.org/">Boost</a> 1.33 or later
  * - <a href="http://www.gnu.org/software/gsl/">Gnu Scientific Library (GSL)</a> 1.8 
@@ -717,7 +761,7 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    1	run_c
  * @latexonly chapter, @endlatexonly not including the "Examples" section, 
  * fills the role of the public API for the program.
  *
- * @section v2_3_0 Version 2.3.0-devel
+ * @section v2_3_0 Version 2.3.0
  *
  * @subsection v2_3_0_diff Changes 
  * 
@@ -827,10 +871,9 @@ sharp_peak      1       4       0       myobslist.txt      0.67±0.074    1	run_c
  *	@ref lcmc::utils::getHalfMatrix() "getHalfMatrix()". See 
  *	@ref lcmc::utils::getHalfMatrix() "getHalfMatrix()" documentation for 
  *	more details.
- * - Bug where @ref lcmc::stats::deltaMBinQuantile() "deltaMBinQuantile()" 
- *	appeared to show the &Delta;m median crossing half the amplitude 
- *	before reaching the third-amplitude in Gaussian processes has been 
- *	explained. The behavior is the result of half-amplitude crossings 
+ * - Bug where deltaMBinQuantile() appeared to show the &Delta;m median crossing 
+ *      half the amplitude before reaching the third-amplitude in Gaussian processes 
+ *	has been explained. The behavior is the result of half-amplitude crossings 
  *	happening either in the poorly populated bins where 
  *	&Delta;t &asymp; 0.5&nbsp;day, or not at all, whereas statistical 
  *	fluctuations can cause spurious third-amplitude crossings (with no 

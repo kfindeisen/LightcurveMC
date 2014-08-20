@@ -5,6 +5,28 @@
  * @date Last modified June 18, 2013
  */
 
+/* Copyright 2014, California Institute of Technology.
+ *
+ * This file is part of LightcurveMC.
+ * 
+ * LightcurveMC is free software: you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License as published 
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version, subject to the following 
+ * exception added under Section 7 of the License:
+ *	* Neither the name of the copyright holder nor the names of its contributors 
+ *	  may be used to endorse or promote products derived from this software 
+ *	  without specific prior written permission.
+ * 
+ * LightcurveMC is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with LightcurveMC. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include <string>
 #include <vector>
 #include <cstdio>
@@ -18,7 +40,7 @@
 #include "../except/inject.h"
 #include "../../common/lcio.h"
 #include "../mcio.h"
-#include "../nan.h"
+#include "../../common/nan.h"
 #include "../../common/stats.tmp.h"
 #include "../../common/cerror.h"
 #include "../../common/alloc.tmp.h"
@@ -101,7 +123,7 @@ void Observations::readFile(const std::string& fileName) {
 	// Remove NaNs
 	std::vector<double> cleanTimes, cleanFluxes;
 	for(size_t i = 0; i < dummyTimes.size(); i++) {
-		if (!utils::isNan(dummyTimes[i]) && !utils::isNan(dummyFluxes[i])) {
+		if (!kpfutils::isNan(dummyTimes[i]) && !kpfutils::isNan(dummyFluxes[i])) {
 			cleanTimes.push_back(dummyTimes[i]);
 			cleanFluxes.push_back(dummyFluxes[i]);
 		}

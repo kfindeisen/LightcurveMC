@@ -12,7 +12,7 @@
 #include <timescales/timescales.h>
 #include "cut.tmp.h"
 #include "magdist.h"
-#include "../nan.h"
+#include "../../common/nan.h"
 #include "statcollect.h"
 #include "statfamilies.h"
 #include "../except/undefined.h"
@@ -116,7 +116,7 @@ void doPeak(const vector<double>& times, const vector<double>& mags,
 					// 80% of the highest mag with a defined timescale
 					double mag08 = 0.8 * 
 						cutFunctionReverse(magCuts, cutTimes, 
-							utils::NotNan());
+							kpfutils::NotNan());
 					
 					// can't use cutFunction() because cutTimes may 
 					//	have NaNs
