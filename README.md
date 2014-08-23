@@ -8,3 +8,6 @@ Current features include:
 * Generation of stochastic light curves having a variety of correlation properties
 * Two error models: Gaussian measurement error, or signal injection using a randomized sample of base light curves
 * Testing of C1 shape statistic, periodograms, ΔmΔt plots, autocorrelation function plots, peak-finding plots, and Gaussian process regression.
+
+This software has been published through the Astrophysics Source Code Library as [ascl:1408.012](http://ascl.net/1408.012). Please cite as 
+> Findeisen, K. 2014, Astrophysics Source Code Library, record ascl:1408.012.
