@@ -1,0 +1,15 @@
+\form#0:$ a_k = \sum_{i = k}^{n-1} x_i x_{i-k} $
+\form#1:$ a_k $
+\form#2:$ x_i $
+\form#3:\[ a_k = \frac{\sum_{i = k}^{n-1} (x_{i} - \hat\mu) (x_{i-k} - \hat\mu)} {\sum_{i = k}^{n-1} (x_{i} - \hat\mu) (x_{i} - \hat\mu)} \]
+\form#4:$ \hat\mu $
+\form#5:$ \binom{N}{2} $
+\form#6:$\{(x_i, y_i)\}$
+\form#7:$\delta(t_i, t_j)$
+\form#8:$t_i$
+\form#9:$e^{-(t_i - t_j)^2/2\tau^2}$
+\form#10:$e^{-|t_i - t_j|/\tau}$
+\form#11:$\frac{2^{1-\nu}}{\Gamma(\nu)} \left(\frac{\sqrt{2\nu}|t_i - t_j|}{\tau}\right)^\nu K_\nu\left(\frac{\sqrt{2\nu}|t_i - t_j|}{\tau}\right)$
+\form#12:$e^{-2\sin^2(2\pi \frac{t_i - t_j}{P})/\tau^2}$
+\form#13:$1/(1 + (t_i - t_j)^2/\tau^2)^\alpha$
+\form#14:$ A = B B^\intercal $

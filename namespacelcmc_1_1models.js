@@ -1,0 +1,38 @@
+var namespacelcmc_1_1models =
+[
+    [ "except", null, [
+      [ "BadParam", "classlcmc_1_1models_1_1except_1_1_bad_param.html", "classlcmc_1_1models_1_1except_1_1_bad_param" ],
+      [ "MissingParam", "classlcmc_1_1models_1_1except_1_1_missing_param.html", "classlcmc_1_1models_1_1except_1_1_missing_param" ],
+      [ "ExtraParam", "classlcmc_1_1models_1_1except_1_1_extra_param.html", "classlcmc_1_1models_1_1except_1_1_extra_param" ],
+      [ "NegativeRange", "classlcmc_1_1models_1_1except_1_1_negative_range.html", "classlcmc_1_1models_1_1except_1_1_negative_range" ]
+    ] ],
+    [ "LightCurveType", "classlcmc_1_1models_1_1_light_curve_type.html", "classlcmc_1_1models_1_1_light_curve_type" ],
+    [ "ILightCurve", "classlcmc_1_1models_1_1_i_light_curve.html", "classlcmc_1_1models_1_1_i_light_curve" ],
+    [ "ParamList", "classlcmc_1_1models_1_1_param_list.html", "classlcmc_1_1models_1_1_param_list" ],
+    [ "RangeList", "classlcmc_1_1models_1_1_range_list.html", "classlcmc_1_1models_1_1_range_list" ],
+    [ "Deterministic", "classlcmc_1_1models_1_1_deterministic.html", "classlcmc_1_1models_1_1_deterministic" ],
+    [ "StochasticRng", "classlcmc_1_1models_1_1_stochastic_rng.html", "classlcmc_1_1models_1_1_stochastic_rng" ],
+    [ "Stochastic", "classlcmc_1_1models_1_1_stochastic.html", "classlcmc_1_1models_1_1_stochastic" ],
+    [ "SlowDip", "classlcmc_1_1models_1_1_slow_dip.html", "classlcmc_1_1models_1_1_slow_dip" ],
+    [ "FlareDip", "classlcmc_1_1models_1_1_flare_dip.html", "classlcmc_1_1models_1_1_flare_dip" ],
+    [ "SquareDip", "classlcmc_1_1models_1_1_square_dip.html", "classlcmc_1_1models_1_1_square_dip" ],
+    [ "GaussianProcess", "classlcmc_1_1models_1_1_gaussian_process.html", "classlcmc_1_1models_1_1_gaussian_process" ],
+    [ "WhiteNoise", "classlcmc_1_1models_1_1_white_noise.html", "classlcmc_1_1models_1_1_white_noise" ],
+    [ "RandomWalk", "classlcmc_1_1models_1_1_random_walk.html", "classlcmc_1_1models_1_1_random_walk" ],
+    [ "DampedRandomWalk", "classlcmc_1_1models_1_1_damped_random_walk.html", "classlcmc_1_1models_1_1_damped_random_walk" ],
+    [ "SimpleGp", "classlcmc_1_1models_1_1_simple_gp.html", "classlcmc_1_1models_1_1_simple_gp" ],
+    [ "TwoScaleGp", "classlcmc_1_1models_1_1_two_scale_gp.html", "classlcmc_1_1models_1_1_two_scale_gp" ],
+    [ "SlowPeak", "classlcmc_1_1models_1_1_slow_peak.html", "classlcmc_1_1models_1_1_slow_peak" ],
+    [ "FlarePeak", "classlcmc_1_1models_1_1_flare_peak.html", "classlcmc_1_1models_1_1_flare_peak" ],
+    [ "SquarePeak", "classlcmc_1_1models_1_1_square_peak.html", "classlcmc_1_1models_1_1_square_peak" ],
+    [ "PeriodicLc", "classlcmc_1_1models_1_1_periodic_lc.html", "classlcmc_1_1models_1_1_periodic_lc" ],
+    [ "SineWave", "classlcmc_1_1models_1_1_sine_wave.html", "classlcmc_1_1models_1_1_sine_wave" ],
+    [ "TriangleWave", "classlcmc_1_1models_1_1_triangle_wave.html", "classlcmc_1_1models_1_1_triangle_wave" ],
+    [ "EllipseWave", "classlcmc_1_1models_1_1_ellipse_wave.html", "classlcmc_1_1models_1_1_ellipse_wave" ],
+    [ "EclipseWave", "classlcmc_1_1models_1_1_eclipse_wave.html", "classlcmc_1_1models_1_1_eclipse_wave" ],
+    [ "BroadPeakWave", "classlcmc_1_1models_1_1_broad_peak_wave.html", "classlcmc_1_1models_1_1_broad_peak_wave" ],
+    [ "SharpPeakWave", "classlcmc_1_1models_1_1_sharp_peak_wave.html", "classlcmc_1_1models_1_1_sharp_peak_wave" ],
+    [ "MagSineWave", "classlcmc_1_1models_1_1_mag_sine_wave.html", "classlcmc_1_1models_1_1_mag_sine_wave" ],
+    [ "AaTauWave", "classlcmc_1_1models_1_1_aa_tau_wave.html", "classlcmc_1_1models_1_1_aa_tau_wave" ],
+    [ "FlatWave", "classlcmc_1_1models_1_1_flat_wave.html", "classlcmc_1_1models_1_1_flat_wave" ]
+];
