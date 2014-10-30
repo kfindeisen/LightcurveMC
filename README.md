@@ -11,3 +11,5 @@ Current features include:
 
 This software has been published through the Astrophysics Source Code Library as [ascl:1408.012](http://ascl.net/1408.012). Please cite as 
 > Findeisen, K. 2014, Astrophysics Source Code Library, record ascl:1408.012.
+
+An example of the analysis possible with this software is presented in [Findeisen, Cody, & Hillenbrand (2014)](http://adsabs.harvard.edu/cgi-bin/bib_query?arXiv:1410.7882).
